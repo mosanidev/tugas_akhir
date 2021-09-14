@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+    
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -17,9 +19,15 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
+        'jenis_kelamin',
+        'nomor_telepon',
+        'jenis',
+        'status_verifikasi_anggota',
+        'tanggal_lahir',
+        'foto'
     ];
 
     /**
@@ -28,8 +36,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password'
     ];
 
     /**
@@ -38,6 +45,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'tanggal_lahir' => 'date',
     ];
 }
