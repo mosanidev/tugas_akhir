@@ -77,11 +77,11 @@ class BarangController extends Controller
         {
             $total_cart = DB::table('cart')->select(DB::raw('sum(subtotal) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-            return view('pelanggan.shop', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang, 'total_cart' => $total_cart]);
+            return view('pelanggan.shop.shop_by_type', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang, 'total_cart' => $total_cart]);
         }
         else
         {
-            return view('pelanggan.shop', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang]);
+            return view('pelanggan.shop.shop_by_type', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang]);
         }
 
     }

@@ -18,20 +18,24 @@
     <div class="bg-secondary">
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                @for($i = 0; $i<count($files); $i++)
+                    @if($i == 0)
+                        <li data-target="#carouselExampleIndicators" data-slide-to="{{$i}}" class="active"></li>
+                    @else 
+                        <li data-target="#carouselExampleIndicators" data-slide-to="{{$i}}"></li>
+                    @endif
+                @endfor
             </ol>
             <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://assets.klikindomaret.com/products/banner/HERO_BNR_KLiK-FOOD-JULI%20_1_.jpg" class=" w-75 img-fluid mx-auto d-block p-4" alt="Responsive image">
-            </div>
-            <div class="carousel-item">
-                <img src="https://assets.klikindomaret.com/products/banner/HERO_BNR_TEBUS-MURAH-7-JUL_4.jpg" class=" w-75 img-fluid mx-auto d-block p-4" alt="Responsive image">
-            </div>
-            <div class="carousel-item">
-                <img src="https://assets.klikindomaret.com/products/banner/HERO_BNR_BEAR-BRAND-8-JULI.jpeg" class=" w-75 img-fluid mx-auto d-block p-4" alt="Responsive image">
-            </div>
+                @foreach($files as $item)
+
+                    <div class="carousel-item active">
+                        {{-- <img src="{{ asset($item) }}" class=" w-75 img-fluid mx-auto d-block p-4" height="445" width="1240" alt="Responsive image"> --}}
+                        <img src="{{ asset($item) }}" class="mx-auto d-block p-5" height="445" width="1240">
+
+                    </div>
+
+                @endforeach
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
