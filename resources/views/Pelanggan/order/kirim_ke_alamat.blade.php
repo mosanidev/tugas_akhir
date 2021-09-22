@@ -1,6 +1,8 @@
-@extends('pelanggan.cart.layouts.template')
+@extends('pelanggan.order.layouts.template')
 
 @section('content')
+<div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
+
     <h3 class="mb-4"><strong>Pilih metode pengiriman</strong></h3>
 
     <div class="row">
@@ -83,4 +85,5 @@
 
         </div>
   </div>
+</div>
 @endsection

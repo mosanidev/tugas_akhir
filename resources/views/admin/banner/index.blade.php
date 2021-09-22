@@ -18,7 +18,7 @@
   <div class="container-fluid">
 
     @if(count($arrBanner) > 0)
-      <table class="table table-bordered" id="table-jenis">
+      <table class="table table-bordered">
         <thead>
           <tr>
             <th style="width: 10px">No</th>

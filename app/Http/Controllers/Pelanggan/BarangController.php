@@ -64,7 +64,7 @@ class BarangController extends Controller
         $data_barang = DB::table('barang')->where('diskon_potongan_harga', '>', 0)->inRandomOrder()->get();
         $data_jenis = DB::table('jenis_barang')->get();
 
-        return view('pelanggan.shop', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang]);
+        return view('pelanggan.shop.shop_by_type', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang]);
     }
 
     public function searchBarang(Request $request)

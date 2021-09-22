@@ -37,11 +37,12 @@
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Berat</p><p class="d-inline">{{ $barang[0]->berat }} gram</p><br>
                             <p class="mb-2">Deskripsi</p>
                             <p class="text-justify">{{ $barang[0]->deskripsi }}</p>
-                            
+
                         <form method="POST" action="{{ route('addCart') }}">
                             @csrf
+                            <p class="d-inline mr-1">Kuantitas : </p> <input type="number" class="d-inline form-control kuantitas-cart" style="width:60px;" min="1" id="kuantitas-cart" name="qty" value="1">
                             <input type="hidden" name="barang_id" value="{{ $barang[0]->id }}">
-                            <button class="btn btn-success mt-3">Tambahkan</button>
+                            <button class="btn btn-success ml-3">Tambahkan</button>
                         </form>
                     </div>
                 </div>

@@ -52,7 +52,10 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
             <div class="mb-3">
-                <input type="text" class="form-control" name="nama" placeholder="Masukkan nama" required>
+                <input type="text" class="form-control" name="nama_depan" placeholder="Masukkan nama depan" required>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" name="nama_belakang" placeholder="Masukkan nama belakang" required>
             </div>
             <div class="mb-3">
                 <select class="form-control" name="jenis_kelamin" required>

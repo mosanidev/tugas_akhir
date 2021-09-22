@@ -134,53 +134,6 @@ class CartController extends Controller
         }
     }
 
-    public function shipment()
-    {
-        $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->get();
-
-        $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
-
-        $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->get();
-
-        return view('pelanggan.cart.kirim_ke_alamat', ['cart' => $cart, 'total_cart'=>$total_cart, 'alamat'=>$alamat]);
-
-    }
-
-    public function multipleShipment()
-    {
-        $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->get();
-
-        $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
-
-        $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->get();
-
-        return view('pelanggan.cart.multiple_shipment', ['cart' => $cart, 'total_cart'=>$total_cart, 'alamat'=>$alamat]);
-    }
-
-    public function pickInStore()
-    {
-        $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->get();
-
-        $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
-
-        return view('pelanggan.cart.ambil_di_toko', ['cart' => $cart, 'total_cart'=>$total_cart]);
-    }
-
-    public function next()
-    {
-        if(Auth::check())
-        {
-            $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->get();
-            $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
-    
-            return view('pelanggan.cart.cart_method', ['cart'=>$cart, 'total_cart'=>$total_cart]);
-        }
-        else
-        {
-            return view('auth.login');
-        }
-    }
-
     public function add(Request $request)
     {
         // ambil data barang dari db
@@ -188,6 +141,8 @@ class CartController extends Controller
 
         // buat variable untuk pemberitahuan status tambah barang ke keranjang
         $status = "";
+
+        $qty = isset($request->qty) ? $request->qty : 1;
 
         $total_cart = 0;
 
@@ -216,7 +171,7 @@ class CartController extends Controller
             {
                 $cart = DB::table('cart')->insert([
                     'barang_id'     => $request->barang_id,
-                    'kuantitas'     => 1,
+                    'kuantitas'     => $qty,
                     'subtotal'      => $barang[0]->harga_jual,
                     'total'         => $total[0]->total,
                     'users_id'      => auth()->user()->id
@@ -233,14 +188,14 @@ class CartController extends Controller
             } 
             else
             {
-                if ($cart[0]->kuantitas+1 <= $barang[0]->jumlah_stok)
+                if ($cart[0]->kuantitas+$qty <= $barang[0]->jumlah_stok)
                 {
                     $update = DB::table('cart')
                     ->where('users_id', auth()->user()->id)
                     ->where('barang_id', $request->barang_id)
                     ->update([
-                        'kuantitas' => $cart[0]->kuantitas+1,
-                        'subtotal' => ($cart[0]->kuantitas+1)*$barang[0]->harga_jual
+                        'kuantitas' => $cart[0]->kuantitas+$qty,
+                        'subtotal' => ($cart[0]->kuantitas+$qty)*$barang[0]->harga_jual
                     ]);
     
                     $cart = DB::table('cart')
@@ -270,20 +225,19 @@ class CartController extends Controller
 
             if(count($cart) == 0)
             {
-
                 $cart[0] = (object) [
                     "barang_id" => $barang[0]->id,
                     "barang_nama" => $barang[0]->nama,
                     "barang_foto" => $barang[0]->foto,
                     "barang_harga" => $barang[0]->harga_jual,
-                    "kuantitas" => 1,
+                    "kuantitas" => $qty,
                     "barang_stok" => $barang[0]->jumlah_stok,
                     "subtotal" => $barang[0]->harga_jual,
                     "total" => 0
                 ];
 
                 $status = "Barang berhasil dimasukkan ke keranjang";
-
+                
             } 
             else
             {
@@ -293,7 +247,7 @@ class CartController extends Controller
                 {
                     if($cart[$i]->barang_id == $request->barang_id)
                     {
-                        if ($cart[$i]->kuantitas+1 > $barang[0]->jumlah_stok)
+                        if ($cart[$i]->kuantitas+$qty > $barang[0]->jumlah_stok)
                         {
                             $find = "true";
 
@@ -307,7 +261,7 @@ class CartController extends Controller
                         {
                             $find = "true";
 
-                            $cart[$i]->kuantitas++;
+                            $cart[$i]->kuantitas+=$qty;
 
                             $status = "Jumlah barang berhasil ditambahkan di keranjang";
                         }
@@ -325,7 +279,7 @@ class CartController extends Controller
                         "barang_nama" => $barang[0]->nama,
                         "barang_foto" => $barang[0]->foto,
                         "barang_harga" => $barang[0]->harga_jual,
-                        "kuantitas" => 1,
+                        "kuantitas" => $qty,
                         "barang_stok" => $barang[0]->jumlah_stok,
                         "subtotal" => $barang[0]->harga_jual,
                         "total" => 0
@@ -354,8 +308,14 @@ class CartController extends Controller
             $total_cart =   (session()->get('cart'));
         }
 
-        return response()->json(['status'=>$status, 'total_cart'=>$total_cart]);
-
+        if($request->qty != null)
+        {
+            return redirect()->back()->with('status', $status);
+        }
+        else 
+        {
+            return response()->json(['status'=>$status, 'total_cart'=>$total_cart]);
+        }
     }
 }
 

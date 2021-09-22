@@ -1,6 +1,8 @@
-@extends('pelanggan.cart.layouts.template')
+@extends('pelanggan.order.layouts.template')
 
 @section('content')
+
+<div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
 
     <h3 class="mb-4"><strong>Pilih Metode Transaksi</strong></h3>
 
@@ -8,7 +10,7 @@
         <div class="col-md-4">
             <h5>Metode Transaksi</h5> 
 
-            <a href="{{ route('shipment') }}" class="btn btn-outline-success">Kirim ke Alamat</a>
+            <a href="{{ route('order_shipment') }}" class="btn btn-outline-success">Kirim ke Alamat</a>
             <a href="{{ route('pickInStore') }}" class="btn btn-outline-success">Ambil di Toko</a>
             
 
@@ -35,5 +37,6 @@
             <p class="d-inline-block text-right mr-5 text-left" style="width: 60%; height:1px;">Total Harga Produk</p><p class="d-inline">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p><br>
         </div>
     </div>
+</div>
 
 @endsection

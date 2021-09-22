@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             MerekBarangSeeder::class,
             BarangSeeder::class,
             AlamatSeeder::class,
-            CartSeeder::class
+            CartSeeder::class,
+            PembayaranSeeder::class
         ]);
     
     }

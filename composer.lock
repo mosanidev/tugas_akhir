@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1e434dfd72d8573657316ff0943648c",
+    "content-hash": "75dcec9bb4f46e32432241fca355949d",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1350,16 +1350,16 @@
         },
         {
             "name": "midtrans/midtrans-php",
-            "version": "2.4.2",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Midtrans/midtrans-php.git",
-                "reference": "bc26f9cea79de56a960f21314c0f2f038cf37e5c"
+                "reference": "a1ad0c824449ca8c68c4cf11b3417ad518311d2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Midtrans/midtrans-php/zipball/bc26f9cea79de56a960f21314c0f2f038cf37e5c",
-                "reference": "bc26f9cea79de56a960f21314c0f2f038cf37e5c",
+                "url": "https://api.github.com/repos/Midtrans/midtrans-php/zipball/a1ad0c824449ca8c68c4cf11b3417ad518311d2b",
+                "reference": "a1ad0c824449ca8c68c4cf11b3417ad518311d2b",
                 "shasum": ""
             },
             "require": {
@@ -1399,9 +1399,9 @@
             "homepage": "https://midtrans.com",
             "support": {
                 "issues": "https://github.com/Midtrans/midtrans-php/issues",
-                "source": "https://github.com/Midtrans/midtrans-php/tree/v2.4.2"
+                "source": "https://github.com/Midtrans/midtrans-php/tree/2.5.2"
             },
-            "time": "2021-06-21T06:12:38+00:00"
+            "time": "2021-08-23T08:52:05+00:00"
         },
         {
             "name": "monolog/monolog",

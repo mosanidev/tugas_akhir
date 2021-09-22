@@ -25,15 +25,18 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $rules = [
-            'nama'                  => 'min:3|max:35',
+            'nama_depan'            => 'min:3|max:35',
+            'nama_belakang'         => 'min:3|max:35',
             'email'                 => 'unique:users,email',
             'password'              => 'min:8|same:re_password',
             'nomor_telepon'         => 'min:10|unique:users,nomor_telepon'
         ];
   
         $messages = [
-            'nama.min'                  => 'Nama lengkap minimal 3 karakter',
-            'nama.max'                  => 'Nama lengkap maksimal 35 karakter',
+            'nama_depan.min'            => 'Nama depan minimal 3 karakter',
+            'nama_depan.max'            => 'Nama depan maksimal 35 karakter',
+            'nama_belakang.min'         => 'Nama belakang minimal 3 karakter',
+            'nama_belakang.max'         => 'Nama belakang maksimal 35 karakter',
             'email.unique'              => 'Email sudah terdaftar',
             'nomor_telepon.min'         => 'Nomor telepon minimal 10 digit',
             'nomor_telepon.unique'      => 'Nomor telepon sudah terdaftar',
@@ -59,7 +62,8 @@ class AuthController extends Controller
         //         ]);
 
         $user = new User;
-        $user->nama = ucwords(strtolower($request->nama));
+        $user->nama_depan = ucwords(strtolower($request->nama_depan));
+        $user->nama_belakang = ucwords(strtolower($request->nama_belakang));
         $user->email = strtolower($request->email);
         $user->password = Hash::make($request->password);
         $user->jenis_kelamin = $request->jenis_kelamin;
@@ -81,7 +85,6 @@ class AuthController extends Controller
 
     public function login(Request $request) 
     {
-
         $data = [
             'email'     => $request->input('email'),
             'password'  => $request->input('password'),

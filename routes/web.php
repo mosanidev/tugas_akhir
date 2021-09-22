@@ -17,12 +17,15 @@ use App\Http\Controllers\Pelanggan\CartController;
 use App\Http\Controllers\Pelanggan\CheckoutController;
 use App\Http\Controllers\Pelanggan\UserController;
 use App\Http\Controllers\Pelanggan\AlamatController;
+use App\Http\Controllers\Pelanggan\OrderController;
 
 // api
 use App\Http\Controllers\BiteShipAPIController;
+use App\Http\Controllers\MidtransAPIController;
 
 // admin
 use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Admin\AdminBarangController;
 use App\Http\Controllers\Admin\AdminJenisBarangController;
 use App\Http\Controllers\Admin\AdminKategoriBarangController;
 use App\Http\Controllers\Admin\AdminMerekBarangController;
@@ -79,11 +82,8 @@ Route::post('remove_cart', [CartController::class, 'remove'])->name('removeCart'
 
 Route::group(['prefix' => 'cart'], function() {
     Route::get('/', [CartController::class, 'show'])->name('show');
-    Route::get('/method', [CartController::class, 'next'])->name('cart_method');
-    Route::get('/shipment', [CartController::class, 'shipment'])->name('shipment');
-    Route::get('/shipment/multiple', [CartController::class, 'multipleShipment'])->name('multipleShipment');
-    Route::get('/pickinstore', [CartController::class, 'pickInStore'])->name('pickInStore');
     Route::post('/', [CartController::class, 'add'])->name('addCart');
+    Route::post('/add', [CartController::class, 'addWithQty'])->name('addCartWithQty');
 });
 
 Route::post('update_cart', [CartController::class, 'update'])->name('updateCart');
@@ -95,7 +95,6 @@ Route::get('tes_tambah_cart', function() {
 
 Route::group(['middleware' => 'auth'], function () {
  
-    // pelanggan
     // Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout');
@@ -106,26 +105,42 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/alamat/pick', [AlamatController::class, 'pickMainAddress'])->name('pickMainAddress');
     Route::get('generate_kecamatan/{kecamatan}', [BiteShipAPIController::class, 'getArea']);
     Route::get('generate_postal_code/{areaID}', [BiteShipAPIController::class, 'getPostalCode']);
+    
+    // midtrans
+    Route::post('bayar', [MidtransAPIController::class, 'pay'])->name('midtrans');
 
-    Route::group(['prefix' => 'admin'], function() {
+    Route::group(['prefix' => 'order'], function() {
 
-        Route::get('/home', [AdminHomeController::class, 'index'])->name('home_admin');
+        Route::get('/', [OrderController::class, 'index'])->name('order');
+        Route::get('/method', [OrderController::class, 'next'])->name('order_method');
+        Route::get('/shipment', [OrderController::class, 'shipment'])->name('order_shipment');
+        Route::get('/shipment/multiple', [OrderController::class, 'multipleShipment'])->name('multipleShipment');
+        Route::get('/pickinstore', [OrderController::class, 'pickInStore'])->name('pickInStore');
+        Route::get('/status', [OrderController::class, 'status'])->name('order_status');
+    });
+    // Route::get('midtrans', [MidtransAPIController::class, 'index']);
+
+});
+
+Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function() {
+
+    Route::get('/home', [AdminHomeController::class, 'index'])->name('home_admin');
+    
+    Route::resource('/banner', AdminBannerController::class);
+
+    Route::group(['prefix' => 'barang'], function() {
         
-        Route::resource('/banner', AdminBannerController::class);
+        Route::get('/jenis/search', [AdminJenisBarangController::class, 'search'])->name('searchJenis');
+        Route::resource('/jenis', AdminJenisBarangController::class);
 
-        Route::group(['prefix' => 'barang'], function() {
-            
-            Route::get('/jenis/search', [AdminJenisBarangController::class, 'search'])->name('searchJenis');
-            Route::resource('/jenis', AdminJenisBarangController::class);
+        Route::get('/kategori/search', [AdminKategoriBarangController::class, 'search'])->name('searchKategori');
+        Route::resource('/kategori', AdminKategoriBarangController::class);
 
-            Route::get('/kategori/search', [AdminKategoriBarangController::class, 'search'])->name('searchKategori');
-            Route::resource('/kategori', AdminKategoriBarangController::class);
+        Route::get('/merek/search', [AdminMerekBarangController::class, 'search'])->name('searchMerek');
+        Route::resource('/merek', AdminMerekBarangController::class);
 
-            Route::get('/merek/search', [AdminMerekBarangController::class, 'search'])->name('searchMerek');
-            Route::resource('/merek', AdminMerekBarangController::class);
-
-        });
     });
 
- 
+    Route::resource('/barang', AdminBarangController::class);
+
 });

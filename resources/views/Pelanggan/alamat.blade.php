@@ -57,7 +57,11 @@
                 </div>
                 <div class="form-group">
                     <label>Kecamatan</label>
-                    <input type="text" class="form-control" name="kecamatan" id="input-kecamatan" list="kecamatanList" autocomplete="off" required>
+                    <div id="loader-container">
+                
+                        <input type="text" class="form-control" name="kecamatan" id="input-kecamatan" list="kecamatanList" autocomplete="off" required>
+                        
+                    </div>
                     <datalist id="kecamatanList">
                         {{-- hasil api --}}
                     </datalist>
@@ -65,6 +69,14 @@
                 <div class="form-group">
                     <label>Kode Pos</label>
                     <input type="number" class="form-control" name="kode_pos" id="input-kode-pos" list="kodePosList" autocomplete="off" required>
+                    
+                    <div id='loader-kode-pos' class='my-1'>
+                        <p class='d-inline ml-1'>Loading . . .</p>
+                        <div class='spinner-border spinner-border-sm float-right mt-1 mr-1' role='status'>
+                        <span class='sr-only'>Loading...</span>
+                        </div>
+                    </div>
+                    
                     <datalist id="kodePosList">
                         {{-- hasil api --}}
                     </datalist>
@@ -112,13 +124,15 @@
                 <div class="form-group">
                     <label>Kecamatan</label>
                     <input type="text" class="form-control" name="kecamatan" id="input-kecamatan-update" list="kecamatanList" autocomplete="off" required>
+                    
                     <datalist id="kecamatanList">
                         {{-- hasil api --}}
                     </datalist>
                 </div>
                 <div class="form-group">
                     <label>Kode Pos</label>
-                    <input type="text" class="form-control" name="kode_pos" id="input-kode-pos-update" required>
+                    <input type="text" class="form-control" name="kode_pos" id="input-kode-pos-update" auto-complete="off" required>
+
                     <datalist id="kodePosList">
                         {{-- hasil api --}}
                     </datalist>
@@ -141,7 +155,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ubah Alamat</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Pilih Alamat Utama</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -182,6 +196,10 @@
     $(document).ready(function(){
         
         let timer;
+        let areaID = "Not Found";
+        let kodePos = "Not Found";
+
+        $('#loader-kode-pos').hide();
 
         $("#input-kecamatan").on('keyup', function() {
 
@@ -193,13 +211,26 @@
             
         });
 
+        let xTriggered = 0;
         $('#input-kecamatan').on('keydown', function () {
+
             clearTimeout(timer);       // clear timer if user pressed key again
+
+            xTriggered++;
+
+            if(xTriggered == 1)
+            {
+                $("#loader-container").append("<div id='loader-kecamatan' class='my-1'><p class='d-inline ml-1'>Loading . . .</p><div class='spinner-border spinner-border-sm float-right mt-1 mr-1' role='status'><span class='sr-only'>Loading...</span></div></div>");
+            }
+
+            areaID = "Not Found";
+            kodePos = "Not Found";
+
+            $('#loader-kecamatan').show();
+
         });
 
         $("#input-kecamatan-update").on('keyup', function() {
-
-            // $("#kecamatanList").html("<option><div class='d-flex align-items-center'><strong>Loading...</strong><div class='spinner-border ml-auto' role='status' aria-hidden='true'></div></div></option>");
 
             clearTimeout(timer);       // clear timer
 
@@ -207,14 +238,26 @@
 
         });
 
+        let xTriggered1 = 0;
         $('#input-kecamatan-update').on('keydown', function () {
+
             clearTimeout(timer);       // clear timer if user pressed key again
+
+            xTriggered1++;
+
+            if(xTriggered1 == 1)
+            {
+                $("#loader-1-container").append("<div id='loader-1' class='my-1'><p class='d-inline ml-1'>Loading . . .</p><div class='spinner-border spinner-border-sm float-right mt-1 mr-1' role='status'><span class='sr-only'>Loading...</span></div></div>");
+            }
+
+            areaID = "Not Found";
+
+            $('#loader-1').show();
+
         });
 
         function generate_kecamatan() 
-        {
-            
-            let areaID = "Not Found";
+        { 
             let input_kecamatan = $.trim($("#input-kecamatan").val());
         
             if($('#input-kecamatan').val().length > 0)
@@ -224,10 +267,6 @@
                     type: 'GET',
                     url: '/generate_kecamatan/'+input_kecamatan,
                     cache: false,
-                    beforeSend: function() {
-                        
-                        $("#loading-indicator").removeClass("d-none");
-                    },
                     success:function(data) {
 
                         let hasil = JSON.parse(data);
@@ -237,56 +276,64 @@
 
                         for(let i=0; i<hasil.areas.length; i++)
                         {
-
                             $("#kecamatanList").append("<option id='" + hasil.areas[i].id + "' class='data-kecamatan' value='" +  hasil.areas[i].name + "'>")
                             
                         }
                     }
                 });
 
-
                 $('.data-kecamatan').each(function() {
                     if($('#input-kecamatan').val() == $(this).val())
                     {
+                        $('#loader-kecamatan').hide();
                         areaID = $(this).attr('id');
                         return;
                     }
                 });
 
-
                 if(areaID != "Not Found")
                 {
-                
-                    $('#input-kode-pos').focus();
+                    // clear input 
+                    $("#input-kode-pos").val("");
 
+                    // show loader 
+                    $("#loader-kode-pos").show();
+
+                    // clear option 
+                    $('#kodePosList').empty();
+
+                    // focus on input kode pos
+                    $('#input-kode-pos').focus();
 
                     $.ajax({
                         type: 'GET',
                         url: '/generate_postal_code/'+areaID,
                         cache: false,
-                        beforeSend: function() {
-                            
-                            $("#loading-indicator").removeClass("d-none");
-                        },
                         success:function(data) {
 
                             let hasil = JSON.parse(data);
 
-                            // mengosongkan option dulu
-
-                            $("#input-kode-pos").empty();
-                            $('#kodePosList').empty()
-
                             for(let i=0; i<hasil.areas.length; i++)
                             {
-                                $("#kodePosList").append("<option value='"  + hasil.areas[i].postal_code + "''>");
+                                $("#kodePosList").append("<option value='"  + hasil.areas[i].postal_code + "'' class='data-kode-pos'>");
+                                $('#loader-kode-pos').hide();
                             }
+
+                             
                         }
                     });
-                }                 
+
+                    // console.log(kodePos);
+                }     
+                           
+            }
+            else 
+            {
+                $('#loader-kecamatan').hide();
+                $('#kodePosList').empty();
+                        
             }
         }
-
         
         $.ajaxSetup({
             headers: {
@@ -344,6 +391,8 @@
                     $("#nomor-telepon").val(data.alamat['nomor_telepon']);
                     $("#alamat_id").val(data.alamat["id"]);
                     $("#text-alamat").html(data.alamat['alamat']);
+                    $("#input-kecamatan-update").val(data.alamat['kecamatan'] + "," + data.alamat['kota_kabupaten'] + "," + data.alamat['provinsi']);
+                    $('#input-kode-pos-update').val(data.alamat['kode_pos']);
 
                     if(data.status == 1)
                     {

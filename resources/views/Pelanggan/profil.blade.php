@@ -4,7 +4,7 @@
             <form method="POST" action="{{route('updateProfil')}}" class="d-inline">
             @csrf
             <h5 class="mb-3"><strong>Profil</strong></h5>
-            <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Nama</p><p class="d-inline">{{ $profil[0]->nama }}</p><br>
+            <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Nama</p><p class="d-inline">{{ $profil[0]->nama_depan.' '.$profil[0]->nama_belakang }}</p><br>
             <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Jenis Kelamin</p><p class="d-inline">{{ $profil[0]->jenis_kelamin }}</p><br>
             <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Tanggal Lahir</p><p class="d-inline">{{ $profil[0]->tanggal_lahir }}</p><br>
             <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Email</p><p class="d-inline">{{ $profil[0]->email }}</p><br>

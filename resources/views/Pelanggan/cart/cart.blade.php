@@ -47,7 +47,7 @@
                     <?php $item->total = $total ?>
                 @endforeach
                 <p class="d-inline-block text-right mr-5 text-right" style="width: 68%; height:1px;">Total Harga</p><p id="total-cart" class="d-inline">{{ "Rp " . number_format($total,0,',','.') }}</p><br>
-                <a href="{{ route('cart_method') }}" class="btn btn-success float-right mt-3 ">Lanjutkan</a>
+                <a href="{{ route('order_method') }}" class="btn btn-success float-right mt-3 ">Lanjutkan</a>
             </div>
         @else 
             <div>

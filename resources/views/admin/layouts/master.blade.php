@@ -98,7 +98,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../../index3.html" class="nav-link">
+                <a href="{{ url('admin/barang') }}" class="nav-link">
                   <p>- Barang</p>
                 </a>
               </li>
