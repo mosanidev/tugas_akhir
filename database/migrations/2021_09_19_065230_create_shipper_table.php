@@ -16,10 +16,8 @@ class CreateShipperTable extends Migration
         Schema::dropIfExists('shipper');
 
         Schema::create('shipper', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('kode_shipper')->primary();
             $table->string('nama', 55);
-            $table->string('alamat', 100);
-            $table->string('nomor_telepon', 20);
         });
     }
 

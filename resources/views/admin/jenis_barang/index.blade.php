@@ -108,7 +108,6 @@
   </div>
   {{-- End Modal --}}
 
-
   {{-- Start Modal --}}
   <div class="modal fade" id="modalUbahJenis" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -123,7 +122,6 @@
           <form id="formUbahJenis" method="POST" action="">
             @csrf
             @method('PUT')
-            @csrf
             <div class="form-inline">
               <div class="row">
                 <div class="col-4">

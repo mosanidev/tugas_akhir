@@ -21,7 +21,7 @@ class PembayaranSeeder extends Seeder
             [   
                 'id'                   => 1,  
                 'metode_pembayaran'    => 'bank_transfer',
-                'waktu'                => Carbon::now(),
+                'deadline'             => Carbon::now(),
                 'status'               => 'pending'
             ]
         );

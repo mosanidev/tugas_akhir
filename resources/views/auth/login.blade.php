@@ -32,7 +32,7 @@
             </button>
             <ul>
             @foreach ($errors->all() as $error)
-            <li class="w-50 mx-auto">{{ $error }}</li>
+                <li class="w-50 mx-auto">{{ $error }}</li>
             @endforeach
             </ul>
         </div>

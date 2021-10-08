@@ -30,20 +30,20 @@ class MidtransAPIController extends Controller
                 'email' => auth()->user()->email,
                 'phone' => auth()->user()->nomor_telepon,
             ),
-            'item_details' => array()
+            // 'item_details' => array()
         );
 
-        for($i=0; $i<count($request->barang_id); $i++)
-        {
-            array_push($params['item_details'], array(
-                    "id" => $request->barang_id[$i],
-                    "price" => (int)$request->barang_harga[$i]/(int)explode(" ", $request->barang_kuantitas[$i])[0],
-                    "quantity" => (int)explode(" ", $request->barang_kuantitas[$i])[0],
-                    "name" => $request->barang_nama[$i],
-                    "merchant_name" => "kobama jaya"
-                )
-            );
-        }   
+        // for($i=0; $i<count($request->barang_id); $i++)
+        // {
+        //     array_push($params['item_details'], array(
+        //             "id" => $request->barang_id[$i],
+        //             "price" => (int)$request->barang_harga[$i]/(int)explode(" ", $request->barang_kuantitas[$i])[0],
+        //             "quantity" => (int)explode(" ", $request->barang_kuantitas[$i])[0],
+        //             "name" => $request->barang_nama[$i],
+        //             "merchant_name" => "kobama jaya"
+        //         )
+        //     );
+        // }   
 
         $snapToken = \Midtrans\Snap::getSnapToken($params);
 

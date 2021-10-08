@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <form action="{{ route('order_status') }}" method="GET" id="payment-form">
+        <form action="{{ route('checkout_pick_in_store') }}" method="GET" id="payment-form">
             {{-- <input type="hidden" name="order_id" id="order_id" value=""> --}}
             <input type="hidden" name="result_type" id="result_type" value="">
             <input type="hidden" name="result_data" id="result_data" value="">
@@ -65,23 +65,23 @@
         
             const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
 
-            let barang_id_element = document.getElementsByClassName('barang_id');
-            let barang_nama_element = document.getElementsByClassName('barang_nama');
-            let barang_kuantitas_element = document.getElementsByClassName('barang_kuantitas');
-            let barang_harga_element = document.getElementsByClassName('barang_harga');
+            // let barang_id_element = document.getElementsByClassName('barang_id');
+            // let barang_nama_element = document.getElementsByClassName('barang_nama');
+            // let barang_kuantitas_element = document.getElementsByClassName('barang_kuantitas');
+            // let barang_harga_element = document.getElementsByClassName('barang_harga');
 
-            let arrBarang_id = [];
-            let arrBarang_nama = [];
-            let arrBarang_kuantitas = [];
-            let arrBarang_harga = [];
+            // let arrBarang_id = [];
+            // let arrBarang_nama = [];
+            // let arrBarang_kuantitas = [];
+            // let arrBarang_harga = [];
 
-            for(let i=0; i<barang_id_element.length; i++)
-            {
-                arrBarang_id.push(barang_id_element[i].innerText);
-                arrBarang_nama.push(barang_nama_element[i].innerText);
-                arrBarang_kuantitas.push(barang_kuantitas_element[i].innerText);
-                arrBarang_harga.push(convertRupiahToAngka(barang_harga_element[i].innerText));
-            }
+            // for(let i=0; i<barang_id_element.length; i++)
+            // {
+            //     arrBarang_id.push(barang_id_element[i].innerText);
+            //     arrBarang_nama.push(barang_nama_element[i].innerText);
+            //     arrBarang_kuantitas.push(barang_kuantitas_element[i].innerText);
+            //     arrBarang_harga.push(convertRupiahToAngka(barang_harga_element[i].innerText));
+            // }
 
             $('#pay').on('click', function() {
                 function changeResult(type, data){
@@ -93,7 +93,8 @@
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('midtrans') }}',
-                    data: { 'total_pesanan': total_pesanan, 'nomor_nota': 'NJ'+ `{{ auth()->user()->id }}` + `{{ md5(Carbon\Carbon::now()) }}` , 'barang_id': arrBarang_id, 'barang_nama': arrBarang_nama, 'barang_kuantitas': arrBarang_kuantitas, 'barang_harga': arrBarang_harga},
+                    // data: { 'total_pesanan': total_pesanan, 'nomor_nota': 'NJ'+ `{{ auth()->user()->id }}` + `{{ md5(Carbon\Carbon::now()) }}` , 'barang_id': arrBarang_id, 'barang_nama': arrBarang_nama, 'barang_kuantitas': arrBarang_kuantitas, 'barang_harga': arrBarang_harga},
+                    data: { 'total_pesanan': total_pesanan, 'nomor_nota': 'NJ'+ `{{ auth()->user()->id }}` + `{{ md5(Carbon\Carbon::now()) }}`},
                     success:function(data) {
 
                         // console.log(data);

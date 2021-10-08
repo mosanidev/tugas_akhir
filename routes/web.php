@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\AdminJenisBarangController;
 use App\Http\Controllers\Admin\AdminKategoriBarangController;
 use App\Http\Controllers\Admin\AdminMerekBarangController;
 use App\Http\Controllers\Admin\AdminBannerController;
+use App\Http\Controllers\Admin\AdminSupplierController;
 
 
 /*
@@ -93,6 +94,22 @@ Route::get('tes_tambah_cart', function() {
     return view ('tes_tambah_cart');
 });
 
+Route::get('tes_cek_ongkir', function() {
+    return view ('tes_cek_ongkir');
+});
+
+Route::get('tes_leaflet', function() {
+    return view('pelanggan.user_menu.tes_leaflet');
+});
+
+// Route::get('kurir', [BiteShipAPIController::class, 'getCourier']);
+
+// Route::get('tes_cek_ongkir', function() {
+//     return view ('tes_cek_ongkir');
+// });
+
+// Route::post('ongkir', [BiteShipAPIController::class, 'getRates'])->name('cekOngkir');
+
 Route::group(['middleware' => 'auth'], function () {
  
     // Route::get('home', [HomeController::class, 'index'])->name('home');
@@ -100,11 +117,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout');
     Route::get('profil', [UserController::class, 'show'])->name('profil');
     Route::post('profil', [UserController::class, 'updateProfil'])->name('updateProfil');
+    // Route::post('profil', [UserController::class, 'updateProfil'])->name('updateProfil');
+
     Route::post('change_password', [UserController::class, 'changePassword'])->name('changePassword');
+
+    Route::get('/alamat/pick/main', [AlamatController::class, 'pickMainAddress'])->name('pickMainAddress');
+
+    Route::get('/alamat/pick/address', [AlamatController::class, 'showAnotherAddress'])->name('showAnotherAddress');
+
+    Route::post('/alamat/add/multiple', [AlamatController::class, 'addMultipleAddress'])->name('addMultipleAddress');
+
+    Route::post('/digit_titik_alamat', [AlamatController::class, 'digitTitikAlamat'])->name("digitTitikAlamat");
+
     Route::resource('/alamat', AlamatController::class);
-    Route::post('/alamat/pick', [AlamatController::class, 'pickMainAddress'])->name('pickMainAddress');
+
     Route::get('generate_kecamatan/{kecamatan}', [BiteShipAPIController::class, 'getArea']);
     Route::get('generate_postal_code/{areaID}', [BiteShipAPIController::class, 'getPostalCode']);
+    Route::post('generate_rates', [BiteShipAPIController::class, 'getRates'])->name('order_rates');
     
     // midtrans
     Route::post('bayar', [MidtransAPIController::class, 'pay'])->name('midtrans');
@@ -112,12 +141,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'order'], function() {
 
         Route::get('/', [OrderController::class, 'index'])->name('order');
+        Route::post('/shipment/multiple/address/add', [OrderController::class, 'pickAddress'])->name('pickAlamatAddress');
         Route::get('/method', [OrderController::class, 'next'])->name('order_method');
         Route::get('/shipment', [OrderController::class, 'shipment'])->name('order_shipment');
-        Route::get('/shipment/multiple', [OrderController::class, 'multipleShipment'])->name('multipleShipment');
+        Route::get('/shipment/multiple/new', [OrderController::class, 'multipleShipmentNew'])->name('multipleShipmentNew');
+        Route::get('/shipment/multiple/', [OrderController::class, 'multipleShipment'])->name('multipleShipment');
         Route::get('/pickinstore', [OrderController::class, 'pickInStore'])->name('pickInStore');
-        Route::get('/status', [OrderController::class, 'status'])->name('order_status');
+        Route::get('/checkout/pickinstore', [OrderController::class, 'addOrderPickInStore'])->name('checkout_pick_in_store');
+        Route::get('/checkout/shipment', [OrderController::class, 'addOrderShipment'])->name('checkout_shipment');
+
     });
+
     // Route::get('midtrans', [MidtransAPIController::class, 'index']);
 
 });
@@ -127,6 +161,8 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function() {
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home_admin');
     
     Route::resource('/banner', AdminBannerController::class);
+
+    Route::resource('/supplier', AdminSupplierController::class);
 
     Route::group(['prefix' => 'barang'], function() {
         
@@ -140,7 +176,8 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function() {
         Route::resource('/merek', AdminMerekBarangController::class);
 
     });
-
+    
+    Route::get('/barang/search', [AdminBarangController::class, 'search'])->name('searchBarang');
     Route::resource('/barang', AdminBarangController::class);
 
 });

@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="/adminlte/plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
+
+  <!-- Select 2 -->
+  <link rel="stylesheet" href="/adminlte/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->

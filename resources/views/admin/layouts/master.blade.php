@@ -9,11 +9,24 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="/adminlte/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="{{ asset('/adminlte/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="/adminlte/css/adminlte.min.css">
+  <link rel="stylesheet" href="{{ asset('/adminlte/css/adminlte.min.css') }}">
+
+  <link rel="stylesheet" href="{{ asset('/adminlte/plugins/toastr/toastr.min.css') }}">
+
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="{{ asset('/adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{{ asset('/adminlte/plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('/adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+
   {{-- JQUERY / AJAX --}}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+  <!-- Select2 -->
+  <script src="{{ asset('/adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -33,8 +46,6 @@
       <li class="mr-1">
         <a href="">Keluar</a>
       </li>
-
-     
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -55,7 +66,7 @@
           <img src="{{ auth()->user()->foto }}/adminlte/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ auth()->user()->nama }}</a>
+          <a href="#" class="d-block">{{ auth()->user()->nama_depan." ".auth()->user()->nama_belakang }}</a>
         </div>
       </div>
 
@@ -120,7 +131,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../layout/top-nav.html" class="nav-link">
+                <a href="{{ url('/admin/supplier') }}" class="nav-link">
                   <p>- Supplier</p>
                 </a>
               </li>
@@ -196,13 +207,13 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+<script src="{{ asset('/adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <!-- Bootstrap 4 -->
-<script src="/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
-<script src="/adminlte/js/adminlte.min.js"></script>
+<script src="{{ asset('/adminlte/js/adminlte.min.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="/adminlte/js/demo.js"></script>
+<script src="{{ asset('/adminlte/js/demo.js') }}"></script>
 
 </body>
 </html>

@@ -11,6 +11,7 @@
 
             <div id="content-cart-fill">
                 <?php $i = 1 ?>
+                {{-- <button class="btn btn-danger mb-2 float-right">Hapus Semua</button> --}}
                 <table class="table table-bordered bg-light" id="table-cart">
                     <thead>
                     <tr>

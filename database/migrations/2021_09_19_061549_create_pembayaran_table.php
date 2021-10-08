@@ -18,7 +18,7 @@ class CreatePembayaranTable extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->increments('id');
             $table->string('metode_pembayaran', 25);
-            $table->datetime('waktu')->nullable();
+            $table->datetime('deadline')->nullable();
             $table->enum('status', ['success', 'pending', 'expire', 'failed']);
         });
     }

@@ -22,13 +22,15 @@ class AlamatSeeder extends Seeder
                 'label'                => 'Rumah',
                 'nama_penerima'        => 'Sudikin Sudikah',
                 'nomor_telepon'        => '08123456789',
-                'alamat'               => 'Jl. Tenggilis Mejoyo No. 6A',
-                'kecamatan'            => 'Bubutan',
-                'kode_pos'             => 60172,
+                'alamat'               => 'Jl. Darmo Permai Selatan V/No.91-A',
+                'kecamatan'            => 'Dukuh Pakis',
+                'kode_pos'             => 60226,
                 'kota_kabupaten'       => 'Surabaya',
                 'provinsi'             => 'Jawa Timur',
                 'users_id'             => 1,
-                'alamat_utama'         => 1 
+                'alamat_utama'         => 1,
+                'latitude'             => -7.278287935959714,
+                'longitude'            => 112.68976190829682,
             ]
         );
 
@@ -38,11 +40,11 @@ class AlamatSeeder extends Seeder
                 'label'                => 'Kantor',
                 'nama_penerima'        => 'Sudikin Sudikah',
                 'nomor_telepon'        => '08123456789',
-                'alamat'               => 'Jl. Bubutan No. 9' ,
-                'kecamatan'            => 'Tenggilis Mejoyo',
-                'kode_pos'             => 60292,
-                'kota_kabupaten'       => 'Surabaya',
-                'provinsi'             => 'Jawa Timur',
+                'alamat'               => 'Jl. Raya Janti No. 50 A' ,
+                'kecamatan'            => 'Banguntapan',
+                'kode_pos'             => 55198,
+                'kota_kabupaten'       => 'Bantul',
+                'provinsi'             => 'DI Yogyakarta',
                 'users_id'             => 1,
                 'alamat_utama'         => 0 
             ]

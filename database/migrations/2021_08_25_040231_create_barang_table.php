@@ -19,14 +19,14 @@ class CreateBarangTable extends Migration
             $table->increments('id');
             $table->string('kode', 55);
             $table->string('nama', 100);
-            $table->string('deskripsi', 1000);
+            $table->string('deskripsi', 5000);
             $table->double('harga_jual');
             $table->double('diskon_potongan_harga');
             $table->enum('satuan', ['PCS', 'KG']);
             $table->integer('jumlah_stok');
             $table->date('tanggal_kadaluarsa');
             $table->integer('berat');
-            $table->string('foto', 200)->default("");
+            $table->string('foto_1', 200)->nullable();
             $table->string('label', 100);
             $table->unsignedInteger('jenis_id');
             $table->foreign('jenis_id')->on('jenis_barang')->references('id')->onUpdate('cascade')->onDelete('cascade');

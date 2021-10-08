@@ -26,6 +26,8 @@ class CreateAlamatPengirimanTable extends Migration
             $table->integer('kode_pos');
             $table->string('kota_kabupaten', 70);
             $table->string('provinsi', 70);
+            $table->double('longitude')->nullable();
+            $table->double('latitude')->nullable();
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');;
         });
