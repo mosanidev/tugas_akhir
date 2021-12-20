@@ -20,9 +20,8 @@ class PembayaranSeeder extends Seeder
         DB::table('pembayaran')->insert(
             [   
                 'id'                   => 1,  
-                'metode_pembayaran'    => 'bank_transfer',
-                'deadline'             => Carbon::now(),
-                'status'               => 'pending'
+                'metode_pembayaran'    => 'Transfer Bank',
+                'batasan_waktu'        => Carbon::now()
             ]
         );
     }

@@ -1,20 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.5.0/dist/geosearch.css"/>
-    <title>SEVEN SHOP</title>
-</head>
-<body>
+@extends('pelanggan.layouts.template')
 
-    {{-- navigation bar --}}
-    @include('pelanggan.navbar')
+@push('css')
+    @stack('css_user_menu')
+@endpush
+
+@section('content')
 
     <div class="container py-5">
         <div class="row">
@@ -23,6 +13,8 @@
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ url('alamat') }}">Alamat</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('order') }}">Transaksi</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="#retur">Retur</a>
+                <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('wishlist.index') }}">Wishlist</a>
+                <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('notifikasi.index') }}">Notifikasi</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('logout') }}">Keluar</a>
             </div>
             <div class="col-9 mt-2" style="background-color: #FFF47D;">
@@ -37,7 +29,15 @@
 
                 @elseif(isset($order))
 
-                    @include('pelanggan.user_menu.order')
+                    @include('pelanggan.user_menu.order.order')
+
+                @elseif(isset($wishlist))
+
+                    @include('pelanggan.user_menu.wishlist')
+
+                @elseif(isset($notifikasi))
+
+                    @include('pelanggan.user_menu.notifikasi')
                     
                 @elseif(isset($status))
 
@@ -49,5 +49,8 @@
         </div>
     </div>
 
-</body>
-</html>
+@endsection
+
+@push('script')
+    @stack('script_user_menu')
+@endpush

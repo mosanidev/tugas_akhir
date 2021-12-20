@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use Validator;
 
 class AdminSupplierController extends Controller
 {
@@ -38,9 +39,23 @@ class AdminSupplierController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'nomor_telepon' => 'unique:supplier'
+        ];
+  
+        $messages = [
+            'nomor_telepon.unique'=> 'Sudah ada nomor telepon barang yang sama'
+        ];
+  
+        $validator = Validator::make($request->all(), $rules, $messages);
+  
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput($request->all);
+        }
+        
         $insert = DB::table('supplier')->insert(['nama' => $request->nama, 'jenis' => $request->jenis, 'alamat' => $request->alamat, 'nomor_telepon' => $request->nomor_telepon]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Data berhasil ditambah');
     }
 
     /**
@@ -62,7 +77,9 @@ class AdminSupplierController extends Controller
      */
     public function edit($id)
     {
-        //
+        $supplier = DB::table('supplier')->select('*')->where('id', '=', $id)->get();
+        
+        return response()->json(['supplier'=>$supplier[0]]);
     }
 
     /**
@@ -74,7 +91,9 @@ class AdminSupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $update = DB::table('supplier')->where('id', '=', $id)->update(['nama'=>$request->nama, 'alamat'=>$request->alamat, 'nomor_telepon'=>$request->nomor_telepon]);
+
+        return redirect()->back();
     }
 
     /**
@@ -87,6 +106,6 @@ class AdminSupplierController extends Controller
     {
         $delete = DB::table('supplier')->where('id', '=', $id)->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
     }
 }

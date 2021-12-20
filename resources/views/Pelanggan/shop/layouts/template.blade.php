@@ -1,54 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <title>SEVEN SHOP</title>
-</head>
-<body>
-    {{-- navigation bar --}}
-    @include('pelanggan.navbar')
-    
+@extends('pelanggan.layouts.template')
+
+@push('css')
+
+@endpush
+
+@section('content')
+
     <div class="container"> 
 
-        <div class="row pt-5 pb-1">
+        @yield('content-header')
 
-            <div id="filter" class="col-3 border">
-                <div class="py-2">
-                    <div class="mb-2 my-2">
+        <div class="row pb-5 pb-1">
 
-                        @yield('sidebar')
+            @if(count($barang) >  0) 
 
-                    </div>        
+                <div id="filter" class="col-3 border">
+                    <div class="py-2">
+                        <div class="mb-2 my-2">
+
+                                @yield('sidebar')
+
+                        </div>        
+                    </div>
                 </div>
-            </div>
+
+            @endif
 
             <div class="col-md-9 d-inline">
-                <div class="col-md-12">
-                    <p class="text-right">URUTKAN BERDASARKAN&nbsp; 
-                        <select class="form-control d-inline" style="width: 250px;">
-                            <option value="" selected>ALFABET A-Z</option>
-                            <option value="">ALFABET Z-A</option>
-                            <option value="">HARGA TERENDAH</option>
-                            <option value="">HARGA TERTINGGI</option>
-                            <option value="">PROMO</option>
-                            <option value="">PENJUALAN TERBANYAK</option>
-                        </select>
-                    </p>
-                </div>
-
+                
                 <div class="row">
 
-            
+
+                    @if(count($barang) >  0) 
+                            
+                        <div class="col-md-12">
+                            <form method="GET" action="{{ route('urutkan.shop') }}" id="formUrutkan">
+                                <input type="hidden" id="jenisFilter" name="jenisFilter" val="">
+                                <input type="hidden" id="filterUrutkan" name="filterUrutkan" val="">
+                                <p class="text-right">URUTKAN BERDASARKAN&nbsp; 
+                                    <select class="form-control d-inline" id="selectUrutkan" name="selectUrutkan" style="width: 250px;" onfocus="this.selectedIndex = -1;">
+                                        <option value="a-z" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'a-z') selected @endif>ALFABET A-Z</option>
+                                        <option value="z-a" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'z-a') selected @endif>ALFABET Z-A</option>
+                                        <option value="minharga" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'minharga') selected @endif>HARGA TERENDAH</option>
+                                        <option value="maxharga" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'maxharga') selected @endif>HARGA TERTINGGI</option>
+                                    </select>
+                                </p>
+                            </form>
+                        </div>
+
+                    @endif
+
                     <?php $barang = isset($barang_filtered) ? $barang_filtered : $barang; ?>
 
                     @if(count($barang) == 0) 
 
-                        <p class="p-3 h5">Maaf barang kosong</p>
+                        <p class="p-3 h5">Maaf barang tidak ditemukan</p>
                     
                     @else
 
@@ -56,42 +62,105 @@
 
                             <div class="col-md-4 mb-3">
                                 <div class="card" style="">
-                                    <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                    <img class="card-img-top" src="{{ asset("".$barang[$i]->foto) }}" alt="Card image cap">
                                     <div class="card-body">
-                                    <p><b><a href="{{ route('detail', ['id' => $barang[$i]->id]) }}" class="text-dark">{{ $barang[$i]->nama }}</a></b></p>
-                                    @if($barang[$i]->diskon_potongan_harga != 0)
-                                    <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang[$i]->diskon_potongan_harga+$barang[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</p>
-                                    @else
-                                        <p class="card-text">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</p>
-                                    @endif
-                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Tambahkan ke Keranjang</button>
+                                        <div style="height: 60px;">
+                                            <p><b><a href="{{ route('detail', ['id' => $barang[$i]->id]) }}" class="text-dark">{{ $barang[$i]->nama }}</a></b></p>
+                                        </div>
+                                        @if($barang[$i]->diskon_potongan_harga != 0)
+                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang[$i]->harga_jual-$barang[$i]->diskon_potongan_harga,0,',','.') }}</p>
+                                        @else
+                                            <p class="card-text">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</p>
+                                        @endif
+                                        <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang[$i]->id }}" type="submit"> Beli </button>
                                     </div>
                                 </div>
                             </div>
 
-                        @endfor
-
+                        @endfor 
+                        
                     @endif 
             </div>
-        </div>
 
-        <nav class="float-right">
-            <ul class="pagination">
-              <li class="page-item"><a class="page-link text-success" href="#">Previous</a></li>
-              <li class="page-item"><a class="page-link text-success" href="#">1</a></li>
-              <li class="page-item"><a class="page-link text-success" href="#">2</a></li>
-              <li class="page-item"><a class="page-link text-success" href="#">3</a></li>
-              <li class="page-item"><a class="page-link text-success" href="#">Next</a></li>
-            </ul>
-        </nav>
+            <br>
+
+            <div class="d-flex justify-content-center">
+                {{-- {{ $barang->links('pagination::bootstrap-4') }} --}}
+                {{ $barang->render('pagination::bootstrap-4') }}
+
+            </div>
+        </div>
         
     </div>
-      
-</body>
-<script type="text/javascript">
+
+@endsection
+
+@push('script')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(document).ready(function() {
+
+            $(".add_to_cart").click(function(event) {
+                event.preventDefault();
+
+                let status = "";
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('addCart') }}',
+                    data: { 'barang_id':event.target.getAttribute("data-id") },
+                    beforeSend: function() {
+                        // toastr.remove();
+                        // $('#modalLoading').modal('toggle');
+                        
+                    },
+                    success:function(data) {
+
+                        // $('#modalLoading').modal('toggle');
+
+                        // tampilkanCustomModal(data.status, 3000);
+                        // toastr.success(status, "Sukses", toastrOptions);
+
+                        Swal.fire({
+                            html: data.status,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        let total_cart = $("#total_cart")[0].innerText;
+
+                        if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                        {
+                            $("#total_cart")[0].innerText = parseInt(total_cart)+1;
+                        } 
+
+                    },
+                    complete: function() {
+                    }
+                });
+
+            });
+
+            $('#selectUrutkan').on('change', function() {
+
+                $('#formUrutkan').submit();
+
+            });
 
 
-    
+        });
+        
 
-</script>
-</html>
+    </script>
+
+    @stack('content-script')
+
+@endpush

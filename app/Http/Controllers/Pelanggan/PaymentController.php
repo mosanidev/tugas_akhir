@@ -6,49 +6,131 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-// use midtrans\midtrans;
-// require_once base_path('vendor/midtrans/midtrans-php/Midtrans/Config.php');
-
+use DB;
 
 class PaymentController extends Controller
 {   
-    public function initPayment() 
+    public function __construct()
     {
-        $server_key = env('MIDTRANS_SERVER_KEY');
-        // Set your Merchant Server Key
-        \Midtrans\Config::$serverKey = $server_key;
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         \Midtrans\Config::$isProduction = false;
-        // Set sanitization on (default)
         \Midtrans\Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
         \Midtrans\Config::$is3ds = true;
+    }
     
+    public function initPayment(Request $request) 
+    {
         $params = array(
             'transaction_details' => array(
-                'order_id' => rand(),
-                'gross_amount' => 10000,
+                'order_id' => $request->nomor_nota,
+                'gross_amount' => $request->total_pesanan,
             ),
             'customer_details' => array(
-                'first_name' => 'budi',
-                'last_name' => 'pratama',
-                'email' => 'budi.pra@example.com',
-                'phone' => '08111222333',
-            ),
+                'first_name' => auth()->user()->nama_depan,
+                'last_name' => auth()->user()->nama_belakang,
+                'email' => auth()->user()->email,
+                'phone' => auth()->user()->nomor_telepon,
+            )
         );
 
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $params = array_merge($params, $request->arr_barang);
 
-        // try {
-            
-        //     print_r(json_decode($snapToken));
-        // } catch (Exception $e) {
-        //     dd($e);
+        $snapToken = "";
 
-        // }
+        try 
+        {
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+        }
+        catch (\Exception $e)
+        {
+            $snapToken = $e->getMessage();
+        }
+
+        return response()->json(['snapToken'=>$snapToken, 'nomor_nota'=>$request->nomor_nota, 'params'=> $params]);
+    }
+
+    public function cancel(Request $request)
+    {
+        $cancel = \Midtrans\Transaction::cancel($request->nomor_nota);
+
+        return redirect()->back()->with(['status' => 'Harap ulangi transaksi']);
+    }
+
+    public function notification(Request $request)
+    {
+        $notif = new \Midtrans\Notification();
+        $transaction = $notif->transaction_status;
+        $type = $notif->payment_type;
+        $order_id = $notif->order_id;
+        $settlement_time = $notif->settlement_time;
+        $fraud = $notif->fraud_status;
+
+        if ($transaction == 'capture') {
+            // For credit card transaction, we need to check whether transaction is challenge by FDS or not
+            if ($type == 'credit_card') {
+                if ($fraud == 'challenge') {
+                    // TODO set payment status in merchant's database to 'Challenge by FDS'
+                    // TODO merchant should decide whether this transaction is authorized or not in MAP
+                    echo "Transaction order_id: " . $order_id . " is challenged by FDS";
+                } else {
+                    // TODO set payment status in merchant's database to 'Success'
+                    echo "Transaction order_id: " . $order_id . " successfully captured using " . $type;
+                }
+            }
+        } else if ($transaction == 'settlement') {
+            return $this->changeStatus($notif, 'paid');
+        } else if ($transaction == 'pending') {
+            return $this->changeStatus($notif, 'pending');
+        } else if ($transaction == 'deny') {
+            return $this->changeStatus($notif, 'denied');
+        } else if ($transaction == 'expire') {
+            return $this->changeStatus($notif, 'expired');
+        } else if ($transaction == 'cancel') {
+            return $this->changeStatus($notif, 'canceled');
+        }
 
     }
     
+    private function changeStatus($notif, $status)
+    {
+        if($status == "paid")
+        {
+            $idPembayaran = DB::table('pembayaran')->select('pembayaran.id')->join('penjualan', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.nomor_nota', '=', $notif->order_id)->get();
+
+            $updatePenjualan = DB::table('penjualan')
+                        ->where('nomor_nota', $notif->order_id)     
+                        ->update(['status' => 'Pesanan sudah dibayar dan sedang disiapkan']);
+            
+            $updatePembayaran = DB::table('pembayaran')
+                        ->where('id', $idPembayaran[0]->id)     
+                        ->update(['waktu_lunas' => $notif->settlement_time]);
+        }
+        else if ($status == "pending")
+        {
+            $update = DB::table('penjualan')
+                        ->where('nomor_nota', $notif->order_id)     
+                        ->update(['status' => 'Menunggu pesanan dibayarkan']);
+        }
+        else if ($status == "deny")
+        {
+            $update = DB::table('penjualan')
+                        ->where('nomor_nota', $notif->order_id)     
+                        ->update(['status' => 'Pembayaran pesanan ditolak']);
+        }
+        else if ($status == "expire")
+        {
+            $update = DB::table('penjualan')
+                        ->where('nomor_nota', $notif->order_id)     
+                        ->update(['status' => 'Pembayaran pesanan melebihi batas waktu yang ditentukan']);
+        }
+        else if ($status == "cancel")
+        {
+            $update = DB::table('penjualan')
+                        ->where('nomor_nota', $notif->order_id)     
+                        ->update(['status' => 'Pesanan dibatalkan']);
+        }
+
+    }
 
     
 }

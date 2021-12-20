@@ -35,8 +35,7 @@
               {{-- img size height: 445, width: 1240 --}}
               <td><img src="{{ asset('images/banner/'.$filename) }}" class="p-2" height="222.5" width="620"></td>
               <td style="width: 25%">
-                <input id="fileName" type="hidden" value="{{ $filename }}">
-                <button class="btn btn-warning ml-2 btn-ubah" data-toggle="modal" id="btn-ubah" data-target="#modalUbahBanner">Ubah</button>
+                <button class="btn btn-warning ml-2 btn-ubah" data-file="{{ $filename }}" data-toggle="modal" id="btn-ubah" data-target="#modalUbahBanner">Ubah</button>
                 <form method="POST" class="d-inline" action="/admin/banner/{{ $filename }}">@csrf @method('delete')<button type="submit" class="btn btn-danger ml-2">Hapus</button></form>
               </td>
             </tr>
@@ -113,11 +112,10 @@
 
   $(document).ready(function(){
 
-      $(".btn-ubah").on("click", function() {
+      $(".btn-ubah").on("click", function(event) {
 
-        let fileName = $("#fileName").val();
+        let fileName = event.target.getAttribute("data-file");
 
-        console.log(fileName);
         $("#formUbahBanner").attr('action', '/admin/banner/'+fileName);
 
       });

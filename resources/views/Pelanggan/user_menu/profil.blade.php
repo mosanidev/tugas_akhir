@@ -10,7 +10,7 @@
             <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Email</p><p class="d-inline">{{ $profil[0]->email }}</p><br>
             <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Nomor Telepon</p><p class="d-inline"><input type="tel" value="{{ $profil[0]->nomor_telepon }}" name="nomor_telepon"></p><br>
             <button class="btn btn-success p-2 my-3 mr-3" href="">Simpan</button>
-            <button class="btn btn-success p-2 my-3 d-inline" href="" data-toggle="modal" data-target="#exampleModal">Ubah Password</button>
+            <button type="button" class="btn btn-success p-2 my-3 d-inline" href="" data-toggle="modal" data-target="#exampleModal">Ubah Password</button>
         </div>
         </div>
         <div class="col-3">
@@ -62,47 +62,58 @@
 </div>
 {{-- End Modal --}}
 
-<script type="text/javascript">
-    $('#gantiFotoProfil').on('click', function() {
 
-        $('#inputGantiFotoProfil').click();
+@push('script_user_menu')
+    {{-- <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script> --}}
 
-    });
+    <script type="text/javascript">
+        $('#gantiFotoProfil').on('click', function() {
 
-    $('#formUpdateFoto').submit(function(){
-        valid = true;
+            $('#inputGantiFotoProfil').click();
 
-        if($("#inputGantiFotoProfil").val() == ''){
-            // your error validation action
-            valid =  false;
-        }
-        else{
-            return valid
+        });
 
-            $('#formUpdateFoto').submit();
-        }
+        $('#formUpdateFoto').submit(function(){
+            valid = true;
 
-    });
-
-    function readURL(input) {
-
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function (e) {
-                $('#img-profil').attr('src', e.target.result);
+            if($("#inputGantiFotoProfil").val() == ''){
+                // your error validation action
+                valid =  false;
             }
-            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-    
-    $("#inputGantiFotoProfil").change(function(){
-        readURL(this);
-    });
+            else{
+                return valid
 
-    // if($('#inputGantiFotoProfil').val() != '')
-    // {
-    //     $('#formUpdateFoto').submit();
-    // }
-</script>
+                $('#formUpdateFoto').submit();
+            }
+
+        });
+
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function (e) {
+                    $('#img-profil').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        $("#inputGantiFotoProfil").change(function(){
+            readURL(this);
+        });
+
+        // if($('#inputGantiFotoProfil').val() != '')
+        // {
+        //     $('#formUpdateFoto').submit();
+        // }
+
+        if("{{ session('status') }}" != "")
+        {
+            toastr.error("{{ session('status') }}", "Error", toastrOptions);
+        }
+
+    </script>
+@endpush

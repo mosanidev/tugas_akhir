@@ -5,250 +5,147 @@
 <div class="p-5 my-5" style="background-color: #FFF47D;" id="content-cart">
 
     <div style="overflow:hidden;">
-        <h3 class="mb-4 float-left"><strong>Pilih Alamat Pengiriman</strong></h3>
-    
-        <a href="" class="btn btn-link text-success float-right">Kirim ke Satu Alamat</a>
-
+        <h3 class="mb-4 float-left"><strong>Kirim ke beberapa alamat</strong></h3>
     </div>
 
-    <div class="col-md-12">
-
-        {{-- {{ dd($cart) }} --}}
-        {{-- load barang --}}
-        @for($i=0; $i<count($cart); $i++)
-        {{-- @foreach($cart as $item) --}}
-            <div class="bg-light border border-4 p-3 mb-3">
-            
-                <div class="row">
-                    <div class="col-2">
-                        <img src="{{ $cart[$i]->barang_foto }}https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fHByb2R1Y3R8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
-                    </div>
-                    <div class="col-10">
-                        {{-- <input type="" name="barang_id[]" value=""> --}}
-                        <p class="barang_id">{{ $cart[$i]->barang_id }}</p>
-                        <p>{{ $cart[$i]->barang_nama }}</p>
-                        <p>{{ $cart[$i]->kuantitas}} barang ( {{ $cart[$i]->kuantitas*$cart[$i]->barang_berat }} {{ $cart[$i]->barang_satuan }} )</p>
-                        <p>{{ "Rp " . number_format($cart[$i]->barang_harga*$cart[$i]->kuantitas,0,',','.') }}</p>
-                    </div>
-                </div>
-
-                <div id="alamat-pengiriman">
-                    <h5>Alamat Pengiriman</h5> 
-
-                    <div id="content-alamat-pengiriman">
-                        <div class="border border-success rounded p-2 mb-3">
-
-                            @if($cart[$i]->alamat_utama == 1)
-                                <p>{{ $cart[$i]->label }} (Alamat Utama)</p>
-                                <p>{{ $cart[$i]->alamat }}</p>
-                                <p>{{ $cart[$i]->nomor_telepon }}</p>
-                                <a class="btn btn-link text-success" href="">Ganti Alamat</a>
-                            @else 
-                                <p>{{ $cart[$i]->label }}</p>
-                                <p>{{ $cart[$i]->alamat }}</p>
-                                <p>{{ $cart[$i]->nomor_telepon }}</p>
-                                <a class="btn btn-link text-success" href="">Ganti Alamat</a>
-                            @endif
-                                
-                        </div>
-                    </div>  
-
-                    {{-- <button class="btn btn-block py-2 mb-3 btn-success tambah_alamat" id="tambah_alamat_{{ $i }}" data-toggle="modal" data-target="#modalAddAddress{{$i}}">Tambah Alamat</button> --}}
-                    <button class="btn btn-block py-2 mb-3 btn-success tambah_alamat" id="tambah_alamat_{{ $i }}" data-toggle="modal" data-target="#modalPickAddress-{{$cart[$i]->barang_id}}">Tambah Alamat</button>
-
-                    {{-- <a href="{{ route('showAnotherAddress', ['id' => 1]) }}" class="btn btn-block py-2 mb-3 btn-success">Tambah Alamat</a> --}}
-
-                </div>
-                {{-- <div class="row">
-                    <div class="col-7 text-right">
-                        <p>Total Harga Produk</p>
-                        <p>Pengiriman</p>
-                        <p>Info Pengiriman</p>
-                    </div>
-                    <div class="col-5">
-                        <p>{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p>
-        
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option selected disabled>Pilih Pengiriman</option>
-                        </select>
-
-                        
-                        <div id="info-pengiriman" class="col-6">
-                            <div>
-                                <p id="info-kurir">-</p>
-                                <p id="info-tiba"></p>
-                            </div>
-                        </div>
-        
-                    </div>
-                </div> --}}
-            </div>
-        {{-- @endforeach --}}
-        @endfor
-
-<div class="float-right" style="width: 35%;">
-    <a href="" class="btn btn-success float-right">Lanjutkan</a>
-</div>
-
-{{-- Start Pick Main Address Modal  --}}
-@for($i=0; $i<count($cart); $i++)
-    <div class="modal fade" id="modalAddAddress{{$i}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title">Pilih Alamat Utama</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="content-alamat-lain" class="p-3">
-                {{-- @if(isset($alamat_lain))
-                    @foreach($alamat_lain as $item)
-                    
-                        <form method="POST" action="">
-                            @csrf
-                            <input type="text" name="alamat_id" value="{{ $item->id }}">
-                            @if($item->alamat_utama == 1)
-                                <p class="d-inline">{{ $item->label }} ( Alamat Utama )</p>
-                            @else 
-                                <p class="d-inline">{{ $item->label }}</p>
-                            @endif
-                            <p>{{ $item->alamat }}</p>
-                            <p>{{ $item->nomor_telepon }}</p>
-                            <button type="submit" class="btn btn-lg btn-success w-100 border-success rounded p-2 mb-3">
-                                Pilih 
-                            </button>
-                        </form>
-
-                    @endforeach --}}
-                {{-- @endif --}}
-            </div>
-        </div>
-        </div>
-    </div>
-@endfor
-
-@for ($i = 0; $i < count($arr); $i++)
-    <div class="modal fade" id="modalPickAddress-{{ $arr[$i]['id_barang'] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Pilih Alamat</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="p-3">
-                @foreach($alamat as $item)
+    <div class="row">
+        <div class="col-md-12">
+            <form method="GET" action="" id="form-tes">
+            <input type="hidden" value="" name="data" id="data"/>
+            @for($i=0; $i<count($cart); $i++)
+                <div class="bg-light border border-4 p-3 mb-3">
                 
-                    <form method="POST" action="{{ route('pickAlamatAddress') }}">
-                        @csrf
-                        <input type="text" value="{{ $arr[$i]['id_barang'] }}" name="barang_id">
-                        <input type="text" name="alamat_id" value="{{ $item->id }}">
-                        @if($item->alamat_utama == 1)
-                            <p class="d-inline">{{ $item->label }} ( Alamat Utama )</p>
-                        @else 
-                            <p class="d-inline">{{ $item->label }}</p>
-                        @endif
-                        <p>{{ $item->alamat }}</p>
-                        <p>{{ $item->nomor_telepon }}</p>
-                        @if($arr[$i]['id_alamat'] != $item->id)
-                            <button type="submit" class="btn btn-lg btn-success w-100 border-success rounded p-2 mb-3 PickAddress" id="address-{{$item->id}}">
-                                Pilih 
-                            </button>
-                        @endif
-                    </form>
-
-                @endforeach
-            </div>
-        </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <img src="{{ asset($cart[$i]->barang_foto) }}" class="rounded mr-2" alt="Foto Produk" width="150" height="140">
+                        </div>
+                        <div class="col-10">
+                            {{-- <input type="" name="barang_id[]" value=""> --}}
+                            <input type="hidden" value="{{ $cart[$i]->barang_id }}" class="barang_id" name="barang_id[]">
+                            <p>{{ $cart[$i]->barang_nama }}</p>
+                            {{-- <p>{{ $cart[$i]->kuantitas}} barang ( {{ $cart[$i]->kuantitas*$cart[$i]->barang_berat }} {{ $cart[$i]->barang_satuan }} )</p> --}}
+                            {{-- <p>{{ "Rp " . number_format($cart[$i]->barang_harga*$cart[$i]->kuantitas,0,',','.') }}</p> --}}
+                        </div>
+                    </div>
+    
+                    <h5>Alamat Pengiriman</h5> 
+    
+                    <div id="alamat-pengiriman" style="width: 100%; height: 230px; position: relative; overflow-y: scroll; overflow-x: hidden;">
+    
+                            @for($x = 0; $x<count($alamat); $x++)
+    
+                                <div class="border border-success rounded p-2 mb-3">
+                                    
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p>{{ $alamat[$x]->label }} @if($alamat[$x]->alamat_utama == 1) (Alamat Utama) @endif</p>
+                                            <p>{{ $alamat[$x]->alamat }}</p>
+                                            <p>{{ $alamat[$x]->nomor_telepon }}</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="float-left">
+                                                Kuantitas<input type="number" class="form-control ml-2 d-inline w-25 input-kuantitas" min="1" name="kuantitas_{{ $cart[$i]->barang_id }}[]"  @if($alamat[$x]->id == $cart[0]->alamat_pengiriman_id) value="{{ $cart[$i]->kuantitas }}" @else value="1" @endif>
+    
+                                            </div>
+                                            <div class="float-right">
+                                                <input class="form-check-input float-right check-box" id="check-box" type="checkbox" name="alamat_{{ $cart[$i]->barang_id }}[]" value="{{ $alamat[$x]->id." - ".$cart[$i]->barang_id." - ".$cart[$i]->barang_nama." - ".$cart[$i]->barang_harga." - ".$cart[$i]->barang_berat." - ".$cart[$i]->barang_foto." - ".$cart[$i]->barang_diskon_potongan_harga }}" @if($alamat[$x]->id == $cart[0]->alamat_pengiriman_id) checked @endif>
+    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            @endfor
+                    </div>
+                </div>
+            @endfor
         </div>
     </div>
-@endfor
-
-{{-- Start Pick Main Address Modal  --}}
-<div class="modal fade" id="modalPickAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Pilih Alamat Utama</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="p-3">
-            {{-- @foreach($alamat as $item)
-            
-                <form method="POST" action="">
-                    @csrf
-                    <input type="text" name="alamat_id" value="{{ $item->id }}">
-                    @if($item->alamat_utama == 1)
-                        <p class="d-inline">{{ $item->label }} ( Alamat Utama )</p>
-                    @else 
-                        <p class="d-inline">{{ $item->label }}</p>
-                    @endif
-                    <p>{{ $item->alamat }}</p>
-                    <p>{{ $item->nomor_telepon }}</p>
-                    <button type="submit" class="btn btn-lg btn-success w-100 border-success rounded p-2 mb-3">
-                        Pilih 
-                    </button>
-                </form>
-
-            @endforeach --}}
-        </div>
-      </div>
+    
+    <div class="float-right" style="width: 35%;">
+        <button type="button" id="btnLanjutkan" class="btn btn-success float-right">Lanjutkan</a>
     </div>
-</div> 
+    
+</form>
 
-<script type="text/javascript">
-
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    $(document).ready(function() {
-
-        // $('.tambah_alamat').on('click', function(event) {
-
-        //     // console.log(event.target.id.split("_")[2]);
-        //     console.log($('.cart_id')[event.target.id.split("_")[2]].innerText);
-
-        // });
-
-        let xTriggered = 0;
-        $('.tambah_alamat').on('click', function(event) {
-
-            let barang_id = $('.barang_id')[event.target.id.split("_")[2]].innerText;
-
-            // console.log(barang_id);
-
-            $.ajax({ 
-                type : 'GET', 
-                url : "/alamat/pick/" + barang_id,
-                success: function (data) {
-                    console.log(data);
-
-                    xTriggered += 1;
-
-                    if(xTriggered == 1)
-                    {
-                        for(let i=0; i<data.alamat_lain.length; i++)
-                        {
-                            // {{ route('addMultipleAddress') }}
-                            $(".content-alamat-lain").append("<form method='POST' action='{{ route('addMultipleAddress') }}' class='border p-3'><input type='hidden' name='_token' value='{{ csrf_token() }}'/><input type='hidden' name='alamat_id' value='" + data.alamat_lain[i].id +  "'><br><br><p class='d-inline'>" + data.alamat_lain[i].label + "</p><br><br><p class='d-inline'>" + data.alamat_lain[i].alamat + "</p><br><br><p class='d-inline'>" + data.alamat_lain[i].nomor_telepon + "</p><br><br><button type='submit' class='btn btn-lg btn-success w-100 border-success rounded p-2 mb-3'>Pilih</button></form><br><br>");
-                        }   
-                    }   
-                    
-                    // for(let i=0;i<data )
-                    // data.alamat_lain
-                }
-            });
-        });
-    });
-        
-
-</script>
 
 @endsection
+
+
+@push('script')
+
+    <script type="text/javascript">
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(document).ready(function() {
+            let barang = <?php echo json_encode($cart) ?>;
+            let alamat = <?php echo json_encode($alamat) ?>;
+            // let checked = $("#check-box:checked").map(function() {
+            //         return $(this).val()
+            //     }).get();
+
+            $('#btnLanjutkan').on('click', function() {
+
+                let data = [];
+
+                let check_box = document.getElementsByClassName('check-box');
+                
+                let qty = $(".input-kuantitas").map(function() {
+                        return $(this).val()
+                    }).get();
+
+                for(let i = 0; i<alamat.length; i++)
+                {
+                    data.push({
+                        "alamat_id" : alamat[i].id,
+                        "alamat_label": alamat[i].label,
+                        "alamat": alamat[i].alamat,
+                        "nomor_telepon": alamat[i].nomor_telepon,
+                        "alamat_kode_pos": alamat[i].kode_pos,
+                        "alamat_latitude": alamat[i].latitude,
+                        "alamat_longitude": alamat[i].longitude,
+                        "rincian": []
+                    });
+
+                    for(let x=0; x<check_box.length; x++)
+                    {
+
+                        if(check_box[x].checked == true)
+                        {
+                            if(alamat[i].id == check_box[x].value.split(" - ")[0])
+                            {
+                                data[i].rincian.push({
+                                    "barang_id": check_box[x].value.split(" - ")[1],
+                                    "barang_nama": check_box[x].value.split(" - ")[2],
+                                    "barang_harga": check_box[x].value.split(" - ")[3],
+                                    "barang_berat": check_box[x].value.split(" - ")[4],
+                                    "barang_foto": check_box[x].value.split(" - ")[5],
+                                    "barang_diskon_potongan_harga": check_box[x].value.split(" - ")[6],
+                                    "kuantitas": qty[x]
+                                });
+                            }
+                        }
+                    }
+                }
+
+                $('#data').val(JSON.stringify(data));
+
+                $('#form-tes').attr("action", "/order/shipment/multiple/checkout");
+                
+                $('#form-tes').submit();
+
+
+
+            });
+
+        });
+            
+
+    </script>
+    
+@endpush

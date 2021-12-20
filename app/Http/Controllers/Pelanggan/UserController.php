@@ -20,7 +20,6 @@ class UserController extends Controller
 
     public function updateProfil(Request $request)
     {
-
         $foto = DB::table('users')->select('foto')->where('id', auth()->user()->id)->get();
 
         $newFileName = $foto[0]->foto != null ? $foto[0]->foto : null;

@@ -12,17 +12,24 @@ class HomeController extends Controller
 {
     public function showHome()
     {
-        $data_barang_promo = DB::table('barang')->select('*')->where('diskon_potongan_harga', '>', 0)->where('jumlah_stok', '>', 0)->inRandomOrder()->limit(8)->get();
-        $data_barang = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();
+        $curDate = \Carbon\Carbon::now()->format("Y-m-d");
+
+        $barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->where('tanggal_kadaluarsa', '<' , $curDate)->limit(5)->get(); // yang penjualannya paling banyak harusnya
+        $barang = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->where('tanggal_kadaluarsa', '<' , $curDate)->inRandomOrder()->limit(16)->get(); // yang penjualannya paling banyak harusnya
+        $barang_promo = DB::table('barang')->select('barang.*')->where('barang.jumlah_stok', '>', 0)->where('barang.tanggal_kadaluarsa', '<', $curDate)->where('barang.diskon_potongan_harga', '>', 0)->where('periode_diskon.status', '=', 'Aktif')->where('periode_diskon.tanggal_dimulai', '<=', $curDate)->where('periode_diskon.tanggal_berakhir', '>=', $curDate)->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')->inRandomOrder()->limit(8)->get(); // yang penjualannya paling banyak harusnya
+
         $data_cart = array();
+
+        $notifikasi = null;
 
         $files = Storage::disk('public')->allFiles("images/banner");
 
         if (Auth::check())
         {
+            $notifikasi = DB::table('wishlist')->select('wishlist.barang_id', 'wishlist.harga_barang', 'barang.nama')->join('barang', 'wishlist.barang_id', '=', 'barang.id')->where('wishlist.users_id', '=', auth()->user()->id)->where('barang.harga_jual', '<', 'wishlist.harga_barang')->get();
             $data_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
         }
 
-        return view('pelanggan.home', ['data_barang_promo' => $data_barang_promo, 'barang' => $data_barang, 'total_cart' => $data_cart, 'files' => $files]);
+        return view('pelanggan.home', ['barang' => $barang, 'barang_promo' => $barang_promo, 'barang_search' => $barang_search, 'total_cart' => $data_cart, 'files' => $files, 'notifikasi' => $notifikasi]);
     }
 }

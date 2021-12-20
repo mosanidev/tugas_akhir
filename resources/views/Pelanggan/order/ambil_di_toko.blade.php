@@ -1,57 +1,156 @@
 @extends('pelanggan.order.layouts.template')
 
 @section('content')
+    
+    <div class="container">
 
-    {{-- <h3 class="mb-4"><strong></strong></h3> --}}
+        <div class="p-5 my-5" style="background-color: #FFF47D;" id="content-cart">
 
-    <div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
+            @if(session('status'))
+                <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button id="alert-close" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <p class="text-center"><strong>{{ session('status') }}</strong></p>
+                </div>
+            @endif
 
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Alamat Pengambilan</h5> 
+            <h3 class="mb-4"><strong>Belanja Ambil di Toko</strong></h3>
 
-                <p>Minimarket KopKar</p>
-                <p>Jl. Raya Rungkut, Kali Rungkut, Kec. Rungkut, Kota SBY, Jawa Timur 60293</p>
+            @php $totalDiskon = 0; @endphp
 
-            </div>
+            <div class="row">
 
-            <div class="col-md-8">
+                <div class="col-md-8">
 
-                {{-- load barang --}}
-                @foreach($cart as $item)
-                <div class="bg-light border border-4 p-3 mb-3">
-                    <div class="row">
-                    <div class="col-2">
-                        <img src="{{ $item->barang_foto }}https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fHByb2R1Y3R8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
-                    </div>
-                    <div class="col-10">
-                        <p class="barang_id">{{ $item->barang_id }}</p>
-                        <p class="barang_nama">{{ $item->barang_nama }}</p>
-                        <p class="barang_kuantitas">{{$item->kuantitas}} barang ( {{$item->kuantitas*$item->barang_berat}} {{ $item->barang_satuan }} )</p>
-                        <p class="barang_harga">{{ "Rp " . number_format($item->barang_harga*$item->kuantitas,0,',','.') }}</p>
-                    </div>
-                    </div>
+                    {{-- load barang --}}
+                    @foreach($cart as $item)
+
+                        @php $totalDiskon += $item->barang_diskon_potongan_harga * $item->kuantitas; @endphp
+
+                        <div class="bg-light border border-4 p-3 mb-3">
+                            <div class="row">
+                                <div class="col-2">
+                                    <img src="{{ asset($item->barang_foto) }}" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
+                                </div>
+                                <div class="col-10">
+                                    <p class="barang_id d-none">{{ $item->barang_id }}</p>
+                                    <p><strong class="barang_nama">{{ $item->barang_nama }}</strong></p>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <p>Harga Satuan</p>
+                                        </div>
+                                        <div class="col-8">
+                                            @if($item->barang_diskon_potongan_harga > 0)<del class="d-inline mr-2">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del>@endif<p class="d-inline barang_harga">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <p>Jumlah</p>
+                                        </div>
+                                        <div class="col-8">
+                                            <p class="barang_jumlah">{{$item->kuantitas}}</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <p>Subtotal</p>
+                                        </div>
+                                        <div class="col-8">
+                                            <p>{{ "Rp " . number_format(($item->barang_harga-$item->barang_diskon_potongan_harga)*$item->kuantitas,0,',','.') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    @endforeach
+                    
 
                 </div>
-                @endforeach
+                <div class="col-md-4">
+                    <h5><strong>Informasi Transaksi</strong></h5> 
 
-                <p class="d-inline-block text-right mr-5 text-left" style="width: 60%; height:1px;">Total Harga Produk</p><p class="d-inline">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p><br>
-                <p class="d-inline-block text-right mr-5 text-left" style="width: 60%; height:1px;">Total Harga Pesanan</p><p id="total-pesanan" class="d-inline">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p><br>
-                
+                    <div class="row">
+                        <div class="col-7">
+                            <p>Total Harga <br> ( {{ count($cart) }} Produk )</p>
+                        </div>
+                        <div class="col-5">
+                            <p><strong>{{ "Rp " . number_format($cart[0]->total+$totalDiskon,0,',','.') }}</strong></p>
+                        </div>
+                        @if($totalDiskon > 0) 
+                            <div class="col-7">
+                                <p>Total Diskon</p>
+                            </div>
+                            <div class="col-5">
+                                <p id="total-diskon"><strong>{{ "Rp " . number_format($totalDiskon,0,',','.') }}</strong></p>
+                            </div>
+                        @endif
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                        <div class="col-7">
+                            <p>Total Harga Pesanan</p>
+                        </div>
+                        <div class="col-5">
+                            <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
+                        </div>
+                    </div>
 
+                    <h5 class="mt-3"><strong>Alamat Pengambilan</strong></h5> 
+
+                    <p>Minimarket KopKar</p>
+                    <p class="text-justify">Jl. Raya Rungkut, Kec. Rungkut, Kota Surabaya, Jawa Timur 60293</p>
+                    <p class="text-justify">Buka Hari Senin-Sabtu <br> jam 08:00 - 16:00</p>
+                    <p class="text-justify" id="maks_ambil"></p>
+
+
+                    <a class="btn btn-success text-light" id="pay">Beli</a><br>
+                    
+
+                </div>
             </div>
+
+            <form action="{{ route('checkoutPickInStore') }}" method="GET" id="submitPaymentForm">
+                {{-- <input type="hidden" name="order_id" id="order_id" value=""> --}}
+                <input type="hidden" name="nomor_nota" id="nomor_nota" value="">
+            </form>
+
+            <form action="{{ route('payment.cancel') }}" method="GET" id="cancelPaymentForm">
+                {{-- <input type="hidden" name="order_id" id="order_id" value=""> --}}
+                <input type="hidden" name="nomor_nota" value="{{ strtoupper(substr(md5(uniqid()), 10)) }}">
+            </form>
+
+            {{-- testing midtrans --}}
+
+            {{-- @php 
+
+                $params = array(
+                    'transaction_details' => array(
+                        'order_id' => 'testing03',
+                        'gross_amount' => 30000,
+                    ),
+                    'customer_details' => array(
+                        'first_name' => auth()->user()->nama_depan,
+                        'last_name' => auth()->user()->nama_belakang,
+                        'email' => auth()->user()->email,
+                        'phone' => auth()->user()->nomor_telepon,
+                    ),
+                    // 'item_details' => array()
+                );
+
+
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+
+            @endphp --}}
+
         </div>
-
-        <form action="{{ route('checkout_pick_in_store') }}" method="GET" id="payment-form">
-            {{-- <input type="hidden" name="order_id" id="order_id" value=""> --}}
-            <input type="hidden" name="result_type" id="result_type" value="">
-            <input type="hidden" name="result_data" id="result_data" value="">
-        </form>
-
-        <a class="btn btn-success text-light float-right" id="pay">Beli</a>
-        
     </div>
-    
+
+@endsection
+
+@push('script')
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js" integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-KVse50bzjErTjsM8"></script>
     <script type="text/javascript">
 
@@ -62,77 +161,91 @@
         });
 
         $(document).ready(function() {
-        
+
             const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
 
-            // let barang_id_element = document.getElementsByClassName('barang_id');
-            // let barang_nama_element = document.getElementsByClassName('barang_nama');
-            // let barang_kuantitas_element = document.getElementsByClassName('barang_kuantitas');
-            // let barang_harga_element = document.getElementsByClassName('barang_harga');
+            let arrBarang = createArrBarang();
 
-            // let arrBarang_id = [];
-            // let arrBarang_nama = [];
-            // let arrBarang_kuantitas = [];
-            // let arrBarang_harga = [];
+            moment.locale('id');
 
-            // for(let i=0; i<barang_id_element.length; i++)
-            // {
-            //     arrBarang_id.push(barang_id_element[i].innerText);
-            //     arrBarang_nama.push(barang_nama_element[i].innerText);
-            //     arrBarang_kuantitas.push(barang_kuantitas_element[i].innerText);
-            //     arrBarang_harga.push(convertRupiahToAngka(barang_harga_element[i].innerText));
-            // }
+            let tglPengambilan = moment().add(2, 'days').format("dddd, DD MMMM YYYY");
+
+            if(tglPengambilan.includes("Minggu"))
+            {
+                tglPengambilan = moment().add(3, 'days').format("dddd, DD MMMM YYYY");
+            }
+
+            // $('#maks_ambil').text("Masimal pengambilan pesanan pada " + tglPengambilan + " saat jam buka minimarket");
+
+            let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
 
             $('#pay').on('click', function() {
-                function changeResult(type, data){
 
-                    $('#result_type').val(type);
-                    $('#result_data').val(JSON.stringify(data));
+                // loading . . .
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
-                }
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route('midtrans') }}',
-                    // data: { 'total_pesanan': total_pesanan, 'nomor_nota': 'NJ'+ `{{ auth()->user()->id }}` + `{{ md5(Carbon\Carbon::now()) }}` , 'barang_id': arrBarang_id, 'barang_nama': arrBarang_nama, 'barang_kuantitas': arrBarang_kuantitas, 'barang_harga': arrBarang_harga},
-                    data: { 'total_pesanan': total_pesanan, 'nomor_nota': 'NJ'+ `{{ auth()->user()->id }}` + `{{ md5(Carbon\Carbon::now()) }}`},
+                    url: '{{ route('initPayment') }}',
+                    data: { 'total_pesanan': total_pesanan, 'nomor_nota': nomor_nota, 'arr_barang': arrBarang},
                     success:function(data) {
 
-                        // console.log(data);
-                        try {
-                            snap.pay(data.snapToken, {
-                                // Optional
-                                onSuccess: function (result) {
-                                    changeResult('success', result);
+                        $('#nomor_nota').val(nomor_nota);
 
-                                    $('#payment-form').submit();
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function (result) {
 
-                                },
-                                // Optional
-                                onPending: function (result) {
+                                // console.log(result);
+                                // $('#modalLoading').modal('toggle');
+                                $('#submitPaymentForm').submit();
 
-                                    changeResult('pending', result);
+                            },
+                            onPending: function (result) {
 
-                                    $('#payment-form').submit();
-                                },
-                                // Optional
-                                onError: function (result) {
-                                    changeResult('error', result);
+                                // console.log(result);
+                                // $('#modalLoading').modal('toggle');
+                                $('#submitPaymentForm').submit();
 
-                                    $('#payment-form').submit();
-                                },
-                                language: 'id'
-                            });
-                        } catch(err) {
+                            },
+                            onError: function () {
 
-                            snap.hide();           
-                        }
+                                $('#modalLoading').modal('toggle');
+
+                            },
+                            onClose: function() {
+
+                                $('#modalLoading').modal('toggle');
+
+                            },
+                            gopayMode: 'qr'
+                        });
                         
-                    }
+                    } 
                 });
+
             });
+
         });
-        
 
+        function createArrBarang()
+        {
+            let arrBarang = { "item_details" : [] };
 
+            for(let i = 0; i < $('.barang_id').length; i++)
+            {
+                let obj = { 
+                    "id": $('.barang_id')[i].innerHTML,
+                    "price": convertRupiahToAngka($('.barang_harga')[i].innerHTML),
+                    "quantity": $('.barang_jumlah')[i].innerHTML,
+                    "name": $('.barang_nama')[i].innerHTML
+                }
+                arrBarang.item_details.push(obj)
+            }
+
+            return arrBarang;
+        }
+
+    
     </script>
-@endsection
+
+@endpush

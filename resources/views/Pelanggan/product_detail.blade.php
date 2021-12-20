@@ -1,49 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <title>SEVEN SHOP</title>
-</head>
-<body>
-    {{-- navigation bar --}}
-    @include('pelanggan.navbar')
-    
-    <div class="container"> 
+@extends('pelanggan.layouts.template')
 
+@push('css')
+
+@endpush
+
+@section('content')
+
+    <div class="container">
         <div class="p-5 my-5" style="background-color: #FFF47D">
+
             <div class="row">
                 <div class="col-md-4">
-                    <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fHByb2R1Y3R8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80" class="rounded" alt="Foto Produk" width="350" height="300">
+                    <img src="{{ asset($barang[0]->foto) }}" class="rounded" alt="Foto Produk" width="350" height="300">
                 </div>
                 <div class="col-md-8">
                     <div class="ml-5">
-                            <h5>{{ $barang[0]->jenis_barang }}</h5>
+                            <h5><strong>{{ $barang[0]->jenis_barang }}</strong></h5>
                             <h3><strong>{{ $barang[0]->nama }}</strong></h3> 
                             @if($barang[0]->diskon_potongan_harga != 0)
-                                <p><del class="mr-2">{{ "Rp " . number_format($barang[0]->diskon_potongan_harga+$barang[0]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang[0]->harga_jual,0,',','.') }}</p>
+                                <p><del class="mr-2">{{ "Rp " . number_format($barang[0]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang[0]->harga_jual-$barang[0]->diskon_potongan_harga,0,',','.') }}</p>
                             @else
                                 <p>{{ "Rp " . number_format($barang[0]->harga_jual,0,',','.') }}</p>
                             @endif  
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Kategori</p><p class="d-inline">{{ $barang[0]->kategori_barang }}</p><br>
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Kode</p><p class="d-inline">{{ $barang[0]->kode }}</p><br>
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Merek</p><p class="d-inline">{{ $barang[0]->merek_barang }}</p><br>
-                            <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Stok</p><p class="d-inline">{{ $barang[0]->jumlah_stok }}</p><br>
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Satuan</p><p class="d-inline">{{ $barang[0]->satuan }}</p><br>
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Berat</p><p class="d-inline">{{ $barang[0]->berat }} gram</p><br>
                             <p class="mb-2">Deskripsi</p>
                             <p class="text-justify">{{ $barang[0]->deskripsi }}</p>
+ 
+                            <p class="d-inline">Jumlah </p><button type="button" class="btn btn-info d-inline btn-qty-min"> - </button><input type="number" class="form-control d-inline text-center" id="kuantitas-cart" style="width:63px; padding-bottom: 8.3px;" min="1" max="{{$barang[0]->jumlah_stok}}" value="1"><button type="button" class="btn btn-info d-inline btn-qty-plus mr-2" data-max="{{ $barang[0]->jumlah_stok }}"> + </button><p class="d-inline">Stok</p> <p class="d-inline"><strong>{{$barang[0]->jumlah_stok}}</strong></p>
+                            
+                            <input type="hidden" name="barang_id" id="barangID" value="{{ $barang[0]->id }}">
+                            <button class="btn btn-success ml-3" type="button" id="btnBeli" style="width:17%;">Beli</button>
 
-                        <form method="POST" action="{{ route('addCart') }}">
-                            @csrf
-                            <p class="d-inline mr-1">Kuantitas : </p> <input type="number" class="d-inline form-control kuantitas-cart" style="width:60px;" min="1" id="kuantitas-cart" name="qty" value="1">
-                            <input type="hidden" name="barang_id" value="{{ $barang[0]->id }}">
-                            <button class="btn btn-success ml-3">Tambahkan</button>
-                        </form>
+
+
+                        @if(isset($data_barang_wishlist))
+                            {{-- <button type="button" id="wishlist" data-id="{{ $barang[0]->id }}" class="btn btn-success ml-3"><i class="far fa-heart mr-2"></i>Wishlist</button> --}}
+
+                            @if(count($data_barang_wishlist) > 0) 
+                            
+                                <form method="POST" class="d-inline" action="{{ route('wishlist.destroy', ['wishlist'=>$data_barang_wishlist[0]->id]) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-success ml-3"><i class="fas fa-heart mr-2"></i>Wishlist</button>
+                                </form>
+
+                            @else 
+
+                                <form method="POST" class="d-inline" action="{{ route('wishlist.store') }}">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $barang[0]->id }}"/>
+                                    <input type="hidden" name="harga_barang" value="{{ $barang[0]->harga_jual-$barang[0]->diskon_potongan_harga }}"/>
+                                    <button type="submit" class="btn btn-success ml-3"><i class="far fa-heart mr-2"></i>Wishlist</button>
+                                </form>
+
+                            @endif 
+                        @endif
+                        
+                        <p id="message" class="text-danger"></p>
                     </div>
                 </div>
             </div>
@@ -81,7 +98,7 @@
                                                 @else
                                                     <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                 @endif
-                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Tambahkan ke Keranjang</button>
+                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -106,7 +123,7 @@
                                                 @else
                                                     <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                 @endif
-                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Tambahkan ke Keranjang</button>
+                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,7 +135,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
 
         <div class="p-3 mb-5" style="background-color: #FFF47D">
@@ -154,7 +171,7 @@
                                                     @else
                                                         <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
                                                     @endif
-                                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Tambahkan ke Keranjang</button>
+                                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -180,7 +197,7 @@
                                                 @else
                                                     <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
                                                 @endif
-                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Tambahkan ke Keranjang</button>
+                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -188,16 +205,166 @@
                                     @endfor
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
             </div>
         </div>
+    </div> 
 
-    </div>
-</body>
+@endsection
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</html>
+@push('script')
+    <script type="text/javascript">
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(document).ready(function() {
+
+            if("{{session('status')}}" != "")
+            {
+                toastr.success("{{session('status')}}", "Success", toastrOptions);
+
+            }
+
+            $(".btn-qty-min").on('click', function(event) {
+
+                event.preventDefault();
+
+                // let index = $(this).index('.btn-qty-min');
+
+                if($('#kuantitas-cart').val() > 1)  
+                {
+                    $('#kuantitas-cart').val( $('#kuantitas-cart').val() - 1 );
+                }
+
+                console.log($('#kuantitas-cart').val());
+
+            });
+
+            // $('#wishlist').on('click', function() {
+
+                // alert($('#wishlist').attr('data-id'));
+                // console.log($('#wishlist').children()[0].attr('class'));
+
+                // $.ajax({
+                //     type: 'POST',
+                //     url: '{{ route('addCart') }}',
+                //     data: { 'barang_id': $('#barangID').val(), 'qty': $('#kuantitas-cart').val() },
+                //     success:function(data) {
+
+                //         toastr.success(data.status, "Success", toastrOptions);
+
+                //         let total_cart = $("#total_cart")[0].innerText;
+
+                //         if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                //         {
+                //             $("#total_cart")[0].innerText = parseInt(total_cart)+1;
+                //         } 
+
+                //     },
+                //     error: function (err) {
+                //         console.log("AJAX error in request: " + JSON.stringify(err, null, 2));
+                //     }
+                // });
+
+            // });
+
+            $('#kuantitas-cart').on('keydown keyup', function(event) {
+
+                // let index = $(this).index('#kuantitas-cart');
+
+                if(event.which==38 || event.which==40){
+                    event.preventDefault();
+                }
+
+                if($('#kuantitas-cart').val() == "")
+                {
+                    $('#message').text("Harap mengisikan jumlah barang");
+                }
+                else if($('#kuantitas-cart').val() < 1)
+                {
+                    $('#message').text("Minimal pembelian 1 barang");
+                }
+                else if(parseInt($('#kuantitas-cart').val()) > parseInt($('#kuantitas-cart').attr('max')))
+                {
+                    $('#message').text("Maksimal pembelian " + $('#kuantitas-cart').attr('max') + " barang");
+                }
+                else 
+                {
+                    $('#message').text("");
+                }
+
+            });
+
+            $('#kuantitas-cart').on('change', function(event) {
+
+                $('#message').text("");
+
+                if($('#kuantitas-cart').val() == "" || $('#kuantitas-cart').val() <= 0)
+                {
+                    $('#kuantitas-cart').val("1");
+                    
+                }
+                else if(parseInt($('#kuantitas-cart').val()) > parseInt($('#kuantitas-cart').attr('max')))
+                {
+                    $('#kuantitas-cart').val($('#kuantitas-cart').attr('max'));
+                }
+
+
+            });
+
+            $(".btn-qty-plus").on('click', function(event) {
+
+                event.preventDefault();
+
+                let max = $(this).attr("data-max");
+
+                let tambahSatu = parseInt($('#kuantitas-cart').val()) + 1;
+
+                if(tambahSatu <= max)
+                {
+                    $('#kuantitas-cart').val(tambahSatu);
+                }
+
+            });
+
+
+            $('#btnBeli').on('click', function() {
+
+                // console.log($('#kuantitasCart').val());
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('addCart') }}',
+                    data: { 'barang_id': $('#barangID').val(), 'qty': $('#kuantitas-cart').val() },
+                    success:function(data) {
+
+                        toastr.success(data.status, "Success", toastrOptions);
+
+                        let total_cart = $("#total_cart")[0].innerText;
+
+                        if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                        {
+                            $("#total_cart")[0].innerText = parseInt(total_cart)+1;
+                        } 
+
+                    },
+                    error: function (err) {
+                        console.log("AJAX error in request: " + JSON.stringify(err, null, 2));
+                    }
+                });
+
+
+            });
+
+            
+            
+        });
+
+    </script>
+@endpush

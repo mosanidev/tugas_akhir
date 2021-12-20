@@ -24,9 +24,9 @@ class CreateDetailPenjualanTable extends Migration
             $table->double('subtotal');
             $table->double('total');
             $table->unsignedInteger('pengiriman_id')->nullable();
-            $table->foreign('pengiriman_id')->references('id')->on('pengiriman')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('pengiriman_id')->references('pengiriman_id')->on('multiple_pengiriman')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('alamat_pengiriman_id')->nullable();
-            $table->foreign('alamat_pengiriman_id')->references('id')->on('alamat_pengiriman')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('alamat_pengiriman_id')->references('alamat_pengiriman_id')->on('multiple_pengiriman')->onUpdate('cascade')->onDelete('cascade');
             // $table->foreign('pengiriman_id')->references('id')->on('pengiriman')->onUpdate('cascade')->onDelete('cascade');
             // $table->unsignedInteger('pengiriman_id')->nullable();
             // $table->foreign('pengiriman_id')->references('id')->on('pengiriman')->onUpdate('cascade')->onDelete('cascade');

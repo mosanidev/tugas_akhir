@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
+        Commands\InfoTutup::class
     ];
 
     /**
@@ -25,6 +26,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        // $schedule->command('info:tutup')->between('7:00', '09:00'); 
+        $schedule->command('info:tutup')->everyMinute();
+
     }
 
     /**

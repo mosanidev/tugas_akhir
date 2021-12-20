@@ -19,11 +19,16 @@ class CreateCartTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->on('barang')->references('id')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('kuantitas');
+            $table->integer('kuantitas')->default(1);
             $table->double('subtotal');
-            $table->double('total');
+            $table->double('total')->default(0);
+            $table->unsignedInteger('pengiriman_id')->nullable();
+            $table->foreign('pengiriman_id')->on('pengiriman')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger('alamat_pengiriman_id')->nullable();
+            $table->foreign('alamat_pengiriman_id')->on('alamat_pengiriman')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->unique(['barang_id','users_id']); 
         });
     }
 

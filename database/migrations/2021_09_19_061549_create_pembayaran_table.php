@@ -18,8 +18,13 @@ class CreatePembayaranTable extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->increments('id');
             $table->string('metode_pembayaran', 25);
-            $table->datetime('deadline')->nullable();
-            $table->enum('status', ['success', 'pending', 'expire', 'failed']);
+            $table->string('bank', 10)->nullable();
+            $table->string('nomor_rekening', 35)->nullable();
+            // $table->string('link_qrcode', 255)->nullable();
+            $table->datetime('batasan_waktu')->nullable();
+            $table->datetime('waktu_lunas')->nullable();
+            // $table->datetime('waktu_pembayaran')->nullable();
+            // $table->enum('status', ['Sudah Dibayar', 'Menunggu Pembayaran', 'Pembayaran melewati batasan waktu', 'Error']);
         });
     }
 

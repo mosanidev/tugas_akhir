@@ -2,34 +2,43 @@
 
 @section('content')
  
-<div class="p-5 my-5 w-50 mx-auto" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
+<div class="p-5 my-5 w-50 mx-auto" style="background-color: #FFF47D" id="content-cart">
 
     <div class="content">
 
-        @if($status->payment_type == "bank_transfer")
+        @if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            <h5 class="text-center"><strong>Terimakasih Sudah Membayar</strong></h5>
+        @elseif ($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            <h5 class="text-center"><strong>Menunggu Pembayaran</strong></h5>
+        @endif
+
+        <br>
+
+        @if($penjualan[0]->metode_pembayaran == "bank_transfer")
             <div class="row">
-                <div class="col-7">
+                <div class="col-6">
                     <p>Metode Pembayaran</p>
-                    <p>Nomor Tujuan</p>
-                    <p>Total Harga</p>
-                    <p>Batasan Waktu Pembayaran</p>
+                    <p>Nomor Rekening</p>
+                    <p>Sebesar</p>
+                    @if($penjualan[0]->status == "Menunggu Pembayaran") <p>Sebelum</p> @endif
                 </div>
-                <div class="col-5">
-                    <p>{{ $status->payment_type}}</p>
-                    <p>{{ $status->va_numbers[0]->va_number }}</p>
-                    <p>{{ "Rp " . number_format($status->gross_amount,0,',','.') }}</p>
-                    <p>{{ $status->transaction_time }}</p>
+                <div class="col-6">
+                    <p>{{ $penjualan[0]->metode_pembayaran}}</p>
+                    <p>{{ $penjualan[0]->nomor_rekening }}</p>
+                    <p>{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>
+                    @if($penjualan[0]->status == "Menunggu Pembayaran") <p> {{ \Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y').", Pukul ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm'); }} </p> @endif
+                    
                 </div>
             </div>
         @else 
             <div class="row">
-                <div class="col-7">
+                <div class="col-6">
                     <p>Metode Pembayaran</p>
                     <p>Total Harga</p>
                 </div>
-                <div class="col-5">
-                    <p>{{ $status->payment_type}}</p>
-                    <p>{{ "Rp " . number_format($status->gross_amount,0,',','.') }}</p>
+                <div class="col-6">
+                    <p>{{ $penjualan[0]->metode_pembayaran}}</p>
+                    <p>{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>
                 </div>
             </div>
         @endif

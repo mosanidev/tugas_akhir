@@ -4,7 +4,7 @@ body {
     font-family: 'Quicksand', sans-serif;
 }
 
-.add_to_cart {
+/* .add_to_cart {
     font-size: 14px;
 }
 
@@ -37,4 +37,8 @@ body {
     height: 23px;
     background: #04AA6D;
     cursor: pointer;
+} */
+
+.toast {
+    opacity: 1 !important;
 }

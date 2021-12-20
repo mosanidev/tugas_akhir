@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use Validator;
+use Storage;
+use Illuminate\Validation\Rule;
 
 class AdminBarangController extends Controller
 {
@@ -16,9 +18,11 @@ class AdminBarangController extends Controller
      */
     public function index()
     {
-        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->get();
+        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where(['barang.barang_konsinyasi'=>'0'])->get();
 
-        return view('admin.barang.index', ['barang' => $barang]);
+        $barang_konsinyasi = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where(['barang.barang_konsinyasi'=>'1'])->get();
+
+        return view('admin.barang.index', ['barang' => $barang, 'barang_konsinyasi' => $barang_konsinyasi]);
     }
 
     /**
@@ -48,7 +52,7 @@ class AdminBarangController extends Controller
             'jenis_id' => 'required',
             'kategori_id' => 'required',
             'merek_id' => 'required',
-            'foto_1' => 'required|mimes:jpeg,jpg,png'
+            'satuan' => 'required'
         ];
   
         $messages = [
@@ -56,31 +60,37 @@ class AdminBarangController extends Controller
             'kategori_id.required'=> 'Harap pilih kategori terlebih dahulu',
             'merek_id.required'=> 'Harap pilih merek terlebih dahulu',
             'kode.unique'=> 'Sudah ada kode barang yang sama',
-            'foto_1.required'=> 'Harap unggah foto terlebih dahulu'
+            'satuan.required'=> 'Harap pilih satuan barang terlebih dahulu'
+
         ];
-  
+
+        $jam_kadaluarsa = isset($request->jam_kadaluarsa) ? \Carbon\Carbon::parse($request->jam_kadaluarsa)->format('H:i:s') : '00:00:00';
+        $harga_beli = isset($request->harga_beli) ? $request->harga_beli : 0;
+        $komisi = isset($request->komisi) ? $request->komisi : 0;
+        $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
+        $opsi_otomatis_update_kadaluarsa = isset($opsi_otomatis_update_kadaluarsa) ? $opsi_otomatis_update_kadaluarsa : 0;
+
         $validator = Validator::make($request->all(), $rules, $messages);
   
         if($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
 
-        $namaFoto1 = "1.".$request->foto_1->getClientOriginalExtension(); 
-        $namaFoto2 = $request->foto_2 != null ? "2.".$request->foto_2->getClientOriginalExtension() : null; 
-        $namaFoto3 = $request->foto_3 != null ? "3.".$request->foto_3->getClientOriginalExtension(): null;
-
-        $request->foto_1->storeAs('public/images/barang'.$request->kode_barang, $namaFoto1);
-
-        if($namaFoto2 != null || $namaFoto3 != null)
-        { 
-            $request->foto_2->storeAs('public/images/barang/'.$request->kode_barang, $namaFoto2);
-            $request->foto_3->storeAs('public/images/barang/'.$request->kode_barang, $namaFoto3);
+        if(isset($request->foto))
+        {
+            $request->foto->storeAs("public/images/barang/$request->kode/", $request->kode.".".$request->foto->getClientOriginalExtension());
+            
+            $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
+            
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'jam_kadaluarsa' => $request->jam_kadaluarsa, 'opsi_otomatis_update_kadaluarsa'=>$opsi_otomatis_update_kadaluarsa, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$request->barang_konsinyasi]);
         }
-
-        $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'harga_jual' => $request->harga_jual, 'diskon_potongan_harga' => $request->diskon_potongan_harga, 'satuan' => 'gram', 'jumlah_stok' => $request->jumlah_stok, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'berat' => $request->berat, 'foto_1' => $namaFoto1, 'foto_2' => $namaFoto2, 'foto_3' => $namaFoto3, 'label' => 'labl', 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'batasan_stok_minimal' => 0, 'perkiraan_stok_tambahan' => 0]);
-
+        else 
+        {
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'jam_kadaluarsa' => $request->jam_kadaluarsa, 'opsi_otomatis_update_kadaluarsa'=>$opsi_otomatis_update_kadaluarsa, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$request->barang_konsinyasi]);
+        }
+        
         // kembali ke daftar barang
-        return redirect()->route('barang.index');
+        return redirect()->route('barang.index')->with(['status'=>'Data barang telah ditambahkan']);
     }
 
     /**
@@ -91,7 +101,9 @@ class AdminBarangController extends Controller
      */
     public function show($id)
     {
-        //
+        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as jenis', 'kategori_barang.kategori_barang as kategori', 'merek_barang.merek_barang as merek')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where('barang.id', '=', $id)->get();
+
+        return view('admin.barang.lihat', ['barang'=>$barang]);
     }
 
     /**
@@ -107,7 +119,9 @@ class AdminBarangController extends Controller
         $merek = DB::table('merek_barang')->get();
         $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where('barang.id', '=', $id)->get();
 
-        return view('admin.barang.ubah', ['barang' => $barang, 'jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek]);
+        $files = Storage::disk('public')->allFiles("images/barang/".$barang[0]->kode);
+
+        return view('admin.barang.ubah', ['barang' => $barang, 'jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek, 'id' => $barang[0]->id, 'files' => $files]);
     }
 
     /**
@@ -117,11 +131,52 @@ class AdminBarangController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     {
-        $update = DB::table('barang')->where('id', $id)->update(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'harga_jual' => $request->harga_jual, 'diskon_potongan_harga' => $request->diskon_potongan_harga, 'satuan' => 'gram', 'jumlah_stok' => $request->jumlah_stok, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'berat' => $request->berat, 'foto' => '', 'label' => 'labl', 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'batasan_stok_minimal' => 0, 'perkiraan_stok_tambahan' => 0]);
-    
-        return redirect()->route('barang.index');
+        $cek_kode = DB::table('barang')->select('kode')->whereNotIn('id', [$id])->get();
+
+        $cari = false;
+
+        for($i=0; $i<count($cek_kode); $i++)
+        {
+            if(strtolower($request->kode) == strtolower($cek_kode[$i]->kode))
+            {
+                $cari = true;
+            }
+        }
+  
+        if($cari){
+            return redirect()->back()->withErrors(['msg' => 'Kode barang sudah ada'])->withInput($request->all);
+        }
+
+        $rules = [
+            'jenis_id' => 'required',
+            'kategori_id' => 'required',
+            'merek_id' => 'required'
+        ];
+  
+        $messages = [
+            'jenis_id.required'=> 'Harap pilih jenis terlebih dahulu',
+            'kategori_id.required'=> 'Harap pilih kategori terlebih dahulu',
+            'merek_id.required'=> 'Harap pilih merek terlebih dahulu'
+        ];
+
+        if(isset($request->foto))
+        {
+            $request->foto->storeAs("public/images/barang/$request->kode/", $request->kode.".".$request->foto->getClientOriginalExtension());
+            
+            $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
+            
+            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$request->harga_beli, 'harga_jual'=>$request->harga_jual, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'batasan_stok_minimum'=>$request->stok_minimum, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
+        }
+        else 
+        {
+            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$request->harga_beli, 'harga_jual'=>$request->harga_jual, 'batasan_stok_minimum'=>$request->stok_minimum, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
+        }
+
+        // kembali ke daftar barang
+        return redirect()->route('barang.index')->with(['status'=>'Data barang telah diubah']);
     }
 
     /**
@@ -132,24 +187,8 @@ class AdminBarangController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
+        $delete_barang = DB::table('barang')->where('id', '=', $id)->delete();
 
-    public function search(Request $request)
-    {
-        $barang = null;
-        $kriteria = $request->kriteria;
-        $keyword = $request->keyword;
-
-        if($kriteria == "Kode")
-        {
-            $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where('barang.kode', 'like', '%'.$keyword.'%')->limit(5)->get();
-        }
-        else 
-        {
-            $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where('barang.nama', 'like', '%'.$keyword.'%')->limit(5)->get();
-        }
-
-        return response()->json(['barang'=>$barang]);
+        return redirect()->back()->with(['status'=>'Data barang berhasil dihapus']);
     }
 }

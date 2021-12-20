@@ -116,6 +116,7 @@ class AlamatController extends Controller
 
     public function pickMainAddress(Request $request)
     {
+
         $alamat_lain = DB::table('alamat_pengiriman')->where('users_id', auth()->user()->id)->update(['alamat_utama' => 0]);
 
         $alamat_utama = DB::table('alamat_pengiriman')->where('id', $request->alamat_id)->update(['alamat_utama' => 1]);

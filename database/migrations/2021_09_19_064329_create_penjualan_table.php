@@ -22,9 +22,9 @@ class CreatePenjualanTable extends Migration
             $table->datetime('tanggal');
             $table->unsignedInteger('pembayaran_id');
             $table->foreign('pembayaran_id')->references('id')->on('pembayaran')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('metode_transaksi', ['dikirim', 'ambil_di_toko']);
-            $table->double('diskon_potongan_barang')->default(0);
-            $table->double('poin_member_kopkar')->default(0);
+            $table->enum('metode_transaksi', ['Dikirim', 'Ambil di toko']);
+            $table->string('status')->nullable();
+            $table->date('batasan_waktu_pengambilan')->nullable();
         });
     }
 

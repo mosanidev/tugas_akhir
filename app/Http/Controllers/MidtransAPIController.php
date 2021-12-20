@@ -8,16 +8,17 @@ use DB;
 
 class MidtransAPIController extends Controller
 {
+    public function __construct()
+    {
+        \Midtrans\Config::$serverKey = 'SB-Mid-server-OU7Ua73QOqCZlOOe3209vIOt';
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+    }
+
     public function pay(Request $request)
     {
-        // Set your Merchant Server Key
-        \Midtrans\Config::$serverKey = 'SB-Mid-server-OU7Ua73QOqCZlOOe3209vIOt';
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-        \Midtrans\Config::$isProduction = false;
-        // Set sanitization on (default)
-        \Midtrans\Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
-        \Midtrans\Config::$is3ds = true;
+        $snapToken = "";
 
         $params = array(
             'transaction_details' => array(
@@ -43,10 +44,22 @@ class MidtransAPIController extends Controller
         //             "merchant_name" => "kobama jaya"
         //         )
         //     );
-        // }   
+        // }  
 
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        try 
+        {
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+        }
+        catch (\Exception $e)
+        {
+            $snapToken = $e->getMessage();
+        }
 
         return response()->json(['snapToken'=>$snapToken, 'nomor_nota'=>$request->nomor_nota]);
+     }
+
+     public function coba(Request $request)
+     {
+        dd($request);
      }
 }
