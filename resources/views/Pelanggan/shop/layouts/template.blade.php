@@ -30,31 +30,17 @@
                 
                 <div class="row">
 
-
-                    @if(count($barang) >  0) 
-                            
-                        <div class="col-md-12">
-                            <form method="GET" action="{{ route('urutkan.shop') }}" id="formUrutkan">
-                                <input type="hidden" id="jenisFilter" name="jenisFilter" val="">
-                                <input type="hidden" id="filterUrutkan" name="filterUrutkan" val="">
-                                <p class="text-right">URUTKAN BERDASARKAN&nbsp; 
-                                    <select class="form-control d-inline" id="selectUrutkan" name="selectUrutkan" style="width: 250px;" onfocus="this.selectedIndex = -1;">
-                                        <option value="a-z" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'a-z') selected @endif>ALFABET A-Z</option>
-                                        <option value="z-a" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'z-a') selected @endif>ALFABET Z-A</option>
-                                        <option value="minharga" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'minharga') selected @endif>HARGA TERENDAH</option>
-                                        <option value="maxharga" @if(isset($_GET['selectUrutkan']) && $_GET['selectUrutkan'] == 'maxharga') selected @endif>HARGA TERTINGGI</option>
-                                    </select>
-                                </p>
-                            </form>
-                        </div>
-
-                    @endif
+                    @yield('content-urutkan')
 
                     <?php $barang = isset($barang_filtered) ? $barang_filtered : $barang; ?>
 
                     @if(count($barang) == 0) 
 
-                        <p class="p-3 h5">Maaf barang tidak ditemukan</p>
+                        <div class="col-12">
+                            <div class="my-5">
+                                <p class="h5">Maaf barang tidak ditemukan</p>
+                            </div>
+                        </div>
                     
                     @else
 
@@ -146,12 +132,6 @@
                     complete: function() {
                     }
                 });
-
-            });
-
-            $('#selectUrutkan').on('change', function() {
-
-                $('#formUrutkan').submit();
 
             });
 

@@ -52,72 +52,77 @@ use App\Http\Controllers\Admin\AdminReturPembelianController;
 |
 */
 
-Route::get('/', [HomeController::class, 'showHome']);
+Route::group(['middleware' => 'ensure_user_is_not_admin'], function () {
 
-Route::get('home', [HomeController::class, 'showHome'])->name('home');
+    Route::get('/', [HomeController::class, 'showHome']);
 
-Route::post('/order/webhook', [PaymentController::class, 'notification']);
+    Route::get('home', [HomeController::class, 'showHome'])->name('home');
+
+    Route::post('/order/webhook', [PaymentController::class, 'notification']);
+
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('pelanggan.login');
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('pelanggan.register');
+    Route::post('register', [AuthController::class, 'register']);
+
+    Route::get('shop', [ShopController::class, 'showRandom'])->name('shop');
+    
+    Route::get('product_detail', function() {
+        return view('product_detail');
+    });
+
+    Route::get('id/type/{id}', [ShopController::class, 'showProductsBasedOnType'])->name('category');
+    Route::get('id/category/{id}', [ShopController::class, 'showProductsBasedOnCategory'])->name('brand');
+
+    Route::get('/shop/order', [ShopController::class, 'orderProducts'])->name('order.products');
+    Route::get('/id/type/{id}/order', [ShopController::class, 'orderProductsByType'])->name('order.products.type');
+    Route::get('/id/category/{id}/order', [ShopController::class, 'orderProductsByCategory'])->name('order.products.category');
+
+    Route::get('id/product/{id}', [BarangController::class, 'showDetail'])->name('detail');
+
+    Route::get('search/', [BarangController::class, 'searchBarang'])->name('search');
+
+    Route::get('id/category/{id}/filter&order', [ShopController::class, 'filterOrder'])->name('filter.order');
+
+    Route::get('search/filter&order', [ShopController::class, 'filterSearchOrder'])->name('searchresult.filter.order');
 
 
+    Route::get('promo', [BarangController::class, 'showPromo'])->name('promo');
 
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('pelanggan.login');
-Route::post('login', [AuthController::class, 'login']);
-Route::get('register', [AuthController::class, 'showRegisterForm'])->name('pelanggan.register');
-Route::post('register', [AuthController::class, 'register']);
+    Route::post('remove_cart', [CartController::class, 'remove'])->name('removeCart');
 
-Route::get('shop', [BarangController::class, 'showRandom'])->name('shop');
- 
-Route::get('product_detail', function() {
-    return view('product_detail');
+    Route::group(['prefix' => 'cart'], function() {
+        Route::get('/', [CartController::class, 'show'])->name('show');
+        Route::post('/', [CartController::class, 'add'])->name('addCart');
+        Route::post('/add', [CartController::class, 'addWithQty'])->name('addCartWithQty');
+    });
+
+    Route::post('update_cart', [CartController::class, 'update'])->name('updateCart');
+    Route::post('delete_cart', [CartController::class, 'remove'])->name('deleteCart');
+
+    Route::get('tes_tambah_cart', function() {
+        return view ('tes_tambah_cart');
+    });
+
+    Route::get('tes_cek_ongkir', function() {
+        return view ('tes_cek_ongkir');
+    });
+
+    Route::get('tes_leaflet', function() {
+        return view('pelanggan.user_menu.tes_leaflet');
+    });
+
+    Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+
+    Route::group(['prefix' => 'wishlist'], function() {
+        Route::delete('/delete_by_marked', [WishlistController::class, 'deleteByMarked'])->name('deleteByMarked');
+        Route::delete('/delete_all', [WishlistController::class, 'deleteAll'])->name('deleteAll');
+
+    });
+
+    Route::resource('/wishlist', WishlistController::class);
+
 });
-
-Route::get('id/category/{id}', [KategoriBarangController::class, 'show'])->name('category');
-Route::get('id/brand/{id}', [MerekBarangController::class, 'show'])->name('brand');
-
-Route::get('/shop/urutkan', [ShopController::class, 'urutkan'])->name('urutkan.shop');
-Route::get('/id/category/{id}/urutkan', [ShopController::class, 'urutkanKategori'])->name('urutkan.category');
-Route::get('/id/brand/{id}/urutkan', [ShopController::class, 'urutkanMerek'])->name('urutkan.brand');
-
-Route::get('id/product/{id}', [BarangController::class, 'showDetail'])->name('detail');
-
-Route::get('search/', [BarangController::class, 'searchBarang'])->name('search');
-
-Route::get('product/filter', [BarangController::class, 'filter'])->name('filter');
-
-Route::get('promo', [BarangController::class, 'showPromo'])->name('promo');
-
-Route::post('remove_cart', [CartController::class, 'remove'])->name('removeCart');
-
-Route::group(['prefix' => 'cart'], function() {
-    Route::get('/', [CartController::class, 'show'])->name('show');
-    Route::post('/', [CartController::class, 'add'])->name('addCart');
-    Route::post('/add', [CartController::class, 'addWithQty'])->name('addCartWithQty');
-});
-
-Route::post('update_cart', [CartController::class, 'update'])->name('updateCart');
-Route::post('delete_cart', [CartController::class, 'remove'])->name('deleteCart');
-
-Route::get('tes_tambah_cart', function() {
-    return view ('tes_tambah_cart');
-});
-
-Route::get('tes_cek_ongkir', function() {
-    return view ('tes_cek_ongkir');
-});
-
-Route::get('tes_leaflet', function() {
-    return view('pelanggan.user_menu.tes_leaflet');
-});
-
-Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
-
-Route::group(['prefix' => 'wishlist'], function() {
-    Route::delete('/delete_by_marked', [WishlistController::class, 'deleteByMarked'])->name('deleteByMarked');
-    Route::delete('/delete_all', [WishlistController::class, 'deleteAll'])->name('deleteAll');
-
-});
-
-Route::resource('/wishlist', WishlistController::class);
 
 Route::group(['middleware' => 'auth'], function () {
  
@@ -184,6 +189,8 @@ Route::group(['prefix' => 'admin'], function() {
 
     Route::get('login', [AdminAuthController::class, 'showLoginForm']);
     Route::post('login', [AdminAuthController::class, 'login'])->name('admin.login');
+    
+    Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     Route::group(['middleware' => 'admin'], function() {
 

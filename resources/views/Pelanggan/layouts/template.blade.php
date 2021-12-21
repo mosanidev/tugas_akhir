@@ -28,6 +28,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
 
+        
         <a class="navbar-brand" href="{{ route('home') }}"><i>Toko Kopkar Ubaya</i></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -35,22 +36,24 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-            <div class="mx-auto w-50">
+            <div class="mx-auto w-100" style="margin: 0 auto; float:none;">
 
-                <form class="form-inline ml-5" method="GET" action="{{ route('search')}}">
-                    <input id="search-product" class="form-control" style="width: 90%" type="search" placeholder="Cari Produk" name="key" aria-label="Search" list="barangList" autocomplete="off">
-                    <datalist id="barangList">
-                        
-                        @if(isset($barang_search))
+                <form class="form-inline ml-5" method="GET" id="formCariProduk" action="{{ route('search')}}">
+                    
+                    <div class="dropdown d-inline mr-1">
+                        <button class="btn btn-success dropdown-toggle btnPilihKategori" style="width: 300px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                          Pilih Kategori
+                        </button>
+                        <div class="dropdown-menu" style="height: 1180%; overflow-y: scroll;" aria-labelledby="dropdownMenuButton">
+                            @foreach ($semua_kategori as $item)
+                                <a class="dropdown-item" onclick="pilih('{{$item->kategori_barang}}')" id="nama_kategori">{{$item->kategori_barang}}</a>
+                            @endforeach
+                        </div>
+                    </div>
 
-                            @for($i=0; $i<count($barang_search); $i++)
-                                <option>{{ $barang_search[$i]->nama }}</a></option>
-                            @endfor
-
-                        @endif
-                        
-                    </datalist>
-                    <button class="btn btn-success ml-2" type="submit"><i class="fa fa-search"></i></button>
+                    <input id="search-product" class="form-control" style="width: 55%" type="search" placeholder="Cari Produk" name="key" aria-label="Search" list="barangList" autocomplete="off">
+                    <input type="hidden" value="" id="input_kategori" name="input_kategori">
+                    <button class="btn btn-success ml-2" onclick="check()" type="button"><i class="fa fa-search"></i></button>
                 </form>
 
             </div>
@@ -131,6 +134,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/scripts/helper.js') }}"></script>
+    <script type="text/javascript">
+
+        function pilih(nama)
+        {
+            $('.btnPilihKategori').text(nama);
+
+            $('#input_kategori').val(nama);
+        }
+
+        function check()
+        {
+            // jika tidak kosong dan sudah pilih kategori maka mulai pencarian
+            if(!(!$('#input_kategori').val() || !$('#search-product').val()))
+            {
+                $('#formCariProduk').submit();
+            }
+        }
+
+        var inputSearch = document.getElementById("search-product");
+
+        inputSearch.addEventListener("keypress", function(event) {
+            if (event.keyCode === 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+            }
+        });
+
+    </script>
 
     @stack('script')
 

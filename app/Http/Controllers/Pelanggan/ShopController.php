@@ -9,55 +9,165 @@ use Auth;
 
 class ShopController extends Controller
 {
-    public function index()
+    public function filterSearchOrder(Request $request)
     {
-        $data_jenis = DB::table('jenis_barang')->get();
-        $data_barang = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();
+        $data_kategori = DB::table('kategori_barang')->get();
 
-        if (Auth::check())
+        $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('nama', 'like', '%'.strtolower($request->key).'%')->where('kategori_barang.kategori_barang', '=', $request->input_kategori);
+
+        $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->where('kategori_barang.kategori_barang', '=', $request->input_kategori)->distinct()->get();
+
+        // check filter
+        if ($request->merek == null)
         {
-            $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
+            $data_barang = $data_barang->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->where('barang.kategori_id', '=', $request->kategori_id);
+        } 
+        else if ($request->hargamin == null || $request->hargamax == null)
+        {
+            $data_barang = $data_barang->whereIn('merek_id', $request->merek)->where('barang.kategori_id', '=', $request->kategori_id);
+        }
+        else 
+        {
+            $data_barang = $data_barang->whereIn('merek_id', $request->merek)->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->where('barang.kategori_id', '=', $request->kategori_id);
         }
 
-        return view('pelanggan.shop.shop_by_jenis', ['jenis_barang' => $data_jenis, 'barang' => $data_barang, 'total_cart'=>$total_cart]);
+        //check urutkan
+        if($request->urutkan == "random")
+        {
+            $data_barang = $data_barang->inRandomOrder();
+        }
+        else if($request->urutkan == "a-z")
+        {
+            $data_barang = $data_barang->orderBy('nama', 'asc');
+        }
+        else if($request->urutkan == "z-a")
+        {
+            $data_barang = $data_barang->orderBy('nama', 'desc');
+        }
+        else if($request->urutkan == "maxharga")
+        {
+            $data_barang = $data_barang->orderByRaw('(harga_jual - diskon_potongan_harga) desc');
+        }
+        else if($request->urutkan == "minharga")
+        {
+            $data_barang = $data_barang->orderByRaw('(harga_jual - diskon_potongan_harga) asc');
+        } 
+
+        $data_barang = $data_barang->paginate(15);
+
+        $data_barang->setPath("/search/filter&order?key=$request->key&input_kategori=$request->input_kategori&kategori_id=$request->kategori_id&hargamin=$request->hargamin&hargamax=$request->hargamax&urutkan=$request->urutkan");
+
+        return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax]);    
+
+    }
+    
+    public function filterOrder(Request $request, $id)
+    {
+        $data_kategori = DB::table('kategori_barang')->get();
+
+        $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('barang.kategori_id', '=', $id);
+
+        $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.kategori_id', '=', $request->kategori_id)->distinct()->get();
+
+        // check filter
+        if ($request->merek == null)
+        {
+            $data_barang = $data_barang->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->where('barang.kategori_id', '=', $request->kategori_id);
+        } 
+        else if ($request->hargamin == null || $request->hargamax == null)
+        {
+            $data_barang = $data_barang->whereIn('merek_id', $request->merek)->where('barang.kategori_id', '=', $request->kategori_id);
+        }
+        else 
+        {
+            $data_barang = $data_barang->whereIn('merek_id', $request->merek)->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->where('barang.kategori_id', '=', $request->kategori_id);
+        }
+
+        //check urutkan
+        if($request->urutkan == "random")
+        {
+            $data_barang = $data_barang->inRandomOrder();
+        }
+        else if($request->urutkan == "a-z")
+        {
+            $data_barang = $data_barang->orderBy('nama', 'asc');
+        }
+        else if($request->urutkan == "z-a")
+        {
+            $data_barang = $data_barang->orderBy('nama', 'desc');
+        }
+        else if($request->urutkan == "maxharga")
+        {
+            $data_barang = $data_barang->orderByRaw('(harga_jual - diskon_potongan_harga) desc');
+        }
+        else if($request->urutkan == "minharga")
+        {
+            $data_barang = $data_barang->orderByRaw('(harga_jual - diskon_potongan_harga) asc');
+        } 
+
+        $data_barang = $data_barang->paginate(15);
+
+        $data_barang->setPath("/id/category/$id/order?urutkan=$request->urutkan");
+
+        return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax]);    
+
     }
 
-    public function urutkanMerek(Request $request, $id)
+    public function orderProductsByCategory(Request $request, $id)
     {
         $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.kategori_id', '=', $id)->distinct()->get();
 
-        $data_barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();      
+        $data_kategori = DB::table('kategori_barang')->get();
+        
+        dd($request->merek_checked);
 
-        if($request->selectUrutkan == "a-z")
+        // if ($request->merek == null)
+        // {
+        //     $data_barang_filter = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->where('barang.kategori_id', '=', $request->kategori_id)->paginate(15);
+        // } 
+        // else if ($request->hargamin == null || $request->hargamax == null)
+        // {
+        //     $data_barang_filter = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->whereIn('merek_id', $request->merek)->where('barang.kategori_id', '=', $request->kategori_id)->paginate(15);
+        // }
+        // else 
+        // {
+        //     $data_barang_filter = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->whereIn('merek_id', $request->merek)->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->where('barang.kategori_id', '=', $request->kategori_id)->paginate(15);
+        // }
+
+        if($request->urutkan == "random")
+        {
+            $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->inRandomOrder()->paginate(15);
+        }
+        else if($request->urutkan == "a-z")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('barang.kategori_id', '=', $id)->orderBy('nama', 'asc')->paginate(15);
         }
-        else if($request->selectUrutkan == "z-a")
+        else if($request->urutkan == "z-a")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('barang.kategori_id', '=', $id)->orderBy('nama', 'desc')->paginate(15);
         }
-        else if($request->selectUrutkan == "maxharga")
+        else if($request->urutkan == "maxharga")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('barang.kategori_id', '=', $id)->orderByRaw('(harga_jual - diskon_potongan_harga) desc')->paginate(15);
         }
-        else if($request->selectUrutkan == "minharga")
+        else if($request->urutkan == "minharga")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('barang.kategori_id', '=', $id)->orderByRaw('(harga_jual - diskon_potongan_harga) asc')->paginate(15);
         } 
 
         $kategori_id = $data_barang[0]->kategori_id;
 
-        $data_barang->setPath("/id/brand/$kategori_id/urutkan?jenisFilter=$request->jenisFilter&filterUrutkan=$request->filterUrutkan&selectUrutkan=$request->selectUrutkan");
-        return view('pelanggan.shop.shop_by_brand', ['barang' => $data_barang, 'merek_barang' => $data_merek, 'barang_search' => $data_barang_search]);
+        $data_barang->setPath("/id/category/$kategori_id/order?urutkan=$request->urutkan");
+        return view('pelanggan.shop.shop_by_brand', ['barang' => $data_barang, 'semua_kategori' => $data_kategori, 'merek_barang' => $data_merek ]);
     }
 
-    public function urutkanKategori(Request $request, $id)
+    public function orderProductsByType(Request $request, $id)
     {
         $data_barang = null;
 
-        // $data_jenis = DB::table('jenis_barang')->get();
+        $data_jenis_dipilih = DB::table('jenis_barang')->where('id', '=', $id)->get();
 
-        $data_barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();      
+        $data_semua_kategori = DB::table('kategori_barang')->get();
     
         $total_cart = null;
 
@@ -68,37 +178,78 @@ class ShopController extends Controller
 
         $data_kategori = DB::table('barang')->select('barang.kategori_id', 'kategori_barang.kategori_barang')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->join('jenis_barang', 'jenis_barang.id', '=', 'barang.jenis_id')->where('barang.jenis_id', '=', $id)->distinct()->get();
 
-        if($request->selectUrutkan == "a-z")
+        if($request->urutkan == "random")
+        {
+            $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->inRandomOrder()->paginate(15);
+        }
+        else if($request->urutkan == "a-z")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->where('barang.jenis_id', '=', $id)->orderBy('nama', 'asc')->paginate(15);
         }
-        else if($request->selectUrutkan == "z-a")
+        else if($request->urutkan == "z-a")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->where('barang.jenis_id', '=', $id)->orderBy('nama', 'desc')->paginate(15);
         }
-        else if($request->selectUrutkan == "maxharga")
+        else if($request->urutkan == "maxharga")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->where('barang.jenis_id', '=', $id)->orderByRaw('(harga_jual - diskon_potongan_harga) desc')->paginate(15);
         }
-        else if($request->selectUrutkan == "minharga")
+        else if($request->urutkan == "minharga")
         {
             $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis')->where('barang.jumlah_stok', '>', 0)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->where('barang.jenis_id', '=', $id)->orderByRaw('(harga_jual - diskon_potongan_harga) asc')->paginate(15);
-        } 
+        }
 
-        $jenis_id = $data_barang[0]->jenis_id;
-
-        $data_barang->setPath("/id/category/$jenis_id/urutkan?jenisFilter=$request->jenisFilter&filterUrutkan=$request->filterUrutkan&selectUrutkan=$request->selectUrutkan");
-        return view('pelanggan.shop.shop_by_category', ['kategori_barang' => $data_kategori, 'barang' => $data_barang, 'barang_search' => $data_barang_search]);
+        $data_barang->setPath("/id/type/$id/order?urutkan=$request->urutkan");
+        
+        return view('pelanggan.shop.shop_by_category', ['semua_kategori' => $data_semua_kategori, 'jenis_dipilih' => $data_jenis_dipilih, 'kategori' => $data_kategori, 'barang' => $data_barang]);
 
     }
 
-    public function urutkan(Request $request)
+    public function showRandom()
+    {
+        $data_jenis = DB::table('jenis_barang')->get();
+
+        $data_kategori = DB::table('kategori_barang')->get();
+    
+        $data_barang = DB::table('barang')->select('barang.*')->where('barang.jumlah_stok', '>', 0)->inRandomOrder()->paginate(15);  
+
+        $total_cart = null;
+
+        if (Auth::check())
+        {
+            $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
+        }
+
+        return view('pelanggan.shop.shop_by_type', ['jenis_barang' => $data_jenis, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'total_cart'=>$total_cart]); 
+    }
+
+    public function showProductsBasedOnType($id)
+    {
+        $data_semua_kategori = DB::table('kategori_barang')->get();
+        $data_kategori = DB::table('barang')->select('barang.kategori_id', 'kategori_barang.kategori_barang')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->join('jenis_barang', 'jenis_barang.id', '=', 'barang.jenis_id')->where('barang.jenis_id', '=', $id)->distinct()->get();
+        $data_jenis_dipilih = DB::table('jenis_barang')->where('id', '=', $id)->get();
+        $data_barang = DB::table('barang')->select('barang.*')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->where('jenis_id', '=', $id)->inRandomOrder()->paginate(15);
+
+        return view('pelanggan.shop.shop_by_category', ['kategori' => $data_kategori, 'jenis_dipilih' => $data_jenis_dipilih, 'semua_kategori' => $data_semua_kategori, 'barang' => $data_barang]);
+    }
+
+    public function showProductsBasedOnCategory($id)
+    {
+        $data_kategori = DB::table('kategori_barang')->get();
+        $data_barang = DB::table('barang')->select('barang.*', 'barang.merek_id', 'barang.kategori_id', 'merek_barang.merek_barang as nama_merek', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->where('barang.kategori_id', '=', $id)->distinct()->paginate(15);
+        $data_jenis = DB::table('jenis_barang')->where('id', '=', $id);
+        $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.kategori_id', '=', $id)->distinct()->get();
+
+        return view('pelanggan.shop.shop_by_brand', ['barang' => $data_barang, 'semua_kategori' => $data_kategori, 'merek_barang' => $data_merek]);
+    }
+
+    public function orderProducts(Request $request)
     {
         $data_barang = null;
 
-        $data_jenis = DB::table('jenis_barang')->get();
+        $data_kategori = DB::table('kategori_barang')->get();
 
-        $data_barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();      
+        $data_jenis = DB::table('jenis_barang')->get();
     
         $total_cart = null;
 
@@ -107,26 +258,30 @@ class ShopController extends Controller
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
         }
 
-        if($request->selectUrutkan == "a-z")
+        if($request->urutkan == "random")
+        {
+            $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->inRandomOrder()->paginate(15);
+        }
+        else if($request->urutkan == "a-z")
         {
             $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->orderBy('nama', 'asc')->paginate(15);
         }
-        else if($request->selectUrutkan == "z-a")
+        else if($request->urutkan == "z-a")
         {
             $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->orderBy('nama', 'desc')->paginate(15);
         }
-        else if($request->selectUrutkan == "maxharga")
+        else if($request->urutkan == "maxharga")
         {
             $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->orderByRaw('(harga_jual - diskon_potongan_harga) desc')->paginate(15);
         }
-        else if($request->selectUrutkan == "minharga")
+        else if($request->urutkan == "minharga")
         {
             $data_barang = DB::table('barang')->where('barang.jumlah_stok', '>', 0)->orderByRaw('(harga_jual - diskon_potongan_harga) asc')->paginate(15);
         }   
 
-        $data_barang->setPath("/shop/urutkan?jenisFilter=$request->jenisFilter&filterUrutkan=$request->filterUrutkan&selectUrutkan=$request->selectUrutkan");
+        $data_barang->setPath("/shop/order?urutkan=$request->urutkan");
         
-        return view('pelanggan.shop.shop_by_type', ['jenis_barang' => $data_jenis, 'barang' => $data_barang, 'barang_search'=>$data_barang_search, 'total_cart'=>$total_cart]); 
+        return view('pelanggan.shop.shop_by_type', ['jenis_barang' => $data_jenis, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'total_cart'=>$total_cart]); 
 
     }
 }

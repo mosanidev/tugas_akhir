@@ -63,21 +63,6 @@
 
         $(document).ready(function() {
 
-            // let form = document.querySelector('#form');
-
-            // form.addEventListener('submit', (event) => {
-            //     event.preventDefault();
-            //     const formData = new FormData(event.target);
-            //     const data = Object.fromEntries(formData);
-            //     console.log(data);
-            // })
-
-            // $.ajaxSetup({
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     }
-            // });
-
             $('#btnHapusDitandai').on('click', function(){
 
                 let checkedWishlist = $("#check_wishlist:checked").map(function(){

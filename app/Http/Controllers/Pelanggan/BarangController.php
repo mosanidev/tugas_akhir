@@ -9,51 +9,6 @@ use Auth;
 
 class BarangController extends Controller
 {
-    public function filter(Request $request)
-    {
-        $data_barang_filter = null;
-
-        $data_barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();
-
-        if ($request->merek == null)
-        {
-            $data_barang_filter = DB::table('barang')->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->get();
-        } 
-        else if ($request->hargamin == null || $request->hargamax == null)
-        {
-            $data_barang_filter = DB::table('barang')->whereIn('merek_id', $request->merek)->get();
-        }
-        else 
-        {
-            $data_barang_filter = DB::table('barang')->whereIn('merek_id', $request->merek)->whereBetween('harga_jual', [$request->hargamin, $request->hargamax])->get();
-        }
-
-        $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.kategori_id', '=', $request->kategori_id)->distinct()->get();
-
-        return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'barang' => $data_barang_filter, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax, 'barang_search'=>$data_barang_search]);
-
-    }
-
-    public function showRandom()
-    {
-        $curDate = \Carbon\Carbon::now()->format("Y-m-d");
-
-        $data_jenis = DB::table('jenis_barang')->get();
-
-        $data_barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();      
-    
-        $data_barang = DB::table('barang')->select('barang.*')->where('barang.jumlah_stok', '>', 0)->inRandomOrder()->paginate(15);  
-
-        $total_cart = null;
-
-        if (Auth::check())
-        {
-            $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
-        }
-
-        return view('pelanggan.shop.shop_by_type', ['jenis_barang' => $data_jenis, 'barang' => $data_barang, 'barang_search'=>$data_barang_search, 'total_cart'=>$total_cart]); 
-    }
-
     public function showDetail($id)
     {
         $data_barang = DB::table('barang')->where('barang.id', '=', $id)->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->select('barang.*', 'kategori_barang.kategori_barang', 'jenis_barang.jenis_barang', 'merek_barang.merek_barang')->get();
@@ -84,26 +39,26 @@ class BarangController extends Controller
 
     public function searchBarang(Request $request)
     {
-        $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id','=','jenis_barang.id')->join('merek_barang', 'barang.merek_id','=','merek_barang.id')->where('nama', 'like', '%'.strtolower($request->key).'%')->paginate(15);
+        $data_barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id','=','jenis_barang.id')->join('kategori_barang', 'barang.kategori_id','=','kategori_barang.id')->join('merek_barang', 'barang.merek_id','=','merek_barang.id')->where('nama', 'like', '%'.strtolower($request->key).'%')->where('kategori_barang.kategori_barang', '=', $request->input_kategori)->paginate(15);
 
         $data_merek = null;
 
-        $data_barang_search = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->limit(5)->get();
+        $data_kategori = DB::table('kategori_barang')->get();
 
         if(count($data_barang) > 0)
         {
-            $data_merek = DB::table('merek_barang')->select('merek_barang.*')->join('barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.nama', 'like', '%'.strtolower($request->key).'%')->distinct()->get();   
+            $data_merek = DB::table('merek_barang')->select('merek_barang.*')->join('barang', 'merek_barang.id', '=', 'barang.merek_id')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->where('barang.nama', 'like', '%'.strtolower($request->key).'%')->where('kategori_barang.kategori_barang', '=', $request->input_kategori)->distinct()->get();   
         }
 
         if(Auth::check())
         {
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'barang' => $data_barang, 'barang_search' => $data_barang_search, 'total_cart' => $total_cart]);
+            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'kategori' => $data_kategori, 'barang' => $data_barang, 'barang_search' => $data_barang_search, 'total_cart' => $total_cart]);
         }
         else
         {
-            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'barang' => $data_barang, 'barang_search' => $data_barang_search]);
+            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang]);
         }
 
     }

@@ -11,7 +11,14 @@ class AdminAuthController extends Controller
 {
     public function showLoginForm() 
     {
-        return view('admin.auth.login');
+        if(Auth::check())
+        {
+            return redirect()->route('home_admin');
+        }
+        else 
+        {
+            return view('admin.auth.login');
+        }
     }
 
     public function login(Request $request)
@@ -45,5 +52,11 @@ class AdminAuthController extends Controller
                 return redirect()->back()->with(['error' => 'Email atau password salah']);
             }
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout(); // menghapus session yang aktif
+        return redirect()->route('admin.login');
     }
 }

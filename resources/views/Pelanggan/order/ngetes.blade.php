@@ -167,97 +167,104 @@
 
 
 {{-- End Pick Main Address Modal --}}
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-KVse50bzjErTjsM8"></script>
-
-<script type="text/javascript">
-
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    let arr_total_tarif = [];
-
-    $(document).ready(function()
-    {
-        let data = <?php echo json_encode($data) ?>;
-
-        for(let i = 0; i < data.length; i++)
-        {
-            let total_berat = 0;
-
-            for(let x =0 ; x<data[i].rincian.length; x++)
-            {
-                total_berat = total_berat+parseInt(data[i].rincian[x].barang_berat*data[i].rincian[x].kuantitas);
-            }
-
-            $.ajax({ 
-                url : "{{ route('order_rates') }}", 
-                type : 'POST', 
-                dataType: "JSON",
-                data : { 
-                    "origin_postal_code": 60293,
-                    "origin_latitude": -7.320228755327554,
-                    "origin_longitude": 112.76752962946058,
-                    "destination_latitude": data[i].alamat_latitude,
-                    "destination_longitude": data[i].alamat_longitude,
-                    "destination_postal_code": data[i].alamat_kode_pos,
-                    "couriers": "jne,jnt,sicepat,gojek,grab,paxel",
-                    "items": [
-                                {
-                                    "weight": total_berat
-                                }
-                            ]  
-            },
-            success: function (data) { 
-
-                $('.loadPengiriman').remove();
-
-                let hasil = JSON.parse(data.response);
-
-                console.log(hasil);
-
-                for(let u =0; u < hasil.pricing.length; u++)
-                {
-                    $('#selectPengiriman'+i).append(
-                        "<option id='pilihan-pengiriman-" + i + "' value='" + u + "'>" + hasil.pricing[u].courier_service_name + " - " + convertAngkaToRupiah(hasil.pricing[u].price) +"</option>"
-                    );
-                
-                }
-
-                $("#selectPengiriman"+i).on("click", function() {
-
-                    let num = $('#selectPengiriman'+i).find(":selected").val();
-
-                    let total_tarif = 0;
-
-                    if(arr_total_tarif.length <= 2)
-                    {
-                        arr_total_tarif[i] = parseInt(hasil.pricing[num].price);
-                    }
-
-                    for(let p=0; p < arr_total_tarif.length; p++)
-                    {
-                        total_tarif += arr_total_tarif[p];
-                    }
-
-                    $('#info-pengiriman-'+i).html(hasil.pricing[num].courier_name + " " + convertAngkaToRupiah(hasil.pricing[num].price) + "<br>" + hasil.pricing[num].duration.replace("days", "hari").replace("Hours", "jam").replace("hours", "jam"));
-                
-                    // total_tarif += hasil.pricing[num].price;
-
-                    $("#total-tarif").html(convertAngkaToRupiah(total_tarif));
-
-                    
-                });
 
 
-            }
-        });
-        }
-        
-    });
-    
-</script>
 
 @endsection
+
+
+@push('script')
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-KVse50bzjErTjsM8"></script>
+
+    <script type="text/javascript">
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        let arr_total_tarif = [];
+
+        $(document).ready(function()
+        {
+            let data = <?php echo json_encode($data) ?>;
+
+            for(let i = 0; i < data.length; i++)
+            {
+                let total_berat = 0;
+
+                for(let x =0 ; x<data[i].rincian.length; x++)
+                {
+                    total_berat = total_berat+parseInt(data[i].rincian[x].barang_berat*data[i].rincian[x].kuantitas);
+                }
+
+                $.ajax({ 
+                    url : "{{ route('order_rates') }}", 
+                    type : 'POST', 
+                    dataType: "JSON",
+                    data : { 
+                        "origin_postal_code": 60293,
+                        "origin_latitude": -7.320228755327554,
+                        "origin_longitude": 112.76752962946058,
+                        "destination_latitude": data[i].alamat_latitude,
+                        "destination_longitude": data[i].alamat_longitude,
+                        "destination_postal_code": data[i].alamat_kode_pos,
+                        "couriers": "jne,jnt,sicepat,gojek,grab,paxel",
+                        "items": [
+                                    {
+                                        "weight": total_berat
+                                    }
+                                ]  
+                },
+                success: function (data) { 
+
+                    $('.loadPengiriman').remove();
+
+                    let hasil = JSON.parse(data.response);
+
+                    console.log(hasil);
+
+                    for(let u =0; u < hasil.pricing.length; u++)
+                    {
+                        $('#selectPengiriman'+i).append(
+                            "<option id='pilihan-pengiriman-" + i + "' value='" + u + "'>" + hasil.pricing[u].courier_service_name + " - " + convertAngkaToRupiah(hasil.pricing[u].price) +"</option>"
+                        );
+                    
+                    }
+
+                    $("#selectPengiriman"+i).on("click", function() {
+
+                        let num = $('#selectPengiriman'+i).find(":selected").val();
+
+                        let total_tarif = 0;
+
+                        if(arr_total_tarif.length <= 2)
+                        {
+                            arr_total_tarif[i] = parseInt(hasil.pricing[num].price);
+                        }
+
+                        for(let p=0; p < arr_total_tarif.length; p++)
+                        {
+                            total_tarif += arr_total_tarif[p];
+                        }
+
+                        $('#info-pengiriman-'+i).html(hasil.pricing[num].courier_name + " " + convertAngkaToRupiah(hasil.pricing[num].price) + "<br>" + hasil.pricing[num].duration.replace("days", "hari").replace("Hours", "jam").replace("hours", "jam"));
+                    
+                        // total_tarif += hasil.pricing[num].price;
+
+                        $("#total-tarif").html(convertAngkaToRupiah(total_tarif));
+
+                        
+                    });
+
+
+                }
+            });
+            }
+            
+        });
+        
+    </script>
+
+@endpush

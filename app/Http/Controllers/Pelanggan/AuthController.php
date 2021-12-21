@@ -15,12 +15,26 @@ class AuthController extends Controller
 {
     public function showRegisterForm() 
     {
-        return view('pelanggan.auth.register');
+        if(Auth::check())
+        {
+            return redirect()->route('home');
+        }
+        else 
+        {
+            return view('pelanggan.auth.register');
+        }
     }
 
     public function showLoginForm() 
     {
-        return view('pelanggan.auth.login');
+        if(Auth::check())
+        {
+            return redirect()->route('home');
+        }
+        else 
+        {
+            return view('pelanggan.auth.login');
+        }
     }
 
     public function register(Request $request)

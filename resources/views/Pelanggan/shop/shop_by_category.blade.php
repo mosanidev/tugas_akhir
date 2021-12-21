@@ -2,17 +2,39 @@
 
 @section('content-header')
 
-    <div class="pt-5 pb-2">
-        <a href="{{ route('home') }}" class="d-inline text-secondary">Beranda</a> > <p class="d-inline" id="nama_jenis">{{ $barang[0]->nama_jenis }}</p> 
-    </div>
+    @if(count($barang) > 0)
+        <div class="pt-5 pb-2">
+            <a href="{{ route('home') }}" class="d-inline text-secondary">Beranda</a> > <p class="d-inline" id="nama_jenis">{{ $jenis_dipilih[0]->jenis_barang }}</p> 
+        </div>
+    @endif
 
 @endsection
 
 @section('sidebar')
 
-    @for ($i = 0; $i < count($kategori_barang); $i++)
-        <a href="{{ route('brand', ['id' => $kategori_barang[$i]->kategori_id ]) }}" class="btn btn-block btn-link text-left text-dark"><p class="h5">{{ $kategori_barang[$i]->kategori_barang }}</p></a>
+    @for ($i = 0; $i < count($kategori); $i++)
+        <a href="{{ route('brand', ['id' => $kategori[$i]->kategori_id ]) }}" class="btn btn-block btn-link text-left text-dark"><p class="h5">{{ $kategori[$i]->kategori_barang }}</p></a>
     @endfor
+
+@endsection
+
+@section('content-urutkan')
+
+    @if(count($barang) > 0)
+        <div class="col-md-12">
+            <form method="GET" action="{{ route('order.products.type', ['id' => $barang[0]->jenis_id]) }}" id="formUrutkan">
+                <p class="text-right">URUTKAN &nbsp; 
+                    <select class="form-control d-inline" id="selectUrutkan" name="urutkan" style="width: 200px;">
+                        <option value="random" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'a-z') selected @endif>ACAK</option>
+                        <option value="a-z" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'a-z') selected @endif>ALFABET A-Z</option>
+                        <option value="z-a" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'z-a') selected @endif>ALFABET Z-A</option>
+                        <option value="minharga" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'minharga') selected @endif>HARGA TERENDAH</option>
+                        <option value="maxharga" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'maxharga') selected @endif>HARGA TERTINGGI</option>
+                    </select>
+                </p>
+            </form>
+        </div>
+    @endif
 
 @endsection
 
@@ -20,13 +42,12 @@
 
     <script type="text/javascript">
 
-        const jenis_id = "{{ $barang[0]->jenis_id }}";
 
-        $('#formUrutkan').attr("action", "/id/category/" + jenis_id + "/urutkan");
+        $('#selectUrutkan').on('change', function() {
 
-        $('#filterUrutkan').val($('#nama_jenis').html());
-        
-        $('#jenisFilter').val("jenis_barang");
+            $('#formUrutkan').submit();
+
+        });
 
     </script>
 

@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\Admin::class,
         'pelanggan' => \App\Http\Middleware\Pelanggan::class,
         'manajer' => \App\Http\Middleware\Manajer::class,
+        'ensure_user_is_not_admin' => \App\Http\Middleware\EnsureUserIsNotAdmin::class,
 
     ];
 }

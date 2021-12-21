@@ -83,6 +83,8 @@
         });
 
         $(document).ready(function() {
+            // let barang = `<?php echo json_encode($cart) ?>`;
+            // let alamat = `<?php echo json_encode($alamat) ?>`;
             let barang = <?php echo json_encode($cart) ?>;
             let alamat = <?php echo json_encode($alamat) ?>;
             // let checked = $("#check-box:checked").map(function() {
