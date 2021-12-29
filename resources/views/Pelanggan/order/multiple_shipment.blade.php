@@ -184,6 +184,8 @@
 
                 console.log(newData);
 
+                let cekApakahMelebihiStok = false;
+
                 barang.forEach(element => {
                     
                     console.log(element['barang_stok']);
@@ -191,15 +193,21 @@
                     if(newData[element['barang_id']] > element['barang_stok'])
                     {
                         alert("stok " + element['barang_nama'] + " habis");
+                        cekApakahMelebihiStok = true;
                     }
                     // console.log(element['barang_id']+ " " +element['barang_stok']);
                 });
 
-                $('#data').val(JSON.stringify(data));
+                if(cekApakahMelebihiStok == false)
+                {
+                    $('#data').val(JSON.stringify(data));
 
-                // $('#form-tes').attr("action", "/order/shipment/multiple/checkout");
+                    $('#form-tes').attr("action", "/order/shipment/multiple/checkout");
+                    
+                    $('#form-tes').submit();
+                }
+
                 
-                // $('#form-tes').submit();
 
             });
 
