@@ -41,7 +41,11 @@
                                             <p>Harga Satuan</p>
                                         </div>
                                         <div class="col-8">
-                                            @if($item->barang_diskon_potongan_harga > 0)<del class="d-inline mr-2">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del>@endif<p class="d-inline barang_harga">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                            @if($item->barang_diskon_potongan_harga > 0)
+                                                <del class="d-inline mr-2 barang_harga">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del><p class="d-inline">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                            @else
+                                                <p class="d-inline barang_harga">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                            @endif
                                         </div>
                                         <div class="col-4">
                                             <p>Jumlah</p>
@@ -72,9 +76,9 @@
                             <p>Total Harga <br> ( {{ count($cart) }} Produk )</p>
                         </div>
                         <div class="col-5">
-                            <p><strong>{{ "Rp " . number_format($cart[0]->total+$totalDiskon,0,',','.') }}</strong></p>
+                            <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
                         </div>
-                        @if($totalDiskon > 0) 
+                        {{-- @if($totalDiskon > 0) 
                             <div class="col-7">
                                 <p>Total Diskon</p>
                             </div>
@@ -90,8 +94,10 @@
                         </div>
                         <div class="col-5">
                             <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
-                        </div>
+                        </div> --}}
                     </div>
+                    
+                    <hr>
 
                     <h5 class="mt-3"><strong>Alamat Pengambilan</strong></h5> 
 
@@ -108,7 +114,6 @@
             </div>
 
             <form action="{{ route('checkoutPickInStore') }}" method="GET" id="submitPaymentForm">
-                {{-- <input type="hidden" name="order_id" id="order_id" value=""> --}}
                 <input type="hidden" name="nomor_nota" id="nomor_nota" value="">
             </form>
 
@@ -166,17 +171,6 @@
 
             let arrBarang = createArrBarang();
 
-            moment.locale('id');
-
-            let tglPengambilan = moment().add(2, 'days').format("dddd, DD MMMM YYYY");
-
-            if(tglPengambilan.includes("Minggu"))
-            {
-                tglPengambilan = moment().add(3, 'days').format("dddd, DD MMMM YYYY");
-            }
-
-            // $('#maks_ambil').text("Masimal pengambilan pesanan pada " + tglPengambilan + " saat jam buka minimarket");
-
             let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
 
             $('#pay').on('click', function() {
@@ -207,8 +201,9 @@
                                 $('#submitPaymentForm').submit();
 
                             },
-                            onError: function () {
+                            onError: function (result) {
 
+                                // console.log(result);
                                 $('#modalLoading').modal('toggle');
 
                             },
@@ -238,6 +233,17 @@
                     "price": convertRupiahToAngka($('.barang_harga')[i].innerHTML),
                     "quantity": $('.barang_jumlah')[i].innerHTML,
                     "name": $('.barang_nama')[i].innerHTML
+                }
+                arrBarang.item_details.push(obj)
+            }
+
+            if($('#total-diskon').html() != undefined)
+            {
+                let obj = {
+                    id: "D01",
+                    price: convertRupiahToAngka($('#total-diskon').html()),
+                    quantity: 1,
+                    name: "Discount"
                 }
                 arrBarang.item_details.push(obj)
             }

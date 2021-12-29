@@ -41,7 +41,7 @@
                         <tr>
                           <td style="width: 10px">{{ $num++ }}</td>
                           <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
                           <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                           <td>{{ $item->metode_transaksi }}</td>
                           <td>{{ $item->metode_pembayaran }}</td>

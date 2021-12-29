@@ -120,17 +120,19 @@ class CartController extends Controller
 
     public function show()
     {
+        $kategori = DB::table('kategori_barang')->get();
+
         if(Auth::check())
         {
             $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.jumlah_stok as barang_stok')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->groupBy('cart.barang_id')->get();
 
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-            return view('pelanggan.cart.cart', ['cart' => $cart, 'total_cart'=>$total_cart]);
+            return view('pelanggan.cart.cart', ['cart' => $cart, 'semua_kategori' => $kategori, 'total_cart'=>$total_cart]);
         }
         else
         {
-            return view('pelanggan.cart.cart');
+            return view('pelanggan.cart.cart', ['semua_kategori' => $kategori]);
         }
     }
 
@@ -312,14 +314,7 @@ class CartController extends Controller
             $total_cart = session()->get('cart');
         }
 
-        // if($request->qty != null)
-        // {
-        //     return redirect()->back()->with('status', $status);
-        // }
-        // else 
-        // {
-            return response()->json(['status'=>$status, 'total_cart'=>$total_cart]);
-        // }
+        return response()->json(['status'=>$status, 'total_cart'=>$total_cart]);
     }
 }
 

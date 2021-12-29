@@ -39,6 +39,7 @@ use App\Http\Controllers\Admin\AdminBarangDiskonController;
 use App\Http\Controllers\Admin\AdminPembelianController;
 use App\Http\Controllers\Admin\AdminPenjualanController;
 use App\Http\Controllers\Admin\AdminReturPembelianController;
+use App\Http\Controllers\Admin\AdminKaryawanController;
 
 
 /*
@@ -67,16 +68,17 @@ Route::group(['middleware' => 'ensure_user_is_not_admin'], function () {
 
     Route::get('shop', [ShopController::class, 'showRandom'])->name('shop');
     
-    Route::get('product_detail', function() {
-        return view('product_detail');
-    });
+    // Route::get('product_detail', function() {
+    //     return view('product_detail');
+    // });
 
     Route::get('id/type/{id}', [ShopController::class, 'showProductsBasedOnType'])->name('category');
+
     Route::get('id/category/{id}', [ShopController::class, 'showProductsBasedOnCategory'])->name('brand');
 
     Route::get('/shop/order', [ShopController::class, 'orderProducts'])->name('order.products');
+
     Route::get('/id/type/{id}/order', [ShopController::class, 'orderProductsByType'])->name('order.products.type');
-    Route::get('/id/category/{id}/order', [ShopController::class, 'orderProductsByCategory'])->name('order.products.category');
 
     Route::get('id/product/{id}', [BarangController::class, 'showDetail'])->name('detail');
 
@@ -126,12 +128,10 @@ Route::group(['middleware' => 'ensure_user_is_not_admin'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
  
-    // Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout');
     Route::get('profil', [UserController::class, 'show'])->name('profil');
     Route::post('profil', [UserController::class, 'updateProfil'])->name('updateProfil');
-    // Route::post('profil', [UserController::class, 'updateProfil'])->name('updateProfil');
 
     Route::post('change_password', [UserController::class, 'changePassword'])->name('changePassword');
 
@@ -145,7 +145,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('/alamat', AlamatController::class);
 
-    Route::get('generate_kecamatan/{kecamatan}', [BiteShipAPIController::class, 'getArea']);
+    Route::get('generate_kecamatan/{kecamatan}/double', [BiteShipAPIController::class, 'getDoubleArea']);
+    Route::get('generate_kecamatan/{kecamatan}/single', [BiteShipAPIController::class, 'getSingleArea']);
     Route::get('generate_postal_code/{areaID}', [BiteShipAPIController::class, 'getPostalCode']);
     Route::post('generate_rates', [BiteShipAPIController::class, 'getRates'])->name('order_rates');
 
@@ -176,10 +177,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
         Route::post('/detail', [MidtransAPIController::class, 'coba'])->name('payment.detail');
 
-
     });
 
-    // Route::get('midtrans', [MidtransAPIController::class, 'index']);
 
 });
 

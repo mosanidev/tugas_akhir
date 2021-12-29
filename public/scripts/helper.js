@@ -17,7 +17,7 @@ let toastrOptions = {
     "closeMethod": "slideUp",
     "positionClass": "toast-top-center"
     // "preventDuplicates": "true"
-}
+};
 
 function cekApakahTokoTutup() 
 {

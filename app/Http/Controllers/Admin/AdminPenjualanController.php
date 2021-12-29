@@ -15,7 +15,7 @@ class AdminPenjualanController extends Controller
      */
     public function index()
     {
-        $penjualan = DB::table('penjualan')->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*')->join('detail_penjualan', 'penjualan.nomor_nota', '=', 'detail_penjualan.nomor_nota')->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')->join('users', 'penjualan.users_id', '=', 'users.id')->groupBy('penjualan.nomor_nota')->get();
+        $penjualan = DB::table('penjualan')->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*')->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')->join('users', 'penjualan.users_id', '=', 'users.id')->groupBY('penjualan.id')->orderByDesc('penjualan.created_at')->get();
 
         return view('admin.penjualan.index', ['penjualan'=>$penjualan]);
     }

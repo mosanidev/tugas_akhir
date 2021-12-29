@@ -13,7 +13,7 @@
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data" novalidate>
                 @csrf
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Jenis</p>
@@ -84,37 +84,25 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    {{-- <p class="col-sm-3 col-form-label">Barang Titipan (Konsinyasi)</p> --}}
                     <p class="col-sm-3 col-form-label"></p>
 
                     <div class="col-sm-9">
-                        
                         <div class="form-check mt-2">
-                            <input type="checkbox" value="1" name="optkonsinyasi" name="barang_konsinyasi" class="form-check-input optkonsinyasi" value="1">
+                            <input type="checkbox" value="1" name="barang_konsinyasi" class="form-check-input optkonsinyasi" value="1">
                             <label class="form-check-label">Centang jika barang adalah titipan (konsinyasi)</label>
                         </div> 
-                        {{-- <div class="radio mt-2">
-                            <label class="mr-3"><input type="radio" class="optkonsinyasi mr-1" value="1" name="barang_konsinyasi">Iya</label>
-                            <label><input type="radio" class="optkonsinyasi mr-1" value="0" name="barang_konsinyasi" checked>Tidak</label>
-                        </div> --}}
                     </div>
                 </div>
                 <div class="form-group row" id="div-pilihan">
                     <p class="col-sm-3 col-form-label">Harga Beli</p>
                     <div class="col-sm-9">
-                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ old('harga_beli') }}" required>
+                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ old('harga_beli') }}">
                     </div>
                 </div>
-                {{-- <div class="form-group row" id="div-komisi">
-                    <p class="col-sm-3 col-form-label">Komisi</p>
-                    <div class="col-sm-9">
-                        Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ old('komisi') }}" required>
-                    </div>
-                </div> --}}
                 <div class="form-group row" id="div-stok-minimum">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control d-inline" min="1" name="stok_minimum" id="stok_minimum" value="{{ old('stok_minimum') }}" required>
+                        <input type="number" class="form-control d-inline" min="1" name="stok_minimum" id="stok_minimum" value="{{ old('stok_minimum') }}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -138,14 +126,7 @@
                             <input type="checkbox" value="1" name="opsi_otomatis_update_kadaluarsa" id="opsi_otomatis_update_kadaluarsa" class="form-check-input" value="1">
                             <label class="form-check-label">Centang untuk otomatis perbarui tanggal kadaluarsa barang setiap hari</label>
                         </div> 
-                        <div class="form-check">
-                            <input type="checkbox" value="1" class="form-check-input" id="check-jam-kadaluarsa">
-                            <label class="form-check-label">Centang jika kadaluarsa barang kurang dari sehari</label>
-                        </div>
                     </div>
-                </div>
-                <div class="form-group row" id="div-jam-kadaluarsa">
-                    {{-- field jam kadaluarsa --}}
                 </div>
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Foto</p>
@@ -203,7 +184,6 @@
                                                 Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ old('komisi') }}" required>
                                             </div>`);
                     $('#stok_minimum').val('0');     
-                    // $('#stok_minimum').prop("readonly", true);
                     $('#div-stok-minimum').hide();
                 }
                 else 
@@ -213,7 +193,6 @@
                                                 Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ old('harga_beli') }}" required>
                                             </div>`);
                     $('#stok_minimum').val("");     
-                    // $('#stok_minimum').prop("readonly", false);
                     $('#div-stok-minimum').show();
 
                 }
@@ -227,54 +206,13 @@
                     $('#datepicker').val(moment().format("YYYY-MM-DD"));
                     $('#datepicker').prop("readonly", true); 
                 }
-                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1 && $('#check-jam-kadaluarsa:checked').val() != 1)
+                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1)
                 {
                     $('#datepicker').val("");
                     $('#datepicker').prop("readonly", false); 
                 }
 
-
             });
-
-            $('#check-jam-kadaluarsa').on('change', function() {
-
-                if($('#check-jam-kadaluarsa:checked').val() == 1)
-                {
-                    $('#datepicker').val(moment().format("YYYY-MM-DD"));
-
-                    $('#datepicker').prop("readonly", true); 
-
-                    $('#div-jam-kadaluarsa').html(`<p class="col-sm-3 col-form-label">Perkiraan Jam Kadaluarsa</p>
-                                                        <div class="col-sm-9">
-                                                            <div class="bootstrap-timepicker">
-                                                                <div class="form-group">
-                                                                <div class="input-group">
-                                                                    <input type="text" name="jam_kadaluarsa" class="form-control timepicker">
-                                                                    <div class="input-group-append">
-                                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>`);
-                    //Timepicker
-                    $('.timepicker').timepicker({
-                        showInputs: false
-                    });
-                }
-                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1 && $('#check-jam-kadaluarsa:checked').val() != 1)
-                {
-                    $('#datepicker').val("");
-                    $('#div-jam-kadaluarsa').html("");
-                    $('#datepicker').prop("readonly", false); 
-                }
-                else 
-                {
-                    $('#div-jam-kadaluarsa').html("");
-                }
-
-            });
-
             
             //Initialize Select2 Elements
             $('.select2').select2();
@@ -323,6 +261,9 @@
 
             document.getElementById('container').innerHTML = `<div class="d-flex justify-content-center d-inline position-relative my-2 mx-2" style="height: 120px; width: 200px; border-radius: 6px; overflow: hidden;">
                                                                 <img src="` + URL.createObjectURL(image_upload[0]) + `" alt="Image" style="height: 100%; width: auto; object-fit: cover" class="d-inline">
+                                                            </div>
+                                                            <div>
+                                                                <button type="button" class="btn btn-danger" onclick="delete_image()">X</button>
                                                             </div>`;
 
         }
@@ -338,6 +279,16 @@
             }
 
         });
+
+    
+        function delete_image() 
+        {
+            document.getElementById('image_upload').value = "";
+
+            document.getElementById('container').innerHTML = "";
+
+        }
+
         
     </script>
 @endsection

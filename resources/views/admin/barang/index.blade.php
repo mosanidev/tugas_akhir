@@ -12,7 +12,7 @@
   <hr>
         <p class="text-justify">Halaman barang berisi tabel barang yang dipasok oleh perusahaan dan barang konsinyasi yang dipasok oleh individu. Di menu ini pengguna dapat menambahkan, mengubah dan menghapus barang</p>
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
+{{-- {{ dd($barang) }} --}}
 <div class="container-fluid">
 
   <a href="{{ route('barang.create') }}" class="btn btn-success ml-2 mb-3">Tambah</a>
@@ -41,7 +41,43 @@
                       <tr>
                         <td style="width: 10px">{{ $num++ }}</td>
                         <td>{{ $item->kode }}</td>
-                        <td>{{ $item->nama }}</td>
+
+                        <td>
+                            @php 
+                              $hariIni = Carbon\Carbon::now();
+                              $selisihPerHari = ($hariIni->diffInDays(Carbon\Carbon::parse($item->tanggal_kadaluarsa)));   
+                            @endphp
+
+                            {{ $item->nama }} 
+
+                            @if($item->barang_konsinyasi)
+                              <span class="badge badge-success">Barang Konsinyasi</span>
+                            @endif
+
+                            @if($item->tanggal_kadaluarsa <= $hariIni)
+
+                                <span class="badge badge-secondary">Kadaluarsa</span>
+
+                            @else 
+                          
+                                  @if($item->jenis_barang == "Makanan" && $selisihPerHari <= 90)
+                                  
+                                    {{-- <span class="badge badge-secondary">Food</span> --}}
+
+                                    <span class="badge badge-secondary">Bentar Lagi Kadaluarsa</span>
+
+                                  @elseif($item->jenis_barang != "Makanan" && $selisihPerHari <= 180)
+
+                                    {{-- <span class="badge badge-secondary">Non Food</span> --}}
+
+                                    <span class="badge badge-secondary">Bentar Lagi Kadaluarsa</span>
+                                      
+                                  @endif 
+                            @endif
+
+                            
+                        </td>
+
                         <td>{{ $item->jenis_barang }}</td>
                         <td>{{ $item->kategori_barang }}</td>
                         <td>{{ $item->merek_barang }}</td>

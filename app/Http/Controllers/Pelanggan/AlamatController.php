@@ -16,10 +16,11 @@ class AlamatController extends Controller
      */
     public function index()
     {
+        $kategori = DB::table('kategori_barang')->get();
         $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->orderBy('alamat_utama', 'desc')->get();
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-        return view('pelanggan..user_menu.user_menu', ['alamat'=>$alamat, 'total_cart'=>$total_cart]);
+        return view('pelanggan..user_menu.user_menu', ['alamat'=>$alamat, 'semua_kategori' => $kategori, 'total_cart'=>$total_cart]);
     }
 
     /**
@@ -51,16 +52,15 @@ class AlamatController extends Controller
             'kecamatan' => explode(',', $request->kecamatan)[0],
             'kode_pos' => $request->kode_pos,
             'alamat' => $request->alamat,
-            'alamat_utama' => $alamat_utama,
+            'alamat_utama' => 0,
             'kota_kabupaten' => explode(',', $request->kecamatan)[1],
             'provinsi' => explode(',', $request->kecamatan)[2],
             'users_id' => auth()->user()->id
         ]);
 
-        $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->orderBy('alamat_utama', 'desc')->get();
-        $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
+        // $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->orderBy('alamat_utama', 'desc')->get();
 
-        return redirect()->back()->with(['alamat'=>$alamat, 'total_cart'=>$total_cart]);
+        return redirect()->back();
     }
 
     /**
@@ -96,9 +96,22 @@ class AlamatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $alamat = DB::table('alamat_pengiriman')->where('id', $id)->update(['label' => $request->label, 'alamat' => $request->alamat, 'nama_penerima' => $request->nama_penerima, 'nomor_telepon' => $request->nomor_telepon, 'kecamatan' => $request->kecamatan, 'kode_pos' => $request->kode_pos, 'kota_kabupaten' => $request->kota_kabupaten, 'provinsi' => $request->provinsi, 'users_id' => auth()->user()->id]);
+        // //check apakah kecamatan berubah
+        $alamat = DB::table('alamat_pengiriman')->where('id', '=', $id)->get();
 
-        return response()->json(['status'=>$alamat]);
+        if($alamat[0]->kecamatan == $request->kecamatan)
+        {
+            $update = DB::table('alamat_pengiriman')->where('id', $id)->update(['label' => $request->label, 'alamat' => $request->alamat, 'nama_penerima' => $request->nama_penerima, 'nomor_telepon' => $request->nomor_telepon, 'kecamatan' => $request->kecamatan, 'kode_pos' => $request->kode_pos, 'kota_kabupaten' => $request->kota_kabupaten, 'provinsi' => $request->provinsi, 'users_id' => auth()->user()->id]);
+
+            return response()->json(['status'=>$update]);
+        }
+        else 
+        {
+            $update = DB::table('alamat_pengiriman')->where('id', $id)->update(['label' => $request->label, 'alamat' => $request->alamat, 'nama_penerima' => $request->nama_penerima, 'nomor_telepon' => $request->nomor_telepon, 'kecamatan' => $request->kecamatan, 'kode_pos' => $request->kode_pos, 'kota_kabupaten' => $request->kota_kabupaten, 'provinsi' => $request->provinsi, 'users_id' => auth()->user()->id, 'longitude' => null, 'latitude' => null]);
+
+            return response()->json(['status'=>$update]);
+        }
+
     }
 
     /**
@@ -111,12 +124,11 @@ class AlamatController extends Controller
     {
         $alamat = DB::table('alamat_pengiriman')->where('id', '=', $id)->delete();
 
-        return response()->json(['status'=>$alamat]);
+        return redirect()->back();
     }
 
     public function pickMainAddress(Request $request)
     {
-
         $alamat_lain = DB::table('alamat_pengiriman')->where('users_id', auth()->user()->id)->update(['alamat_utama' => 0]);
 
         $alamat_utama = DB::table('alamat_pengiriman')->where('id', $request->alamat_id)->update(['alamat_utama' => 1]);
@@ -124,26 +136,9 @@ class AlamatController extends Controller
         return redirect()->back();
     }
 
-    // public function showAnotherAddress($id)
-    // {
-    //     $alamat_lain = DB::table('cart')->select('alamat_pengiriman.*')->join('alamat_pengiriman', 'cart.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')->where('cart.barang_id', '=', $id)->where('cart.users_id', '=', auth()->user()->id)->get();
-        
-    //     dd($alamat_lain);
-    //     // // query problem
-    //     // $alamat_lain = DB::table('alamat_pengiriman')->where('users_id', '=', auth()->user()->id)->whereNotIn('id', [$id_alamat])->get();
-
-    //     // $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->get();
-
-    //     return response()->json(['alamat_lain'=>$alamat_lain]);
-    //     // return view('pelanggan.order.multiple_shipment', ['cart'=>$cart, 'alamat'=>$alamat, 'alamat_lain' => $alamat_lain]);
-    // }
-
     public function showAnotherAddress(Request $request)
     {
-        // $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->whereNotIn('id', [$request->alamat])->get();
-
         $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->get();
-
 
         return response()->json(['alamat'=>$alamat]);
 

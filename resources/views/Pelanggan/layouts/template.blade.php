@@ -40,9 +40,30 @@
 
                 <form class="form-inline ml-5" method="GET" id="formCariProduk" action="{{ route('search')}}">
                     
+                    {{-- {{ dd($_GET['input_kategori']); }} --}}
+
                     <div class="dropdown d-inline mr-1">
                         <button class="btn btn-success dropdown-toggle btnPilihKategori" style="width: 300px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                          Pilih Kategori
+                            @if(isset($_GET['input_kategori']) && $_GET['input_kategori'] != "")
+                                
+                                @php $keteranganPilihKategori = ""; @endphp
+
+                                @foreach ($semua_kategori as $item)
+                                    @if($item->kategori_barang == $_GET['input_kategori'])
+                                        @php 
+                                            $keteranganPilihKategori = $_GET['input_kategori']; 
+                                            break;
+                                        @endphp
+                                    @else 
+                                        @php $keteranganPilihKategori = "Pilih Kategori"; @endphp
+                                    @endif
+                                @endforeach
+
+                                {{ $keteranganPilihKategori }}
+                            @else
+                                Pilih Kategori
+                                
+                            @endif
                         </button>
                         <div class="dropdown-menu" style="height: 1180%; overflow-y: scroll;" aria-labelledby="dropdownMenuButton">
                             @foreach ($semua_kategori as $item)
@@ -132,6 +153,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone.min.js"></script> --}}
     <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/scripts/helper.js') }}"></script>
     <script type="text/javascript">
@@ -144,9 +167,9 @@
         }
 
         function check()
-        {
+        {            
             // jika tidak kosong dan sudah pilih kategori maka mulai pencarian
-            if(!(!$('#input_kategori').val() || !$('#search-product').val()))
+            if($('.btnPilihKategori').text().trim() != "Pilih Kategori" && $('#search-product').val() != "")
             {
                 $('#formCariProduk').submit();
             }

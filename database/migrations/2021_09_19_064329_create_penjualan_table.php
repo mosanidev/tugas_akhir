@@ -16,15 +16,18 @@ class CreatePenjualanTable extends Migration
         Schema::dropIfExists('penjualan');
 
         Schema::create('penjualan', function (Blueprint $table) {
-            $table->string('nomor_nota', 100)->primary();
+            $table->increments('id');
+            $table->string('nomor_nota', 100)->unique();
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->datetime('tanggal');
             $table->unsignedInteger('pembayaran_id');
             $table->foreign('pembayaran_id')->references('id')->on('pembayaran')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('metode_transaksi', ['Dikirim', 'Ambil di toko']);
+            $table->enum('metode_transaksi', ['Dikirim ke alamat', 'Ambil di toko']);
             $table->string('status')->nullable();
-            $table->date('batasan_waktu_pengambilan')->nullable();
+            // $table->date('batasan_waktu_pengambilan')->nullable();
+            $table->double('total')->nullable();
+            $table->timestamps();
         });
     }
 

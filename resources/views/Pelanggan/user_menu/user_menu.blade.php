@@ -1,7 +1,13 @@
 @extends('pelanggan.layouts.template')
 
 @push('css')
-    @stack('css_user_menu')
+    {{-- @stack('css_user_menu') --}}
+
+    @if(isset($alamat))
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.5.0/dist/geosearch.css"/>
+    @endif
+
 @endpush
 
 @section('content')
@@ -27,7 +33,7 @@
 
                     @include('pelanggan.user_menu.alamat')
 
-                @elseif(isset($order))
+                @elseif(isset($penjualan))
 
                     @include('pelanggan.user_menu.order.order')
 
@@ -53,4 +59,5 @@
 
 @push('script')
     @stack('script_user_menu')
+
 @endpush

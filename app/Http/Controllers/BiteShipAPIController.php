@@ -7,13 +7,24 @@ use Http;
 
 class BiteShipAPIController extends Controller
 {
-    public function getArea($kecamatan) 
+    public function getDoubleArea($kecamatan) 
     {
         $kecamatan = trim(str_replace(" ", "+", $kecamatan));
 
         $response = Http::withHeaders([
                 'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI'
                 ])->get("https://api.biteship.com/v1/maps/areas?countries=ID&input=$kecamatan&type=double");
+                
+        return $response->body(); 
+    }
+
+    public function getSingleArea($kecamatan) 
+    {
+        $kecamatan = trim(str_replace(" ", "+", $kecamatan));
+
+        $response = Http::withHeaders([
+                'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI'
+                ])->get("https://api.biteship.com/v1/maps/areas?countries=ID&input=$kecamatan&type=single");
                 
         return $response->body(); 
     }

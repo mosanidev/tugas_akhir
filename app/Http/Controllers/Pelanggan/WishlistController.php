@@ -16,10 +16,11 @@ class WishlistController extends Controller
      */
     public function index()
     {
+        $kategori = DB::table('kategori_barang')->get();
         $wishlist = DB::table('wishlist')->select('wishlist.id', 'wishlist.barang_id', 'barang.foto', 'barang.nama', 'barang.diskon_potongan_harga', 'barang.harga_jual')->join('barang', 'wishlist.barang_id', '=', 'barang.id')->where('users_id','=',auth()->user()->id)->get();
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-        return view('pelanggan..user_menu.user_menu', ['wishlist'=>$wishlist, 'total_cart'=>$total_cart]);
+        return view('pelanggan..user_menu.user_menu', ['wishlist'=>$wishlist, 'semua_kategori' => $kategori, 'total_cart'=>$total_cart]);
     }
 
     /**

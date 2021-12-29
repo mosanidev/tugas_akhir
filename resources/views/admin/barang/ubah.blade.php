@@ -16,7 +16,7 @@
 
             <p class="d-none" id="id_barang">{{$id}}</p>
             {{-- {{ route('barang.update', ['banner' => ]) }} --}}
-            <form method="POST" action="{{ route('barang.update', ['barang'=>$id]) }}" id="form_ubah" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('barang.update', ['barang'=>$id]) }}" id="form_ubah" enctype="multipart/form-data" novalidate>
                 @csrf
                 @method('PUT')
                 <div class="form-group row">
@@ -84,21 +84,32 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <p class="col-sm-3 col-form-label">Harga Beli</p>
-                    <div class="col-sm-9">
-                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
-                    </div>
-                </div>
-                <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Harga Jual</p>
                     <div class="col-sm-9">
                         Rp   <input type="number" id="harga_jual" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_jual" step="100" min="500" value="{{ $barang[0]->harga_jual }}" required>
                     </div>
                 </div>
                 <div class="form-group row">
+                    <p class="col-sm-3 col-form-label"></p>
+
+                    <div class="col-sm-9">
+                        <div class="form-check mt-2">
+                            {{-- @if($barang[0]->barang_konsinyasi) --}}
+                            <input type="checkbox" name="barang_konsinyasi" name="barang_konsinyasi" class="form-check-input optkonsinyasi" value="1" @if($barang[0]->barang_konsinyasi) checked @endif>
+                            <label class="form-check-label">Centang jika barang adalah titipan (konsinyasi)</label>
+                        </div> 
+                    </div>
+                </div>
+                <div class="form-group row" id="div-pilihan">
+                    <p class="col-sm-3 col-form-label">Harga Beli</p>
+                    <div class="col-sm-9">
+                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
+                    </div>
+                </div>
+                <div class="form-group row" id="div-stok-minimum">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control d-inline" min="1" name="stok_minimum" value="{{ $barang[0]->batasan_stok_minimum }}" required>
+                        <input type="number" class="form-control d-inline" min="1" name="stok_minimum" id="stok_minimum" value="{{ $barang[0]->batasan_stok_minimum }}" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -117,7 +128,11 @@
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
-                        </div>                
+                        </div>   
+                        <div class="form-check">
+                            <input type="checkbox" value="1" name="opsi_otomatis_update_kadaluarsa" id="opsi_otomatis_update_kadaluarsa" class="form-check-input" value="1" @if($barang[0]->barang_konsinyasi) checked @endif>
+                            <label class="form-check-label">Centang untuk otomatis perbarui tanggal kadaluarsa barang setiap hari</label>
+                        </div>              
                     </div>
                 </div>
                 <div class="form-group row">
@@ -169,26 +184,113 @@
     <script src="{{ asset('/adminlte/plugins/toastr/toastr.min.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('/adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
+    <!-- Moment  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <script type="text/javascript">
-        //Date picker
-        //Initialize Select2 Elements
-        $('.select2').select2();
 
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4'
-        });
+        $(document).ready(function() {
 
-        $('#datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true
-        });
+            function loadCheckKonsinyasi()
+            {
+                if($('.optkonsinyasi:checked').val() == 1)
+                {
+                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Komisi</p>
+                                            <div class="col-sm-9">
+                                                Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ $barang[0]->komisi }}" required>
+                                            </div>`);
+                    $('#stok_minimum').val('0');     
+                    $('#div-stok-minimum').hide();
+                }
+                else 
+                {
+                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Harga Beli</p>
+                                            <div class="col-sm-9">
+                                                Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
+                                            </div>`);
 
-        for(let i=$('.notification-message').length-1; i>-1; i--)
-        {
+                }
+            }
+
+            loadCheckKonsinyasi();
+
+            $('.optkonsinyasi').on('change', function() {
+
+                if($('.optkonsinyasi:checked').val() == 1)
+                {
+                    console.log("konsinyasi");
+                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Komisi</p>
+                                            <div class="col-sm-9">
+                                                Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ $barang[0]->komisi }}" required>
+                                            </div>`);
+                    $('#stok_minimum').val('0');     
+                    $('#div-stok-minimum').hide();
+                }
+                else 
+                {
+                    console.log("beli");
+                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Harga Beli</p>
+                                            <div class="col-sm-9">
+                                                Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
+                                            </div>`);
+                    $('#stok_minimum').val("0");     
+                    $('#div-stok-minimum').show();
+
+                }
+
+            });
+
+            function loadOtomatisUpdateKadaluarsa()
+            {
+                if($('#opsi_otomatis_update_kadaluarsa:checked').val() == 1)
+                {
+                    $('#datepicker').val(moment().format("YYYY-MM-DD"));
+                    $('#datepicker').prop("readonly", true); 
+                }
+                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1)
+                {
+                    $('#datepicker').val("");
+                    $('#datepicker').prop("readonly", false); 
+                }
+            }
+
+            loadOtomatisUpdateKadaluarsa();
+
+            $('#opsi_otomatis_update_kadaluarsa').on('change', function() {
+
+                if($('#opsi_otomatis_update_kadaluarsa:checked').val() == 1)
+                {
+                    $('#datepicker').val(moment().format("YYYY-MM-DD"));
+                    $('#datepicker').prop("readonly", true); 
+                }
+                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1)
+                {
+                    $('#datepicker').val("");
+                    $('#datepicker').prop("readonly", false); 
+                }
+
+            });
+            //Date picker
+            //Initialize Select2 Elements
+            $('.select2').select2();
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            $('#datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                enableOnReadonly: false
+            });
+
+            for(let i=$('.notification-message').length-1; i>-1; i--)
+            {
             toastr.error($('#notification-message-'+i).html());
-        }
+            }
+        });
+        
 
         function image_select()
         {   
@@ -212,11 +314,14 @@
 
         function loadFotoJikaAda()
         {
-            if("{{$barang[0]->foto}}" != "")
+            if("{{$barang[0]->foto}}" != "/images/barang/barang_null.png")
             {
                 document.getElementById('container').innerHTML = `<div class="d-flex justify-content-center d-inline position-relative my-2 mx-2" style="height: 120px; width: 200px; border-radius: 6px; overflow: hidden;">
                                                                     <img src="` + "{{ asset($barang[0]->foto)}}" + `" alt="Image" style="height: 100%; width: auto; object-fit: cover" class="d-inline">
-                                                                </div>`;
+                                                                  </div>
+                                                                  <div>
+                                                                    <button type="button" class="btn btn-danger" onclick="delete_image()">X</button>
+                                                                  </div>`;
             }
 
         }
@@ -229,9 +334,20 @@
 
             document.getElementById('container').innerHTML = `<div class="d-flex justify-content-center d-inline position-relative my-2 mx-2" style="height: 120px; width: 200px; border-radius: 6px; overflow: hidden;">
                                                                 <img src="` + URL.createObjectURL(image_upload[0]) + `" alt="Image" style="height: 100%; width: auto; object-fit: cover" class="d-inline">
+                                                            </div>
+                                                            <div>
+                                                                <button type="button" class="btn btn-danger" onclick="delete_image()">X</button>
                                                             </div>`;
 
         }
+
+        function delete_image() 
+        {
+            document.getElementById('image_upload').value = "";
+
+            document.getElementById('container').innerHTML = "";
+        }
+
 
     </script>
 @endsection

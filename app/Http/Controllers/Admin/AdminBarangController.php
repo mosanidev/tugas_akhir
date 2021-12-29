@@ -18,11 +18,9 @@ class AdminBarangController extends Controller
      */
     public function index()
     {
-        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where(['barang.barang_konsinyasi'=>'0'])->get();
+        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->get();
 
-        $barang_konsinyasi = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where(['barang.barang_konsinyasi'=>'1'])->get();
-
-        return view('admin.barang.index', ['barang' => $barang, 'barang_konsinyasi' => $barang_konsinyasi]);
+        return view('admin.barang.index', ['barang' => $barang]);
     }
 
     /**
@@ -64,11 +62,11 @@ class AdminBarangController extends Controller
 
         ];
 
-        $jam_kadaluarsa = isset($request->jam_kadaluarsa) ? \Carbon\Carbon::parse($request->jam_kadaluarsa)->format('H:i:s') : '00:00:00';
+        $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
         $harga_beli = isset($request->harga_beli) ? $request->harga_beli : 0;
         $komisi = isset($request->komisi) ? $request->komisi : 0;
         $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
-        $opsi_otomatis_update_kadaluarsa = isset($opsi_otomatis_update_kadaluarsa) ? $opsi_otomatis_update_kadaluarsa : 0;
+        $opsi_otomatis_update_kadaluarsa = isset($request->opsi_otomatis_update_kadaluarsa) ? $request->opsi_otomatis_update_kadaluarsa : 0;
 
         $validator = Validator::make($request->all(), $rules, $messages);
   
@@ -82,11 +80,11 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'jam_kadaluarsa' => $request->jam_kadaluarsa, 'opsi_otomatis_update_kadaluarsa'=>$opsi_otomatis_update_kadaluarsa, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$request->barang_konsinyasi]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'opsi_otomatis_update_kadaluarsa'=>$opsi_otomatis_update_kadaluarsa, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
         }
         else 
         {
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'jam_kadaluarsa' => $request->jam_kadaluarsa, 'opsi_otomatis_update_kadaluarsa'=>$opsi_otomatis_update_kadaluarsa, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$request->barang_konsinyasi]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'opsi_otomatis_update_kadaluarsa'=>$opsi_otomatis_update_kadaluarsa, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
         }
         
         // kembali ke daftar barang
@@ -145,6 +143,12 @@ class AdminBarangController extends Controller
                 $cari = true;
             }
         }
+
+        $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
+        $harga_beli = isset($request->harga_beli) ? $request->harga_beli : 0;
+        $komisi = isset($request->komisi) ? $request->komisi : 0;
+        $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
+        $opsi_otomatis_update_kadaluarsa = isset($request->opsi_otomatis_update_kadaluarsa) ? $request->opsi_otomatis_update_kadaluarsa : 0;
   
         if($cari){
             return redirect()->back()->withErrors(['msg' => 'Kode barang sudah ada'])->withInput($request->all);
@@ -168,11 +172,11 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$request->harga_beli, 'harga_jual'=>$request->harga_jual, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'batasan_stok_minimum'=>$request->stok_minimum, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
+            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$harga_beli, 'barang_konsinyasi' => $barang_konsinyasi, 'komisi' => $komisi, 'batasan_stok_minimum' => $stok_minimum, 'opsi_otomatis_update_kadaluarsa' => $opsi_otomatis_update_kadaluarsa, 'harga_jual'=>$request->harga_jual, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
         }
         else 
         {
-            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$request->harga_beli, 'harga_jual'=>$request->harga_jual, 'batasan_stok_minimum'=>$request->stok_minimum, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
+            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$harga_beli, 'barang_konsinyasi' => $barang_konsinyasi, 'komisi' => $komisi, 'batasan_stok_minimum' => $stok_minimum, 'opsi_otomatis_update_kadaluarsa' => $opsi_otomatis_update_kadaluarsa, 'harga_jual'=>$request->harga_jual, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
         }
 
         // kembali ke daftar barang

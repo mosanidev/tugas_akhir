@@ -25,7 +25,7 @@ class CreateBarangTable extends Migration
             $table->double('diskon_potongan_harga')->default(0);
             $table->integer('jumlah_stok')->default(0);
             $table->date('tanggal_kadaluarsa');
-            $table->time('jam_kadaluarsa')->default('00:00:00');
+            // $table->time('jam_kadaluarsa')->default('00:00:00');
             $table->double('berat');
             $table->enum('satuan', ['PCS', 'DUS', 'PAK'])->default('PCS');
             $table->string('foto', 200)->default("/images/barang/barang_null.png");

@@ -129,11 +129,20 @@
                 </div>
             </li>
 
-            <!-- Nav Item - Charts -->
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('penjualan.index') }}">
-                  <i class="fas fa-fw fa-chart-area"></i>
-                  <span>Penjualan</span></a>
+                <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePenjualan"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Penjualan</span>
+                </a>
+                <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#penjualanOffline">Offline</a>
+                        <a class="collapse-item" href="{{ route('penjualan.index') }}">Online</a>
+
+                    </div>
+                </div>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->

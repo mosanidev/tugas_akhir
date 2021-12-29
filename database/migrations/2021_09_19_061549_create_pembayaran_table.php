@@ -20,11 +20,8 @@ class CreatePembayaranTable extends Migration
             $table->string('metode_pembayaran', 25);
             $table->string('bank', 10)->nullable();
             $table->string('nomor_rekening', 35)->nullable();
-            // $table->string('link_qrcode', 255)->nullable();
             $table->datetime('batasan_waktu')->nullable();
             $table->datetime('waktu_lunas')->nullable();
-            // $table->datetime('waktu_pembayaran')->nullable();
-            // $table->enum('status', ['Sudah Dibayar', 'Menunggu Pembayaran', 'Pembayaran melewati batasan waktu', 'Error']);
         });
     }
 

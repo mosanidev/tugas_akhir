@@ -23,6 +23,7 @@ class CreatePengirimanTable extends Migration
             $table->foreign('kode_shipper')->references('kode_shipper')->on('shipper')->onUpdate('cascade')->onDelete('cascade');
             $table->string('jenis_pengiriman', 55);
             $table->integer('total_berat');
+            $table->datetime('estimasi_tiba');
             // $table->unsignedInteger('alamat_pengiriman_id');
             // $table->foreign('alamat_pengiriman_id')->references('id')->on('alamat_pengiriman')->onUpdate('cascade')->onDelete('cascade');
         });

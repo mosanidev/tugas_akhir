@@ -18,8 +18,6 @@
             </div>
 
             @php $harga = 0; @endphp
-
-            {{-- {{dd($data)}} --}}
             
             @for($i = 0; $i < count($data); $i++)
 

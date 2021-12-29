@@ -28,7 +28,10 @@
                                         <p>Harga Satuan</p>
                                     </div>
                                     <div class="col-8">
-                                        @if($item->barang_diskon_potongan_harga > 0)<del class="d-inline mr-2">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del>@endif<p class="d-inline">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                        @if($item->barang_diskon_potongan_harga > 0)
+                                            <del class="d-inline mr-2">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del>    
+                                        @endif
+                                        <p class="d-inline">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
                                     </div>
                                     <div class="col-4">
                                         <p>Jumlah</p>
@@ -60,9 +63,9 @@
                         <p>Total Harga <br> ( {{ count($cart) }} Produk )</p>
                     </div>
                     <div class="col-5">
-                        <p><strong>{{ "Rp " . number_format($cart[0]->total+$totalDiskon,0,',','.') }}</strong></p>
+                        <p><strong>{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
                     </div>
-                    @if($totalDiskon > 0) 
+                    {{-- @if($totalDiskon > 0) 
                         <div class="col-7">
                             <p>Total Diskon</p>
                         </div>
@@ -78,11 +81,12 @@
                     </div>
                     <div class="col-5">
                         <p><strong>{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
-                    </div>
+                    </div> --}}
                 </div>
                 {{-- <div class="mb-2">
                     <p class="d-inline-block text-right mr-5">Total Harga Produk</p><p class="d-inline">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p><br>
                 </div> --}}
+                <hr>
 
                 <h5 class="mt-3"><strong>Pilih Metode Transaksi</strong></h5>
 

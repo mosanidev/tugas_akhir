@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 use DB;
 
+use Carbon\Carbon;
+
 class PaymentController extends Controller
 {   
     public function __construct()
@@ -35,6 +37,11 @@ class PaymentController extends Controller
 
         $params = array_merge($params, $request->arr_barang);
 
+        if(isset($request->arr_shipping_address))
+        {
+            $params = array_merge($params, $request->arr_shipping_address);
+        }
+
         $snapToken = "";
 
         try 
@@ -46,7 +53,7 @@ class PaymentController extends Controller
             $snapToken = $e->getMessage();
         }
 
-        return response()->json(['snapToken'=>$snapToken, 'nomor_nota'=>$request->nomor_nota, 'params'=> $params]);
+        return response()->json(['snapToken'=>$snapToken, 'nomor_nota'=>$request->nomor_nota, 'params'=> $params, 'total_pesanan' => $request->total_pesanan, 'serverKey' => env('MIDTRANS_SERVER_KEY')]);
     }
 
     public function cancel(Request $request)
@@ -69,12 +76,9 @@ class PaymentController extends Controller
             // For credit card transaction, we need to check whether transaction is challenge by FDS or not
             if ($type == 'credit_card') {
                 if ($fraud == 'challenge') {
-                    // TODO set payment status in merchant's database to 'Challenge by FDS'
-                    // TODO merchant should decide whether this transaction is authorized or not in MAP
-                    echo "Transaction order_id: " . $order_id . " is challenged by FDS";
+                    return $this->changeStatus($notif, 'challenged');
                 } else {
-                    // TODO set payment status in merchant's database to 'Success'
-                    echo "Transaction order_id: " . $order_id . " successfully captured using " . $type;
+                    return $this->changeStatus($notif, 'captured');
                 }
             }
         } else if ($transaction == 'settlement') {
@@ -87,47 +91,66 @@ class PaymentController extends Controller
             return $this->changeStatus($notif, 'expired');
         } else if ($transaction == 'cancel') {
             return $this->changeStatus($notif, 'canceled');
+        } else if ($transaction == 'failure') {
+            return $this->changeStatus($notif, 'failed');
         }
 
     }
     
     private function changeStatus($notif, $status)
     {
-        if($status == "paid")
-        {
-            $idPembayaran = DB::table('pembayaran')->select('pembayaran.id')->join('penjualan', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.nomor_nota', '=', $notif->order_id)->get();
+        $dateNow = \Carbon\Carbon::now()->toDateTimeString();
 
-            $updatePenjualan = DB::table('penjualan')
+        if($status == "challenged")
+        {
+            $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status' => 'Pesanan sudah dibayar dan sedang disiapkan']);
+                        ->update(['status' => 'Pembayaran diterima namun perlu pengecekan lebih lanjut oleh admin', 'updated_at' => $dateNow]);
+        }
+        else if($status == "paid" || $status == "captured")
+        {
+            $penjualan = DB::table('penjualan')->where('nomor_nota', '=', $notif->order_id)->get();
+
+            $idPembayaran = DB::table('pembayaran')->select('pembayaran.id')->join('penjualan', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.nomor_nota', '=', $notif->order_id)->get();
             
             $updatePembayaran = DB::table('pembayaran')
-                        ->where('id', $idPembayaran[0]->id)     
-                        ->update(['waktu_lunas' => $notif->settlement_time]);
+                                ->where('id', $idPembayaran[0]->id)     
+                                ->update(['waktu_lunas' => $notif->settlement_time]);
+
+            $updatePenjualan = DB::table('penjualan')
+                                ->where('nomor_nota', $notif->order_id)   
+                                ->update(['status' => 'Pesanan sudah dibayar dan sedang disiapkan', 'updated_at' => $dateNow]);
+            
         }
         else if ($status == "pending")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status' => 'Menunggu pesanan dibayarkan']);
+                        ->update(['status' => 'Menunggu pesanan dibayarkan', 'updated_at' => $dateNow]);
         }
-        else if ($status == "deny")
+        else if ($status == "denied")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status' => 'Pembayaran pesanan ditolak']);
+                        ->update(['status' => 'Pembayaran pesanan ditolak', 'updated_at' => $dateNow]);
         }
-        else if ($status == "expire")
+        else if ($status == "expired")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status' => 'Pembayaran pesanan melebihi batas waktu yang ditentukan']);
+                        ->update(['status' => 'Pembayaran pesanan melebihi batas waktu yang ditentukan', 'updated_at' => $dateNow]);
         }
-        else if ($status == "cancel")
+        else if ($status == "canceled")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status' => 'Pesanan dibatalkan']);
+                        ->update(['status' => 'Pesanan dibatalkan', 'updated_at' => $dateNow]);
+        }
+        else if ($status == "failed")
+        {
+            $update = DB::table('penjualan')
+                        ->where('nomor_nota', $notif->order_id)     
+                        ->update(['status' => 'Pembayaran pesanan gagal diproses', 'updated_at' => $dateNow]);
         }
 
     }

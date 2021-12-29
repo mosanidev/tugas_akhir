@@ -41,7 +41,11 @@
                                                         <p>Harga Satuan</p>
                                                     </div>
                                                     <div class="col-8">
-                                                        @if($item->barang_diskon_potongan_harga > 0)<del class="d-inline mr-1">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del>@endif <p class="d-inline harga-cart">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                                        @if($item->barang_diskon_potongan_harga > 0)
+                                                            <del class="d-inline mr-1">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del> <p class="d-inline harga-cart">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                                        @else 
+                                                            <p class="d-inline harga-cart">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                                        @endif
                                                     </div>
                                                     <div class="col-4">
                                                         <p>Subtotal</p>
@@ -156,7 +160,7 @@
 
                     if (total_diskon != null)
                     {
-                        convertTotalCartToRupiah(hitungTotal(), hitungTotalDiskon());
+                        convertTotalCartToRupiah(hitungTotalHargaProduk(), hitungTotalDiskon());
                     }
                     else 
                     {
@@ -221,7 +225,7 @@
                 
                 if (total_diskon != null)
                 {
-                    convertTotalCartToRupiah(hitungTotal(), hitungTotalDiskon());
+                    convertTotalCartToRupiah(hitungTotalHargaProduk(), hitungTotalDiskon());
                 }
                 else 
                 {
@@ -260,7 +264,7 @@
 
                     if (total_diskon != null)
                     {
-                        convertTotalCartToRupiah(hitungTotal(), hitungTotalDiskon());
+                        convertTotalCartToRupiah(hitungTotalHargaProduk(), hitungTotalDiskon());
                     }
                     else 
                     {
@@ -277,15 +281,8 @@
                     });
 
                 }
-                // else 
-                // {
-                    // $('.message')[index].innerText = "Maksimal pembelian " + $('.kuantitas-cart')[index].getAttribute('max') + " barang";
-
-                    // setTimeout(function(){ $('.message')[index].innerText = "" }, 3000);
-                // }
 
             });
-
 
             function hitungTotal()
             {
@@ -293,6 +290,17 @@
                 for(let i=0; i<subtotal.length;i++)
                 {
                     total += parseInt(convertRupiahToAngka(subtotal[i].innerText));
+                }
+
+                return total;
+            }
+
+            function hitungTotalHargaProduk()
+            {
+                let total = 0;
+                for(let i=0; i<$('.harga-cart').length;i++)
+                {
+                    total += parseInt(kuantitas[i].value)*parseInt(convertRupiahToAngka($('.harga-cart')[i].innerText));
                 }
 
                 return total;

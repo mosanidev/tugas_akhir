@@ -14,8 +14,9 @@ class HomeController extends Controller
     {
         $curDate = \Carbon\Carbon::now()->format("Y-m-d");
 
-        $barang = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->where('tanggal_kadaluarsa', '<' , $curDate)->inRandomOrder()->limit(16)->get(); // yang penjualannya paling banyak harusnya
-        $barang_promo = DB::table('barang')->select('barang.*')->where('barang.jumlah_stok', '>', 0)->where('barang.tanggal_kadaluarsa', '<', $curDate)->where('barang.diskon_potongan_harga', '>', 0)->where('periode_diskon.status', '=', 'Aktif')->where('periode_diskon.tanggal_dimulai', '<=', $curDate)->where('periode_diskon.tanggal_berakhir', '>=', $curDate)->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')->inRandomOrder()->limit(8)->get(); // yang penjualannya paling banyak harusnya
+        $barang = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->where('tanggal_kadaluarsa', '<' , $curDate)->inRandomOrder()->limit(16)->get(); // yang penjualannya paling banyak harusnya       
+        $barang_promo = DB::table('barang')->select('barang.*')->where('barang.jumlah_stok', '>', 0)->where('barang.tanggal_kadaluarsa', '>', $curDate)->where('barang.diskon_potongan_harga', '>', 0)->where('periode_diskon.status', '=', 'Aktif')->where('periode_diskon.tanggal_dimulai', '<=', $curDate)->where('periode_diskon.tanggal_berakhir', '>=', $curDate)->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')->inRandomOrder()->limit(8)->get(); // yang penjualannya paling banyak harusnya
+
         $kategori = DB::table('kategori_barang')->get();
 
         $data_cart = array();

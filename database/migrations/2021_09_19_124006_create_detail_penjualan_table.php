@@ -16,13 +16,13 @@ class CreateDetailPenjualanTable extends Migration
         Schema::dropIfExists('detail_penjualan');
 
         Schema::create('detail_penjualan', function (Blueprint $table) {
-            $table->string('nomor_nota', 100);
-            $table->foreign('nomor_nota')->references('nomor_nota')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger('penjualan_id');
+            $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('kuantitas');
             $table->double('subtotal');
-            $table->double('total');
+            // $table->double('total');
             $table->unsignedInteger('pengiriman_id')->nullable();
             $table->foreign('pengiriman_id')->references('pengiriman_id')->on('multiple_pengiriman')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('alamat_pengiriman_id')->nullable();

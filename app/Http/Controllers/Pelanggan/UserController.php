@@ -12,10 +12,11 @@ class UserController extends Controller
 {
     public function show()
     {
+        $kategori = DB::table('kategori_barang')->get();
         $user = DB::table('users')->select('*')->where('id', '=', auth()->user()->id)->get();
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-        return view('pelanggan.user_menu.user_menu', ['profil' => $user, 'total_cart' => $total_cart]);
+        return view('pelanggan.user_menu.user_menu', ['profil' => $user, 'semua_kategori' => $kategori, 'total_cart' => $total_cart]);
     }
 
     public function updateProfil(Request $request)
