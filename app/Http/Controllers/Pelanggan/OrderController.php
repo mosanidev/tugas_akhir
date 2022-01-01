@@ -335,31 +335,11 @@ class OrderController extends Controller
     }
 
     public function tes(Request $request)
-    {
-        $data = json_decode($request->data);
+    {        
+        $dataFull = json_decode($request->dataFull);
+        $dataJumlah = json_decode($request->dataJumlah);
 
-        $arr = [];
-
-        for($i = 0; $i<count($data); $i++)
-        {
-            $arrRincian = $data[$i]->rincian;
-            for($x = 0; $x < count($arrRincian); $x++)
-            {
-                $arr[$arrRincian[$x]->barang_id] = 0;
-            }
-        }
-
-        for($i = 0; $i<count($data); $i++)
-        {
-            $arrRincian = $data[$i]->rincian;
-            for($x = 0; $x < count($arrRincian); $x++)
-            {
-                $arr[$arrRincian[$x]->barang_id] += $arrRincian[$x]->kuantitas;
-            }
-        }
-        var_dump($arr);
-
-        return view('pelanggan.order.ngetes', ['data'=>json_decode($request->data)]);
+        return view('pelanggan.order.ngetes', ['data'=>$dataFull, 'dataJumlah' => $dataJumlah]);
     }
 
     public function pickInStore()

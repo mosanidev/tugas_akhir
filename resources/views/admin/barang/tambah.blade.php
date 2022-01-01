@@ -126,7 +126,14 @@
                             <input type="checkbox" value="1" name="opsi_otomatis_update_kadaluarsa" id="opsi_otomatis_update_kadaluarsa" class="form-check-input" value="1">
                             <label class="form-check-label">Centang untuk otomatis perbarui tanggal kadaluarsa barang setiap hari</label>
                         </div> 
+                        <div class="form-check">
+                            <input type="checkbox" value="1" class="form-check-input" id="check-jam-kadaluarsa">
+                            <label class="form-check-label">Centang jika kadaluarsa barang kurang dari sehari</label>
+                        </div>
                     </div>
+                </div>
+                <div class="form-group row" id="div-jam-kadaluarsa">
+                    {{-- field jam kadaluarsa --}}
                 </div>
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Foto</p>
@@ -199,6 +206,41 @@
 
             });
 
+            $('#check-jam-kadaluarsa').on('change', function() {
+                if($('#check-jam-kadaluarsa:checked').val() == 1)
+                {
+                    $('#datepicker').val(moment().format("YYYY-MM-DD"));
+                    $('#datepicker').prop("readonly", true); 
+                    $('#div-jam-kadaluarsa').html(`<p class="col-sm-3 col-form-label">Perkiraan Jam Kadaluarsa</p>
+                                                        <div class="col-sm-9">
+                                                            <div class="bootstrap-timepicker">
+                                                                <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" name="jam_kadaluarsa" class="form-control timepicker">
+                                                                    <div class="input-group-append">
+                                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>`);
+                    //Timepicker
+                    $('.timepicker').timepicker({
+                        showInputs: false
+                    });
+                }
+                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1 && $('#check-jam-kadaluarsa:checked').val() != 1)
+                {
+                    $('#datepicker').val("");
+                    $('#div-jam-kadaluarsa').html("");
+                    $('#datepicker').prop("readonly", false); 
+                }
+                else 
+                {
+                    $('#div-jam-kadaluarsa').html("");
+                }
+            });
+
             $('#opsi_otomatis_update_kadaluarsa').on('change', function() {
 
                 if($('#opsi_otomatis_update_kadaluarsa:checked').val() == 1)
@@ -206,7 +248,7 @@
                     $('#datepicker').val(moment().format("YYYY-MM-DD"));
                     $('#datepicker').prop("readonly", true); 
                 }
-                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1)
+                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1 && $('#check-jam-kadaluarsa:checked').val() != 1)
                 {
                     $('#datepicker').val("");
                     $('#datepicker').prop("readonly", false); 

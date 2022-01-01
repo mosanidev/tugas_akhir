@@ -3,12 +3,12 @@
 @section('content')
 <div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
 
-
     <h3 class="mb-4"><strong>Kirim ke beberapa Alamat</strong></h3>
 
     <div class="row">
         <div class="col-7">
- 
+            
+            {{-- {{dd($data);}} --}}
             <div id="content-alamat-pengiriman">
 
             <div style="overflow: hidden;">
@@ -24,10 +24,11 @@
                 @if(count($data[$i]->rincian) > 0)
 
                     <div class="border border-success rounded p-2 mb-3">
-                        <p class="d-none">{{$data[$i]->alamat_id}}</p>
-                        <p>{{$data[$i]->alamat_label}}</p>
-                        <p>{{$data[$i]->alamat}}</p>
+                        <p class="d-none alamat_dipilih_id">{{$data[$i]->alamat_id}}</p>
+                        <p class="d-inline">{{$data[$i]->nama_penerima }} <p class="d-inline">{{" ( Alamat ".$data[$i]->alamat_label." )"}}</p>
                         <p>{{$data[$i]->nomor_telepon}}</p>
+                        <p>{{$data[$i]->alamat}}</p>
+                        <p class="d-inline">{{ $data[$i]->provinsi }}</p>{{ ", " }}<p class="d-inline">{{ $data[$i]->kecamatan }}</p>{{ ", " }}<p class="d-inline">{{ $data[$i]->kota_kabupaten }}</p>{{ ", " }}<p class="d-inline">{{ $data[$i]->kode_pos }}</p>
                     </div>
 
 
@@ -39,9 +40,11 @@
                                     <img src="{{ asset($data[$i]->rincian[$x]->barang_foto)  }}" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
                                 </div>
                                 <div class="col-10">
-                                    <p class="barang_id d-none">
+                                    <p class="barang_id d-block">{{$data[$i]->rincian[$x]->barang_id}}</p>
                                     <p class="barang_nama">{{ $data[$i]->rincian[$x]->barang_nama }}</p>
-                                    <p class="barang_kuantitas"> {{ $data[$i]->rincian[$x]->kuantitas }} barang ( {{ $data[$i]->rincian[$x]->kuantitas*$data[$i]->rincian[$x]->barang_berat }} gram )</p>
+                                    <div class="mb-3">
+                                        <p class="barang_jumlah d-inline">{{ $data[$i]->rincian[$x]->kuantitas }}</p><p class="d-inline"> barang ( {{ $data[$i]->rincian[$x]->kuantitas*$data[$i]->rincian[$x]->barang_berat }} gram )</p>
+                                    </div>
                                     <div class="row">
                                         <div class="col-4">
                                             <p>Harga Satuan</p>
@@ -75,9 +78,10 @@
                             </div>
                             <div id="label-info-pengiriman" class="col-6 text-right">
                                 <p>Info Pengiriman</p>
+                                <p class="labelInfoTiba"></p>
                             </div>
                             <div id="info-pengiriman-{{$i}}" class="col-6">
-                                
+                                -
                             </div>
 
                         </div>
@@ -116,7 +120,7 @@
                     <p>Total Harga Pesanan</p>
                 </div>
                 <div class="col-6"> 
-                    <p id="total-pesanan"></p>
+                    <p id="total-pesanan">-</p>
                 </div>
             </div>
             
@@ -163,10 +167,18 @@
     </div>
 </div>
 
-
 {{-- End Pick Main Address Modal --}}
 
 
+<form action="{{ route('checkoutShipment') }}" method="GET" id="payment-form">
+    <input type="hidden" name="nomor_nota" id="nomor_nota" value="">
+    <input type="hidden" name="alamat_pengiriman_id" id="alamat_pengiriman_id" value="">
+    <input type="hidden" name="tarif" id="tarif" value="">
+    <input type="hidden" name="kode_shipper" id="kode_shipper" value="">
+    <input type="hidden" name="jenis_pengiriman" id="jenis_pengiriman" value="">
+    <input type="hidden" name="total_berat_pengiriman" id="total_berat_pengiriman" value="">
+    <input type="hidden" name="estimasi_tiba" id="estimasi_tiba" value="">
+</form>
 
 @endsection
 
@@ -184,6 +196,13 @@
 
         let arr_total_tarif = [];
 
+        let arrAlamatPengiriman = [];
+        let arrTarif = [];
+        let arrKodeShipper = [];
+        let arrJenisPengiriman = [];
+        let arrTotalBeratPengiriman = [];
+        let arrEstimasiTiba = [];
+
         $(document).ready(function()
         {
             let data = <?php echo json_encode($data) ?>;
@@ -196,6 +215,8 @@
                 {
                     total_berat = total_berat+parseInt(data[i].rincian[x].barang_berat*data[i].rincian[x].kuantitas);
                 }
+
+                let hasil = null;
 
                 $.ajax({ 
                     url : "{{ route('order_rates') }}", 
@@ -219,9 +240,7 @@
 
                     $('.loadPengiriman').remove();
 
-                    let hasil = JSON.parse(data.response);
-
-                    console.log(hasil);
+                    hasil = JSON.parse(data.response);
 
                     for(let u =0; u < hasil.pricing.length; u++)
                     {
@@ -237,29 +256,207 @@
 
                         let total_tarif = 0;
 
-                        if(arr_total_tarif.length <= 2)
+                        if(hasil.message == "Success to retrieve courier pricing")
                         {
-                            arr_total_tarif[i] = parseInt(hasil.pricing[num].price);
-                        }
+                            arrAlamatPengiriman.push($('.alamat_dipilih_id')[i].innerHTML);
+                            arrTarif.push(hasil.pricing[num].price);
+                            arrKodeShipper.push(hasil.pricing[num].courier_code);
+                            arrJenisPengiriman.push(hasil.pricing[num].courier_service_name);
+                            $('#total_berat_pengiriman').val(total_berat);
 
-                        for(let p=0; p < arr_total_tarif.length; p++)
-                        {
-                            total_tarif += arr_total_tarif[p];
-                        }
+                            console.log(arrAlamatPengiriman);
+                            console.log(arrTarif);
+                            console.log(arrKodeShipper);
+                            console.log(arrJenisPengiriman);
+                            console.log($('#total_berat_pengiriman').val());
 
-                        $('#info-pengiriman-'+i).html(hasil.pricing[num].courier_name + " " + convertAngkaToRupiah(hasil.pricing[num].price) + "<br>" + hasil.pricing[num].duration.replace("days", "hari").replace("Hours", "jam").replace("hours", "jam"));
-                    
-                        // total_tarif += hasil.pricing[num].price;
+                            if(arr_total_tarif.length <= 2)
+                            {
+                                arr_total_tarif[i] = parseInt(hasil.pricing[num].price);
+                            }
 
-                        $("#total-tarif").html(convertAngkaToRupiah(total_tarif));
+                            for(let p=0; p < arr_total_tarif.length; p++)
+                            {
+                                total_tarif += arr_total_tarif[p];
+                            }
 
                         
+                            let infoTiba = null;
+                            let durasi = null;
+                                
+                            if(hasil.pricing[num].duration.toLowerCase().includes('days'))
+                            {
+                                if(hasil.pricing[num].duration.includes("-"))
+                                {
+                                    durasi = hasil.pricing[num].duration.split(" - ")[1].replace(" days", "");
+                                }
+                                else
+                                {
+                                    durasi = hasil.pricing[num].duration.replace(" days", "");
+                                }
+                                infoTiba = moment().add(durasi, 'days').format('DD MMMM YYYY'); 
+                                $('.labelInfoTiba')[i].innerHTML = "Estimasi Tiba";
+                                $('#info-pengiriman-'+i).html("<p>" + hasil.pricing[num].courier_name + "</p>" + "<p>" + infoTiba + "</p>");
+
+                            }
+                            else if (hasil.pricing[num].duration.toLowerCase().includes('hours'))
+                            {
+                                if(hasil.pricing[num].duration.includes("-"))
+                                {
+                                    durasi = hasil.pricing[num].duration.split(" - ")[1].replace(" Hours", "");
+                                }
+                                else
+                                {
+                                    durasi = hasil.pricing[num].duration.replace(" Hours", "");
+                                }
+                                let roundUp = moment().second() || moment().millisecond() ? moment().add(1, 'hour').startOf('hour') : moment().startOf('hour'); // dibulatkan ke jam terdekat
+                                infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm:ss'); 
+                                $('.labelInfoTiba')[i].innerHTML = "Estimasi Tiba";
+                                $('#info-pengiriman-'+i).html("<p>" + hasil.pricing[num].courier_name + "</p>" + "<p>" + infoTiba + "</p>");
+                            }
+                            
+                            let total_pesanan = convertRupiahToAngka($('#origin-total-pesanan').html());
+                            $("#total-tarif").html(convertAngkaToRupiah(total_tarif));
+
+                            if(arr_total_tarif.length == 2)
+                            {
+                                $('#total-pesanan').html(convertAngkaToRupiah(total_pesanan + total_tarif));
+                            }
+                        }
                     });
 
-
                 }
+                
             });
             }
+
+            function createArrBarang()
+            {
+                let arrBarang = { "item_details" : [] };
+
+                let dataJumlah = <?php echo json_encode($dataJumlah) ?>;
+
+                for(let i = 0; i < $('.barang_id').length; i++)
+                {
+                    let obj = { 
+                        "id": $('.barang_id')[i].innerHTML,
+                        "price": convertRupiahToAngka($('.barang_harga')[i].innerHTML),
+                        "quantity": dataJumlah[$('.barang_id')[i].innerHTML],
+                        "name": $('.barang_nama')[i].innerHTML
+                    }
+
+                    if(arrBarang.item_details.length == 0){
+                        arrBarang.item_details.push(obj);
+                    }
+                    else if (!arrBarang.item_details.filter(function(e) { return e.id == obj.id; }).length > 0) // bila tidak sama maka masukkan ke array objek
+                    {
+                        arrBarang.item_details.push(obj);
+                    }
+                }
+
+                let tarifOngkir = parseInt(convertRupiahToAngka($('#total-tarif').html()));
+
+                let obj = {
+                    id: "P01",
+                    price: +tarifOngkir,
+                    quantity: 1,
+                    name: "Shipment Fee"
+                }
+
+                arrBarang.item_details.push(obj)
+
+                if($('#total-diskon').html() != undefined)
+                {
+                    let nominal = parseInt(convertRupiahToAngka($('#total-diskon').html()));
+                    let obj = {
+                        id: "D01",
+                        price: -nominal,
+                        quantity: 1,
+                        name: "Discount"
+                    }
+                    arrBarang.item_details.push(obj)
+                }
+
+                return arrBarang;
+            }
+
+            function createArrShippingAddress()
+            {
+                let arrShippingAddress = { "shipping_address" : [] };
+
+                let obj = { 
+                    "first_name": $('#namaPenerima').html(),
+                    "last_name": "",
+                    "phone": $('#nomorTeleponPenerima').html(),
+                    "address": $('#alamatPenerima').html(),
+                    "city": $('#kotaPenerima').html(),
+                    "postal_code": $('#kodePosPenerima').html(),
+                    "country_code": 'IDN'
+                }
+                
+                arrShippingAddress.shipping_address.push(obj);
+
+                return arrShippingAddress;
+            }
+            
+            $('#pay').on('click', function() {
+
+                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+
+                let arrBarang = createArrBarang();
+
+                let arrShippingAddress = createArrShippingAddress();
+
+                let selected = $('#selectPengiriman').find(":selected").val();
+
+                if(arr_total_tarif.length < 2)
+                {
+                    alert("Harap pilih pengiriman terlebih dahulu");
+                }
+                else 
+                {
+                    // total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
+
+                    $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('initPayment') }}',
+                        data: { 'total_pesanan': convertRupiahToAngka($('#origin-total-pesanan').html()), 'nomor_nota': nomor_nota, 'arr_barang': arrBarang, 'arr_shipping_address': arrShippingAddress},
+                        success:function(data) {
+
+                            try {
+                                snap.pay(data.snapToken, {
+                                    onSuccess: function (result) {
+
+                                        $('#nomor_nota').val(nomor_nota);
+                                        $('#payment-form').submit();
+                                    },
+                                    onPending: function (result) {
+
+                                        $('#nomor_nota').val(nomor_nota);
+                                        $('#payment-form').submit();
+                                    },
+                                    onError: function (result) {
+
+                                        $('#modalLoading').modal('toggle');
+                                    },
+                                    onClose: function() {
+
+                                        $('#modalLoading').modal('toggle');
+                                    },
+                                    gopayMode: 'qr'
+                                });
+                            } catch(err) {
+
+                                snap.hide();           
+                            }
+                            
+                        }
+                    });
+                }
+
+            });
             
         });
         

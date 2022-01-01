@@ -188,7 +188,6 @@ Route::group(['prefix' => 'admin'], function() {
 
     Route::get('login', [AdminAuthController::class, 'showLoginForm']);
     Route::post('login', [AdminAuthController::class, 'login'])->name('admin.login');
-    
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     Route::group(['middleware' => 'admin'], function() {
@@ -201,20 +200,13 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::group(['prefix' => 'barang'], function() {
             
-            Route::get('/jenis/search', [AdminJenisBarangController::class, 'search'])->name('searchJenis');
             Route::resource('/jenis', AdminJenisBarangController::class);
-
-            Route::get('/kategori/search', [AdminKategoriBarangController::class, 'search'])->name('searchKategori');
             Route::resource('/kategori', AdminKategoriBarangController::class);
-
-            Route::get('/merek/search', [AdminMerekBarangController::class, 'search'])->name('searchMerek');
             Route::resource('/merek', AdminMerekBarangController::class);
-
             Route::resource('/merek', AdminMerekBarangController::class);
 
         });
         
-        Route::get('/barang/search', [AdminBarangController::class, 'search'])->name('searchBarang');
         Route::resource('/barang', AdminBarangController::class);
 
         Route::get('/periode_diskon/barang_diskon', [AdminBarangDiskonController::class, 'load'])->name('loadBarangDiskon');
@@ -232,6 +224,7 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::resource('/retur_pembelian', AdminReturPembelianController::class);
 
+        Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);
     });
 });

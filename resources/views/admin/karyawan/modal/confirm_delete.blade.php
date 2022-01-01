@@ -1,4 +1,4 @@
-<div class="modal fade" id="modal-hapus-barang">
+<div class="modal fade" id="modal-hapus-karyawan">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -8,11 +8,10 @@
           </button>
         </div>
         <div class="modal-body">
-          <form class="d-inline" action="{{ route('barang.destroy', 'id') }}" id="form-hapus-barang" method="POST">
-            {{-- action="{{ route('supplier.destroy', 'id') }}" --}}
+          <form class="d-inline" action="" id="formDeleteKaryawan" method="POST">
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data barang ?</p>
+            <p class="text-justify">Apakah anda yakin ingin menghapus data karyawan ?</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>

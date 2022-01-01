@@ -50,7 +50,7 @@
                             <p><p class="mr-2 d-inline" id="namaPenerima">{{ $alamat_dipilih[0]->nama_penerima }}</p>{{ "  " }}( Alamat {{ $alamat_dipilih[0]->label }} )</p>
                             <p id="nomorTeleponPenerima">{{ $alamat_dipilih[0]->nomor_telepon }}</p>
                             <p id="alamatPenerima">{{ $alamat_dipilih[0]->alamat }}</p>
-                            <p class="d-inline">{{ $alamat_dipilih[0]->kecamatan }}</p>{{ ", " }}<p class="d-inline" id="kotaPenerima">{{ $alamat_dipilih[0]->kota_kabupaten }}</p>{{ ", " }}<p class="d-inline" id="kodePosPenerima">{{ $alamat_dipilih[0]->kode_pos }}</p>
+                            <p class="d-inline">{{ $alamat_dipilih[0]->provinsi }}</p>{{ ", " }}<p class="d-inline">{{ $alamat_dipilih[0]->kecamatan }}</p>{{ ", " }}<p class="d-inline" id="kotaPenerima">{{ $alamat_dipilih[0]->kota_kabupaten }}</p>{{ ", " }}<p class="d-inline" id="kodePosPenerima">{{ $alamat_dipilih[0]->kode_pos }}</p>
                         
                         @else 
 

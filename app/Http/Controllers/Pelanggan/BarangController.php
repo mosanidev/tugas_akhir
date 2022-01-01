@@ -16,7 +16,6 @@ class BarangController extends Controller
         $data_barang_serupa = DB::table('barang')->where('barang.jenis_id', '=', $data_barang[0]->jenis_id)->whereNotIn('id', [$data_barang[0]->id])->inRandomOrder()->limit(8)->get();
         $data_barang_lain = DB::table('barang')->where('barang.kategori_id', '=', $data_barang[0]->kategori_id)->whereNotIn('id', [$data_barang[0]->id])->inRandomOrder()->limit(8)->get();
 
-
         if(Auth::check())
         {
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();

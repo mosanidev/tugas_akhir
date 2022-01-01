@@ -132,7 +132,11 @@
                         <div class="form-check">
                             <input type="checkbox" value="1" name="opsi_otomatis_update_kadaluarsa" id="opsi_otomatis_update_kadaluarsa" class="form-check-input" value="1" @if($barang[0]->barang_konsinyasi) checked @endif>
                             <label class="form-check-label">Centang untuk otomatis perbarui tanggal kadaluarsa barang setiap hari</label>
-                        </div>              
+                        </div>   
+                        <div class="form-check">
+                            <input type="checkbox" value="1" class="form-check-input" id="check-jam-kadaluarsa">
+                            <label class="form-check-label">Centang jika kadaluarsa barang kurang dari sehari</label>
+                        </div>           
                     </div>
                 </div>
                 <div class="form-group row">

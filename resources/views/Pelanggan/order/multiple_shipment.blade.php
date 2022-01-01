@@ -11,7 +11,8 @@
     <div class="row">
         <div class="col-md-12">
             <form method="GET" action="" id="form-tes">
-            <input type="hidden" value="" name="data" id="data"/>
+            <input type="hidden" value="" name="dataFull" id="dataFull"/>
+            <input type="hidden" value="" name="dataJumlah" id="dataJumlah"/>
             @for($i=0; $i<count($cart); $i++)
                 <div class="bg-light border border-4 p-3 mb-3">
                 
@@ -22,7 +23,6 @@
                         <div class="col-10">
                             <input type="hidden" value="{{ $cart[$i]->barang_id }}" class="barang_id" name="barang_id[]">
                             <p>{{ $cart[$i]->barang_nama }}</p>
-                            <input type="text" class="maks_qty" id="maks-qty-{{ $cart[$i]->barang_id }}" value="{{$cart[$i]->kuantitas}}">
                         </div>
                     </div>
     
@@ -43,19 +43,6 @@
                                         <div class="col-7">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    @php 
-                                                    
-                                                        $stokBarang = $cart[$i]->barang_stok;
-    
-                                                        $jumlahAlamat = count($alamat);
-    
-                                                        $maksQty = floor($stokBarang/$jumlahAlamat); // jika hasilnya bilangan desimal, dibulatkan ke bawah
-    
-                                                        // var_dump($maksQty);
-                                                        
-                                                        // $maksQty = number_format($maksQty,0,'.','');
-                                                       
-                                                    @endphp
                                                     <div class="row">
                                                         <div class="col-4 text-right mt-1">
                                                             <p>Kuantitas</p>
@@ -88,7 +75,6 @@
     
 </form>
 
-
 @endsection
 
 
@@ -107,25 +93,12 @@
             let barang = <?php echo json_encode($cart) ?>;
             let alamat = <?php echo json_encode($alamat) ?>;
 
+            console.log(alamat);
+
             let checked = $("#check-box:checked").map(function() {
                     return $(this).val()
                 }).get();
 
-
-            // $('.input-kuantitas').on('change', function() {
-
-            //     let id = $(this).attr('id').split("-")[2];
-
-            //     let maksQty = parseInt($('#maks-qty-'+id).val());
-
-            //     let qty = parseInt($(this).val());
-
-            //     if($('.check-box-'+id+':checked').value.split(" - ")[1] == id)
-            //     {
-            //         $('#maks-qty-'+id).val(qty);
-            //     }
-
-            // });
 
             $('#btnLanjutkan').on('click', function() {
 
@@ -144,6 +117,11 @@
                         "alamat_id" : alamat[i].id,
                         "alamat_label": alamat[i].label,
                         "alamat": alamat[i].alamat,
+                        "nama_penerima": alamat[i].nama_penerima,
+                        "provinsi": alamat[i].provinsi,
+                        "kecamatan": alamat[i].kecamatan,
+                        "kota_kabupaten": alamat[i].kota_kabupaten,
+                        "kode_pos": alamat[i].kode_pos,
                         "nomor_telepon": alamat[i].nomor_telepon,
                         "alamat_kode_pos": alamat[i].kode_pos,
                         "alamat_latitude": alamat[i].latitude,
@@ -151,16 +129,12 @@
                         "rincian": []
                     });
 
-                    let hitungQty = 0;
-
                     for(let x=0; x<check_box.length; x++)
                     {
                         if(check_box[x].checked == true)
                         {
                             if(alamat[i].id == check_box[x].value.split(" - ")[0])
                             {
-                                // let maksQty = parseInt(check_box[x].value.split(" - ")[7]);
-
                                 data[i].rincian.push({
                                     "barang_id": check_box[x].value.split(" - ")[1],
                                     "barang_nama": check_box[x].value.split(" - ")[2],
@@ -176,38 +150,30 @@
                     }
                 }
 
-                console.log(barang);
-                console.log(data);
-                // console.log(cek(data))
-
                 let newData = cek(data);
-
-                console.log(newData);
 
                 let cekApakahMelebihiStok = false;
 
                 barang.forEach(element => {
                     
-                    console.log(element['barang_stok']);
-
                     if(newData[element['barang_id']] > element['barang_stok'])
                     {
-                        alert("stok " + element['barang_nama'] + " habis");
+                        alert("Jumlah pembelian " + element['barang_nama'] + " melebihi jumlah stok yang tersedia");
                         cekApakahMelebihiStok = true;
                     }
-                    // console.log(element['barang_id']+ " " +element['barang_stok']);
                 });
+
 
                 if(cekApakahMelebihiStok == false)
                 {
-                    $('#data').val(JSON.stringify(data));
+                    $('#dataFull').val(JSON.stringify(data));
+
+                    $('#dataJumlah').val(JSON.stringify(newData));
 
                     $('#form-tes').attr("action", "/order/shipment/multiple/checkout");
                     
                     $('#form-tes').submit();
                 }
-
-                
 
             });
 
@@ -218,9 +184,10 @@
                 for(let i = 0; i<data.length; i++)
                 {
                     let arrRincian = data[i].rincian;
+                    
                     for(let x = 0; x < arrRincian.length; x++)
                     {
-                        if(arr[arrRincian[x].barang_id] == undefined)
+                        if(arr[arrRincian[x].barang_id] == null)
                         {
                             arr[arrRincian[x].barang_id] = 0;
                         }
@@ -232,14 +199,6 @@
 
                 return arr;
             }
-
-            // function cekApakahMelebihiStok(data)
-            // {
-            //     for(let i =0; i< data.length; i++)
-            //     {
-            //         for(let x=0; x < data[x].rincian)
-            //     }
-            // }
 
         });
             
