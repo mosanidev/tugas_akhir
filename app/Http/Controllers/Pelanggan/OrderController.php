@@ -370,34 +370,28 @@ class OrderController extends Controller
 
             $arrPengirimanId = [];
 
-            
-
             $total_tarif = array_sum($tarif);
-
-            for($y = 0; $y < count($alamat_pengiriman_id); $y++)
+            
+            for($i = 0; $i < count($data); $i++)
             {
-                $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif[$y], 'kode_shipper' => $kode_shipper[$y], 'jenis_pengiriman' => $jenis_pengiriman[$y], 'total_berat' => $total_berat_pengiriman[$y], 'estimasi_tiba' => $estimasi_tiba[$y]]);
+                $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif[$i], 'kode_shipper' => $kode_shipper[$i], 'jenis_pengiriman' => $jenis_pengiriman[$i], 'total_berat' => $total_berat_pengiriman[$i], 'estimasi_tiba' => $estimasi_tiba[$i]]);
 
-                $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id[$y], 'total_tarif'=>$total_tarif]);
+                $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$data[$i]->alamat_id, 'total_tarif'=>$total_tarif]);
 
-                for($i=0; $i<count($data); $i++)
+                for($x = 0; $x < count($data[$i]->rincian); $x++)
                 {
-                    for($x = 0; $x < count($data[$i]->rincian); $x++)
-                    {
-                        $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
-                            'penjualan_id' => $id_penjualan,
-                            'barang_id' => $data[$i]->rincian[$x]->barang_id,
-                            'kuantitas' => $data[$i]->rincian[$x]->kuantitas,
-                            'subtotal' => $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas,
-                            'pengiriman_id' => $id_pengiriman,
-                            'alamat_pengiriman_id' => $alamat_pengiriman_id[$y]
-                        ]);
+                    $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                        'penjualan_id' => $id_penjualan,
+                        'barang_id' => $data[$i]->rincian[$x]->barang_id,
+                        'kuantitas' => $data[$i]->rincian[$x]->kuantitas,
+                        'subtotal' => $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas,
+                        'pengiriman_id' => $id_pengiriman,
+                        'alamat_pengiriman_id'=>$data[$i]->alamat_id
+                    ]);
 
-                        $total += $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas;
-                    }
+                    $total += $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas;
                 }
-                // $update_detail_penjualan = DB::table('detail_penjualan')->where('penjualan_id', $id_penjualan)->update(['pengiriman_id' => $id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id[$y]]);
-
+                // $update_detail_penjualan = DB::table('detail_penjualan')->where('penjualan_id', $id_penjualan)->where('pengiriman_id', null)->update(['pengiriman_id' => $id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id[$y]]);
             }
 
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$total_tarif]);

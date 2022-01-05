@@ -205,11 +205,14 @@
         let arrTotalBeratPengiriman = [];
         let arrEstimasiTiba = [];
 
+        let data = <?php echo json_encode($data) ?>;
+
         $(document).ready(function()
         {
             let total_berat = 0;
-            let data = <?php echo json_encode($data) ?>;
             let arrTotalBerat = <?php echo json_encode($arr_total_berat) ?>;
+
+            console.log(data);
 
             for(let i = 0; i < data.length; i++)
             {
@@ -410,8 +413,6 @@
                     let date = document.getElementsByClassName('estimasiTiba')[i].innerText;
                     arrEstimasiTiba[i] = moment(date).format('YYYY-MM-DD HH:mm:ss');
                 }
-
-                console.log(arrTarif);
 
                 $('#data').val(JSON.stringify(data));
                 $('#total_berat_pengiriman').val(JSON.stringify(total_berat));
