@@ -167,6 +167,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/shipment', [OrderController::class, 'chooseAddress'])->name('chooseAddress');
         Route::get('/checkout/pickinstore', [OrderController::class, 'addOrderPickInStore'])->name('checkoutPickInStore');
         Route::get('/checkout/shipment', [OrderController::class, 'addOrderShipment'])->name('checkoutShipment');
+        Route::get('/checkout/multiple/shipment', [OrderController::class, 'addOrderMultipleShipment'])->name('checkoutMultipleShipment');
 
         Route::post('initpayment', [PaymentController::class, 'initPayment'])->name('initPayment');
         Route::get('/detailpayment', [OrderController::class, 'detailPayment'])->name('order.detailpayment');        

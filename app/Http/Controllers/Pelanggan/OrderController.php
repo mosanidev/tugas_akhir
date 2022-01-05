@@ -279,6 +279,139 @@ class OrderController extends Controller
         }
     }
 
+    public function addOrderMultipleShipment(Request $request)
+    {
+        $current_status = \Midtrans\Transaction::status($request->nomor_nota);
+
+        // kembali ke halaman sebelumnya jika pembayaran melalui e-wallet belum lunas
+        if($current_status->payment_type == "gopay" || $current_status->payment_type == "qris")
+        {
+            if($current_status->status_code == "201" && $current_status->transaction_status == "pending")
+            {
+                $cancel = $this->cancel($request->nomor_nota);
+                return redirect()->back()->with(['error' => 'Pembayaran melalui e-Wallet dari anda belum masuk. Harap ulangi pembayaran']);
+            }
+        }
+
+        $status_message = $current_status->status_message;
+        $transaction_time = $current_status->transaction_time;
+        $metode_pembayaran = $current_status->payment_type;
+        $transaction_status = $current_status->transaction_status;
+
+        // data pengiriman
+        $data = json_decode($request->data);
+        $alamat_pengiriman_id = json_decode($request->alamat_pengiriman_id);
+        $tarif = json_decode($request->tarif);
+        $kode_shipper = json_decode($request->kode_shipper);
+        $jenis_pengiriman = json_decode($request->jenis_pengiriman);
+        $estimasi_tiba = json_decode($request->estimasi_tiba);
+        $total_berat_pengiriman = $request->total_berat_pengiriman;
+
+        $batasan_waktu = new Carbon($transaction_time);
+
+        if($metode_pembayaran == "bank_transfer")
+        {
+            $batasan_waktu = $batasan_waktu->addHours('3'); // batasan waktu sehari
+        }
+        else if ($metode_pembayaran == "gopay" || $metode_pembayaran == "qris")
+        {
+            $batasan_waktu = $batasan_waktu->addMinutes('15'); // batasan waktu sehari
+        }
+
+        try 
+        {
+            $status = "";
+            
+            if($transaction_status == "settlement")
+            {
+                $status = "Pesanan sudah dibayar dan sedang disiapkan";
+            }
+            else if($transaction_status == "pending")
+            {
+                $status = "Menunggu pesanan dibayarkan";
+            }
+            else if ($transaction_status == "deny")
+            {
+                $status = "Pembayaran pesanan ditolak";
+            }
+            else if ($transaction_status == "expire")
+            {
+                $status = "Pembayaran pesanan melebihi batas waktu yang ditentukan";
+            }
+            else if ($transaction_status == "cancel")
+            {
+                $status = "Pesanan dibatalkan";
+            }
+
+            $id_pembayaran = null;
+
+            if($metode_pembayaran == "bank_transfer")
+            {
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
+            }
+            else if ($metode_pembayaran == "gopay")
+            {
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
+            }
+            else if ($metode_pembayaran == "qris")
+            {
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
+            }
+
+            $dateNow = \Carbon\Carbon::now()->toDateTimeString();
+
+            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke berbagai alamat', 'status'=>$status, 'created_at'=>$dateNow]);
+
+            $total = 0;
+
+            $delete_cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->delete();
+
+            $total_tarif = 0;
+
+            $arrPengirimanId = [];
+
+            
+
+            $total_tarif = array_sum($tarif);
+
+            for($y = 0; $y < count($alamat_pengiriman_id); $y++)
+            {
+                $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif[$y], 'kode_shipper' => $kode_shipper[$y], 'jenis_pengiriman' => $jenis_pengiriman[$y], 'total_berat' => $total_berat_pengiriman[$y], 'estimasi_tiba' => $estimasi_tiba[$y]]);
+
+                $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id[$y], 'total_tarif'=>$total_tarif]);
+
+                for($i=0; $i<count($data); $i++)
+                {
+                    for($x = 0; $x < count($data[$i]->rincian); $x++)
+                    {
+                        $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                            'penjualan_id' => $id_penjualan,
+                            'barang_id' => $data[$i]->rincian[$x]->barang_id,
+                            'kuantitas' => $data[$i]->rincian[$x]->kuantitas,
+                            'subtotal' => $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas,
+                            'pengiriman_id' => $id_pengiriman,
+                            'alamat_pengiriman_id' => $alamat_pengiriman_id[$y]
+                        ]);
+
+                        $total += $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas;
+                    }
+                }
+                // $update_detail_penjualan = DB::table('detail_penjualan')->where('penjualan_id', $id_penjualan)->update(['pengiriman_id' => $id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id[$y]]);
+
+            }
+
+            $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$total_tarif]);
+
+            return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]);
+
+        }
+        catch(Exception $ex)
+        {
+            dd($ex);
+            // abort(404);        
+        }
+    }
+
     public function next()
     {
         $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->groupBy('cart.barang_id')->get();

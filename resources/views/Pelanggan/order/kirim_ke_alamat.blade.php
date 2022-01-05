@@ -3,6 +3,15 @@
 @section('content')
     <div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
 
+        @if(session('error'))
+            <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button id="alert-close" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <p class="text-center"><strong>{{ session('error') }}</strong></p>
+            </div>
+        @endif
+
         <h3 class="mb-4"><strong>Belanja Dikirim ke Alamat</strong></h3>
 
         <div class="row">
@@ -17,7 +26,6 @@
                         <button type="button" class="btn btn-link text-success float-left" data-toggle="modal" data-target="#modalAddAddress">Buat Alamat</button>
                     @else 
                         <button type="button" class="btn btn-link text-success float-left" data-toggle="modal" data-target="#modalPickAddress">Pilih Alamat</button>   
-
                     @endif
 
                     <form method="GET" action="{{ route('multipleShipmentNew') }}">

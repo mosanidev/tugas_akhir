@@ -23,7 +23,7 @@ class CreatePenjualanTable extends Migration
             $table->datetime('tanggal');
             $table->unsignedInteger('pembayaran_id');
             $table->foreign('pembayaran_id')->references('id')->on('pembayaran')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('metode_transaksi', ['Dikirim ke alamat', 'Ambil di toko']);
+            $table->enum('metode_transaksi', ['Dikirim ke alamat', 'Ambil di toko', 'Dikirim ke berbagai alamat']);
             $table->string('status')->nullable();
             // $table->date('batasan_waktu_pengambilan')->nullable();
             $table->double('total')->nullable();
