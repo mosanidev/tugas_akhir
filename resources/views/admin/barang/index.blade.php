@@ -99,6 +99,14 @@
   <!-- Toastr -->
   <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
+  @if(session('errors'))
+      <script type="text/javascript">
+        @foreach ($errors->all() as $error)
+            toastr.error("{{ $error }}", "Error", toastrOptions);
+        @endforeach
+      </script>
+  @endif
+
   <script type="text/javascript">
 
     $(document).ready(function(){

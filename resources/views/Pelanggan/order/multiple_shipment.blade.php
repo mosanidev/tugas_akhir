@@ -110,9 +110,9 @@
                         return $(this).val()
                     }).get();
 
-
                 for(let i = 0; i<alamat.length; i++)
                 {
+                    // let arr = [{ "rincian": null }];
                     data.push({
                         "alamat_id" : alamat[i].id,
                         "alamat_label": alamat[i].label,
@@ -146,9 +146,20 @@
                                     "kuantitas": qty[x]
                                 });
                             }
+                            else
+                            {
+                                data.splice(i, 1);
+                            }
                         }
                     }
+
+                    // if(i > -1 && data[i].rincian.length > 0)
+                    // {
+                    //     data.splice(i, 1);
+                    // }
                 }
+
+                
 
                 let newData = cek(data);
 
@@ -170,9 +181,12 @@
 
                     $('#dataJumlah').val(JSON.stringify(newData));
 
-                    $('#form-tes').attr("action", "/order/shipment/multiple/checkout");
+                    console.log(data);
                     
-                    $('#form-tes').submit();
+
+                    // $('#form-tes').attr("action", "/order/shipment/multiple/checkout");
+                    
+                    // $('#form-tes').submit();
                 }
 
             });

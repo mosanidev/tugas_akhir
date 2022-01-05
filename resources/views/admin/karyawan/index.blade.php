@@ -64,12 +64,10 @@
   <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
     @if(session('errors'))
-      {{-- {{dd(session('errors'))}} --}}
       <script type="text/javascript">
         @foreach ($errors->all() as $error)
             toastr.error("{{ $error }}", "Error", toastrOptions);
         @endforeach
-        
       </script>
     @endif
 
@@ -216,18 +214,6 @@
         }
 
         return hasil;
-      }
-
-      function showActiveSession()
-      {
-        if("{{ session('success') }}" != "")
-        {
-          toastr.success("{{ session('success') }}", "Success", toastrOptions);
-        } 
-        else if ("{{ session('error') }}" != "")
-        {
-          toastr.error("{{ session('error') }}", "Error", toastrOptions);
-        }
       }
 
       showActiveSession();

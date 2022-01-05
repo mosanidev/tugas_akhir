@@ -26,21 +26,15 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Konsinyasi</label>
-              <div class="col-sm-10">
-                <p>@if ($pembelian[0]->sistem_konsinyasi == 1) {{ "Ya, pembelian menggunakan sistem konsinyasi" }} @else {{ "Tidak menggunakan sistem konsinyasi" }} @endif</p>
-              </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Total</label>
                 <div class="col-sm-10">
-                    <p id="total"></p>
+                    <p id="total">{{ "Rp " . number_format($pembelian[0]->total,0,',','.') }}</p>
                 </div>
             </div>
             <div class="card shadow my-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Tabel Barang Dibeli</h6>
-                    <button class="btn btn-success ml-2 mt-3" data-toggle="modal" id="btnTambah" data-target="#modalTambahBarangDiskon">Tambah</button>
+                    <button class="btn btn-success ml-2 mt-3" data-toggle="modal" id="btnTambah" data-target="#modalTambahBarangDibeli">Tambah</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -72,10 +66,30 @@
         </div>
     </div>
 
+    @include('admin.pembelian.barang_dibeli.modal.create')
+
   <!-- Toastr -->
   <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
+  <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
+
   <script type="text/javascript">
+
+    //Initialize Select2 Elements
+    $('.select2').select2();
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+        dropdownParent: $("#divTambahBarangDibeli"),
+        theme: 'bootstrap4'
+    });
+
+    $('#barang').on('click', function() {
+
+      console.log($(this).val());
+      console.log("$(this).val()");
+
+    });
 
     if("{{ session('status') }}" != "")
     {

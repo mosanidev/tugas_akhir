@@ -39,18 +39,6 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Konsinyasi</label>
-              <div class="col-sm-10">
-                <div class="checkbox">
-                    <label><input type="checkbox" class="mr-2" name="konsinyasi" value="ya" id="checkKonsinyasi" @if($pembelian[0]->sistem_konsinyasi == 1) checked @endif>Ya, pembelian menggunakan sistem konsinyasi</label>
-                </div>
-                {{-- <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="checkKonsinyasi">
-                    <label class="custom-control-label">Ya, pembelian menggunakan sistem konsinyasi</label>
-                </div> --}}
-              </div>
-            </div>
-            <div class="form-group row">
               <label class="col-sm-2 col-form-label">Status</label>
               <div class="col-sm-10">
                 <select class="form-control select2bs4" name="status" id="selectStatus" required>

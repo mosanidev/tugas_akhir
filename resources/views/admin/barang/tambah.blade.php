@@ -122,14 +122,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-check">
-                            <input type="checkbox" value="1" name="opsi_otomatis_update_kadaluarsa" id="opsi_otomatis_update_kadaluarsa" class="form-check-input" value="1">
-                            <label class="form-check-label">Centang untuk otomatis perbarui tanggal kadaluarsa barang setiap hari</label>
-                        </div> 
-                        <div class="form-check">
-                            <input type="checkbox" value="1" class="form-check-input" id="check-jam-kadaluarsa">
-                            <label class="form-check-label">Centang jika kadaluarsa barang kurang dari sehari</label>
-                        </div>
                     </div>
                 </div>
                 <div class="form-group row" id="div-jam-kadaluarsa">
@@ -163,20 +155,24 @@
         </div>
     </div>
 
-    @if(session('errors'))
-        @for($i = 0; $i < count($errors->all()); $i++)
-            <p id="notification-message-{{$i}}" class="notification-message d-none">{{ $errors->all()[$i] }}</p>
-        @endfor
-    @endif
-    
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <!-- Toastr -->
     <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+
+    @if(session('errors'))
+        <script type="text/javascript">
+          @foreach ($errors->all() as $error)
+              toastr.error("{{ $error }}", "Error", toastrOptions);
+          @endforeach
+        </script>
+    @endif
     <!-- Select2 -->
     <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
     <!-- Moment  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script type="text/javascript">
 
@@ -205,56 +201,6 @@
                 }
 
             });
-
-            $('#check-jam-kadaluarsa').on('change', function() {
-                if($('#check-jam-kadaluarsa:checked').val() == 1)
-                {
-                    $('#datepicker').val(moment().format("YYYY-MM-DD"));
-                    $('#datepicker').prop("readonly", true); 
-                    $('#div-jam-kadaluarsa').html(`<p class="col-sm-3 col-form-label">Perkiraan Jam Kadaluarsa</p>
-                                                        <div class="col-sm-9">
-                                                            <div class="bootstrap-timepicker">
-                                                                <div class="form-group">
-                                                                <div class="input-group">
-                                                                    <input type="text" name="jam_kadaluarsa" class="form-control timepicker">
-                                                                    <div class="input-group-append">
-                                                                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>`);
-                    //Timepicker
-                    $('.timepicker').timepicker({
-                        showInputs: false
-                    });
-                }
-                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1 && $('#check-jam-kadaluarsa:checked').val() != 1)
-                {
-                    $('#datepicker').val("");
-                    $('#div-jam-kadaluarsa').html("");
-                    $('#datepicker').prop("readonly", false); 
-                }
-                else 
-                {
-                    $('#div-jam-kadaluarsa').html("");
-                }
-            });
-
-            $('#opsi_otomatis_update_kadaluarsa').on('change', function() {
-
-                if($('#opsi_otomatis_update_kadaluarsa:checked').val() == 1)
-                {
-                    $('#datepicker').val(moment().format("YYYY-MM-DD"));
-                    $('#datepicker').prop("readonly", true); 
-                }
-                else if($('#opsi_otomatis_update_kadaluarsa:checked').val() != 1 && $('#check-jam-kadaluarsa:checked').val() != 1)
-                {
-                    $('#datepicker').val("");
-                    $('#datepicker').prop("readonly", false); 
-                }
-
-            });
             
             //Initialize Select2 Elements
             $('.select2').select2();
@@ -264,16 +210,16 @@
                 theme: 'bootstrap4'
             });
 
-            $('#datepicker').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                enableOnReadonly: false
+            jQuery.datetimepicker.setLocale('id');
+
+            $('#datepicker').datetimepicker({
+                timepicker: true,
+                datepicker: true,
+                lang: 'id',
+                defaultTime: '00:00 AM',
+                format: 'Y-m-d H:i:00'
             });
 
-            for(let i=$('.notification-message').length-1; i>-1; i--)
-            {
-                toastr.error($('#notification-message-'+i).html());
-            }
 
         });
 

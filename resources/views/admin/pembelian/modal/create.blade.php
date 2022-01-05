@@ -21,7 +21,7 @@
                   <label class="col-sm-4 col-form-label">Tanggal Buat</label>
                   <div class="col-sm-8">
                     <div class="input-group">
-                        <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTgl" required>
+                        <input type="text" class="form-control pull-right" name="tanggalBuat" autocomplete="off" id="datepickerTgl" required>
                         <div class="input-group-append">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
@@ -32,7 +32,7 @@
                   <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                   <div class="col-sm-8">
                     <div class="input-group">
-                        <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglJatuhTempo" required>
+                        <input type="text" class="form-control pull-right" name="tanggalJatuhTempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
                         <div class="input-group-append">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
@@ -48,14 +48,6 @@
                             <option value="{{ $item->id }}">{{$item->nama}}</option>
                         @endforeach
                     </select> 
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-4 col-form-label"></label>
-                  <div class="col-sm-8">
-                    <div class="checkbox">
-                        <label><input type="checkbox" class="mr-2" name="konsinyasi" value="ya" id="checkKonsinyasi">Centang jika pembelian secara konsinyasi (titip jual)</label>
-                    </div>
                   </div>
                 </div>
                 <div class="modal-footer">

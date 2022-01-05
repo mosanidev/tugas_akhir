@@ -40,14 +40,6 @@
                     </select> 
                   </div>
                 </div>
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label">Konsinyasi</label>
-                  <div class="col-sm-10">
-                    <div class="checkbox">
-                        <label><input type="checkbox" class="mr-2" name="konsinyasi" value="ya" id="checkKonsinyasiUbah">Ya, pembelian menggunakan sistem konsinyasi</label>
-                    </div>
-                  </div>
-                </div>
             <div class="modal-footer">
               <button type="submit" id="btnUbahPembelian" class="btn btn-primary">Simpan</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

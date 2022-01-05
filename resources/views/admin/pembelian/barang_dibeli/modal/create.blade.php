@@ -14,7 +14,7 @@
                 {{-- <input type="hidden" name="periode_diskon_id" value="{{ $periode_diskon[0]->id }}"/> --}}
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Barang</p>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8" id="divTambahBarangDibeli">
                       <select class="form-control select2 select2bs4" name="barang" id="barang" required>
                           <option disabled selected>Barang</option>
                           @foreach($barang as $item)
@@ -26,13 +26,13 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Harga Beli</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1 numberTambah" style="width: 94.2%;" name="harga_beli" step="100" min="500" required>
+                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1 numberTambah" style="width: 94.2%;" name="harga_beli" step="100" min="500" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Kuantitas</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" id="kuantitas" class="form-control d-inline ml-1 numberTambah" style="width: 94.2%;" name="potongan_harga" min="1" required>
+                        <input type="number" id="kuantitas" class="form-control d-inline ml-1 numberTambah" name="potongan_harga" min="1" required>
               
                     </div>
                 </div>

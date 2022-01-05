@@ -337,6 +337,7 @@ class OrderController extends Controller
     public function tes(Request $request)
     {        
         $dataFull = json_decode($request->dataFull);
+
         $dataJumlah = json_decode($request->dataJumlah);
 
         return view('pelanggan.order.ngetes', ['data'=>$dataFull, 'dataJumlah' => $dataJumlah]);

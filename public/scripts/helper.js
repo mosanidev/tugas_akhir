@@ -19,6 +19,18 @@ let toastrOptions = {
     // "preventDuplicates": "true"
 };
 
+function showActiveSession()
+{
+    if("{{ session('success') }}" != "")
+    {
+        toastr.success("{{ session('success') }}", "Success", toastrOptions);
+    } 
+    else if ("{{ session('error') }}" != "")
+    {
+        toastr.error("{{ session('error') }}", "Error", toastrOptions);
+    }
+}
+
 function cekApakahTokoTutup() 
 {
     moment().format();

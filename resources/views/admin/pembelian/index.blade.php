@@ -10,7 +10,6 @@
       </div>
   </div><!-- /.container-fluid -->
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
 <div class="container-fluid">
 
     {{-- <a href="{{ route('pembelian.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
@@ -27,7 +26,8 @@
                         <tr>
                           <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
-                          <th>Tanggal</th>
+                          <th>Tanggal Buat</th>
+                          <th>Tanggal Jatuh Tempo</th>
                           <th>Supplier</th>
                           <th>Total</th>
                           <th>Aksi</th>
@@ -40,8 +40,9 @@
                           <td style="width: 10px">{{ $num++ }}</td>
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ $item->total }}</td>
+                          <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>
                             {{-- <div class="row"> --}}
                                 <a href="{{ route('pembelian.show', ['pembelian' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Dibeli</a>
@@ -62,10 +63,20 @@
 @include('admin.pembelian.modal.create')
 @include('admin.pembelian.modal.edit')
 
+
 <!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+
+@if(session('errors'))
+    <script type="text/javascript">
+      @foreach ($errors->all() as $error)
+          toastr.error("{{ $error }}", "Error", toastrOptions);
+      @endforeach
+    </script>
+@endif
+
 <!-- Select2 -->
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
@@ -83,6 +94,11 @@
   });
 
   $('#datepickerTgl').datepicker({
+      format: 'yyyy-mm-dd',
+      autoclose: true
+  });
+
+  $('#datepickerTglJatuhTempo').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
   });
@@ -131,11 +147,6 @@
             $('#inputNomorNotaUbah').val(data.pembelian[0].nomor_nota);
             $('#datepickerTglUbah').val(data.pembelian[0].tanggal);
             $('#selectSupplierUbah').val(data.pembelian[0].supplier_id).change();
-            
-            if(data.pembelian[0].sistem_konsinyasi == 1)
-            {
-              $('#checkKonsinyasiUbah').prop('checked', true);
-            }
 
             $('#formUbah').attr('action', '/admin/pembelian/'+pembelian_id);
 
@@ -145,9 +156,9 @@
 
   });
 
-  if("{{ session('status') }}" != "")
+  if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('status') }}");
+    toastr.success("{{ session('success') }}", "Success", toastrOptions);
   }
 
   $('.btnHapus').on('click', function() {

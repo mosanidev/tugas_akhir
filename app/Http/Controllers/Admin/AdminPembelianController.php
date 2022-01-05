@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use Validator;
 
 class AdminPembelianController extends Controller
 {
@@ -42,11 +43,24 @@ class AdminPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        $konsinyasi = isset($request->konsinyasi) ? 1 : 0;
+        $rules = [
+            'nomor_nota' => 'unique:pembelian'
+        ];
+  
+        $messages = [
+            'nomor_nota.unique'=> 'Nomor Nota sudah ada'
+        ];
 
-        $pembelian_id = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggal, 'supplier_id'=>$request->supplier_id, 'sistem_konsinyasi'=>$konsinyasi]);
+        $validator = Validator::make($request->all(), $rules, $messages);
+  
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput($request->all);
+        }
 
-        return redirect()->route('pembelian.show', ['pembelian'=>$pembelian_id])->with(['status'=>'Tambah data pembelian berhasil. Silahkan tambahkan barang yang dibeli']);
+        // $pembelian_id = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggal, 'supplier_id'=>$request->supplier_id]);
+        $pembelian = DB::table('pembelian')->insert(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo, 'supplier_id'=>$request->supplier_id]);
+
+        return redirect()->route('pembelian.show', ['pembelian'=>$pembelian])->with(['success'=>'Tambah data pembelian berhasil. Silahkan tambahkan barang yang dibeli']);
     }
 
     /**
@@ -58,8 +72,7 @@ class AdminPembelianController extends Controller
     public function show(Request $request, $id)
     {
         $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->where('pembelian.id', '=', $id)->get();
-
-
+        $barang = DB::table('barang')->get();
 
         if($request->ajax())
         {
@@ -67,7 +80,7 @@ class AdminPembelianController extends Controller
         }
         else 
         {
-            return view('admin.pembelian.barang_dibeli.index', ['pembelian'=>$pembelian]);
+            return view('admin.pembelian.barang_dibeli.index', ['pembelian'=>$pembelian, 'barang'=>$barang]);
         }
 
     }
@@ -97,10 +110,7 @@ class AdminPembelianController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $konsinyasi = isset($request->konsinyasi) ? 1 : 0;
-
-        $update = DB::table('pembelian')->update(['nomor_nota' => $request->nomor_nota, 'tanggal'=>$request->tanggal, 'supplier_id'=>$request->supplier_id, 'sistem_konsinyasi'=>$konsinyasi])->where('id', '=', $id);
+        $update = DB::table('pembelian')->where('id', $id)->update(['nomor_nota' => $request->nomor_nota, 'tanggal'=>$request->tanggal, 'supplier_id'=>$request->supplier_id]);
         
         return redirect()->back()->with(['status'=>'Berhasil ubah data']);
     }
