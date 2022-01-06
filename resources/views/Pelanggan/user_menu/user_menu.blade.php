@@ -8,6 +8,12 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.5.0/dist/geosearch.css"/>
     @endif
 
+    @if(isset($retur_penjualan))
+        <!-- Select2 -->
+        <link rel="stylesheet" href="{{ asset('/plugins/select2/css/select2.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    @endif
+
 @endpush
 
 @section('content')
@@ -18,7 +24,7 @@
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('profil') }}">Profil</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ url('alamat') }}">Alamat</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('order') }}">Transaksi</a>
-                <a class="btn btn-block btn-success btn-lg my-2" href="#retur">Retur</a>
+                <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('returPenjualan.showForm') }}">Retur</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('wishlist.index') }}">Wishlist</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('notifikasi.index') }}">Notifikasi</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('logout') }}">Keluar</a>
@@ -36,6 +42,10 @@
                 @elseif(isset($penjualan))
 
                     @include('pelanggan.user_menu.order.order')
+
+                @elseif(isset($retur_penjualan))
+
+                    @include('pelanggan.user_menu.retur_penjualan')
 
                 @elseif(isset($wishlist))
 

@@ -20,6 +20,7 @@ use App\Http\Controllers\Pelanggan\AlamatController;
 use App\Http\Controllers\Pelanggan\OrderController;
 use App\Http\Controllers\Pelanggan\WishlistController;
 use App\Http\Controllers\Pelanggan\NotifikasiController;
+use App\Http\Controllers\Pelanggan\ReturPenjualanController;
 
 // api
 use App\Http\Controllers\BiteShipAPIController;
@@ -132,6 +133,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout');
     Route::get('profil', [UserController::class, 'show'])->name('profil');
     Route::post('profil', [UserController::class, 'updateProfil'])->name('updateProfil');
+
+    // retur penjualan route
+    Route::get('retur', [ReturPenjualanController::class, 'showForm'])->name('returPenjualan.showForm');
+    Route::post('retur', [ReturPenjualanController::class, 'store'])->name('returPenjualan.store');
+
 
     Route::post('change_password', [UserController::class, 'changePassword'])->name('changePassword');
 

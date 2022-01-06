@@ -282,6 +282,7 @@
                         }
                         else if (data.transaksi[0].metode_transaksi == "Dikirim ke berbagai alamat") // dikirim ke berbagai alamat
                         {
+                            console.log(data);
 
                             let subTotalProduk = 0;
 
