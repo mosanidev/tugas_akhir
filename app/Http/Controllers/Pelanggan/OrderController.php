@@ -510,9 +510,13 @@ class OrderController extends Controller
         {
             $barang = DB::table('detail_penjualan')->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')->where('detail_penjualan.penjualan_id', '=', $id)->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')->get();
         }
-        else 
+        else if ($transaksi[0]->metode_transaksi == "Ambil di toko")
         {
             $barang = DB::table('detail_penjualan')->select('detail_penjualan.*', 'barang.*')->where('detail_penjualan.penjualan_id', '=', $id)->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->get();
+        }
+        else if ($transaksi[0]->metode_transaksi == "Dikirim ke berbagai alamat")
+        {
+            $barang = DB::table('detail_penjualan')->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')->where('detail_penjualan.penjualan_id', '=', $id)->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')->get();
         }
 
         return response()->json(['transaksi'=>$transaksi, 'barang'=>$barang]);
