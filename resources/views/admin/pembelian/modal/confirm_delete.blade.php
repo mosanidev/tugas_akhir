@@ -9,7 +9,6 @@
         </div>
         <div class="modal-body">
           <form class="d-inline" action="{{ route('pembelian.destroy', 'id') }}" id="formHapus" method="POST">
-            {{-- action="{{ route('supplier.destroy', 'id') }}" --}}
             @csrf
             @method('DELETE')
             <p class="text-justify">Apakah anda yakin ingin menghapus data pembelian ? Jika anda menghapus data pembelian ini semua barang yang terkait pembelian akan terhapus</p>

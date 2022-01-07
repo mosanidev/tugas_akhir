@@ -157,7 +157,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
                         <a class="collapse-item" href="{{ route('pembelian.index') }}">Pembelian</a>
-                        <a class="collapse-item" href="{{ route('pembelian.index') }}">Konsinyasi</a>
+                        <a class="collapse-item" href="{{ route('konsinyasi.index') }}">Konsinyasi</a>
 
                     </div>
                 </div>

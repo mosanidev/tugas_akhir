@@ -25,8 +25,8 @@ class CreatePembelianTable extends Migration
             $table->date('tanggal_jatuh_tempo');
             $table->double('diskon')->default(0);
             $table->double('ppn')->default(0);
-            $table->double('metode_pembayaran', ['Transfer Bank', 'Tunai']);
-            $table->double('status', ['Belum Lunas', 'Sudah Lunas']);
+            $table->enum('metode_pembayaran', ['Transfer Bank', 'Tunai']);
+            $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
             $table->double('total');
         });
     }

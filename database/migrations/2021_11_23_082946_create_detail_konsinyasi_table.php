@@ -24,6 +24,7 @@ class CreateDetailKonsinyasiTable extends Migration
             $table->integer('jumlah_titip');
             $table->integer('terjual');
             $table->integer('sisa');
+            $table->integer('total_hutang');
             $table->integer('total_komisi');
             $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
         });

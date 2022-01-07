@@ -12,7 +12,6 @@
 </section>
 <div class="container-fluid">
 
-    {{-- <a href="{{ route('pembelian.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
     <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPembelian">Tambah</button>
 
     <div class="card shadow my-4">
@@ -42,7 +41,7 @@
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
+                          <td>{{ "Rp " . number_format($item->total-$item->diskon - ($item->total-$item->diskon)*($item->ppn/100) ,0,',','.') }}</td>
                           <td>
                             {{-- <div class="row"> --}}
                                 <a href="{{ route('pembelian.show', ['pembelian' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Dibeli</a>
@@ -77,6 +76,7 @@
     </script>
 @endif
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <!-- Select2 -->
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
@@ -103,9 +103,36 @@
       autoclose: true
   });
 
+  $('#datepickerTglJatuhTempoUbah').datepicker({
+      format: 'yyyy-mm-dd',
+      autoclose: true
+  });
+
   $('#datepickerTglUbah').datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true
+  });
+
+  $('#datepickerTglJatuhTempo').on('change', function() {
+
+    let dateNow = moment().format("Y-m-d");
+
+    if($('#datepickerTglJatuhTempo').val() < $('#datepickerTgl').val())
+    {
+      $('#datepickerTglJatuhTempo').val("");
+      toastr.error("Harap tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+    }
+
+  });
+
+  $('#datepickerTglJatuhTempoUbah').on('change', function() {
+
+    if($('#datepickerTglJatuhTempoUbah').val() < $('#datepickerTglUbah').val())
+    {
+      $('#datepickerTglJatuhTempoUbah').val("");
+      toastr.error("Harap tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+    }
+
   });
 
   $('#btnTambahPembelian').on('click', function() {
@@ -146,7 +173,12 @@
 
             $('#inputNomorNotaUbah').val(data.pembelian[0].nomor_nota);
             $('#datepickerTglUbah').val(data.pembelian[0].tanggal);
+            $('#datepickerTglJatuhTempoUbah').val(data.pembelian[0].tanggal_jatuh_tempo);
             $('#selectSupplierUbah').val(data.pembelian[0].supplier_id).change();
+            $('#selectMetodePembayaranUbah').val(data.pembelian[0].metode_pembayaran).change();
+            $('#inputDiskonUbah').val(data.pembelian[0].diskon);
+            $('#inputPPNUbah').val(data.pembelian[0].ppn);
+            $('#selectStatusUbah').val(data.pembelian[0].status).change();
 
             $('#formUbah').attr('action', '/admin/pembelian/'+pembelian_id);
 

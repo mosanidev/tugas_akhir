@@ -38,9 +38,11 @@ use App\Http\Controllers\Admin\AdminSupplierController;
 use App\Http\Controllers\Admin\AdminPeriodeDiskonController;
 use App\Http\Controllers\Admin\AdminBarangDiskonController;
 use App\Http\Controllers\Admin\AdminPembelianController;
+use App\Http\Controllers\Admin\AdminDetailPembelianController;
 use App\Http\Controllers\Admin\AdminPenjualanController;
 use App\Http\Controllers\Admin\AdminReturPembelianController;
 use App\Http\Controllers\Admin\AdminKaryawanController;
+use App\Http\Controllers\Admin\AdminKonsinyasiController;
 
 
 /*
@@ -223,6 +225,12 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/barang_diskon', AdminBarangDiskonController::class);
 
         Route::resource('/pembelian', AdminPembelianController::class);
+
+        Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
+
+        Route::resource('/konsinyasi', AdminKonsinyasiController::class);
+
+        Route::resource('/konsinyasi/barangkonsinyasi', AdminDetailKonsinyasiController::class);
 
         Route::resource('/penjualan', AdminPenjualanController::class);
 

@@ -50,6 +50,39 @@
                     </select> 
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
+                  <div class="col-sm-8">
+                    <select class="form-control" name="metodePembayaran" id="selectMetodePembayaran" required>
+                        <option disabled selected>Metode Pembayaran</option>
+                        <option value="Transfer Bank">Transfer Bank</option>
+                        <option value="Tunai">Tunai</option>
+                    </select> 
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Diskon Potongan Harga</label>
+                  <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" name="diskon" id="inputDiskon" min="0" step="100" style="width: 93.5%;" required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">PPN</label>
+                  <div class="col-sm-8">
+                    <input type="number" class="form-control d-inline mr-1" name="ppn" id="inputPPN" min="0" step="1" style="width: 93.5%;" required> %
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Status</label>
+                  <div class="col-sm-8">
+                    <select class="form-control" name="status" id="selectStatus" required>
+                        <option disabled selected>Status</option>
+                        <option value="Belum Lunas">Belum Lunas</option>
+                        <option value="Sudah Lunas">Sudah Lunas</option>
+                    </select> 
+                  </div>
+                </div>
+
                 <div class="modal-footer">
                 <button type="button" id="btnTambahPembelian" class="btn btn-primary">Simpan</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

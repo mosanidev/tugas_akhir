@@ -22,8 +22,12 @@ class PembelianSeeder extends Seeder
                 'nomor_nota'                => 'PEMBELIAN001',
                 'supplier_id'               => 3,
                 'tanggal'                   => '2021-11-25',
-                // 'sistem_konsinyasi'         => 1,
-                'total'                     => 6980000
+                'tanggal_jatuh_tempo'       => '2021-12-09',
+                'diskon'                    => 0,
+                'ppn'                       => '0',
+                'metode_pembayaran'         => 'Transfer Bank',
+                'status'                    => 'Sudah Lunas',
+                'total'                     => 0
             ]
         );
 

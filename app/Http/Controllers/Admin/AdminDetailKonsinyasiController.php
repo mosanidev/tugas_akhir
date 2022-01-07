@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
 
-class AdminKonsinyasiController extends Controller
+class AdminDetailKonsinyasiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +14,7 @@ class AdminKonsinyasiController extends Controller
      */
     public function index()
     {
-        $konsinyasi = DB::table('konsinyasi')->select('konsinyasi.*', 'supplier.nama as nama_supplier')->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')->get();
-        $supplier = DB::table('supplier')->get();
-
-        return view('admin.konsinyasi.index', ['konsinyasi' => $konsinyasi, 'supplier' => $supplier]);
+        //
     }
 
     /**
@@ -28,6 +24,7 @@ class AdminKonsinyasiController extends Controller
      */
     public function create()
     {
+        //
     }
 
     /**
@@ -38,12 +35,7 @@ class AdminKonsinyasiController extends Controller
      */
     public function store(Request $request)
     {
-        $insert = DB::table('konsinyasi')->insert(['nomor_nota' => $request->nomor_nota, 'tanggal_titip' => $request->tanggal_titip, 'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo, 'supplier_id' => $request->supplier_id, 'metode_pembayaran' => $request->metode_pembayaran, 'status' => $request->status]);
-
-        if($insert)
-        {
-            return redirect()->back()->with(['success' => 'Data berhasil ditambah']);
-        }
+        //
     }
 
     /**
@@ -54,9 +46,7 @@ class AdminKonsinyasiController extends Controller
      */
     public function show($id)
     {
-        $konsinyasi = DB::table('konsinyasi')->where('id', '=', $id)->get();
-
-        return response()->json($konsinyasi);
+        //
     }
 
     /**

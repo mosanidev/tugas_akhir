@@ -57,8 +57,7 @@ class AdminPembelianController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
 
-        // $pembelian_id = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggal, 'supplier_id'=>$request->supplier_id]);
-        $pembelian = DB::table('pembelian')->insert(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo, 'supplier_id'=>$request->supplier_id]);
+        $pembelian = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo, 'supplier_id'=>$request->supplier_id, 'metode_pembayaran'=>$request->metodePembayaran, 'diskon'=>$request->diskon, 'ppn'=>$request->ppn]);
 
         return redirect()->route('pembelian.show', ['pembelian'=>$pembelian])->with(['success'=>'Tambah data pembelian berhasil. Silahkan tambahkan barang yang dibeli']);
     }
@@ -72,15 +71,32 @@ class AdminPembelianController extends Controller
     public function show(Request $request, $id)
     {
         $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->where('pembelian.id', '=', $id)->get();
-        $barang = DB::table('barang')->get();
+        
+        $detailPembelian = DB::table('detail_pembelian')->select('detail_pembelian.*', 'barang.id as barang_id', 'barang.nama as nama_barang', 'barang.harga_beli')->join('barang', 'detail_pembelian.barang_id', '=', 'barang.id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
+
+        $barangDibeli = DB::table('barang')->select('barang.id')->where('barang_konsinyasi', '=', 0)->join('detail_pembelian', 'barang.id', '=', 'detail_pembelian.barang_id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
+
+        $arrIdBarang = array();
+
+        $total = 0;
+        for($i = 0; $i < count($barangDibeli); $i++)
+        {
+            $total += $detailPembelian[$i]->subtotal;
+            array_push($arrIdBarang, $barangDibeli[$i]->id);
+        }
+
+        //update agak lama
+        $updatePembelian = DB::table('pembelian')->where('pembelian.id', $id)->update(['total' => $total]);
+
+        $barang = DB::table('barang')->select('barang.id', 'barang.kode', 'barang.nama', 'barang.harga_beli')->whereNotin('id', $arrIdBarang)->get();        
 
         if($request->ajax())
         {
             return response()->json(['pembelian'=>$pembelian]);
         }
-        else 
+        else
         {
-            return view('admin.pembelian.barang_dibeli.index', ['pembelian'=>$pembelian, 'barang'=>$barang]);
+            return view('admin.pembelian.barang_dibeli.index', ['pembelian'=>$pembelian, 'detailPembelian' => $detailPembelian, 'barang'=>$barang]);
         }
 
     }
@@ -110,7 +126,7 @@ class AdminPembelianController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $update = DB::table('pembelian')->where('id', $id)->update(['nomor_nota' => $request->nomor_nota, 'tanggal'=>$request->tanggal, 'supplier_id'=>$request->supplier_id]);
+        $update = DB::table('pembelian')->where('id', $id)->update(['nomor_nota' => $request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo'=> $request->tanggalJatuhTempo, 'metode_pembayaran' => $request->metodePembayaran, 'diskon' => $request->diskon, 'status' => $request->status, 'ppn' => $request->ppn, 'supplier_id'=>$request->supplier_id]);
         
         return redirect()->back()->with(['status'=>'Berhasil ubah data']);
     }

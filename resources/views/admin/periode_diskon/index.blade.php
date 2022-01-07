@@ -29,7 +29,7 @@
                         <th>Tanggal Dimulai</th>
                         <th>Tanggal Berakhir</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Aksi</th>
                       </tr>
                   </thead>
                   <tbody>
