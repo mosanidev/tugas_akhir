@@ -13,9 +13,9 @@
 {{-- {{ dd($jenis_barang) }} --}}
 <div class="container-fluid">
 
-  {{-- <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPeriodeDiskon">Tambah</button> --}}
+  <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPeriodeDiskon">Tambah</button>
   
-  <a href="{{ route('periode_diskon.create') }}" class="btn btn-success ml-2" >Tambah</a>
+  {{-- <a href="{{ route('periode_diskon.create') }}" class="btn btn-success ml-2" >Tambah</a> --}}
 
   <div class="card shadow my-4">
       <div class="card-header py-3">

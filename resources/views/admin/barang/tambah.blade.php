@@ -8,7 +8,7 @@
             <div class="col-sm-6">
             <h1>Tambah Barang</h1>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
 
     <div class="container-fluid">

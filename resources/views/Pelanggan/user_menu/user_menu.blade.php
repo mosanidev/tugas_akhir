@@ -24,7 +24,7 @@
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('profil') }}">Profil</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ url('alamat') }}">Alamat</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('order') }}">Transaksi</a>
-                <a class="btn btn-block btn-success btn-lg my-2 d-none" href="{{ route('returPenjualan.showForm') }}">Retur</a>
+                <a class="btn btn-block btn-success btn-lg my-2 d-block" href="{{ route('returPenjualan.showForm') }}">Retur</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('wishlist.index') }}">Wishlist</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('notifikasi.index') }}">Notifikasi</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('logout') }}">Keluar</a>

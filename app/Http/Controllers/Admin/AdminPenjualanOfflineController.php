@@ -27,7 +27,11 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function create()
     {
-        //
+        $barang = DB::table('barang')->get();
+
+        $anggotaKopkar = DB::table('users')->where('status_verifikasi_anggota', '=', 'Verified')->get();
+
+        return view ('admin.penjualan_offline.tambah', ['barang' => $barang, 'anggotaKopkar' => $anggotaKopkar]);
     }
 
     /**
