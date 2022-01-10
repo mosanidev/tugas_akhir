@@ -43,38 +43,12 @@
                         <td>{{ $item->kode }}</td>
 
                         <td>
-                            @php 
-                              $hariIni = Carbon\Carbon::now();
-                              $selisihPerHari = ($hariIni->diffInDays(Carbon\Carbon::parse($item->tanggal_kadaluarsa)));   
-                            @endphp
-
+                            
                             {{ $item->nama }} 
 
                             @if($item->barang_konsinyasi)
                               <span class="badge badge-success">Barang Konsinyasi</span>
                             @endif
-
-                            @if($item->tanggal_kadaluarsa <= $hariIni)
-
-                                <span class="badge badge-secondary">Kadaluarsa</span>
-
-                            @else 
-                          
-                                  @if($item->jenis_barang == "Makanan" && $selisihPerHari <= 90)
-                                  
-                                    {{-- <span class="badge badge-secondary">Food</span> --}}
-
-                                    <span class="badge badge-secondary">Bentar Lagi Kadaluarsa</span>
-
-                                  @elseif($item->jenis_barang != "Makanan" && $selisihPerHari <= 180)
-
-                                    {{-- <span class="badge badge-secondary">Non Food</span> --}}
-
-                                    <span class="badge badge-secondary">Bentar Lagi Kadaluarsa</span>
-                                      
-                                  @endif 
-                            @endif
-
                             
                         </td>
 
@@ -118,9 +92,13 @@
 
       });
 
-      if("{{ session('status') }}" != "")
+      if("{{ session('success') }}" != "")
       {
-        toastr.success("{{ session('status') }}")
+        toastr.success("{{ session('success') }}", "Success", toastrOptions);
+      }
+      else if("{{ session('error') }}" != "")
+      {
+        toastr.success("{{ session('error') }}", "Error", toastrOptions);
       }
 
     });

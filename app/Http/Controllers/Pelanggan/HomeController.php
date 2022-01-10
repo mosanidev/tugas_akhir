@@ -12,10 +12,28 @@ class HomeController extends Controller
 {
     public function showHome()
     {
-        $curDate = \Carbon\Carbon::now()->format("Y-m-d");
+        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
 
-        $barang = DB::table('barang')->select('*')->where('jumlah_stok', '>', 0)->where('tanggal_kadaluarsa', '<' , $curDate)->inRandomOrder()->limit(16)->get(); // yang penjualannya paling banyak harusnya       
-        $barang_promo = DB::table('barang')->select('barang.*')->where('barang.jumlah_stok', '>', 0)->where('barang.tanggal_kadaluarsa', '>', $curDate)->where('barang.diskon_potongan_harga', '>', 0)->where('periode_diskon.status', '=', 'Aktif')->where('periode_diskon.tanggal_dimulai', '<=', $curDate)->where('periode_diskon.tanggal_berakhir', '>=', $curDate)->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')->inRandomOrder()->limit(8)->get(); // yang penjualannya paling banyak harusnya
+        $curDate = \Carbon\Carbon::now()->format("Y-m-d H:m:s");
+
+        $barang_konsinyasi = DB::table('barang')
+                    ->select('barang.*', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
+                    ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                    ->where('barang_konsinyasi', '=', 1)
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $curDate)
+                    ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->inRandomOrder()->limit(16)->get(); 
+
+        $barang_promo = DB::table('barang')
+                            ->select('barang.*', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
+                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang.diskon_potongan_harga', '>', 0)
+                            ->where('periode_diskon.tanggal_dimulai', '<=', $curDate)
+                            ->where('periode_diskon.tanggal_berakhir', '>=', $curDate)
+                            ->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')
+                            ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                            ->inRandomOrder()->limit(8)->get(); // yang penjualannya paling banyak harusnya
 
         $kategori = DB::table('kategori_barang')->get();
 
@@ -27,10 +45,10 @@ class HomeController extends Controller
 
         if (Auth::check())
         {
-            $notifikasi = DB::table('wishlist')->select('wishlist.barang_id', 'wishlist.harga_barang', 'barang.nama')->join('barang', 'wishlist.barang_id', '=', 'barang.id')->where('wishlist.users_id', '=', auth()->user()->id)->where('barang.harga_jual', '<', 'wishlist.harga_barang')->get();
+            $notifikasi = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
             $data_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
         }
 
-        return view('pelanggan.home', ['barang' => $barang, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'notifikasi' => $notifikasi]);
+        return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'notifikasi' => $notifikasi]);
     }
 }

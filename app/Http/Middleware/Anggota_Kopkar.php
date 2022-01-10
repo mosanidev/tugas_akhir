@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Auth;
 
-class Admin
+class Anggota_Kopkar
 {
     /**
      * Handle an incoming request.
@@ -17,13 +17,13 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->jenis == "Admin" || Auth::check() && Auth::user()->jenis == "Manajer")
+        if(Auth::check() && Auth::user()->jenis == "Anggota_Kopkar")
         {
             return $next($request);
         }
         else 
         {
             abort(404);
-        }
+        }    
     }
 }

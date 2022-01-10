@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotifikasiTable extends Migration
+class CreateStokOpnameTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateNotifikasiTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('notifikasi');
+        Schema::dropIfExists('stok_opname');
 
-        Schema::create('notifikasi', function (Blueprint $table) {
+        Schema::create('stok_opname', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('isi', 500);
+            $table->string('nomor_nota', 100);
+            $table->date('tanggal');
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('penjualan_id');
-            $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('status', ['Belum dilihat', 'Sudah dilihat']);
-            $table->timestamps();
         });
     }
 
@@ -34,6 +31,6 @@ class CreateNotifikasiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notifikasi');
+        Schema::dropIfExists('stok_opname');
     }
 }

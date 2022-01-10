@@ -61,25 +61,11 @@
                         {{ "Rp " . number_format($barang[0]->diskon_potongan_harga,0,',','.') }}
                     </div> 
                     <div class="col-4">
-                        Jumlah Stok
-                    </div>  
-                    <div class="col-8">
-                        {{ $barang[0]->jumlah_stok }}
-                    </div> 
-                    <div class="col-4">
                         Berat
                     </div>  
                     <div class="col-8">
                         {{ $barang[0]->berat. " gram" }}
                     </div> 
-                    <div class="col-4">
-                        Tanggal Kadaluarsa
-                    </div>  
-                    <div class="col-8">
-                        {{ \Carbon\Carbon::parse($barang[0]->tanggal_kadaluarsa)->isoFormat('D MMMM Y')}}
-                    </div>  
-
-
                     
                 </div>
             </div>

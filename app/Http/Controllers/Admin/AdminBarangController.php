@@ -63,8 +63,6 @@ class AdminBarangController extends Controller
         ];
 
         $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
-        $harga_beli = isset($request->harga_beli) ? $request->harga_beli : 0;
-        $komisi = isset($request->komisi) ? $request->komisi : 0;
         $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -79,15 +77,15 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
         }
         else 
         {
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_beli'=>$harga_beli, 'harga_jual' => $request->harga_jual, 'komisi'=>$komisi, 'batasan_stok_minimum' => $stok_minimum, 'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $request->deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
         }
         
         // kembali ke daftar barang
-        return redirect()->route('barang.index')->with(['status'=>'Data barang telah ditambahkan']);
+        return redirect()->route('barang.index')->with(['success'=>'Data barang telah ditambahkan']);
     }
 
     /**
@@ -144,8 +142,6 @@ class AdminBarangController extends Controller
         }
 
         $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
-        $harga_beli = isset($request->harga_beli) ? $request->harga_beli : 0;
-        $komisi = isset($request->komisi) ? $request->komisi : 0;
         $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
   
         if($cari){
@@ -170,15 +166,15 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$harga_beli, 'barang_konsinyasi' => $barang_konsinyasi, 'komisi' => $komisi, 'batasan_stok_minimum' => $stok_minimum, 'harga_jual'=>$request->harga_jual, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
+            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'barang_konsinyasi' => $barang_konsinyasi, 'batasan_stok_minimum' => $stok_minimum, 'harga_jual'=>$request->harga_jual, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'berat'=>$request->berat]);
         }
         else 
         {
-            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'harga_beli'=>$harga_beli, 'barang_konsinyasi' => $barang_konsinyasi, 'komisi' => $komisi, 'batasan_stok_minimum' => $stok_minimum, 'harga_jual'=>$request->harga_jual, 'berat'=>$request->berat, 'tanggal_kadaluarsa'=>$request->tanggal_kadaluarsa]);
+            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'barang_konsinyasi' => $barang_konsinyasi, 'batasan_stok_minimum' => $stok_minimum, 'harga_jual'=>$request->harga_jual, 'berat'=>$request->berat]);
         }
 
         // kembali ke daftar barang
-        return redirect()->route('barang.index')->with(['status'=>'Data barang telah diubah']);
+        return redirect()->route('barang.index')->with(['success'=>'Data barang telah diubah']);
     }
 
     /**
@@ -191,6 +187,6 @@ class AdminBarangController extends Controller
     {
         $delete_barang = DB::table('barang')->where('id', '=', $id)->delete();
 
-        return redirect()->back()->with(['status'=>'Data barang berhasil dihapus']);
+        return redirect()->back()->with(['success'=>'Data barang berhasil dihapus']);
     }
 }

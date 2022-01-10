@@ -46,12 +46,14 @@
 
         $(document).ready(function() {
 
-            
-            if("{{ session('error') }}" != "")
+            if("{{ session('success') }}" != "")
             {
-                toastr.error("{{ session('error') }}", 'Error', toastrOptions);
+                toastr.success("{{ session('success') }}", "Success", toastrOptions);
+            } 
+            else if ("{{ session('error') }}" != "")
+            {
+                toastr.error("{{ session('error') }}", "Error", toastrOptions);
             }
-
 
         });
         

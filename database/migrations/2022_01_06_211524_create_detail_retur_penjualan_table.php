@@ -15,15 +15,15 @@ class CreateDetailReturPenjualanTable extends Migration
     {
         Schema::dropIfExists('detail_retur_penjualan');
 
-        Schema::create('detail_retur_penjualan', function (Blueprint $table) {
-            $table->unsignedInteger('retur_penjualan_id');
-            $table->foreign('retur_penjualan_id')->references('id')->on('retur_penjualan')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('barang_id');
-            $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('kuantitas');
-            $table->integer('subtotal');
-            $table->string('alasan_retur', 500);
-        });
+        // Schema::create('detail_retur_penjualan', function (Blueprint $table) {
+        //     $table->unsignedInteger('retur_penjualan_id');
+        //     $table->foreign('retur_penjualan_id')->references('id')->on('retur_penjualan')->onUpdate('cascade')->onDelete('cascade');
+        //     $table->unsignedInteger('barang_id');
+        //     $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade');
+        //     $table->integer('kuantitas');
+        //     $table->integer('subtotal');
+        //     $table->string('alasan_retur', 500);
+        // });
     }
 
     /**

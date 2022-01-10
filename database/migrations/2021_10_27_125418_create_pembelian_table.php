@@ -21,6 +21,8 @@ class CreatePembelianTable extends Migration
             $table->unsignedInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('supplier')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal');
+            $table->unsignedInteger('users_id')->nullable();
+            $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             // $table->smallInteger('sistem_konsinyasi');
             $table->date('tanggal_jatuh_tempo');
             $table->double('diskon')->default(0);

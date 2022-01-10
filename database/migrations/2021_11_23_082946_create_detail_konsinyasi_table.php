@@ -16,16 +16,15 @@ class CreateDetailKonsinyasiTable extends Migration
         Schema::dropIfExists('detail_konsinyasi');
 
         Schema::create('detail_konsinyasi', function (Blueprint $table) {
-            $table->unsignedInteger('id');
             $table->unsignedInteger('konsinyasi_id');
             $table->foreign('konsinyasi_id')->references('id')->on('konsinyasi')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('barang_id');
-            $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade'); 
+            $table->foreign('barang_id')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
+            // $table->unsignedInteger('tanggal_kadaluarsa_id');
+            // $table->foreign('tanggal_kadaluarsa_id')->references('tanggal_kadaluarsa_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
             $table->integer('jumlah_titip');
-            $table->integer('terjual');
-            $table->integer('sisa');
-            $table->integer('total_hutang');
-            $table->integer('total_komisi');
+            $table->double('komisi');
+            $table->double('subtotal_komisi');
             $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
         });
     }

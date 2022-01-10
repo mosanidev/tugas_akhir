@@ -80,7 +80,6 @@
 
 <script type="text/javascript">
 
-let dataa = null;
   $(document).ready(function() {
 
     $('#selectSupplier').select2({
@@ -141,14 +140,14 @@ let dataa = null;
         type: 'GET',
         url: '/admin/konsinyasi/'+id,
         success: function(data) {
-          console.log(data[0]);
-          dataa = data;
+
           $('#inputNomorNotaUbah').val(data[0].nomor_nota);
           $('#datepickerTglTitipUbah').val(data[0].tanggal_titip);
           $('#datepickerTglJatuhTempoUbah').val(data[0].tanggal_jatuh_tempo);
           $('#selectSupplierUbah').val(data[0].supplier_id).change();
           $('#selectMetodePembayaranUbah').val(data[0].metode_pembayaran).change();
           $('#selectStatusUbah').val(data[0].status).change();
+
         }
       })
 
@@ -159,6 +158,24 @@ let dataa = null;
       $('#btnTambahKonsinyasi')[0].setAttribute("type", "submit");
 
       $('#btnTambahKonsinyasi')[0].click();
+
+    });
+
+    $('#btnUbahKonsinyasi').on('click', function() {
+
+      let id = $(this).attr('data-id');
+
+      $('#formUbah').attr('action', '/admin/konsinyasi/'+id);
+
+      $('#formUbah').submit();
+
+    });
+
+    $('.btnHapus').on('click', function() {
+
+      let id = $(this).attr("data-id");
+
+      $('#formHapus').attr('action', '/admin/konsinyasi/'+id);
 
     });
 

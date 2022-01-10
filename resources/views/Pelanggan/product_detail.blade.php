@@ -66,103 +66,133 @@
             </div>
         </div>
         
-        <div class="p-3 mb-5" style="background-color: #FFF47D">
-            <div class="row">
-                <div class="col-6 mt-2">
-                    <p class="h5"><strong>Produk Serupa</strong></p>
-                </div>
-                <div class="col-6 text-right">
-                    <a class="btn btn-success mb-3 mr-1" href="#carouselExampleIndicators3" role="button" data-slide="prev">
-                        <i class="fa fa-arrow-left"></i>
-                    </a>
-                    <a class="btn btn-success mb-3 " href="#carouselExampleIndicators3" role="button" data-slide="next">
-                        <i class="fa fa-arrow-right"></i>
-                    </a>
-                </div>
-        
-                <div class="col-12">
-                    <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="row">
-        
-                                    @for($i = 0; $i < count($barang_serupa)-4; $i++)
+        @if(isset($barang_serupa) && count($barang_serupa) > 0)
+            <div class="p-3 mb-5" style="background-color: #FFF47D">
+                <div class="row">
+                    <div class="col-6 mt-2">
+                        <p class="h5"><strong>Produk Serupa</strong></p>
+                    </div>
+                    <div class="col-6 text-right">
+                        <a class="btn btn-success mb-3 mr-1" href="#carouselExampleIndicators3" role="button" data-slide="prev">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                        <a class="btn btn-success mb-3 " href="#carouselExampleIndicators3" role="button" data-slide="next">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </div>
+            
+                    <div class="col-12">
+                        <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <div class="row">
+            
+                                        @for($i = 0; $i < count($barang_serupa)-4; $i++)
 
-                                        <div class="col-md-3 mb-3">
-                                            <div class="card" style="">
-                                                <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
-                                                <div class="card-body">
-                                                <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
-                                                @if($barang_serupa[$i]->diskon_potongan_harga != 0)
-                                                    <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
-                                                @else
-                                                    <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
-                                                @endif
-                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    @endfor
-                                    
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                
-                                <div class="row">
-                                    
-                                    @for($i = 4; $i < count($barang_serupa); $i++)
-
-                                        <div class="col-md-3 mb-3">
-                                            <div class="card" style="">
-                                                <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
-                                                <div class="card-body">
+                                            <div class="col-md-3 mb-3">
+                                                <div class="card" style="">
+                                                    <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                    <div class="card-body">
                                                     <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
                                                     @if($barang_serupa[$i]->diskon_potongan_harga != 0)
-                                                    <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
-                                                @else
-                                                    <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
-                                                @endif
-                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                        <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                    @else
+                                                        <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                    @endif
+                                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                    @endfor
+                                        @endfor
+                                        
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    
+                                    <div class="row">
+                                        
+                                        @for($i = 4; $i < count($barang_serupa); $i++)
 
+                                            <div class="col-md-3 mb-3">
+                                                <div class="card" style="">
+                                                    <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                    <div class="card-body">
+                                                        <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
+                                                        @if($barang_serupa[$i]->diskon_potongan_harga != 0)
+                                                        <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                    @else
+                                                        <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                    @endif
+                                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        @endfor
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div> 
-        </div>
+                </div> 
+            </div>
+        @endif
 
-        <div class="p-3 mb-5" style="background-color: #FFF47D">
-            <div class="row">
-                <div class="col-6 mt-2">
-                    <p class="h5"><strong>Produk Lainnya</strong></p>
-                </div>
-                <div class="col-6 text-right">
-                    <a class="btn btn-success mb-3 mr-1" href="#carouselExampleIndicators4" role="button" data-slide="prev">
-                        <i class="fa fa-arrow-left"></i>
-                    </a>
-                    <a class="btn btn-success mb-3 " href="#carouselExampleIndicators4" role="button" data-slide="next">
-                        <i class="fa fa-arrow-right"></i>
-                    </a>
-                </div>
-        
-                <div class="col-12">
-                    <div id="carouselExampleIndicators4" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="row">
-        
-                                    @for($i = 0; $i < count($barang_lain)-4; $i++)
+        @if(isset($barang_lain) && count($barang_lain) > 0)
 
-                                        <div class="col-md-3 mb-3">
-                                            <div class="card" style="">
-                                                <form method="POST" action="{{ route('addCart') }}">
+            <div class="p-3 mb-5" style="background-color: #FFF47D">
+                <div class="row">
+                    <div class="col-6 mt-2">
+                        <p class="h5"><strong>Produk Lainnya</strong></p>
+                    </div>
+                    <div class="col-6 text-right">
+                        <a class="btn btn-success mb-3 mr-1" href="#carouselExampleIndicators4" role="button" data-slide="prev">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                        <a class="btn btn-success mb-3 " href="#carouselExampleIndicators4" role="button" data-slide="next">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </div>
+            
+                    <div class="col-12">
+                        <div id="carouselExampleIndicators4" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <div class="row">
+            
+                                        @for($i = 0; $i < count($barang_lain)-4; $i++)
+
+                                            <div class="col-md-3 mb-3">
+                                                <div class="card" style="">
+                                                    <form method="POST" action="{{ route('addCart') }}">
+                                                        <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                        <div class="card-body">
+                                                        <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
+                                                        @if($barang_lain[$i]->diskon_potongan_harga != 0)
+                                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                        @else
+                                                            <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                        @endif
+                                                        <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                        @endfor
+                                        
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    
+                                    <div class="row">
+
+                                        @for($i = 4; $i < count($barang_lain); $i++)
+
+                                            <div class="col-md-3 mb-3">
+                                                <div class="card" style="">
                                                     <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
                                                     <div class="card-body">
                                                     <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
@@ -173,43 +203,18 @@
                                                     @endif
                                                     <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
                                                     </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                    @endfor
-                                    
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                
-                                <div class="row">
-
-                                    @for($i = 4; $i < count($barang_lain); $i++)
-
-                                        <div class="col-md-3 mb-3">
-                                            <div class="card" style="">
-                                                <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
-                                                <div class="card-body">
-                                                <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
-                                                @if($barang_lain[$i]->diskon_potongan_harga != 0)
-                                                    <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
-                                                @else
-                                                    <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
-                                                @endif
-                                                <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                    @endfor
+                                        @endfor
+                                    </div>
                                 </div>
-                            </div>
-                        </div> 
+                            </div> 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div> 
 
 @endsection

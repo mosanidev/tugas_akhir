@@ -29,14 +29,16 @@
                             <p>Belum di titik</p>
                         @endif
 
-                        <button type="button" id="btn-digit-{{$item->id}}" data-toggle="modal" data-target="#modalMap" data-id="{{ $item->id }}" data-kecamatan="{{ $item->kecamatan }}" data-latitude="{{ $lat }}" data-longitude="{{ $lng }}" class="btn btn-block btn-light text-success btnTandai">Tandai titik kordinat</button>
+                        <button type="button" id="btn-digit-{{$item->id}}" data-toggle="modal" data-target="#modalMap" data-id="{{ $item->id }}" data-kecamatan="{{ $item->kecamatan }}" data-latitude="{{ $lat }}" data-longitude="{{ $lng }}" class="btn btn-block btn-light text-success btnTandai">Tandai titik kordinat*</button>
 
                         <br>
                     </div>
 
                 @endforeach
+                <p style="font-size: 13px;">* Dengan menandai titik kordinat dari alamat tujuan, maka anda dapat menggunakan jasa pengiriman Gojek dan Grab ( khusus untuk daerah Surabaya dan sekitar saja )</p>
 
             @endif
+            
         </div>
     </div>
 
@@ -124,8 +126,8 @@
                 <form method="POST" action="{{ route('digitTitikAlamat') }}" id="form">
                     @csrf
                     <input type="hidden" id="id_titik_alamat" name="id_titik_alamat" value="">
-                    <input type="text" id="lat" name="latitude" value="">
-                    <input type="text" id="lng" name="longitude" value="">
+                    <input type="hidden" id="lat" name="latitude" value="">
+                    <input type="hidden" id="lng" name="longitude" value="">
                     <button type="button" class="btn btn-success" id="btnSimpanTitik">Tandai</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
 

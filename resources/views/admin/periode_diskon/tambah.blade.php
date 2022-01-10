@@ -8,9 +8,8 @@
       <div class="col-sm-6">
         <h1>Periode Diskon</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
 <div class="container-fluid">
 
   <a href="{{ route('periode_diskon.create') }}" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPeriodeDiskon">Tambah</a>
@@ -28,26 +27,27 @@
                         <th>Nama Barang</th>
                         <th>Harga Asli</th>
                         <th>Potongan Harga</th>
-                        <th>Harga Jadi</th>
-                        <th>Action</th>
+                        <th>Harga Akhir</th>
+                        <th>Aksi</th>
                       </tr>
                   </thead>
                   <tbody>
                       @php $i = 1; @endphp
-                      @foreach ($periode_diskon as $item)
-                        <tr>
-                          <td class="text-center">{{ $i++ }}</td>
-                          <td>{{ $item->nama }}</td>
-                          <td>{{ $item->tanggal_dimulai }}</td>
-                          <td>{{ $item->tanggal_berakhir }}</td>
-                          <td>{{ $item->status }}</td>
-                          <td style="width: 20%">
-                            <a href="{{ route('periode_diskon.show', ['id' => $item->id]) }}" class="btn btn-info ml-2">Lihat</a>
-                            <button class="btn btn-warning ml-2 btn-ubah" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalUbahPeriodeDiskon">Ubah</button>
-                            <button type="submit" class="btn btn-danger ml-2 btn-hapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPeriodeDiskon">Hapus</button>
-                          </td>
-                        </tr>
-                      @endforeach
+                      @if(isset($periode_diskon) && count($periode_diskon) > 0)
+                        @foreach ($periode_diskon as $item)
+                          <tr>
+                            <td class="text-center">{{ $i++ }}</td>
+                            <td>{{ $item->nama }}</td>
+                            <td>{{ $item->tanggal_dimulai }}</td>
+                            <td>{{ $item->tanggal_berakhir }}</td>
+                            <td style="width: 20%">
+                              <a href="{{ route('periode_diskon.show', ['id' => $item->id]) }}" class="btn btn-info ml-2">Lihat</a>
+                              <button class="btn btn-warning ml-2 btn-ubah" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalUbahPeriodeDiskon">Ubah</button>
+                              <button type="submit" class="btn btn-danger ml-2 btn-hapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPeriodeDiskon">Hapus</button>
+                            </td>
+                          </tr>
+                        @endforeach
+                      @endif
                   </tbody>
               </table>
           </div>

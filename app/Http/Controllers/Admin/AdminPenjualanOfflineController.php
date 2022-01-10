@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 
-class AdminDetailKonsinyasiController extends Controller
+class AdminPenjualanOfflineController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,9 @@ class AdminDetailKonsinyasiController extends Controller
      */
     public function index()
     {
-        //
+        $penjualanOffline = DB::table('penjualan')->where('jenis', '=', 'Offline')->get();
+
+        return view ('admin.penjualan_offline.index', ['penjualan'=>$penjualanOffline]);
     }
 
     /**
@@ -36,15 +38,7 @@ class AdminDetailKonsinyasiController extends Controller
      */
     public function store(Request $request)
     {
-        $insert = DB::table('detail_konsinyasi')->insert([
-            'konsinyasi_id' => $request->konsinyasi_id,
-            'barang_id' => $request->barang_id,
-            'jumlah_titip' => $request->jumlah_titip
-        ]);
-
-        $tambahStokBarang = DB::table('barang')->where('id', '=', $request->barang_id)->increment('jumlah_stok', $request->jumlah_titip);   
-
-        return redirect()->back()->with(['success' => 'Data berhasil ditambah']);
+        //
     }
 
     /**

@@ -15,8 +15,8 @@
         </div>
         <div class="col-3">
             <div class="my-4">
-                @php $foto = isset(auth()->user()->foto) ? asset('images/profil/'.auth()->user()->id.'/'.auth()->user()->foto) : 'https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg'; @endphp
-                <img id="img-profil" src="{{ $foto }}" width="182" height="140" class="mx-auto">
+                {{-- @php $foto = isset(auth()->user()->foto) ? asset('images/profil/'.auth()->user()->id.'/'.auth()->user()->foto) : 'https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg'; @endphp --}}
+                <img id="img-profil" src="{{ asset(auth()->user()->foto) }}" width="182" height="140" class="mx-auto">
 
                     <div class="d-none">
                         <input type="file" id="inputGantiFotoProfil" accept=".jpg, .jpeg, .png" name="foto_baru">

@@ -43,7 +43,7 @@
                     {{-- {{ dd($_GET['input_kategori']); }} --}}
 
                     <div class="dropdown d-inline mr-1">
-                        <button class="btn btn-success dropdown-toggle btnPilihKategori" style="width: 300px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-success dropdown-toggle btnPilihKategori" style="width: 250px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
                             @if(isset($_GET['input_kategori']) && $_GET['input_kategori'] != "")
                                 
                                 @php $keteranganPilihKategori = ""; @endphp
@@ -103,13 +103,13 @@
                         <li class="nav-item">
                             <div class="dropdown">
                                 <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                                    <img src="https://www.psikoma.com/wp-content/uploads/2016/07/board-361516_1280-630x380.jpg" class="rounded-circle" style="width:35px; height:30px;" alt="profil"><p class="ml-2 text-dark d-inline">{{ auth()->user()->nama_depan.' '.auth()->user()->nama_belakang }}</p>
+                                    <img src="{{ asset(auth()->user()->foto) }}" class="rounded-circle" style="width:35px; height:30px;" alt="profil"><p class="ml-2 text-dark d-inline">{{ auth()->user()->nama_depan.' '.auth()->user()->nama_belakang }}</p>
                                 </button>
                                 <div class="dropdown-menu">
                                 <a class="dropdown-item" href="{{ route('profil') }}">Profil</a>
                                 <a class="dropdown-item" href="{{ url('alamat') }}">Alamat</a>
                                 <a class="dropdown-item" href="{{ route('order') }}">Transaksi</a>
-                                <a class="dropdown-item" href="#retur">Retur</a>
+                                <a class="dropdown-item d-none" href="#retur">Retur</a>
                                 <a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a>
                                 <a class="dropdown-item" href="{{ route('notifikasi.index') }}">Notifikasi</a>
                                 <a class="dropdown-item" href="{{ route('logout') }}">Keluar</a>

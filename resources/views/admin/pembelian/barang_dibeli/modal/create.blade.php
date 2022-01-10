@@ -18,15 +18,29 @@
                       <select class="form-control select2 select2bs4" name="barang_id" id="barang" required>
                           <option disabled selected>Barang</option>
                           @foreach($barang as $item)
-                              <option value="{{ $item->id }}" data-harga="{{ $item->harga_beli }}">{{ $item->nama }}</option>
+                              <option value="{{ $item->id }}">{{ $item->nama }}</option>
                           @endforeach
                       </select> 
                     </div>
                 </div>
                 <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa</p>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="tanggal_kadaluarsa" class="form-control pull-right" name="tanggal_kadaluarsa">
+                                {{-- <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa') }}" autocomplete="off" id="datepicker"> --}}
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Harga Beli</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 94.2%;" name="harga_beli" step="100" min="500" readonly>
+                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 94.2%;" name="harga_beli" step="100" min="500">
                     </div>
                 </div>
                 <div class="form-group row">

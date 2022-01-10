@@ -17,7 +17,7 @@ class EnsureUserIsNotAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->jenis == "Admin")
+        if(Auth::check() && Auth::user()->jenis == "Admin" && Auth::user()->jenis == "Manajer")
         {
             abort(404);
         }

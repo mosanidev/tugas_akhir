@@ -165,7 +165,7 @@
                     
                     if(newData[element['barang_id']] > element['barang_stok'])
                     {
-                        alert("Jumlah pembelian " + element['barang_nama'] + " melebihi jumlah stok yang tersedia");
+                        alert("Jumlah pembelian " + element['barang_nama'] + " melebihi jumlah stok yang tersedia yaitu " +  element['barang_stok']);
                         cekApakahMelebihiStok = true;
                     }
                 });

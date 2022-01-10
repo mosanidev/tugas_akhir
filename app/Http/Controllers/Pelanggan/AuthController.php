@@ -39,6 +39,8 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $nomor_anggota = isset($request->nomor_anggota) ? $request->nomor_anggota : null;
+
         $rules = [
             'nama_depan'            => 'min:3|max:35',
             'nama_belakang'         => 'min:3|max:35',
@@ -65,36 +67,44 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
   
-        // $simpan = DB::table('users')->insert([
-        //             'nama'  => ucwords(strtolower($request->nama)),
-        //             'email' => strtolower($request->email),
-        //             'password' => Hash::make($request->password),
-        //             'jenis_kelamin' => $request->jenis_kelamin,
-        //             'tanggal_lahir' => $request->tanggal_lahir,
-        //             'nomor_telepon' => $request->nomor_telepon,
-        //             'jenis' => 'Pelanggan',
-        //             'status_verifikasi_anggota' =>  'Unverified'
-        //         ]);
+        $simpan = null;
 
-        $user = new User;
-        $user->nama_depan = ucwords(strtolower($request->nama_depan));
-        $user->nama_belakang = ucwords(strtolower($request->nama_belakang));
-        $user->email = strtolower($request->email);
-        $user->password = Hash::make($request->password);
-        $user->jenis_kelamin = $request->jenis_kelamin;
-        $user->tanggal_lahir = $request->tanggal_lahir;
-        $user->nomor_telepon = $request->nomor_telepon;
-        $user->jenis = 'Pelanggan';
-        $user->status_verifikasi_anggota = 'Unverified';
-
-        $simpan = $user->save();
+        if($nomor_anggota == null)
+        {
+            $simpan = DB::table('users')->insert([
+                'nama_depan'  => ucwords(strtolower($request->nama_depan)),
+                'nama_belakang'  => ucwords(strtolower($request->nama_belakang)),
+                'email' => strtolower($request->email),
+                'password' => Hash::make($request->password),
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'nomor_telepon' => $request->nomor_telepon,
+                'jenis' => 'Pelanggan',
+                'status_verifikasi_anggota' =>  'Unverified'
+            ]);
+        }
+        else 
+        {
+            $simpan = DB::table('users')->insert([
+                'nama_depan'  => ucwords(strtolower($request->nama_depan)),
+                'nama_belakang'  => ucwords(strtolower($request->nama_belakang)),
+                'email' => strtolower($request->email),
+                'password' => Hash::make($request->password),
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'nomor_telepon' => $request->nomor_telepon,
+                'nomor_anggota' => $nomor_anggota,
+                'jenis' => 'Anggota_Kopkar',
+                'status_verifikasi_anggota' =>  'Verified'
+            ]);
+        }
         
         if($simpan){
             Session::flash('success', 'Pendaftaran akun berhasil! Silahkan masuk');
-            return redirect()->route('login');
+            return redirect()->route('pelanggan.login')->with(['success' => 'Pendaftaran akun berhasil silahkan login']);
         } else {
             Session::flash('errors', ['' => 'Pendaftaran akun gagal! Silahkan ulangi beberapa saat lagi']);
-            return redirect()->route('register');
+            return redirect()->route('pelanggan.register');
         }
     }
 
@@ -123,7 +133,7 @@ class AuthController extends Controller
                 
                 $this->addCartSessionToDatabase();
 
-                return redirect()->route('home')->with(['status' => 'Selamat Datang '.$user[0]->nama_depan.' '.$user[0]->nama_belakang]);
+                return redirect()->route('home')->with(['success' => 'Selamat Datang '.$user[0]->nama_depan.' '.$user[0]->nama_belakang]);
       
             } else { // false
       

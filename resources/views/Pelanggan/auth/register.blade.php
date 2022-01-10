@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="http://localhost:8000/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('/plugins/toastr/toastr.min.css') }}">
     <title>Toko Kopkar UBAYA</title>
 </head>
 <body>
@@ -50,16 +51,16 @@
     @endif
 
     <div class="bg-light m-5 p-4 w-50 mx-auto border">
-        <form method="POST" action="{{ route('pelanggan.register') }}">
+        <form method="POST" action="{{ route('pelanggan.register') }}" id="formRegister">
             @csrf
             <div class="mb-3">
-                <input type="text" class="form-control" name="nama_depan" placeholder="Masukkan nama depan" required>
+                <input type="text" class="form-control" name="nama_depan" id="nama_depan" placeholder="Masukkan nama depan" required>
             </div>
             <div class="mb-3">
-                <input type="text" class="form-control" name="nama_belakang" placeholder="Masukkan nama belakang" required>
+                <input type="text" class="form-control" name="nama_belakang" id="nama_belakang" placeholder="Masukkan nama belakang" required>
             </div>
             <div class="mb-3">
-                <select class="form-control" name="jenis_kelamin" required>
+                <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" required>
                     <option value="" disabled selected>Pilih jenis kelamin</option>
                     <option value="Laki-laki">Laki-laki</option>
                     <option value="Perempuan">Perempuan</option>
@@ -67,37 +68,118 @@
             </div>
             <div class="mb-3">
                 {{-- <input placeholder="Pilih tanggal lahir" type="date" class="form-control"> --}}
-                <input type="text" placeholder="Pilih tanggal lahir" name="tanggal_lahir" id="tgl" class="form-control" required>
+                <input type="text" placeholder="Pilih tanggal lahir" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required>
             </div>
             <div class="mb-3">
-                <input type="tel" class="form-control" name="nomor_telepon" placeholder="Masukkan nomor telepon" required>
+                <input type="tel" class="form-control" name="nomor_telepon" id="nomor_telepon" min="10" placeholder="Masukkan nomor telepon" required>
             </div>
             <div class="mb-3">
-                <input type="email" class="form-control" name="email" placeholder="Masukkan email" required>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email" required>
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" name="password" placeholder="Masukkan password" required>
+                <input type="password" class="form-control" name="password" id="password" min="8" placeholder="Masukkan password" required>
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" name="re_password" placeholder="Ulangi password" required>
+                <input type="password" class="form-control" name="re_password" id="re_password" placeholder="Ulangi password" required>
             </div>
             <div class="mb-4">
-                <input type="text" class="form-control" name="nomor_anggota" placeholder="Masukkan nomor anggota">
-                <p class="text-danger" style="font-size: 1rem">* Khusus untuk anggota Koperasi Karyawan Universitas Surabaya</p>
+                <input type="text" class="form-control" name="nomor_anggota" id="nomor_anggota" placeholder="Masukkan nomor anggota Koperasi Karyawan Universitas Surabaya">
+                <p class="text-danger" style="font-size: 1rem">* Kosongi jika anda bukan anggota Koperasi Karyawan Universitas Surabaya</p>
             </div>
-            <button type="submit" class="btn btn-block btn-success w-25 mx-auto">Submit</button>
+            <button type="button" id="btnRegister" class="btn btn-block btn-success w-25 mx-auto">Submit</button>
         </form>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('/scripts/helper.js') }}"></script>
+
     <script>
-        $("#tgl").datepicker({
+        $("#tanggal_lahir").datepicker({
             format: 'yyyy-mm-dd',
+            autoclose: true
         });
 
         $("#alert-close").click(function() {
             $("#alert").hide();
+        });
+
+        let arrNIKanggota = ['160416154', '160416054', '160416101', '160416443'];
+
+        $('#btnRegister').on('click', function() {
+
+            let cariNIKYangSama = false;
+
+            $('#btnRegister').attr('type', 'button');
+
+            if($('#nama_depan').val() == "")
+            {
+                toastr.error("Harap isi nama depan terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#nama_belakang').val() == "")
+            {
+                toastr.error("Harap isi nama belakang terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#jenis_kelamin')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih jenis kelamin terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#tanggal_lahir').val() == "")
+            {
+                toastr.error("Harap isi tanggal lahir terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#nomor_telepon').val() == "")
+            {
+                toastr.error("Harap isi nomor telepon terlebih dahulu", "Error", toastrOptions);
+
+            }
+            else if ($('#email').val() == "")
+            {
+                toastr.error("Harap isi email terlebih dahulu", "Error", toastrOptions);
+
+            }
+            else if ($('#password').val() == "")
+            {
+                toastr.error("Harap isi password terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#re_password').val() == "")
+            {
+                toastr.error("Harap ulangi password terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#password').val() != $('#re_password').val())
+            {
+                toastr.error("Harap ketikkan ulang password dengan benar", "Error", toastrOptions);
+            }
+            else if ($('#nomor_anggota').val() != "")
+            {
+                for(let i = 0; i < arrNIKanggota.length; i++)
+                {
+                    if($('#nomor_anggota').val() == arrNIKanggota[i])
+                    {
+                        cariNIKYangSama = true
+                        break;
+                    }
+                }
+
+                if(!cariNIKYangSama)
+                {
+                    toastr.error("Nomor anggota tidak ditemukan", "Error", toastrOptions);
+                }
+                else // inputan nik ada yang sama
+                {
+                    $('#btnRegister').attr('type', 'submit');
+                    $('#btnRegister')[0].click();
+                }
+            }
+            else 
+            {
+                $('#btnRegister').attr('type', 'submit');
+                $('#btnRegister')[0].click();
+            }
+
+
+
         });
     </script>
 

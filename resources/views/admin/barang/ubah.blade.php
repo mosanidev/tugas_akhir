@@ -100,16 +100,16 @@
                         </div> 
                     </div>
                 </div>
-                <div class="form-group row" id="div-pilihan">
+                {{-- <div class="form-group row" id="div-pilihan">
                     <p class="col-sm-3 col-form-label">Harga Beli</p>
                     <div class="col-sm-9">
                         Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
                     </div>
-                </div>
-                <div class="form-group row" id="div-stok-minimum">
+                </div> --}}
+                <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control d-inline" min="1" name="stok_minimum" id="stok_minimum" value="{{ $barang[0]->batasan_stok_minimum }}" required>
+                        <input type="number" class="form-control d-inline" min="1" name="stok_minimum" id="stok_minimum" @if($barang[0]->barang_konsinyasi) value="0" readonly @else value="{{ $barang[0]->batasan_stok_minimum }}" @endif required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -118,7 +118,7 @@
                         <input type="number" class="form-control d-inline mr-1" name="berat" id="berat" min="0.1" style="width: 93.5%;" step="0.1" value="{{ $barang[0]->berat }}" required> gram
                     </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Tanggal Kadaluarsa</p>
                     <div class="col-sm-9">
                         <div class="form-group">
@@ -130,7 +130,7 @@
                             </div>
                         </div>              
                     </div>
-                </div>
+                </div> --}}
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Foto</p>
                     <div class="col-sm-9">
@@ -183,7 +183,7 @@
     <!-- Select2 -->
     <script src="{{ asset('/adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
     <!-- Moment  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
@@ -191,50 +191,17 @@
 
         $(document).ready(function() {
 
-            function loadCheckKonsinyasi()
-            {
-                if($('.optkonsinyasi:checked').val() == 1)
-                {
-                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Komisi</p>
-                                            <div class="col-sm-9">
-                                                Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ $barang[0]->komisi }}" required>
-                                            </div>`);
-                    $('#stok_minimum').val('0');     
-                    $('#div-stok-minimum').hide();
-                }
-                else 
-                {
-                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Harga Beli</p>
-                                            <div class="col-sm-9">
-                                                Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
-                                            </div>`);
-
-                }
-            }
-
-            loadCheckKonsinyasi();
-
             $('.optkonsinyasi').on('change', function() {
 
                 if($('.optkonsinyasi:checked').val() == 1)
-                {
-                    console.log("konsinyasi");
-                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Komisi</p>
-                                            <div class="col-sm-9">
-                                                Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ $barang[0]->komisi }}" required>
-                                            </div>`);
-                    $('#stok_minimum').val('0');     
-                    $('#div-stok-minimum').hide();
+                {  
+                    $('#stok_minimum').val("0");
+                    $('#stok_minimum').attr("readonly", true);
                 }
                 else 
-                {
-                    console.log("beli");
-                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Harga Beli</p>
-                                            <div class="col-sm-9">
-                                                Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
-                                            </div>`);
-                    $('#stok_minimum').val("0");     
-                    $('#div-stok-minimum').show();
+                { 
+                    $('#stok_minimum').val('');
+                    $('#stok_minimum').attr("readonly", false);
 
                 }
 
@@ -249,15 +216,15 @@
                 theme: 'bootstrap4'
             });
 
-            jQuery.datetimepicker.setLocale('id');
+            // jQuery.datetimepicker.setLocale('id');
 
-            $('#datepicker').datetimepicker({
-                timepicker: true,
-                datepicker: true,
-                lang: 'id',
-                defaultTime: '00:00 AM',
-                format: 'Y-m-d H:i:00'
-            });
+            // $('#datepicker').datetimepicker({
+            //     timepicker: true,
+            //     datepicker: true,
+            //     lang: 'id',
+            //     defaultTime: '00:00 AM',
+            //     format: 'Y-m-d H:i:00'
+            // });
 
         });
         
@@ -284,10 +251,10 @@
 
         function loadFotoJikaAda()
         {
-            if("{{$barang[0]->foto}}" != "/images/barang/barang_null.png")
+            if("{{ $barang[0]->foto }}" != "/images/barang/barang_null.png")
             {
                 document.getElementById('container').innerHTML = `<div class="d-flex justify-content-center d-inline position-relative my-2 mx-2" style="height: 120px; width: 200px; border-radius: 6px; overflow: hidden;">
-                                                                    <img src="` + "{{ asset($barang[0]->foto)}}" + `" alt="Image" style="height: 100%; width: auto; object-fit: cover" class="d-inline">
+                                                                    <img src="` + "{{ asset($barang[0]->foto) }}" + `" alt="Image" style="height: 100%; width: auto; object-fit: cover" class="d-inline">
                                                                   </div>
                                                                   <div>
                                                                     <button type="button" class="btn btn-danger" onclick="delete_image()">X</button>
@@ -304,10 +271,10 @@
 
             document.getElementById('container').innerHTML = `<div class="d-flex justify-content-center d-inline position-relative my-2 mx-2" style="height: 120px; width: 200px; border-radius: 6px; overflow: hidden;">
                                                                 <img src="` + URL.createObjectURL(image_upload[0]) + `" alt="Image" style="height: 100%; width: auto; object-fit: cover" class="d-inline">
-                                                            </div>
-                                                            <div>
+                                                              </div>
+                                                              <div>
                                                                 <button type="button" class="btn btn-danger" onclick="delete_image()">X</button>
-                                                            </div>`;
+                                                              </div>`;
 
         }
 

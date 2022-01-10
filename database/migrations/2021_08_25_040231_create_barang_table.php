@@ -21,10 +21,10 @@ class CreateBarangTable extends Migration
             $table->string('nama', 100);
             $table->string('deskripsi', 5000);
             $table->double('harga_jual');
-            $table->double('harga_beli');
+            // $table->double('harga_beli');
             $table->double('diskon_potongan_harga')->default(0);
-            $table->integer('jumlah_stok')->default(0);
-            $table->datetime('tanggal_kadaluarsa');
+            // $table->integer('jumlah_stok')->default(0);
+            // $table->datetime('tanggal_kadaluarsa');
             // $table->time('jam_kadaluarsa')->default('23:59:59');
             $table->double('berat');
             $table->enum('satuan', ['PCS', 'DUS', 'PAK'])->default('PCS');
@@ -36,7 +36,7 @@ class CreateBarangTable extends Migration
             $table->unsignedInteger('merek_id');
             $table->foreign('merek_id')->on('merek_barang')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('batasan_stok_minimum')->default(3);
-            $table->double('komisi')->default(0);
+            // $table->double('komisi')->default(0);
             // $table->smallInteger('opsi_otomatis_update_kadaluarsa')->default(0);
             $table->smallInteger('barang_konsinyasi')->default(0);
             $table->unsignedInteger('periode_diskon_id')->nullable();

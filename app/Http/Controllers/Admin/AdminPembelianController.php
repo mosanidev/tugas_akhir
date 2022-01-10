@@ -57,7 +57,7 @@ class AdminPembelianController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
 
-        $pembelian = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo, 'supplier_id'=>$request->supplier_id, 'metode_pembayaran'=>$request->metodePembayaran, 'diskon'=>$request->diskon, 'ppn'=>$request->ppn]);
+        $pembelian = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo, 'supplier_id'=>$request->supplier_id, 'metode_pembayaran'=>$request->metodePembayaran, 'diskon'=>$request->diskon, 'ppn'=>$request->ppn, 'users_id' => auth()->user()->id]);
 
         return redirect()->route('pembelian.show', ['pembelian'=>$pembelian])->with(['success'=>'Tambah data pembelian berhasil. Silahkan tambahkan barang yang dibeli']);
     }
@@ -70,9 +70,9 @@ class AdminPembelianController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->where('pembelian.id', '=', $id)->get();
+        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier', 'users.nama_depan as nama_depan', 'users.nama_belakang as nama_belakang')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->join('users', 'pembelian.users_id', '=', 'users.id')->where('pembelian.id', '=', $id)->get();
         
-        $detailPembelian = DB::table('detail_pembelian')->select('detail_pembelian.*', 'barang.id as barang_id', 'barang.nama as nama_barang', 'barang.harga_beli')->join('barang', 'detail_pembelian.barang_id', '=', 'barang.id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
+        $detailPembelian = DB::table('detail_pembelian')->select('detail_pembelian.*', 'barang.id as barang_id', 'barang.nama as nama_barang')->join('barang', 'detail_pembelian.barang_id', '=', 'barang.id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
 
         $barangDibeli = DB::table('barang')->select('barang.id')->where('barang_konsinyasi', '=', 0)->join('detail_pembelian', 'barang.id', '=', 'detail_pembelian.barang_id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
 
@@ -88,7 +88,7 @@ class AdminPembelianController extends Controller
         //update agak lama
         $updatePembelian = DB::table('pembelian')->where('pembelian.id', $id)->update(['total' => $total]);
 
-        $barang = DB::table('barang')->select('barang.id', 'barang.kode', 'barang.nama', 'barang.harga_beli')->whereNotin('id', $arrIdBarang)->get();        
+        $barang = DB::table('barang')->select('barang.id', 'barang.kode', 'barang.nama')->whereNotin('id', $arrIdBarang)->get();        
 
         if($request->ajax())
         {

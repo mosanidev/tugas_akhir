@@ -19,54 +19,54 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
            'id' => 1,
-           'nama_depan' => 'Sudikin',
-           'nama_belakang' => 'Sudikah',
-           'email' => 'sudikin@hotmail.com', 
+           'nama_depan' => 'Customer',
+           'nama_belakang' => '1',
+           'email' => 'customer1@customer.com', 
            'jenis_kelamin' => 'Laki-laki',
            'nomor_telepon' => '08123456789', 
            'jenis' => 'Pelanggan',
            'status_verifikasi_anggota' => 'Unverified',
            'tanggal_lahir' => '2000-01-20',
-           'password' => Hash::make('inthesky')
+           'password' => Hash::make('kopkarubaya')
         ]);
 
         DB::table('users')->insert([
             'id' => 2,
-            'nama_depan' => 'Nelson',
-            'nama_belakang' => 'Jimun',
-            'email' => 'nelsonjimun@hotmail.com', 
+            'nama_depan' => 'Customer',
+            'nama_belakang' => '2',
+            'email' => 'customer2@customer.com', 
             'jenis_kelamin' => 'Laki-laki',
             'nomor_telepon' => '08198765432', 
             'jenis' => 'Pelanggan',
             'status_verifikasi_anggota' => 'Unverified',
             'tanggal_lahir' => '1995-01-20',
-            'password' => Hash::make('inthesky')
+            'password' => Hash::make('kopkarubaya')
          ]);
 
          DB::table('users')->insert([
             'id' => 3,
-            'nama_depan' => 'Sri',
-            'nama_belakang' => 'Rahayu',
-            'email' => 'srirahayu@hotmail.com', 
+            'nama_depan' => 'Admin',
+            'nama_belakang' => '1',
+            'email' => 'admin1@admin.com', 
             'jenis_kelamin' => 'Perempuan',
-            'nomor_telepon' => '872883', 
+            'nomor_telepon' => '087288300078', 
             'jenis' => 'Admin',
             'status_verifikasi_anggota' => 'Unverified',
             'tanggal_lahir' => '1992-01-20',
-            'password' => Hash::make('inthesky')
+            'password' => Hash::make('kopkarubaya')
          ]);
 
          DB::table('users')->insert([
             'id' => 4,
-            'nama_depan' => 'Kristanti',
-            'nama_belakang' => 'Putri',
-            'email' => 'kristatnti.putri@hotmail.com', 
+            'nama_depan' => 'Manajer',
+            'nama_belakang' => '1',
+            'email' => 'manajer1@manajer.com', 
             'jenis_kelamin' => 'Perempuan',
             'nomor_telepon' => '93189831', 
             'jenis' => 'Manajer',
             'status_verifikasi_anggota' => 'Unverified',
             'tanggal_lahir' => '1992-01-20',
-            'password' => Hash::make('inthesky')
+            'password' => Hash::make('kopkarubaya')
          ]);
     }
 }

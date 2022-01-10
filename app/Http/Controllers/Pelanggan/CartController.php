@@ -12,7 +12,12 @@ class CartController extends Controller
 {
     public function update(Request $request)
     {
-        $barang = DB::table('barang')->select('id', 'nama', 'foto', 'harga_jual', 'diskon_potongan_harga', 'jumlah_stok')->where('id', '=', $request->barang_id)->get();
+        // ambil data barang dari db
+        $barang = DB::table('barang')
+                    ->select('id', 'nama', 'foto', 'harga_jual', 'diskon_potongan_harga', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
+                    ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->where('id', '=', $request->barang_id)
+                    ->get();
 
         $cart = null;
 
@@ -74,9 +79,15 @@ class CartController extends Controller
     {
         if(Auth::check())
         {
-            $deleted = DB::table('cart')->where('barang_id', '=', $request->barang_id)->where('users_id', '=', auth()->user()->id)->delete();
+            $deleted = DB::table('cart')
+                        ->where('barang_id', '=', $request->barang_id)
+                        ->where('users_id', '=', auth()->user()->id)
+                        ->delete();
 
-            $total_cart = DB::table('cart')->select(DB::raw('sum(subtotal) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
+            $total_cart = DB::table('cart')
+                            ->select(DB::raw('sum(subtotal) as total_cart'))
+                            ->where('users_id', '=', auth()->user()->id)
+                            ->get();
     
             $update_total = DB::table('cart')
                     ->where('users_id', auth()->user()->id)
@@ -124,7 +135,13 @@ class CartController extends Controller
 
         if(Auth::check())
         {
-            $cart = DB::table('cart')->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.jumlah_stok as barang_stok')->join('barang', 'cart.barang_id', '=', 'barang.id')->where('cart.users_id', '=', auth()->user()->id)->groupBy('cart.barang_id')->get();
+            $cart = DB::table('cart')
+                    ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok')
+                    ->join('barang', 'cart.barang_id', '=', 'barang.id')
+                    ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->where('cart.users_id', '=', auth()->user()->id)
+                    ->groupBy('cart.barang_id')
+                    ->get();
 
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
@@ -139,7 +156,11 @@ class CartController extends Controller
     public function add(Request $request)
     {
         // ambil data barang dari db
-        $barang = DB::table('barang')->select('id', 'nama', 'foto', 'harga_jual', 'diskon_potongan_harga', 'jumlah_stok')->where('id', '=', $request->barang_id)->get();
+        $barang = DB::table('barang')
+                    ->select('id', 'nama', 'foto', 'harga_jual', 'diskon_potongan_harga', 'jumlah_stok', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
+                    ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->where('id', '=', $request->barang_id)
+                    ->get();
 
         // buat variable untuk pemberitahuan status tambah barang ke keranjang
         $status = "";

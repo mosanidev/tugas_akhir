@@ -5,7 +5,7 @@
     <a href="{{ route('pembelian.index') }}" class="btn btn-link"><- Kembali ke daftar pembelian</a>
 
     <h3>Pembelian</h3>
-    {{-- {{dd($pembelian[0])}} --}}
+    
     <div class="px-2 py-3">
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">Nomor Nota</label>
@@ -132,6 +132,8 @@
 
   <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <script type="text/javascript">
 
     //Initialize Select2 Elements
@@ -147,6 +149,16 @@
       dropdownParent: $("#divUbahBarangDibeli"),
       theme: 'bootstrap4'
     })
+
+    jQuery.datetimepicker.setLocale('id');
+
+    $('#tanggal_kadaluarsa').datetimepicker({
+        timepicker: true,
+        datepicker: true,
+        lang: 'id',
+        defaultTime: '00:00 AM',
+        format: 'Y-m-d H:i:00'
+    });
 
     // index
 
@@ -185,25 +197,60 @@
 
     // start modal create
 
-    $('#barang').on('change', function() {
+    $('#tanggal_kadaluarsa').on('change', function() {
 
-      let hargaBeli = $('#barang :selected')[0].getAttribute("data-harga");
+      if($('#barang')[0].selectedIndex == 0)
+      {
+        toastr.error("Harap pilih barang terlebih dahulu", "Error", toastrOptions);
+        $(this).val("");
+      }
 
-      $('#harga_beli').val(hargaBeli);
+    });
 
-      $('#kuantitas').val("");
+    $('#harga_beli').on('change', function() {
 
-      $('#subtotal').val("");
+      if($('#barang')[0].selectedIndex == 0)
+      {
+        toastr.error("Harap pilih barang terlebih dahulu", "Error", toastrOptions);
+        $(this).val("");
+      }
+      else 
+      {
+        if($('#kuantitas').val() == "")
+        {
+          $('#kuantitas').val("1");
+        }
+
+        let hargaBeli = parseInt($('#harga_beli').val());
+
+        let kuantitas = parseInt($('#kuantitas').val());
+
+        $('#subtotal').val(hargaBeli*kuantitas);
+      }
 
     });
 
     $('#kuantitas').on('change', function() {
 
-      let hargaBeli = $('#barang :selected')[0].getAttribute("data-harga");
+      if($('#barang')[0].selectedIndex == 0)
+      {
+        toastr.error("Harap pilih barang terlebih dahulu", "Error", toastrOptions);
+        $(this).val("");
+      }
+      else 
+      {
+        if($('#harga_beli').val() == "")
+        {
+          $('#harga_beli').val("500");
+        }
 
-      let kuantitas = $(this).val();
+        let hargaBeli = parseInt($('#harga_beli').val());
 
-      $('#subtotal').val(hargaBeli*kuantitas);
+        let kuantitas = parseInt($('#kuantitas').val());
+
+        $('#subtotal').val(hargaBeli*kuantitas);
+      }
+
 
     });
 
@@ -212,6 +259,11 @@
       if($('#barang')[0].selectedIndex == 0)
       {
         toastr.error("Harap pilih barang terlebih dahulu", "Error", toastrOptions);
+      }
+      else if ($('#kuantitas').val() == "")
+      {
+        toastr.error("Harap tentukan kuantitas barang terlebih dahulu", "Error", toastrOptions);
+
       }
       else if ($('#kuantitas').val() == "")
       {

@@ -189,6 +189,8 @@
 
                         if(data.transaksi[0].metode_transaksi == "Ambil di toko")
                         {
+                            
+                            console.log(data);
                             for(let i=0; i < data.barang.length; i++)
                             {
                                 rowBarang += `<div class="row">
@@ -217,6 +219,7 @@
                         }
                         else if(data.transaksi[0].metode_transaksi == "Dikirim ke alamat") // dikirim ke alamat
                         {   
+                            console.log("tes");
                             $('.rowInfoAlamatPengiriman').html(`<h5>Alamat Pengiriman</h5>
                                                             <div class="row">
                                                                 <div class="col-12">
@@ -230,8 +233,7 @@
                                                             </div>`);
 
                             // let estimasiTiba = null;
-                            
-                            if(data.barang[0].nama_shipper == 'Gojek' ||data.barang[0].nama_shipper == 'Grab')
+                            if(data.barang[0].nama_shipper == 'Gojek' || data.barang[0].nama_shipper == 'Grab')
                             {
                                 estimasiTiba = moment(data.barang[0].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
                             }
@@ -371,42 +373,42 @@
 
                             $('#totalTarifOngkir').html(convertAngkaToRupiah(totalTarif));
 
-                        } // end for
-                         
-                        if(data.barang[index].nama_shipper == 'Gojek' ||data.barang[index].nama_shipper == 'Grab')
-                        {
-                            estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
-                        }
-                        else 
-                        {
-                            estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY");
-                        }
+                            if(data.barang[index].nama_shipper == 'Gojek' || data.barang[index].nama_shipper == 'Grab')
+                            {
+                                estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
+                            }
+                            else 
+                            {
+                                estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY");
+                            }
 
-                        rowBarang += `<h5>Alamat Pengiriman</h5>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                ` + data.barang[index].alamat + `
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                ` + data.barang[index].kecamatan + `, ` + data.barang[index].kota_kabupaten + `, ` + data.barang[index].provinsi + `, ` + data.barang[index].kode_pos + `
-                                            </div>
-                                        </div>
-                                        ` + rowBarangSama + `
-                                        <h5>Pengiriman</h5>
+                            rowBarang += `<h5>Alamat Pengiriman</h5>
                                             <div class="row">
                                                 <div class="col-12">
-                                                    ` + data.barang[index].jenis_pengiriman + ` ` + data.barang[index].nama_shipper + `
+                                                    ` + data.barang[index].alamat + `
                                                 </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-12">
-                                                    Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                    ` + data.barang[index].kecamatan + `, ` + data.barang[index].kota_kabupaten + `, ` + data.barang[index].provinsi + `, ` + data.barang[index].kode_pos + `
                                                 </div>
-                                                <div class="col-12">
-                                                    Ongkos kirim ` + convertAngkaToRupiah(data.barang[index].tarif) + `
-                                                </div>
-                                        </div>
-                                        <hr>`;
+                                            </div>
+                                            ` + rowBarangSama + `
+                                            <h5>Pengiriman</h5>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        ` + data.barang[index].jenis_pengiriman + ` ` + data.barang[index].nama_shipper + `
+                                                    </div>
+                                                    <div class="col-12">
+                                                        Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                    </div>
+                                                    <div class="col-12">
+                                                        Ongkos kirim ` + convertAngkaToRupiah(data.barang[index].tarif) + `
+                                                    </div>
+                                            </div>
+                                            <hr>`;
+
+                        } // end if
 
                         $('.rowBarang').html(rowBarang);
 
@@ -414,7 +416,6 @@
 
                         $('#totalTransaksi').html(convertAngkaToRupiah(data.transaksi[0].total));
                         
-                    
                     }   
                 });
 

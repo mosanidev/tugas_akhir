@@ -8,7 +8,14 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" id="modalCreateBarangDiskonBody">
+            <div class="m-5" id="loader">
+                <div class="text-center">
+                    <div class="spinner-border" style="width: 5rem; height: 5rem; color:grey;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
             <form method="POST" action="{{ route('barang_diskon.store') }}" id="formTambahBarangDiskon">
                 @csrf
                 <input type="hidden" name="periode_diskon_id" value="{{ $periode_diskon[0]->id }}"/>

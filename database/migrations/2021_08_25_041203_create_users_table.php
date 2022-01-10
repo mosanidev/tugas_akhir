@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->enum('status_verifikasi_anggota', ['Unverified', 'Verified']);
             $table->string('nomor_anggota', 100)->nullable(); 
             $table->date('tanggal_lahir');
-            $table->string('foto', 255)->nullable(); 
+            $table->string('foto', 255)->default("/images/profil/user_null.png"); 
         });
     }
 

@@ -12,7 +12,9 @@
 </section>
 <div class="container-fluid">
 
-    {{-- <a href="{{ route('penjualan.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
+    <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPenjualanOffline">Tambah</button>
+
+    {{-- <a href="{{ route('penjualanoffline.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -26,16 +28,13 @@
                           <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal</th>
-                          <th>Pelanggan</th>
-                          <th>Metode Transaksi</th>
                           <th>Metode Pembayaran</th>
                           <th>Total</th>
-                          <th>Status Pembayaran</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                      @php $num = 1; @endphp
+                      {{-- @php $num = 1; @endphp
                       @foreach($penjualan as $item)
                         <tr>
                           <td style="width: 10px">{{ $num++ }}</td>
@@ -50,7 +49,7 @@
                             <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                           </td>
                         </tr>
-                      @endforeach
+                      @endforeach --}}
                     </tbody>
                 </table>
             </div>
@@ -58,18 +57,10 @@
     </div>
 </div>
 
-{{-- @include('admin.pembelian.modal.confirm_delete') --}}
+@include('admin.penjualan_offline.modal.create')
 
-
-  <!-- Toastr -->
-{{-- <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script> --}}
 
 <script type="text/javascript">
-
-//   if("{{ session('status') }}" != "")
-//   {
-//     toastr.success("{{ session('status') }}");
-//   }
 
 
 </script>

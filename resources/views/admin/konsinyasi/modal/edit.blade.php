@@ -11,6 +11,7 @@
           <div class="modal-body">
             <form method="POST" action="" id="formUbah">
                 @csrf
+                @method('PUT')
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Nomor Nota</label>
                   <div class="col-sm-8">
@@ -72,7 +73,7 @@
                 </div>
 
                 <div class="modal-footer">
-                <button type="button" id="btnTambahKonsinyasi" class="btn btn-primary">Simpan</button>
+                <button type="button" id="btnUbahKonsinyasi" class="btn btn-primary">Simpan</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 </div>
                 </form>

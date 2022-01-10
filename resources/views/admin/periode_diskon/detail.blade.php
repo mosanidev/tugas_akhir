@@ -127,10 +127,14 @@
                 type: 'GET',
                 beforeSend: function(){
                 
+                    $('#modalCreateBarangDiskonBody #loader').show();
+                    $('#formTambahBarangDiskon').hide();
+
                 },
                 success:function(data) {
 
-                    console.log(data);
+                    $('#loader').hide();
+                    $('#formTambahBarangDiskon').show();
 
                     document.getElementById('selectTambahBarangDiskon').innerHTML = `<option disabled selected>Barang</option>`;
 
@@ -141,7 +145,6 @@
                     }
                 }
             });
-
 
             $('#selectTambahBarangDiskon').on('change', function() {
 
@@ -155,6 +158,8 @@
 
             });
         });
+
+        
 
         $('#btnSimpanBarangDiskon').on('click', function() {
 
@@ -197,7 +202,14 @@
             $.ajax({
                 url: '/admin/barang_diskon/'+id_barang+'/edit',
                 type: 'GET',
+                beforeSend: function() {
+                    $('#modalEditBarangDiskonBody #loader').show();
+                    $('#formUbahBarangDiskon').hide();
+                },
                 success: function(data) {
+
+                    $('#modalEditBarangDiskonBody #loader').hide();
+                    $('#formUbahBarangDiskon').show();
 
                     // $('#barang_ubah').val(data.barang_diskon[0].id);
                     document.getElementById('selectUbahBarangDiskon').innerHTML = `<option disabled selected>Barang</option>`;

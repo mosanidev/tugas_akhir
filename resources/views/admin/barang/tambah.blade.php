@@ -93,12 +93,6 @@
                         </div> 
                     </div>
                 </div>
-                <div class="form-group row" id="div-pilihan">
-                    <p class="col-sm-3 col-form-label">Harga Beli</p>
-                    <div class="col-sm-9">
-                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ old('harga_beli') }}">
-                    </div>
-                </div>
                 <div class="form-group row" id="div-stok-minimum">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
@@ -109,19 +103,6 @@
                     <p class="col-sm-3 col-form-label">Berat</p>
                     <div class="col-sm-9">
                         <input type="number" class="form-control d-inline mr-1" name="berat" min="0.1" style="width: 93.5%;" name="harga" step="0.1" value="{{ old('berat') }}" required> gram
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <p class="col-sm-3 col-form-label">Tanggal Kadaluarsa</p>
-                    <div class="col-sm-9">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa') }}" autocomplete="off" id="datepicker">
-                                <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="form-group row" id="div-jam-kadaluarsa">
@@ -172,7 +153,7 @@
     <!-- Moment  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
 
     <script type="text/javascript">
 
@@ -182,21 +163,13 @@
 
                 if($('.optkonsinyasi:checked').val() == 1)
                 {
-                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Komisi</p>
-                                            <div class="col-sm-9">
-                                                Rp   <input type="number" id="komisi" class="form-control d-inline ml-1" style="width: 96.2%;" name="komisi" step="100" min="500" value="{{ old('komisi') }}" required>
-                                            </div>`);
                     $('#stok_minimum').val('0');     
-                    $('#div-stok-minimum').hide();
+                    $('#stok_minimum').attr("readonly", true);
                 }
                 else 
                 {
-                    $('#div-pilihan').html(`<p class="col-sm-3 col-form-label">Harga Beli</p>
-                                            <div class="col-sm-9">
-                                                Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ old('harga_beli') }}" required>
-                                            </div>`);
-                    $('#stok_minimum').val("");     
-                    $('#div-stok-minimum').show();
+                    $('#stok_minimum').val('');
+                    $('#stok_minimum').attr("readonly", false);
 
                 }
 
@@ -210,15 +183,15 @@
                 theme: 'bootstrap4'
             });
 
-            jQuery.datetimepicker.setLocale('id');
+            // jQuery.datetimepicker.setLocale('id');
 
-            $('#datepicker').datetimepicker({
-                timepicker: true,
-                datepicker: true,
-                lang: 'id',
-                defaultTime: '00:00 AM',
-                format: 'Y-m-d H:i:00'
-            });
+            // $('#datepicker').datetimepicker({
+            //     timepicker: true,
+            //     datepicker: true,
+            //     lang: 'id',
+            //     defaultTime: '00:00 AM',
+            //     format: 'Y-m-d H:i:00'
+            // });
 
 
         });

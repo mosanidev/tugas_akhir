@@ -13,8 +13,10 @@
 {{-- {{ dd($jenis_barang) }} --}}
 <div class="container-fluid">
 
-  <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPeriodeDiskon">Tambah</button>
+  {{-- <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPeriodeDiskon">Tambah</button> --}}
   
+  <a href="{{ route('periode_diskon.create') }}" class="btn btn-success ml-2" >Tambah</a>
+
   <div class="card shadow my-4">
       <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">Tabel Periode Diskon</h6>
@@ -28,7 +30,7 @@
                         <th>Nama</th>
                         <th>Tanggal Dimulai</th>
                         <th>Tanggal Berakhir</th>
-                        <th>Status</th>
+                        {{-- <th>Status</th> --}}
                         <th>Aksi</th>
                       </tr>
                   </thead>
@@ -40,7 +42,7 @@
                           <td>{{ $item->nama }}</td>
                           <td>{{ $item->tanggal_dimulai }}</td>
                           <td>{{ $item->tanggal_berakhir }}</td>
-                          <td>{{ $item->status }}</td>
+                          {{-- <td>{{ $item->status }}</td> --}}
                           <td style="width: 20%">
                             <a href="{{ route('periode_diskon.show', ['periode_diskon' => $item->id]) }}" class="btn btn-info ml-2">Barang Diskon</a>
                             <button class="btn btn-warning ml-2 btn-ubah" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalUbahPeriodeDiskon">Ubah</button>
@@ -58,6 +60,7 @@
   @include('admin.periode_diskon.modal.confirm_delete')
   @include('admin.periode_diskon.modal.create')
   @include('admin.periode_diskon.modal.edit')
+
 
   <!-- bootstrap datepicker -->
   <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -139,14 +142,12 @@
             url: "/admin/periode_diskon/"+event.target.getAttribute('data-id')+"/edit",
             type: 'GET',
             beforeSend: function(){
-              
             },
             success:function(data) {
 
               $('#nama').val(data.periode_diskon[0].nama);
               $('#datepickerubahtglawal').val(data.periode_diskon[0].tanggal_dimulai);
               $('#datepickerubahtglakhir').val(data.periode_diskon[0].tanggal_berakhir);
-              $('#status').val(data.periode_diskon[0].status);
 
               $('#form-ubah').attr('action', "/admin/periode_diskon/"+data.periode_diskon[0].id);
 
