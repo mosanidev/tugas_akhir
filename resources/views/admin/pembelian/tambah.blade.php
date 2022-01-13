@@ -262,6 +262,10 @@
                         </tr>`;
         }
 
+        let diskon = parseInt($('#inputDiskon').val());
+        let ppn = parseInt($('#inputPPN').val());
+        let totalAkhir = (total-diskon)*(ppn/100);
+        $('#totalAkhir').val(totalAkhir);
         $('#total').val(total);
 
         $('#contentTable').html(rowTable);
@@ -279,11 +283,39 @@
 
         let total = parseInt($('#total').val());
 
-        let totalAkhir = total - parseInt($(this).val());
+        // if(total == 0)
+        // {
+        //     toastr.error("Tidak bisa masih 0 totalnya", "Error", toastrOptions);
+        // }
+        // else 
+        // {
+            let diskon = parseInt($('#inputDiskon').val());
+            let ppn = parseInt($('#inputPPN').val());
+            let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
+            $('#totalAkhir').val(totalAkhir);
+        // }
 
-        $('#totalAkhir').val(totalAkhir);
 
     });
+
+    $('#inputPPN').on('change', function() {
+
+        let total = parseInt($('#total').val());
+
+        // if(total == 0)
+        // {
+        //     toastr.error("Tidak bisa masih 0 totalnya", "Error", toastrOptions);
+        // }
+        // else 
+        // {
+            let diskon = parseInt($('#inputDiskon').val());
+            let ppn = parseInt($('#inputPPN').val());
+            let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
+            $('#totalAkhir').val(totalAkhir);
+        // }   
+
+    });
+
     
 
     // let dataBarang = [];

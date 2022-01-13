@@ -25,9 +25,17 @@ class AdminStokOpnameController extends Controller
      */
     public function create()
     {
-        $supplier = DB::table('supplier')->get();
+        $barang = DB::table('barang')
+                    ->select('barang.id', 'barang.kode', 'barang.nama')
+                    ->where('barang_konsinyasi', '=', 0)->get();
 
-        return view('admin.stok_opname.tambah', ['supplier'=>$supplier]);
+        $barangTglKadaluarsa = DB::table('barang')
+                    ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa as tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
+                    ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa > SYSDATE()')
+                    ->where('barang_konsinyasi', '=', 0)->get();
+
+        return view('admin.stok_opname.tambah', ['barang'=>$barang, 'barangTglKadaluarsa'=>$barangTglKadaluarsa]);
     }
 
     /**
@@ -38,7 +46,36 @@ class AdminStokOpnameController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $IDstokOpname = DB::table('stok_opname')
+                         ->insert([
+                             'nomor_nota' => $request->nomor_nota,
+                             'tanggal' => $request->tanggal,
+                             'users_id' => auth()->user()->id
+                         ]);
+
+        $dataBarang = json_decode($request->barang, true);
+
+        for($i = 0; $i < count((array) $dataBarang); $i++)
+        {
+            $insertDetailStokOpname = DB::table('detail_stok_opname')
+                                        ->insert([
+                                            'stok_opname_id' => $IDstokOpname,
+                                            'barang_id' => $dataBarang[$i]['barang_id'],
+                                            'tanggal_kadaluarsa' => $dataBarang[$i]['barang_tanggal_kadaluarsa'],
+                                            'stok_di_sistem' => $dataBarang[$i]['stok_di_sistem'],
+                                            'stok_di_toko' => $dataBarang[$i]['stok_di_toko'],
+                                            'jumlah_selisih' => $dataBarang[$i]['jumlah_selisih'],
+                                            'keterangan' => $dataBarang[$i]['keterangan']
+                                        ]);
+
+            $penyesuaianStok = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['barang_tanggal_kadaluarsa'])
+                            ->increment('jumlah_stok', $dataBarang[$i]['jumlah_selisih']);
+
+        }
+
+        return redirect()->route('stok_opname.index')->with(['success' => 'Data berhasil ditambah']);
     }
 
     /**

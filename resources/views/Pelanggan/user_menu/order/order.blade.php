@@ -60,19 +60,15 @@
 
 @push('script_user_menu')
 
-    {{-- <script src="{{ asset('/scripts/helper.js') }}"></script> --}}
-
     <script type="text/javascript">
 
         $(document).ready(function() {
-
 
             $('.btnLihatDetailOrder').on('click', function(event) {
 
                 let estimasiTiba = null;
                 let id = event.target.getAttribute('data-id');
                 let index = null;
-                // $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
                 $.ajax({
                     type: 'GET',

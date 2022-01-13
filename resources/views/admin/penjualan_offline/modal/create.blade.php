@@ -25,19 +25,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa</label>
-                  <div class="col-sm-8">
-                    <select class="form-control" name="tanggal_kadaluarsa" id="selectTglKadaluarsa" required>
-                        <option disabled selected>Pilih tanggal kadaluarsa dari barang</option>
-                        {{-- @if(isset($barang[0]->id))
-                          @foreach($barang as $item)
-                              <option value="{{ $item->id }}" data-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-stok="{{ $item->jumlah_stok }}" data-kode="{{ $item->kode }}" data-harga="{{ $item->harga_jual }}" data-diskon="{{ $item->diskon_potongan_harga}}">{{ $item->kode." - ".$item->nama }}</option>
-                          @endforeach
-                        @endif --}}
-                    </select> 
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Kuantitas</label>
                   <div class="col-sm-8">
                     <input type="number" class="form-control" name="kuantitas" id="kuantitasBarangJualOffline" min="1" value=""> 

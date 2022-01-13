@@ -20,10 +20,11 @@ class CreateDetailStokOpnameTable extends Migration
             $table->foreign('stok_opname_id')->references('id')->on('stok_opname')->onUpdate('cascade')->onDelete('cascade'); 
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
-            // $table->unsignedInteger('tanggal_kadaluarsa_id');
-            // $table->foreign('tanggal_kadaluarsa_id')->references('tanggal_kadaluarsa_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade');
+            $table->datetime('tanggal_kadaluarsa');
+            $table->integer('stok_di_sistem');
+            $table->integer('stok_di_toko');
             $table->integer('jumlah_selisih');
-            $table->string('alasan', 100);
+            $table->string('keterangan', 100);
         });
     }
 

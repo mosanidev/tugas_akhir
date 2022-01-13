@@ -20,7 +20,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Buat</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_titip" autocomplete="off" id="datepickerTglTitip" required>
+                      <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTgl" required>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -36,7 +36,7 @@
                 </div>
               </div>
 
-              <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangKonsinyasi" id="btnTambah">Tambah</button>
+              <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangStokOpname" id="btnTambah">Tambah</button>
 
               <div class="card shadow my-4">
                 <div class="card-header py-3">
@@ -49,9 +49,11 @@
                                 <tr>
                                   <th style="width: 10px">No</th>
                                   <th>Barang</th>
+                                  <th>Tanggal Kadaluarsa</th>
                                   <th>Stok di Sistem</th>
                                   <th>Stok di Toko</th>
                                   <th>Selisih</th>
+                                  <th>Keterangan</th>
                                   <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -65,5 +67,57 @@
             <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto">Simpan</button>
         </form>
     </div>
+
+@include('admin.stok_opname.modal.create')
+
+<script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+
+<script type="text/javascript">
+
+    $('#datepickerTgl').datepicker({
+      format: 'yyyy-mm-dd',
+      autoclose: true
+    });
+
+    function implementOnTable()
+    {
+        let rowTable = ``;
+        let num = 1;
+        for(let i = 0; i < arrStokOpname.length; i++)
+        {
+          rowTable += `<tr>
+                        <td>` + num + `</td>
+                        <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
+                        <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
+                        <td>` + arrStokOpname[i].stok_di_sistem + `</td>
+                        <td>` + arrStokOpname[i].stok_di_toko + `</td>
+                        <td>` + arrStokOpname[i].selisih + `</td>
+                        <td>` + arrStokOpname[i].keterangan + `</td>
+                        <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
+                       </tr>`;
+          num++;
+        }
+
+        $('#contentTable').html(rowTable);
+    }
+
+    function hapusBarangStokOpname(i)
+    {
+      arrStokOpname.splice(i, 1);
+
+      implementOnTable();
+    }
+
+    $('#btnSimpan').on('click', function() {
+
+        $('#data_barang').val(JSON.stringify(arrStokOpname));
+
+        $('#btnSimpan').attr("type","submit");
+
+        $('#btnSimpan')[0].click();
+
+    });
+
+</script>
 
 @endsection

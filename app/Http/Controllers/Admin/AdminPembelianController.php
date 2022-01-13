@@ -30,7 +30,7 @@ class AdminPembelianController extends Controller
     public function create()
     {
         $supplier = DB::table('supplier')->get();
-        $barang = DB::table('barang')->get();
+        $barang = DB::table('barang')->where('barang_konsinyasi', '=', 0)->get();
 
         return view('admin.pembelian.tambah', ['supplier'=>$supplier, 'barang'=>$barang]);
     }
@@ -43,7 +43,6 @@ class AdminPembelianController extends Controller
      */
     public function store(Request $request)
     {
-
         $idPembelian = DB::table('pembelian')
                             ->insertGetId([
                                 'nomor_nota' => $request->nomor_nota,

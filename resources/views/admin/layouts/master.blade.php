@@ -195,15 +195,6 @@
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Karyawan</span></a>
             </li>
-            <!-- Divider -->
-            {{-- <hr class="sidebar-divider"> --}}
-
-            <!-- Heading -->
-            {{-- <div class="sidebar-heading">
-                
-            </div> --}}
-
-            
 
         </ul>
         <!-- End of Sidebar -->
