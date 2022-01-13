@@ -13,8 +13,9 @@
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="" novalidate>
+            <form method="POST" action="{{ route('penjualanoffline.store') }}" novalidate>
                 @csrf
+                <input type="hidden" id="dataBarangDijual" name="detail_penjualan">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Nomor Nota</label>
                     <div class="col-sm-8">
@@ -36,10 +37,10 @@
                     <label class="col-sm-4 col-form-label">Pelanggan ( Anggota Koperasi )</label>
                     <div class="col-sm-8">
                         <div class="form-group row" style="margin-left: 1px;">
-                            <select class="form-control" name="selectPelangganKopkar" id="selectPelangganKopkar" style="width: 85%" required>
+                            <select class="form-control" name="pelanggan_kopkar" id="selectPelangganKopkar" style="width: 85%" required>
                                 <option disabled selected>Ketikkan NIK atau nama anggota koperasi</option>
                                 @foreach($anggotaKopkar as $item)
-                                    <option value="{{ $item->nomor_anggota }}">{{ $item->nomor_anggota." - ".$item->nama_depan." ".$item->nama_belakang }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->nomor_anggota." - ".$item->nama_depan." ".$item->nama_belakang }}</option>
                                 @endforeach
                             </select>
                             <button type="button" class="btn btn-danger ml-2" id="btnKosongiInputAnggotaKopkar">Kosongi</button>
@@ -58,12 +59,14 @@
                         </select> 
                     </div>
                 </div>
-                {{-- <div class="mx-auto">
-                    <button type="submit" class="btn btn-info w-25">Simpan</button>
-                </div> --}}
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Total</label>
+                    <div class="col-sm-8">
+                        Rp <input type="number" class="form-control d-inline ml-1" style="width: 95.2%;" name="total" id="total" value="0" readonly>
+                    </div>
+                </div>
 
-                {{-- tabel barang yang dijual --}}
-                <a href="{{ route('penjualanoffline.create') }}" class="btn btn-success ml-2">Tambah</a>
+                <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangJualOffline" id="tambahBarangJualOffline">Tambah</button>
 
                 <div class="card shadow my-4">
                     <div class="card-header py-3">
@@ -71,43 +74,33 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive" style="overflow: scroll; overflow-x: auto;">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                    <th style="width: 10px">No</th>
-                                    <th>Nomor Nota</th>
-                                    <th>Tanggal</th>
-                                    <th>Metode Pembayaran</th>
-                                    <th>Total</th>
-                                    <th>Aksi</th>
+                                        <th style="width: 10px">No</th>
+                                        <th>Barang</th>
+                                        <th>Harga Jual</th>
+                                        <th>Diskon</th>
+                                        <th>Kuantitas</th>
+                                        <th>Subtotal</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                {{-- @php $num = 1; @endphp
-                                @foreach($penjualan as $item)
-                                    <tr>
-                                    <td style="width: 10px">{{ $num++ }}</td>
-                                    <td>{{ $item->nomor_nota }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
-                                    <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
-                                    <td>{{ $item->metode_transaksi }}</td>
-                                    <td>{{ $item->metode_pembayaran }}</td>
-                                    <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
-                                    <td>{{ $item->status }}</td>
-                                    <td>
-                                        <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
-                                    </td>
-                                    </tr>
-                                @endforeach --}}
+                                <tbody id="contentTable">
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
+                <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto">Simpan</button>
+
             </form>
-            
         </div>
     </div>
+
+    @include('admin.penjualan_offline.modal.create')
 
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -140,16 +133,102 @@
             timepicker: true,
             datepicker: true,
             lang: 'id',
-            // defaultTime: '00:00 AM',
             format: 'Y-m-d H:i:00'
         });
 
         $('#btnKosongiInputAnggotaKopkar').on('click', function(){
-            $('#selectPelangganKopkar').val("default").change()
-            // $('#selectPelangganKopkar')[0].selectedIndex = 0;   
+            $('#selectPelangganKopkar option').eq(0).prop('selected', true).change()
         });
 
-        // $('#selectPelangganKopkar').on()
+        $('#selectBarangJualOffline').select2({
+            dropdownParent: $("#modalTambahBarangJualOffline"),
+            theme: 'bootstrap4'
+        });
+
+        $('#tambahBarangJualOffline').on('click', function() {
+
+            $('#selectBarangJualOffline option').eq(0).prop('selected', true).change();
+            $('#kuantitasBarangJualOffline').val("");
+
+        });
+
+        implementDataOnTable();
+
+        function implementDataOnTable()
+        {
+            let rowTable = "";
+            let num = 1;
+            let total = 0;
+
+            if(arrBarangDijual.length > 0)
+            {
+                for(let i = 0; i < arrBarangDijual.length; i++)
+                {
+                    total += parseInt(arrBarangDijual[i].subtotal);
+
+                    rowTable += `<tr>
+                                    <td style="width: 10px">` + num + `</td>
+                                    <td>` + arrBarangDijual[i].barang_kode + " - " + arrBarangDijual[i].barang_nama + `</td>
+                                    <td>` + convertAngkaToRupiah(arrBarangDijual[i].harga_jual) + `</td>
+                                    <td>` + convertAngkaToRupiah(arrBarangDijual[i].diskon) + `</td>
+                                    <td>` + arrBarangDijual[i].kuantitas + `</td>
+                                    <td>` + convertAngkaToRupiah(arrBarangDijual[i].subtotal) + `</td>
+                                    <td>
+                                        <button type="button" class='btn btn-danger' onclick="hapusBarangDijual(` + i + `)">Hapus</button>
+                                    </td>
+                                </tr>`;
+
+                    num++;
+                }
+            }
+            else 
+            {
+                rowTable += `<tr>
+                                <td colspan="7"><p class="text-center">Belum ada isi</p></td>
+                            </tr>`;
+            }
+            
+
+            $('#contentTable').html(rowTable);
+            $('#total').val(total);
+            
+        }
+
+        function hapusBarangDijual(i)
+        {
+            arrBarangDijual.splice(i, 1);
+
+            implementDataOnTable();
+        }
+
+        $('#btnSimpan').on('click', function() {
+
+            if($('#inputNomorNota').val() == "")
+            {
+                toastr.error("Harap isi nomor nota terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#datepickerTgl').val() == "")
+            {
+                toastr.error("Harap isi tanggal terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
+            }
+            else if (arrBarangDijual.length == 0)
+            {
+                toastr.error("Harap pilih tambah barang yang dijual terlebih dahulu", "Error", toastrOptions);
+            }
+            else 
+            {
+                $('#dataBarangDijual').val(JSON.stringify(arrBarangDijual));
+                $('#btnSimpan').attr("type", "submit");
+                $('#btnSimpan')[0].click();
+
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+            }
+
+        });
     
     </script>
 

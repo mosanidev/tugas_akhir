@@ -12,7 +12,9 @@
 </section>
 <div class="container-fluid">
 
-    <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahKonsinyasi">Tambah</button>
+    {{-- <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahKonsinyasi">Tambah</button> --}}
+
+    <a href="{{ route('konsinyasi.create') }}" class="btn btn-success ml-2">Tambah</a>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">

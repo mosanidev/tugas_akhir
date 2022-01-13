@@ -51,7 +51,7 @@
                 <a href="{{ route('shop') }}" class="btn btn-block btn-success mx-auto py-3 w-50" role="button">Mulai Belanja</a>
             </div>
 
-            @if(isset($barang_promo) && count($barang_promo) > 0)
+            @if(isset($barang_promo) && count($barang_promo) > 0 && $barang_promo[0]->id != null) 
                 <div class="col-6 mt-2">
                     <p class="h5"><b>Sedang Promo <a href="{{ route('promo') }}" class="text-success" style="font-size: 14px;">Lihat Semua</a></b></p>
                 </div>
@@ -132,7 +132,7 @@
         <div class="row">
 
 
-            @if(isset($barang_konsinyasi) && count($barang_konsinyasi) > 0)
+            @if(isset($barang_konsinyasi) && count($barang_konsinyasi) && $barang_konsinyasi[0]->id != null)
                 <div class="col-6 mt-2">
                     <p class="h5 mr-3"><b>Lainnya dari kami <a href="#konsinyasi" class="text-success" style="font-size: 14px;">Lihat Semua</a></b></p>
                 </div>

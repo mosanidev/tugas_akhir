@@ -45,6 +45,7 @@ use App\Http\Controllers\Admin\AdminReturPembelianController;
 use App\Http\Controllers\Admin\AdminKaryawanController;
 use App\Http\Controllers\Admin\AdminKonsinyasiController;
 use App\Http\Controllers\Admin\AdminDetailKonsinyasiController;
+use App\Http\Controllers\Admin\AdminStokOpnameController;
 
 
 /*
@@ -142,7 +143,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('retur', [ReturPenjualanController::class, 'showForm'])->name('returPenjualan.showForm');
     Route::post('retur', [ReturPenjualanController::class, 'store'])->name('returPenjualan.store');
 
-
     Route::post('change_password', [UserController::class, 'changePassword'])->name('changePassword');
 
     Route::get('/alamat/pick/main', [AlamatController::class, 'pickMainAddress'])->name('pickMainAddress');
@@ -231,6 +231,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
 
         Route::resource('/konsinyasi', AdminKonsinyasiController::class);
+
+        Route::resource('/stok_opname', AdminStokOpnameController::class);
 
         Route::resource('/konsinyasi/barangkonsinyasi', AdminDetailKonsinyasiController::class);
 

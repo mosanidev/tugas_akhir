@@ -28,6 +28,10 @@ class AdminKonsinyasiController extends Controller
      */
     public function create()
     {
+        $supplier = DB::table('supplier')->get();
+        $barang_konsinyasi = DB::table('barang')->where('barang_konsinyasi', '=', 0)->get();
+
+        return view('admin.konsinyasi.tambah', ['supplier' => $supplier, 'barang_konsinyasi' => $barang_konsinyasi]);
     }
 
     /**

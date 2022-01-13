@@ -41,9 +41,30 @@ class AdminPeriodeDiskonController extends Controller
      */
     public function store(Request $request)
     {
-        $id = DB::table('periode_diskon')->insertGetId(['nama'=>$request->nama, 'tanggal_dimulai'=>$request->tanggal_dimulai, 'tanggal_berakhir'=>$request->tanggal_berakhir]);
+        $idPeriodeDiskon = DB::table('periode_diskon')
+                                ->insertGetId([
+                                    'nama' => $request->nama,
+                                    'tanggal_dimulai' => $request->tanggal_dimulai,
+                                    'tanggal_berakhir' => $request->tanggal_berakhir
+                                ]);
+        
+        $diskonBarang = json_decode($request->diskon_barang, true);
 
-        return redirect()->route('periode_diskon.show', ['periode_diskon'=>$id])->with(['status'=>'Berhasil tambah data, Silahkan tambah data barang diskon']);
+        for($i = 0; $i < count((array) $diskonBarang); $i++)
+        {
+            $updateBarang = DB::table('barang')
+                            ->where('id', $diskonBarang[$i]['barang_id'])
+                            ->update([
+                                'periode_diskon_id' => $idPeriodeDiskon,
+                                'diskon_potongan_harga' => $diskonBarang[$i]['barang_diskon']
+                            ]);
+        }
+
+        return redirect()->route('periode_diskon.index')->with(['success' => 'Data berhasil ditambah']);
+
+        // $id = DB::table('periode_diskon')->insertGetId(['nama'=>$request->nama, 'tanggal_dimulai'=>$request->tanggal_dimulai, 'tanggal_berakhir'=>$request->tanggal_berakhir]);
+
+        // return redirect()->route('periode_diskon.show', ['periode_diskon'=>$id])->with(['status'=>'Berhasil tambah data, Silahkan tambah data barang diskon']);
 
     }
 

@@ -159,8 +159,6 @@
             });
         });
 
-        
-
         $('#btnSimpanBarangDiskon').on('click', function() {
 
             let harga_jual = convertRupiahToAngka($('#harga_jual').html());

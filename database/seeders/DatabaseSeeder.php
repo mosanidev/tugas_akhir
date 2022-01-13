@@ -28,7 +28,9 @@ class DatabaseSeeder extends Seeder
             PembelianSeeder::class,
             DetailPembelianSeeder::class,
             ReturPembelianSeeder::class,
-            DetailReturPembelianSeeder::class
+            DetailReturPembelianSeeder::class,
+            BarangHasKadaluarsaSeeder::class,
+            PeriodeDiskonSeeder::class
 
         ]);
     

@@ -8,11 +8,13 @@
       <div class="col-sm-6">
         <h1>Pembelian</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 <div class="container-fluid">
 
-    <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPembelian">Tambah</button>
+    {{-- <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPembelian">Tambah</button> --}}
+
+    <a href="{{ route('pembelian.create') }}" class="btn btn-success ml-2">Tambah</a>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -43,11 +45,9 @@
                           <td>{{ $item->nama_supplier }}</td>
                           <td>{{ "Rp " . number_format($item->total-$item->diskon - ($item->total-$item->diskon)*($item->ppn/100) ,0,',','.') }}</td>
                           <td>
-                            {{-- <div class="row"> --}}
-                                <a href="{{ route('pembelian.show', ['pembelian' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Dibeli</a>
-                                <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahPembelian">Ubah</button>
-                                <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian">Hapus</button>
-                            {{-- </div> --}}
+                              <a href="{{ route('pembelian.show', ['pembelian' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Dibeli</a>
+                              <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahPembelian">Ubah</button>
+                              <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian">Hapus</button>
                           </td>
                         </tr>
                       @endforeach
@@ -58,9 +58,9 @@
     </div>
 </div>
 
-@include('admin.pembelian.modal.confirm_delete')
+{{-- @include('admin.pembelian.modal.confirm_delete')
 @include('admin.pembelian.modal.create')
-@include('admin.pembelian.modal.edit')
+@include('admin.pembelian.modal.edit') --}}
 
 
 <!-- bootstrap datepicker -->

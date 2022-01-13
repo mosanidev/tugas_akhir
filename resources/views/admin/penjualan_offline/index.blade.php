@@ -34,22 +34,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                      {{-- @php $num = 1; @endphp
+                      @php $num = 1; @endphp
                       @foreach($penjualan as $item)
                         <tr>
                           <td style="width: 10px">{{ $num++ }}</td>
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
-                          <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
-                          <td>{{ $item->metode_transaksi }}</td>
                           <td>{{ $item->metode_pembayaran }}</td>
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
-                          <td>{{ $item->status }}</td>
                           <td>
                             <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                           </td>
                         </tr>
-                      @endforeach --}}
+                      @endforeach
                     </tbody>
                 </table>
             </div>
@@ -57,11 +54,14 @@
     </div>
 </div>
 
-@include('admin.penjualan_offline.modal.create')
-
+<script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
 <script type="text/javascript">
 
+  if("{{ session('success') }}" != "")
+  {
+    toastr.success("{{ session('success') }}", "Success", toastrOptions);
+  }
 
 </script>
 @endsection

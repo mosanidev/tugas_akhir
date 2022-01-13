@@ -43,23 +43,43 @@ class AdminPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'nomor_nota' => 'unique:pembelian'
-        ];
-  
-        $messages = [
-            'nomor_nota.unique'=> 'Nomor Nota sudah ada'
-        ];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-  
-        if($validator->fails()){
-            return redirect()->back()->withErrors($validator)->withInput($request->all);
+        $idPembelian = DB::table('pembelian')
+                            ->insertGetId([
+                                'nomor_nota' => $request->nomor_nota,
+                                'supplier_id' => $request->supplier_id,
+                                'tanggal' => $request->tanggalBuat,
+                                'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
+                                'diskon' => $request->diskon,
+                                'ppn' => $request->ppn,
+                                'metode_pembayaran' => $request->metodePembayaran,
+                                'status' => $request->status,
+                                'total' => $request->total
+                            ]);
+
+        $dataBarang = json_decode($request->barang, true);
+
+        for ($i = 0; $i < count((array) $dataBarang); $i++)
+        {
+            $idBarang = DB::table('barang_has_kadaluarsa')
+                                ->insert([
+                                    'barang_id' => $dataBarang[$i]['barang_id'],
+                                    'tanggal_kadaluarsa' => $dataBarang[$i]['tanggal_kadaluarsa'],
+                                    'jumlah_stok' => $dataBarang[$i]['kuantitas']
+                                ]);
+
+            $insertDetailPembelian = DB::table('detail_pembelian')
+                                        ->insert([
+                                            'pembelian_id' => $idPembelian,
+                                            'barang_id'    => $dataBarang[$i]['barang_id'],
+                                            'kuantitas'    => $dataBarang[$i]['kuantitas'],
+                                            'harga_beli'    => $dataBarang[$i]['harga_beli'],
+                                            'subtotal'    => $dataBarang[$i]['subtotal']
+                                        ]);
+
         }
 
-        $pembelian = DB::table('pembelian')->insertGetId(['nomor_nota'=>$request->nomor_nota, 'tanggal'=>$request->tanggalBuat, 'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo, 'supplier_id'=>$request->supplier_id, 'metode_pembayaran'=>$request->metodePembayaran, 'diskon'=>$request->diskon, 'ppn'=>$request->ppn, 'users_id' => auth()->user()->id]);
-
-        return redirect()->route('pembelian.show', ['pembelian'=>$pembelian])->with(['success'=>'Tambah data pembelian berhasil. Silahkan tambahkan barang yang dibeli']);
+        return redirect()->route('pembelian.index')->with(['success'=>'Data berhasil ditambah']);
     }
 
     /**

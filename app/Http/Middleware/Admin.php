@@ -17,9 +17,16 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->jenis == "Admin" || Auth::check() && Auth::user()->jenis == "Manajer")
+        if(Auth::check())
         {
-            return $next($request);
+            if(Auth::user()->jenis == "Admin" || Auth::user()->jenis == "Manajer")
+            {
+                return $next($request);
+            }
+            else 
+            {
+                abort(404);
+            }
         }
         else 
         {
