@@ -29,7 +29,7 @@ class AdminPembelianController extends Controller
      */
     public function create()
     {
-        $supplier = DB::table('supplier')->get();
+        $supplier = DB::table('supplier')->where('jenis', '=', 'Perusahaan')->get();
         $barang = DB::table('barang')->where('barang_konsinyasi', '=', 0)->get();
 
         return view('admin.pembelian.tambah', ['supplier'=>$supplier, 'barang'=>$barang]);
@@ -89,11 +89,12 @@ class AdminPembelianController extends Controller
 
             $insertDetailPembelian = DB::table('detail_pembelian')
                                             ->insert([
-                                                'pembelian_id' => $idPembelian,
-                                                'barang_id'    => $dataBarang[$i]['barang_id'],
-                                                'kuantitas'    => $dataBarang[$i]['kuantitas'],
-                                                'harga_beli'    => $dataBarang[$i]['harga_beli'],
-                                                'subtotal'    => $dataBarang[$i]['subtotal']
+                                                'pembelian_id'          => $idPembelian,
+                                                'barang_id'             => $dataBarang[$i]['barang_id'],
+                                                'kuantitas'             => $dataBarang[$i]['kuantitas'],
+                                                'tanggal_kadaluarsa'    => $dataBarang[$i]['tanggal_kadaluarsa'],
+                                                'harga_beli'            => $dataBarang[$i]['harga_beli'],
+                                                'subtotal'              => $dataBarang[$i]['subtotal']
                                             ]);
 
         }

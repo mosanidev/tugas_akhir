@@ -37,13 +37,13 @@
                         <input type="text" name="pembuat" id="pembuat" value="{{ auth()->user()->id." - ".auth()->user()->nama_depan." ".auth()->user()->nama_belakang }}" class="form-control" readonly>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" id="divTampungSelectNotaBeli">
                     <p class="col-sm-4 col-form-label">Nomor Nota Pembelian</p>
                     <div class="col-sm-8">
-                        <select class="form-control" id="selectNotaBeli" name="nomor_nota_pembelian" required>
+                        <select class="form-control" id="selectNotaBeli" name="id_pembelian" required>
                             <option disabled selected>Pilih Nomor Nota Pembelian</option>
                             @foreach($pembelian as $item)
-                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}">{{ $item->nomor_nota }}</option>
+                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status }}">{{ $item->nomor_nota }}</option>
                             @endforeach
                         </select>    
                     </div>
@@ -53,7 +53,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglNotaBeli" readonly>
+                                <input type="text" class="form-control pull-right" autocomplete="off" id="datepickerTglNotaBeli" readonly>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -62,11 +62,41 @@
                     </div>
                 </div> 
                 <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Nota Pembelian</p>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control pull-right" autocomplete="off" id="datepickerTglJatuhTempoNotaBeli" readonly>
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Status Pembelian</p>
+                    <div class="col-sm-8">
+                        <input type="text" id="statusPembelian" class="form-control" readonly>
+                      </select> 
+                    </div>
+                </div>
+                <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Supplier</p>
                     <div class="col-sm-8">
-                        <input type="hidden" name="supplier" id="supplierID">
+                        {{-- <input type="hidden" name="supplier" id="supplierID"> --}}
                         <input type="text" id="supplier" class="form-control" readonly>
                       </select> 
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Kebijakan Retur</p>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="selectKebijakanRetur" name="kebijakan_retur" required>
+                            <option disabled selected>Pilih Kebijakan Retur</option>
+                            <option value="Tukar Barang">Tukar Barang</option>
+                            <option value="Potong Dana Pembelian">Potong Dana Pembelian</option>
+                        </select>    
                     </div>
                 </div>
             </div>
@@ -90,7 +120,7 @@
     });
 
     $('#selectNotaBeli').select2({
-        dropdownParent: $("#modalTambahRetur"),
+        dropdownParent: $("#divTampungSelectNotaBeli"),
         theme: 'bootstrap4'
     });
 
@@ -109,6 +139,9 @@
 
         $('#supplierID').val( $('#selectNotaBeli :selected').attr("data-id-supplier") );
 
+        $('#datepickerTglJatuhTempoNotaBeli').val( $('#selectNotaBeli :selected').attr("data-jatuh-tempo") );
+
+        $('#statusPembelian').val( $('#selectNotaBeli :selected').attr("data-status-pembelian") );
 
     });
 

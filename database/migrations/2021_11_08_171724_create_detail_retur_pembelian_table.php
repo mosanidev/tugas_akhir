@@ -18,18 +18,16 @@ class CreateDetailReturPembelianTable extends Migration
         Schema::create('detail_retur_pembelian', function (Blueprint $table) {
             $table->unsignedInteger('retur_pembelian_id');
             $table->foreign('retur_pembelian_id')->references('id')->on('retur_pembelian')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('barang_asal');
-            $table->unsignedInteger('barang_ganti');
-            $table->foreign('barang_asal')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
+            $table->unsignedInteger('barang_retur');
+            $table->unsignedInteger('barang_ganti')->nullable();
+            $table->foreign('barang_retur')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
             $table->foreign('barang_ganti')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
-            $table->datetime('tanggal_kadaluarsa_asal');     
-            // $table->unsignedInteger('tanggal_kadaluarsa_asal');
-            // $table->foreign('tanggal_kadaluarsa_asal')->references('tanggal_kadaluarsa_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade');      
-            $table->datetime('tanggal_kadaluarsa_ganti');     
+            $table->datetime('tanggal_kadaluarsa_barang_retur');       
+            $table->datetime('tanggal_kadaluarsa_barang_ganti')->nullable();     
             $table->string('keterangan', 1000);
-            $table->integer('kuantitas_barang_asal');
-            $table->integer('kuantitas_barang_ganti');
-            // $table->enum('status', ['Belum diterima', 'Sudah diterima'])->defaut('Sudah diterima');
+            $table->integer('kuantitas_barang_retur');
+            $table->integer('kuantitas_barang_ganti')->nullable();
+            $table->double('subtotal')->default(0)->nullable();
         });
     }
 

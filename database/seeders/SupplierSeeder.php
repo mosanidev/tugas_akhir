@@ -19,60 +19,30 @@ class SupplierSeeder extends Seeder
         DB::table('supplier')->insert(
             [   
                 'id'            => 1,  
-                'nama'          => 'Lorem Ipsum',
-                'alamat'        => 'Jl. Jalanan',
-                'nomor_telepon' => '0811111111111',
-                'jenis'         => 'Individu'
+                'nama'          => 'Indogrosir',
+                'alamat'        => 'Jl. Ahmad Yani No. 9',
+                'nomor_telepon' => '089165487699',
+                'jenis'         => 'Perusahaan'
             ]
         );
 
         DB::table('supplier')->insert(
             [   
                 'id'            => 2,  
-                'nama'          => 'Iping Suping',
-                'alamat'        => 'Jl. Katrok',
-                'nomor_telepon' => '0822222222222',
-                'jenis'         => 'Individu'
+                'nama'          => 'Cakrawala',
+                'alamat'        => 'Jl. Rungkut No. 11',
+                'nomor_telepon' => '0895355458900',
+                'jenis'         => 'Perusahaan'
             ]
         );
 
         DB::table('supplier')->insert(
             [   
                 'id'            => 3,  
-                'nama'          => 'PT Supaya Jaya',
-                'alamat'        => 'Jl. Medokan',
-                'nomor_telepon' => '087923837928',
-                'jenis'         => 'Perusahaan'
-            ]
-        );
-
-        DB::table('supplier')->insert(
-            [   
-                'id'            => 4,  
-                'nama'          => 'PT Terserah Elu',
-                'alamat'        => 'Jl. Tenggilis',
-                'nomor_telepon' => '0867362186321',
-                'jenis'         => 'Perusahaan'
-            ]
-        );
-
-        DB::table('supplier')->insert(
-            [   
-                'id'            => 5,  
-                'nama'          => 'PT Mukjizat',
-                'alamat'        => 'Jl. Jujurandum',
-                'nomor_telepon' => '0836283621731',
-                'jenis'         => 'Perusahaan'
-            ]
-        );
-
-        DB::table('supplier')->insert(
-            [   
-                'id'            => 6,  
-                'nama'          => 'UD Kelor Jaya',
-                'alamat'        => 'Jl. Deket Sidoarjo',
-                'nomor_telepon' => '0898877676867',
-                'jenis'         => 'Perusahaan'
+                'nama'          => 'Mulyono',
+                'alamat'        => 'Jl. Keputih V No. 99',
+                'nomor_telepon' => '0821776889435',
+                'jenis'         => 'Individu'
             ]
         );
     }

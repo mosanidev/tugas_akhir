@@ -17,7 +17,7 @@ class AdminReturPembelianController extends Controller
     {
         // select pembelian yang datanya tidak ada di retur pembelian
         $pembelian = DB::table('pembelian')
-                        ->select('pembelian.id', 'pembelian.nomor_nota', 'pembelian.tanggal', 'pembelian.supplier_id', 'supplier.nama as nama_supplier')
+                        ->select('pembelian.id', 'pembelian.nomor_nota', 'pembelian.tanggal', 'pembelian.status', 'pembelian.tanggal_jatuh_tempo', 'pembelian.supplier_id', 'supplier.nama as nama_supplier')
                         ->leftJoin('retur_pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
                         ->join('supplier', 'supplier.id', '=', 'pembelian.supplier_id')
                         ->where('retur_pembelian.pembelian_id', '=', null)
@@ -55,7 +55,17 @@ class AdminReturPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        // $insert = DB::table('')
+        $id_retur_pembelian = DB::table('retur_pembelian')
+                                ->insertGetId([
+                                    'nomor_nota' => $request->nomor_nota_retur,
+                                    'tanggal' => $request->tanggal,
+                                    'users_id' => explode(" - ", $request->pembuat)[0],
+                                    'pembelian_id' => $request->id_pembelian,
+                                    'kebijakan_retur' => $request->kebijakan_retur
+                                ]);
+
+        return redirect()->route('retur_pembelian.show', ['retur_pembelian' => $id_retur_pembelian]);
+        
     }
 
     /**
@@ -66,7 +76,27 @@ class AdminReturPembelianController extends Controller
      */
     public function show($id)
     {
-        //
+        $retur_pembelian = DB::table('retur_pembelian')
+                                ->select('retur_pembelian.*', 'pembelian.nomor_nota as nomor_nota_pembelian', 'pembelian.tanggal as tanggal_buat_nota_beli', 'pembelian.tanggal_jatuh_tempo as tanggal_jatuh_tempo_beli', 'pembelian.status as status_pembelian', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) AS nama_pembuat"))
+                                ->where('retur_pembelian.id', '=', $id)
+                                ->join('pembelian', 'pembelian.id', '=', 'retur_pembelian.pembelian_id')
+                                ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
+                                ->get();
+
+        $detail_pembelian = DB::table('detail_pembelian')
+                                ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan')
+                                ->where('detail_pembelian.pembelian_id', '=', $retur_pembelian[0]->pembelian_id)  
+                                ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
+                                ->get();
+
+        if($retur_pembelian[0]->kebijakan_retur == "Tukar Barang")
+        {
+            return view('admin.retur_pembelian.tukar_barang', ['detail_pembelian' => $detail_pembelian, 'retur_pembelian' => $retur_pembelian]);
+        }
+        else if ($retur_pembelian[0]->kebijakan_retur == "Potong Dana Pembelian")
+        {
+            return view('admin.retur_pembelian.potong_dana_pembelian', ['detail_pembelian' => $detail_pembelian, 'retur_pembelian' => $retur_pembelian]);
+        }
     }
 
     /**

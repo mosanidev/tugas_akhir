@@ -46,7 +46,7 @@ use App\Http\Controllers\Admin\AdminKaryawanController;
 use App\Http\Controllers\Admin\AdminKonsinyasiController;
 use App\Http\Controllers\Admin\AdminDetailKonsinyasiController;
 use App\Http\Controllers\Admin\AdminStokOpnameController;
-
+use App\Http\Controllers\Admin\AdminDetailReturPembelianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -245,6 +245,9 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/barang_retur/info/{barang_id}', [AdminReturPembelianController::class, 'loadInfoBarangRetur']);
 
         Route::resource('/retur_pembelian', AdminReturPembelianController::class);
+
+        Route::resource('/detail_retur_pembelian', AdminDetailReturPembelianController::class);
+
 
         Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);
