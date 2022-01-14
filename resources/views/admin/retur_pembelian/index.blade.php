@@ -10,10 +10,9 @@
       </div>
   </div><!-- /.container-fluid -->
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
 <div class="container-fluid">
 
-    <a href="{{ route('retur_pembelian.create') }}" class="btn btn-success ml-2">Tambah</a>
+    <button class="btn btn-success" data-toggle="modal" data-target="#modalTambahRetur" data-dismiss="#modalTambahRetur" id="btnTambahRetur">Tambah</button>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -28,30 +27,34 @@
                           <th>Nomor Nota</th>
                           <th>Nama Supplier</th>
                           <th>Tanggal Retur</th>
-                          <th>Total Barang Retur</th>
                           <th>Total</th>
+                          <th>Pembuat</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                      @php $num = 1; @endphp
-                      @foreach($retur_pembelian as $item)
-                        <tr>
-                          <td style="width: 10px">{{ $num++ }}</td>
-                          <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ $item->tanggal }}</td>
-                          <td>{{ $item->total_barang_diretur }}</td>
-                          <td>{{ $item->total }}</td>
-                          <td>
-                            <div class="row">
-                                <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
-                                <a href="#ubah" class='btn btn-warning w-100 mb-2'>Ubah</a>
-                                <button type="button" class="btn btn-danger mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian">Hapus</button> 
-                            </div>
-                          </td>
-                        </tr>
-                      @endforeach 
+                      @if(isset($retur_pembelian) && count($retur_pembelian) > 0)
+                        @if($retur_pembelian[0]->id != null)
+                          @php $num = 1; @endphp
+                          @foreach($retur_pembelian as $item)
+                            <tr>
+                              <td style="width: 10px">{{ $num++ }}</td>
+                              <td>{{ $item->nomor_nota }}</td>
+                              <td>{{ $item->nama_supplier }}</td>
+                              <td>{{ $item->tanggal }}</td>
+                              <td>{{ $item->total }}</td>
+                              <td>{{ $item->total }}</td>
+                              <td>
+                                <div class="row">
+                                    <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
+                                    <a href="#ubah" class='btn btn-warning w-100 mb-2'>Ubah</a>
+                                    <button type="button" class="btn btn-danger mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian">Hapus</button> 
+                                </div>
+                              </td>
+                            </tr>
+                          @endforeach 
+                        @endif
+                      @endif
                     </tbody>
                 </table>
             </div>
@@ -59,7 +62,7 @@
     </div>
 </div>
 
-{{-- @include('admin.pembelian.modal.confirm_delete') --}}
+@include('admin.retur_pembelian.modal.create')
 
   <!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>

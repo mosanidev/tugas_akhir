@@ -84,6 +84,8 @@
 
     $('#selectBarangStokOpname').on('change', function() {
 
+        // console.log($('#selectBarangStokOpname :selected').attr('data-stok'));
+
         let optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
 
         $('#stokDiSistem').val("");
@@ -92,11 +94,11 @@
 
         for(let i = 0; i < barangTglKadaluarsa.length; i++)
         {
-            if($(this).val() == barangTglKadaluarsa[i].id)
+            if($('#selectBarangStokOpname :selected').val() == barangTglKadaluarsa[i].id)
             {
                 $('#selectBarangTglKadaluarsa').attr("disabled", false);
 
-                optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-m-D') + `</option>`;
+                optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-D') + `</option>`;
             }
             else 
             {
@@ -121,7 +123,6 @@
     $('#selectBarangTglKadaluarsa').on('change', function(){
 
       $('#stokDiSistem').val($('#selectBarangTglKadaluarsa :selected').attr('data-stok'));
-      
 
     });
 

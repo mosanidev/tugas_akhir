@@ -15,9 +15,21 @@ class AdminReturPembelianController extends Controller
      */
     public function index()
     {
-        $retur_pembelian = DB::table('retur_pembelian')->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', 'detail_retur_pembelian.total')->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->join('detail_retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')->distinct()->get();
+        // select pembelian yang datanya tidak ada di retur pembelian
+        $pembelian = DB::table('pembelian')
+                        ->select('pembelian.id', 'pembelian.nomor_nota', 'pembelian.tanggal', 'pembelian.supplier_id', 'supplier.nama as nama_supplier')
+                        ->leftJoin('retur_pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
+                        ->join('supplier', 'supplier.id', '=', 'pembelian.supplier_id')
+                        ->where('retur_pembelian.pembelian_id', '=', null)
+                        ->get();
 
-        return view('admin.retur_pembelian.index', ['retur_pembelian'=>$retur_pembelian]);
+        $retur_pembelian = DB::table('retur_pembelian')->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', 'users.nama_depan as nama_depan_pembuat', 'users.nama_belakang as nama_belakang_pembuat')
+                            ->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
+                            ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
+                            ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                            ->get();
+
+        return view('admin.retur_pembelian.index', ['pembelian' => $pembelian, 'retur_pembelian'=>$retur_pembelian]);
     }
 
     /**
@@ -43,7 +55,7 @@ class AdminReturPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // $insert = DB::table('')
     }
 
     /**

@@ -137,7 +137,7 @@
         });
 
         $('#btnKosongiInputAnggotaKopkar').on('click', function(){
-            $('#selectPelangganKopkar option').eq(0).prop('selected', true).change()
+            $('#selectPelangganKopkar option').eq(0).prop('selected', true).change();
         });
 
         $('#selectBarangJualOffline').select2({

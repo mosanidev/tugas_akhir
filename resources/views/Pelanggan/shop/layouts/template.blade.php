@@ -110,6 +110,7 @@
                     },
                     success:function(data) {
 
+                        console.log(data);
                         // $('#modalLoading').modal('toggle');
 
                         // tampilkanCustomModal(data.status, 3000);

@@ -35,6 +35,9 @@ class AdminStokOpnameController extends Controller
                     ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa > SYSDATE()')
                     ->where('barang_konsinyasi', '=', 0)->get();
 
+        // dd($barang);
+        // dd($barangTglKadaluarsa);
+
         return view('admin.stok_opname.tambah', ['barang'=>$barang, 'barangTglKadaluarsa'=>$barangTglKadaluarsa]);
     }
 
@@ -47,7 +50,7 @@ class AdminStokOpnameController extends Controller
     public function store(Request $request)
     {
         $IDstokOpname = DB::table('stok_opname')
-                         ->insert([
+                         ->insertGetId([
                              'nomor_nota' => $request->nomor_nota,
                              'tanggal' => $request->tanggal,
                              'users_id' => auth()->user()->id
@@ -64,14 +67,14 @@ class AdminStokOpnameController extends Controller
                                             'tanggal_kadaluarsa' => $dataBarang[$i]['barang_tanggal_kadaluarsa'],
                                             'stok_di_sistem' => $dataBarang[$i]['stok_di_sistem'],
                                             'stok_di_toko' => $dataBarang[$i]['stok_di_toko'],
-                                            'jumlah_selisih' => $dataBarang[$i]['jumlah_selisih'],
+                                            'jumlah_selisih' => $dataBarang[$i]['selisih'],
                                             'keterangan' => $dataBarang[$i]['keterangan']
                                         ]);
 
             $penyesuaianStok = DB::table('barang_has_kadaluarsa')
                             ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
                             ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['barang_tanggal_kadaluarsa'])
-                            ->increment('jumlah_stok', $dataBarang[$i]['jumlah_selisih']);
+                            ->increment('jumlah_stok', $dataBarang[$i]['selisih']);
 
         }
 

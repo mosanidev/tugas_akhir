@@ -60,21 +60,41 @@ class AdminPembelianController extends Controller
 
         for ($i = 0; $i < count((array) $dataBarang); $i++)
         {
-            $idBarang = DB::table('barang_has_kadaluarsa')
-                                ->insert([
-                                    'barang_id' => $dataBarang[$i]['barang_id'],
-                                    'tanggal_kadaluarsa' => $dataBarang[$i]['tanggal_kadaluarsa'],
-                                    'jumlah_stok' => $dataBarang[$i]['kuantitas']
-                                ]);
+            $selectBarang = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
+                            ->get();
+
+
+            if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
+            {
+
+                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->insert([
+                                        'barang_id' => $dataBarang[$i]['barang_id'],
+                                        'tanggal_kadaluarsa' => $dataBarang[$i]['tanggal_kadaluarsa'],
+                                        'jumlah_stok' => $dataBarang[$i]['kuantitas']
+                                    ]);
+                 
+            }
+            else // jika ada barang yang sama maka tambah kuantitas
+            {
+                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                                    ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
+                                    ->increment('jumlah_stok', $dataBarang[$i]['kuantitas']);  
+
+            }
+
 
             $insertDetailPembelian = DB::table('detail_pembelian')
-                                        ->insert([
-                                            'pembelian_id' => $idPembelian,
-                                            'barang_id'    => $dataBarang[$i]['barang_id'],
-                                            'kuantitas'    => $dataBarang[$i]['kuantitas'],
-                                            'harga_beli'    => $dataBarang[$i]['harga_beli'],
-                                            'subtotal'    => $dataBarang[$i]['subtotal']
-                                        ]);
+                                            ->insert([
+                                                'pembelian_id' => $idPembelian,
+                                                'barang_id'    => $dataBarang[$i]['barang_id'],
+                                                'kuantitas'    => $dataBarang[$i]['kuantitas'],
+                                                'harga_beli'    => $dataBarang[$i]['harga_beli'],
+                                                'subtotal'    => $dataBarang[$i]['subtotal']
+                                            ]);
 
         }
 

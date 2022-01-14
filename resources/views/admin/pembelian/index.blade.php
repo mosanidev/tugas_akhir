@@ -58,14 +58,7 @@
     </div>
 </div>
 
-{{-- @include('admin.pembelian.modal.confirm_delete')
-@include('admin.pembelian.modal.create')
-@include('admin.pembelian.modal.edit') --}}
-
-
-<!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
 @if(session('errors'))

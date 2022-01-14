@@ -85,14 +85,12 @@
                 <label class="col-sm-4 col-form-label">Total</label>
                 <div class="col-sm-8">
                     Rp <input type="number" class="form-control d-inline ml-1" value="0" min="500" style="width: 95.8%;" id="total" name="total" readonly/>
-                    {{-- <p id="total">Rp 0</p> --}}
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total Akhir</label>
                 <div class="col-sm-8">
                     Rp <input type="number" class="form-control d-inline ml-1" value="0" min="500" style="width: 95.8%;" id="totalAkhir" name="total_akhir" readonly/>
-                    {{-- <p id="totalAkhir">Rp 0</p> --}}
                 </div>
             </div>
 
@@ -109,6 +107,7 @@
                                 <tr>
                                   <th style="width: 10px">No</th>
                                   <th>Barang</th>
+                                  <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
@@ -129,12 +128,8 @@
 @include('admin.pembelian.modal.create')
 @include('admin.pembelian.modal.edit')
 
-
-<!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
-<!-- Select2 -->
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
 <script type="text/javascript">
@@ -226,10 +221,11 @@
 
     $('#btnTambah').on('click', function() {
 
-        $("#barang")[0].selectedIndex = 0;
+        $("#barang option").eq(0).prop('selected', true).change();
         $("#harga_beli").val("");
         $("#kuantitas").val("");
-        $('#subtotal').html("");
+        $('#subtotal').val("");
+        $('#tanggal_kadaluarsa').val("");
 
     });
 
@@ -248,6 +244,7 @@
                 rowTable += `<tr>    
                                 <td>` + num +  `</td>
                                 <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
+                                <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
                                 <td>` + barangDibeli[i].kuantitas +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].subtotal) +  `</td>
@@ -264,7 +261,7 @@
 
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = (total-diskon)*(ppn/100);
+        let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
         $('#totalAkhir').val(totalAkhir);
         $('#total').val(total);
 
@@ -276,25 +273,18 @@
     {
         barangDibeli.splice(index, 1);
 
-        implementOnTable();
+        implementDataOnTable();
     }
 
     $('#inputDiskon').on('change', function() {
 
         let total = parseInt($('#total').val());
 
-        // if(total == 0)
-        // {
-        //     toastr.error("Tidak bisa masih 0 totalnya", "Error", toastrOptions);
-        // }
-        // else 
-        // {
-            let diskon = parseInt($('#inputDiskon').val());
-            let ppn = parseInt($('#inputPPN').val());
-            let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
-            $('#totalAkhir').val(totalAkhir);
-        // }
+        let diskon = parseInt($('#inputDiskon').val());
+        let ppn = parseInt($('#inputPPN').val());
+        let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
 
+        $('#totalAkhir').val(totalAkhir);
 
     });
 
@@ -302,199 +292,13 @@
 
         let total = parseInt($('#total').val());
 
-        // if(total == 0)
-        // {
-        //     toastr.error("Tidak bisa masih 0 totalnya", "Error", toastrOptions);
-        // }
-        // else 
-        // {
-            let diskon = parseInt($('#inputDiskon').val());
-            let ppn = parseInt($('#inputPPN').val());
-            let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
-            $('#totalAkhir').val(totalAkhir);
-        // }   
+        let diskon = parseInt($('#inputDiskon').val());
+        let ppn = parseInt($('#inputPPN').val());
+        let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
+        $('#totalAkhir').val(totalAkhir);
+        
 
     });
-
-    
-
-    // let dataBarang = [];
-    // let subtotal = 0;
-
-    // function convertAngkaToRupiah(angka)
-    // {
-    //     var rupiah = '';		
-    //     var angkarev = angka.toString().split('').reverse().join('');
-    //     for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-    //     return 'Rp '+rupiah.split('',rupiah.length-1).reverse().join('');
-    // }
-
-    // function convertRupiahToAngka(rupiah)
-    // {
-    //     return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
-    // }
-
-    // $('.numberTambah').on('change', function() {
-
-    //     subtotal = parseInt($('#harga_beli').val())*parseInt($('#kuantitas').val());
-
-    //     if(!isNaN(subtotal))
-    //     {
-    //         $('#subtotal').html(convertAngkaToRupiah(subtotal));
-
-    //     }
-
-    // });
-
-    // $('.numberUbah').on('change', function() {
-
-    //     subtotal = parseInt($('#hargaBeliUbah').val())*parseInt($('#kuantitasUbah').val());
-
-    //     if(!isNaN(subtotal))
-    //     {
-    //         $('#subtotalUbah').html(convertAngkaToRupiah(subtotal));
-
-    //     }
-
-    // });
-
-    
-
-
-    // $('#btnTambahBarangDibeli').on('click', function() {
-
-    //     if($('#barang').val() == null || $('#harga_beli').val() == "" || $('#kuantitas').val() == "" || $('#subtotal').html() == "")
-    //     {
-    //         toastr.error("Harap isi data secara lengkap terlebih dahulu");
-    //     }
-    //     if(checkDuplicate($('#barang').val().split("-")[0]))
-    //     {
-    //         toastr.error("Sudah ada barang yang sama di tabel");
-    //     }
-    //     else 
-    //     {
-    //         $('#modalTambahBarangDibeli').modal('toggle');
-
-    //         dataBarang.push({
-    //             "id_barang" : $('#barang').val().split("-")[0],
-    //             "nama_barang" : $('#barang').val().split("-")[1],
-    //             "harga_beli" : $('#harga_beli').val(),
-    //             "kuantitas" : $('#kuantitas').val(),
-    //             "subtotal" : convertRupiahToAngka($('#subtotal').html())
-    //         });
-
-    //         loadTableBarang(dataBarang);
-    //     }
-
-    // });
-
-    // dataBarang.push({
-    //     "id_barang" : 0,
-    //     "nama_barang" : "dhaskdakjdsah",
-    //     "harga_beli" : "9000",
-    //     "kuantitas" : "3",
-    //     "subtotal" : "18000"
-    // });
-
-    // loadTableBarang(dataBarang);
-
-
-    // $('#btnSimpan').on('click', function() {
-
-        
-    //     if($('#inputNomorNota').val() == "")
-    //     {
-    //         toastr.error("Harap isi nomor nota terlebih dahulu");
-    //     }
-    //     else if($('#datePickerTgl').val() == "")
-    //     {
-    //         toastr.error("Harap isi tanggal terlebih dahulu");
-    //     }
-    //     else if($("#selectSupplier")[0].selectedIndex == 0)
-    //     {
-    //         toastr.error("Harap pilih supplier terlebih dahulu");
-    //     }
-    //     else if($("#selectStatus")[0].selectedIndex == 0)
-    //     {
-    //         toastr.error("Harap pilih status terlebih dahulu");
-    //     }
-    //     // else if(document.getElementById("inputFoto").files.length == 0)
-    //     // {
-    //     //     toastr.error("Harap upload foto terlebih dahulu");
-    //     // }
-    //     else if(dataBarang.length == 0)
-    //     {
-    //         toastr.error("Harap isi data barang terlebih dahulu");
-    //     }
-    //     else 
-    //     {
-    //         $('#data_barang').val(JSON.stringify(dataBarang));
-    //         $('#form').submit();
-    //     }
-
-    // });
-
-    // function checkDuplicate(idBarang, idBarangLama)
-    // {
-    //     if(idBarangLama != idBarang)
-    //     {
-    //         if(dataBarang.length > 0)
-    //         {
-    //             for(let i=0; i<dataBarang.length; i++)
-    //             {
-    //                 if(idBarang == dataBarang[i].id_barang)
-    //                 {
-    //                     return true;
-    //                 }
-    //             }
-    //         }
-    //     }
-        
-    // }
-
-    // function edit(index)
-    // {
-
-    //     $('#barangIndex').val(index);
-    //     // console.log(dataBarang[index].id_barang+"-"+dataBarang[index].nama_barang);
-    //     $('#barangUbah').val(dataBarang[index].id_barang+"-"+dataBarang[index].nama_barang);
-    //     $('#hargaBeliUbah').val(dataBarang[index].harga_beli);
-    //     $('#kuantitasUbah').val(dataBarang[index].kuantitas);
-    //     $('#subtotalUbah').html(convertAngkaToRupiah(dataBarang[index].subtotal));
-
-
-    // }
-
-    // $('#btnUbahBarangDibeli').on('click', function() {
-
-    //     let index = $('#barangIndex').val();
-
-    //     // console.log($('#barangUbah').val().split("-")[0]);
-
-    //     if($('#barangUbah').val() == null || $('#hargaBeliUbah').val() == "" || $('#kuantitasUbah').val() == "" || $('#subtotalUbah').html() == "")
-    //     {
-    //         toastr.error("Harap isi data secara lengkap terlebih dahulu");
-    //     }
-    //     if(checkDuplicate($('#barangUbah').val().split("-")[0], dataBarang[index].id_barang))
-    //     {
-    //         toastr.error("Sudah ada barang yang sama di tabel");
-    //     }
-    //     else 
-    //     {
-
-    //         dataBarang[index].id_barang = $('#barangUbah').val().split("-")[0];
-    //         dataBarang[index].nama_barang = $('#barangUbah').val().split("-")[1];
-    //         dataBarang[index].harga_beli = $('#hargaBeliUbah').val();
-    //         dataBarang[index].kuantitas = $('#kuantitasUbah').val();
-    //         dataBarang[index].subtotal = convertRupiahToAngka($('#subtotalUbah').html());
-
-    //         loadTableBarang(dataBarang);
-
-    //         $('#modalUbahBarangDibeli').modal('toggle');
-
-    //     }
-
-    // });
 
     
 </script>

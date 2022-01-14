@@ -96,12 +96,15 @@
 
     $('#btnTambahBarangDibeli').on('click', function(){
 
-        console.log()
         if(parseInt($('#harga_beli').val()) > parseInt($('#barang :selected').attr("data-harga-jual")))
         {
-            toastr.error("Mohon maaf harga beli melebihi harga jual barang yaitu " + convertAngkaToRupiah($('#barang :selected').attr("data-harga-jual")), "Error", toastrOptions);
+            toastr.error("Mohon maaf harga beli " + $('#barang :selected').attr("data-nama") + " melebihi harga jual barang yaitu " + convertAngkaToRupiah($('#barang :selected').attr("data-harga-jual")), "Error", toastrOptions);
         }
-        else if(barangDibeli.filter(function(e) { return e.barang_id == $('#barang :selected').val() }).length == 0)
+        else if(barangDibeli.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val() }).length > 0)
+        {
+            toastr.error("Mohon maaf barang dengan tanggal kadaluarsa yang sama sudah ada di tabel barang yang dibeli" , "Error", toastrOptions);
+        }
+        else if(barangDibeli.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val()}).length == 0)
         {
             barangDibeli.push({
                 "barang_id": $('#barang :selected').val(),

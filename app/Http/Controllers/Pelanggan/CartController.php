@@ -14,9 +14,9 @@ class CartController extends Controller
     {
         // ambil data barang dari db
         $barang = DB::table('barang')
-                    ->select('id', 'nama', 'foto', 'harga_jual', 'diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                    ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                    ->where('id', '=', $request->barang_id)
+                    ->where('barang.id', '=', $request->barang_id)
                     ->get();
 
         $cart = null;
@@ -136,7 +136,7 @@ class CartController extends Controller
         if(Auth::check())
         {
             $cart = DB::table('cart')
-                    ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                    ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as barang_stok'))
                     ->join('barang', 'cart.barang_id', '=', 'barang.id')
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->where('cart.users_id', '=', auth()->user()->id)
@@ -157,9 +157,9 @@ class CartController extends Controller
     {
         // ambil data barang dari db
         $barang = DB::table('barang')
-                    ->select('id', 'nama', 'foto', 'harga_jual', 'diskon_potongan_harga', 'jumlah_stok', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                    ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                    ->where('id', '=', $request->barang_id)
+                    ->where('barang.id', '=', $request->barang_id)
                     ->get();
 
         // buat variable untuk pemberitahuan status tambah barang ke keranjang

@@ -22,6 +22,7 @@ class CreateReturPembelianTable extends Migration
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('pembelian_id');
             $table->foreign('pembelian_id')->references('id')->on('pembelian')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('total')->nullable();
         });
     }
 

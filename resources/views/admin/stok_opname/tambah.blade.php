@@ -83,21 +83,31 @@
     {
         let rowTable = ``;
         let num = 1;
-        for(let i = 0; i < arrStokOpname.length; i++)
-        {
-          rowTable += `<tr>
-                        <td>` + num + `</td>
-                        <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
-                        <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
-                        <td>` + arrStokOpname[i].stok_di_sistem + `</td>
-                        <td>` + arrStokOpname[i].stok_di_toko + `</td>
-                        <td>` + arrStokOpname[i].selisih + `</td>
-                        <td>` + arrStokOpname[i].keterangan + `</td>
-                        <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
-                       </tr>`;
-          num++;
-        }
 
+        if(arrStokOpname.length > 0)
+        {
+          for(let i = 0; i < arrStokOpname.length; i++)
+          {
+            rowTable += `<tr>
+                          <td>` + num + `</td>
+                          <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
+                          <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
+                          <td>` + arrStokOpname[i].stok_di_sistem + `</td>
+                          <td>` + arrStokOpname[i].stok_di_toko + `</td>
+                          <td>` + arrStokOpname[i].selisih + `</td>
+                          <td>` + arrStokOpname[i].keterangan + `</td>
+                          <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
+                        </tr>`;
+            num++;
+          }
+        }
+        else 
+        {
+          rowTable = `<tr>
+                        <td class="text-center" colspan="8">Belum ada data</td>
+                      </td>`;
+        }
+        
         $('#contentTable').html(rowTable);
     }
 

@@ -166,15 +166,21 @@
                 </div>
             </li>
 
-            <!-- Nav Item - Charts -->
             <li class="nav-item">
               <a class="nav-link" href="charts.html">
                   <i class="fas fa-fw fa-chart-area"></i>
-                  <span>Pengiriman</span></a>
+                  <span>Pengiriman</span>
+              </a>
             </li>
 
-            <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('retur_pembelian.index') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Retur Pembelian</span>
+                </a>
+            </li>
+
+            {{-- <li class="nav-item">
               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiess"
                   aria-expanded="true" aria-controls="collapseUtilities">
                   <i class="fas fa-fw fa-wrench"></i>
@@ -187,7 +193,7 @@
                       <a class="collapse-item" href="{{ route('retur_pembelian.index') }}">Ke Supplier</a>
                   </div>
               </div>
-            </li>
+            </li> --}}
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
