@@ -5,7 +5,7 @@
     <h3>Tambah Barang Retur</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('detail_retur_pembelian.store') }}">
+        <form method="POST" action="{{ route('retur_pembelian.storeReturDana') }}">
         @csrf
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Nomor Nota Retur</label>

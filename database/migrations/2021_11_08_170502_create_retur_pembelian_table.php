@@ -24,7 +24,7 @@ class CreateReturPembelianTable extends Migration
             $table->unsignedInteger('pembelian_id');
             $table->foreign('pembelian_id')->references('id')->on('pembelian')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('kebijakan_retur', ['Tukar Barang', 'Potong Dana Pembelian', 'Pengembalian Dana Pembelian']);
-            $table->integer('total')->default(0)->nullable();
+            $table->integer('total')->nullable();
         });
     }
 

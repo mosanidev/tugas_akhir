@@ -17,7 +17,6 @@ class AdminDetailPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         $insert = DB::table('detail_pembelian')->insert(['pembelian_id'=>$request->pembelian_id, 'barang_id'=>$request->barang_id, 'kuantitas'=>$request->kuantitas, 'subtotal'=>$request->subtotal]);
 
         $updateBarang = DB::table('barang')->where('id', $request->barang_id)->increment('jumlah_stok', $request->kuantitas); // tambahkan jumlah stok

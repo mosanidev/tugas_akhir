@@ -34,7 +34,7 @@ class AdminDetailReturPembelianController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeDanaRetur(Request $request)
+    public function storeReturDana(Request $request)
     {
         $barangRetur = json_decode($request->barangRetur, true);
 
@@ -69,8 +69,25 @@ class AdminDetailReturPembelianController extends Controller
 
     public function storeTukarBarang(Request $request)
     {
-        dd($request);
+        $tukarBarang = json_decode($request->tukarBarang, true);
 
+        for($i = 0; $i < count((array) $tukarBarang); $i++)
+        {
+            $insertDetailRetur = DB::table('detail_retur_pembelian')
+                                    ->insert([
+                                        'retur_pembelian_id' => $request->retur_pembelian_id,
+                                        'barang_retur' => $tukarBarang[$i]['barang_asal_id'],
+                                        'tanggal_kadaluarsa_barang_retur' => $tukarBarang[$i]['tanggal_kadaluarsa_asal'],
+                                        'kuantitas_barang_retur' => $tukarBarang[$i]['kuantitas_barang_asal'],
+                                        'barang_ganti' => $tukarBarang[$i]['barang_ganti_id'],
+                                        'tanggal_kadaluarsa_barang_ganti' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
+                                        'kuantitas_barang_ganti' => $tukarBarang[$i]['kuantitas_barang_ganti'],
+                                        'keterangan' => $tukarBarang[$i]['keterangan'],
+                                        'subtotal' => null
+                                    ]);
+        }
+
+        return redirect()->route('retur_pembelian.index')->with(['success' => 'Data berhasil ditambah']);
     }
 
     /**

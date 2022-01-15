@@ -6,7 +6,7 @@
 
     <div class="px-2 py-3">
 
-        <form method="POST" action="{{ route('detail_retur_pembelian.store') }}">
+        <form method="POST" action="{{ route('retur_pembelian.storeTukarBarang') }}">
         @csrf
 
         <div class="form-group row">
@@ -78,6 +78,7 @@
                                 <th class="d-none">ID Barang Ganti</th>
                                 <th>Barang Ganti</th>
                                 <th>Kuantitas Barang Ganti</th>
+                                <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -88,9 +89,8 @@
                 </div>
             </div>
         </div> 
-            {{-- <input type="hidden" name="pembelian_id" value="{{ $retur_pembelian[0]->pembelian_id }}">
-            <input type="hidden" name="retur_pembelian_id" value="{{ $retur_pembelian[0]->id }}">
-            <input type="hidden" id="dataBarangRetur" value="" name="barangRetur"/> --}}
+            <input type="hidden" name="retur_pembelian_id" value="{{ $retur_pembelian[0]->id }}"> 
+            <input type="hidden" id="dataTukarBarang" value="" name="tukarBarang"/> 
             <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
         </form>
         
@@ -101,6 +101,60 @@
 
   <script type="text/javascript">
 
+    function implementDataOnTable()
+    {
+        let rowTable = ``;
+        let num = 1;
+        let total = 0;
+
+        if(arrTukarBarang.length > 0)
+        {
+            for(let i = 0; i < arrTukarBarang.length; i++)
+            {
+                total += parseInt(arrTukarBarang[i].subtotal);
+
+                rowTable += `<tr>
+                                <td>` + num + `</td>
+                                <td>` + arrTukarBarang[i].tanggal_kadaluarsa_asal + `</td>
+                                <td class="d-none">` + arrTukarBarang[i].barang_asal_id + `</td>
+                                <td>` + arrTukarBarang[i].barang_asal + `</td>
+                                <td>` + arrTukarBarang[i].kuantitas_barang_asal + `</td>
+                                <td>` + arrTukarBarang[i].tanggal_kadaluarsa_ganti + `</td>
+                                <td class="d-none">` + arrTukarBarang[i].barang_ganti_id + `</td>
+                                <td>` + arrTukarBarang[i].barang_ganti + `</td>
+                                <td>` + arrTukarBarang[i].kuantitas_barang_ganti + `</td>
+                                <td>` + arrTukarBarang[i].keterangan + `</td>
+                                <td><button type="button" class="btn btn-danger" onclick="hapusTukarBarang(` + i + `)">Hapus</button></td>
+                            </tr>`;
+
+                num++;
+            }
+        }
+        else 
+        {
+            rowTable = `<tr>
+                            <td class="text-center" colspan="10">Belum ada data</td>
+                        </tr>`;
+        }
+        
+        $('#contentTable').html(rowTable);
+
+    }
+
+    $('#btnSimpan').on('click', function() {
+
+        $('#dataTukarBarang').val(JSON.stringify(arrTukarBarang));
+        $('#btnSimpan').attr("type", "submit");
+        $('#btnSimpan')[0].click();
+
+    });
+
+    function hapusTukarBarang(i)
+    {
+        arrTukarBarang.splice(i, 1);
+
+        implementDataOnTable();
+    }
 
   </script>
 @endsection

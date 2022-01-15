@@ -23,7 +23,7 @@ class AdminReturPembelianController extends Controller
                         ->where('retur_pembelian.pembelian_id', '=', null)
                         ->get();
 
-        $retur_pembelian = DB::table('retur_pembelian')->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', 'users.nama_depan as nama_depan_pembuat', 'users.nama_belakang as nama_belakang_pembuat')
+        $retur_pembelian = DB::table('retur_pembelian')->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
                             ->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
                             ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
                             ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')

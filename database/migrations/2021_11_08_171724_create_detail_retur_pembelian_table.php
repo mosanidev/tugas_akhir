@@ -27,7 +27,7 @@ class CreateDetailReturPembelianTable extends Migration
             $table->string('keterangan', 1000);
             $table->integer('kuantitas_barang_retur');
             $table->integer('kuantitas_barang_ganti')->nullable();
-            $table->double('subtotal')->default(0)->nullable();
+            $table->double('subtotal')->nullable();
         });
     }
 

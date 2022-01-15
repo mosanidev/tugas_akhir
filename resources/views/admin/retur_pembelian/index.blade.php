@@ -27,7 +27,7 @@
                           <th>Nomor Nota</th>
                           <th>Nama Supplier</th>
                           <th>Tanggal Retur</th>
-                          <th>Total</th>
+                          <th>Kebijakan Retur</th>
                           <th>Pembuat</th>
                           <th>Aksi</th>
                         </tr>
@@ -42,8 +42,8 @@
                               <td>{{ $item->nomor_nota }}</td>
                               <td>{{ $item->nama_supplier }}</td>
                               <td>{{ $item->tanggal }}</td>
-                              <td>{{ $item->total }}</td>
-                              <td>{{ $item->total }}</td>
+                              <td>{{ $item->kebijakan_retur }}</td>
+                              <td>{{ $item->nama_pembuat }}</td>
                               <td>
                                 <div class="row">
                                     <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>

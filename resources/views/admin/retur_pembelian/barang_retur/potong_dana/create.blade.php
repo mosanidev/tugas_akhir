@@ -9,15 +9,23 @@
             </button>
           </div>
           <div class="modal-body">
-                <div class="form-group row" id="divTampungSelectBarangRetur">
+                <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Barang Retur</p>
                     <div class="col-sm-8">
-                        <select class="form-control" id="selectBarangRetur" name="id_barang_retur" required>
-                            <option disabled selected>Pilih Barang Retur</option>
-                            @foreach($detail_pembelian as $item)
-                                <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-tanggal-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-harga-beli="{{ $item->harga_beli }}" data-jumlah-beli="{{ $item->kuantitas }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
-                            @endforeach
-                        </select> 
+                        <div class="input-group">
+                            <select class="form-control" id="selectBarangRetur" name="id_barang_retur" required>
+                                <option disabled selected>Pilih Barang Retur</option>
+                                @foreach($detail_pembelian as $item)
+                                    <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-tanggal-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-harga-beli="{{ $item->harga_beli }}" data-jumlah-beli="{{ $item->kuantitas }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
+                                @endforeach
+                            </select> 
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" id="divTampungSelectBarangRetur">
+                    <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Retur</p>
+                    <div class="col-sm-8">
+                        <input type="text" id="barangRetur" class="form-control" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -26,17 +34,6 @@
                         <input type="text" id="satuanBarangRetur" class="form-control" readonly>
                     </div>
                 </div> 
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Retur</p>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <input type="text" id="tglkadaluarsaBarangRetur" class="form-control pull-right" name="tanggal_kadaluarsa" readonly>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Harga Beli</p>
                     <div class="col-sm-8">
@@ -90,14 +87,14 @@
 
     $('#selectBarangRetur').on('change', function() {
 
-        let tglKadaluarsa = $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa');
+        let barang = $('#selectBarangRetur :selected').val();
         let jumlahBeli = $('#selectBarangRetur :selected').attr('data-jumlah-beli');
         let hargaBeli = $('#selectBarangRetur :selected').attr('data-harga-beli');
         let satuanBarangRetur = $('#selectBarangRetur :selected').attr('data-satuan');
 
+        $('#barangRetur').val(barang);
         $('#jumlahRetur').attr('max', jumlahBeli);
         $('#satuanBarangRetur').val(satuanBarangRetur);
-        $('#tglkadaluarsaBarangRetur').val(tglKadaluarsa);
         $('#jumlahBeli').val(jumlahBeli);
         $('#hargaBeli').val(hargaBeli);
 
@@ -121,7 +118,7 @@
             "barang_kode": $('#selectBarangRetur :selected').attr('data-kode'),
             "barang_nama": $('#selectBarangRetur :selected').attr('data-nama'),
             "barang_satuan": $('#satuanBarangRetur').val(),
-            "barang_tanggal_kadaluarsa" : $('#tglkadaluarsaBarangRetur').val(),
+            "barang_tanggal_kadaluarsa" : $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa'),
             "harga_beli": $('#hargaBeli').val(),
             "jumlah_beli": $('#jumlahBeli').val(),
             "jumlah_retur": $('#jumlahRetur').val(),

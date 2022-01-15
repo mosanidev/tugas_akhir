@@ -12,24 +12,21 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="row">
-                            <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Asal</label>
+                            <label class="col-sm-4 col-form-label">Barang Asal</label>
                             <div class="col-sm-8">
-                                <select class="form-control" name="tanggal_kadaluarsa_asal" id="tglKadaluarsaBarangAsal">
-                                    <option selected disabled>Pilih Tanggal Kadaluarsa Asal</option>
+                                <select class="form-control" name="barang_asal" id="barangAsal">
+                                    <option selected disabled>Pilih Barang Asal</option>
                                     @foreach($detail_pembelian as $item)
-                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}">{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}</option>
+                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}">{{ $item->kode." - ".$item->nama }}</option>
                                     @endforeach
                                 </select>
-                                {{-- <p class="mt-2">{{ $retur_pembelian[0]->status_pembelian }}</p> --}}
                             </div>
                         </div>
                         <br>
-                        <input type="hidden" class="form-control" name="barang_retur" id="IDBarangAsal" value="" readonly>
                         <div class="row">
-                            <label class="col-sm-4 col-form-label">Barang Asal</label>
+                            <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Asal</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="barangRetur" value="" readonly>
-                                {{-- <p class="mt-2">{{ $retur_pembelian[0]->status_pembelian }}</p> --}}
+                                <input type="text" class="form-control" value="" id="tglKadaluarsaBarangAsal" readonly>
                             </div>
                         </div>
                         <br>
@@ -42,31 +39,34 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Ganti</label>
+                            <label class="col-sm-4 col-form-label">Barang Ganti</label>
                             <div class="col-sm-8">
-                                <div class="input-group">
-                                    <input type="text" id="tglkadaluarsaBarangGanti" class="form-control pull-right" name="tanggal_kadaluarsa_ganti">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
-                                </div>
-                                {{-- <p class="mt-2">{{ $retur_pembelian[0]->status_pembelian }}</p> --}}
+                                <input type="text" class="form-control" id="barangGanti" value="" data-id="" readonly>
+                                
                             </div>
                         </div>
                         <br>
-                        <input type="hidden" class="form-control" name="barang_ganti" id="IDBarangGanti" value="" readonly>
                         <div class="row">
-                            <label class="col-sm-4 col-form-label">Barang Ganti</label>
+                            <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Ganti</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="barangGanti" value="" readonly>
-                                {{-- <p class="mt-2">{{ $retur_pembelian[0]->status_pembelian }}</p> --}}
+                                <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa_barang_ganti" autocomplete="off" id="tglKadaluarsaBarangGanti" required>
+                                {{-- <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div> --}}
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Kuantitas Barang Ganti</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" name="kuantitas_barang_ganti" id="kuantitasBarangGanti" value="">
+                                <input type="number" class="form-control" name="kuantitas_barang_ganti" min="0" id="kuantitasBarangGanti" value="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">Keterangan</label>
+                            <div class="col-sm-8">
+                                <textarea name="keterangan" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -85,15 +85,59 @@
 
 <script type="text/javascript">
 
-    $('#tglkadaluarsaBarangGanti').datepicker({
+    $('#barangAsal').select2({
+        theme: 'bootstrap4'
+    });
+
+    // $('#barangGanti').select2({
+    //     format: 'yyyy-mm-dd',
+    //     autoclose: true
+    // });
+
+    $('#tglKadaluarsaBarangGanti').datepicker({
         format: 'yyyy-mm-dd',
         autoclose: true
     });
 
     
-    $('#tglKadaluarsaBarangAsal').on('change', function() {
+    $('#barangAsal').on('change', function() {
 
-        
+        let idBarangGanti = $('#barangAsal :selected').val();
+        let barangGanti = $('#barangAsal :selected').text();
+        let tglKadaluarsa = $('#barangAsal :selected').attr("data-tanggal-kadaluarsa");
+        let kuantitasBarang = $('#barangAsal :selected').attr("data-kuantitas");
+
+        $('#tglKadaluarsaBarangAsal').val(tglKadaluarsa);  
+        $('#kuantitasBarangAsal').val(kuantitasBarang);
+        $('#barangGanti').val(barangGanti);
+
+        $('#barangGanti').attr("data-id", idBarangGanti);
+        $('#tglKadaluarsaBarangGanti').val("");
+        $('#kuantitasBarangGanti').val("");
+        $('#keterangan').html("");
+        $('#kuantitasBarangGanti').attr("max", kuantitasBarang);
+
+    });
+
+    let arrTukarBarang = [];
+
+    $('#btnTambahDataTukarBarang').on('click', function() {
+
+        arrTukarBarang.push({
+            'barang_asal_id': $('#barangAsal :selected').val(),
+            'barang_ganti_id': $('#barangGanti').attr("data-id"),
+            "barang_asal": $('#barangAsal :selected').text(),
+            'barang_ganti': $('#barangGanti').val(),
+            "tanggal_kadaluarsa_asal": $('#tglKadaluarsaBarangAsal').val(),
+            "tanggal_kadaluarsa_ganti": $('#tglKadaluarsaBarangGanti').val(),
+            "kuantitas_barang_asal": $('#kuantitasBarangAsal').val(),
+            "kuantitas_barang_ganti": $('#kuantitasBarangGanti').val(),
+            "keterangan": $('#keterangan').val()
+        });
+
+        $('#modalTukarBarang').modal('toggle');
+
+        implementDataOnTable();
 
     });
     

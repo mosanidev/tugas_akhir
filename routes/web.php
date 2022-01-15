@@ -244,7 +244,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/barang_retur/{pembelian_id}', [AdminReturPembelianController::class, 'loadBarangRetur']);
         Route::get('/barang_retur/info/{barang_id}', [AdminReturPembelianController::class, 'loadInfoBarangRetur']);
 
-        Route::post('/retur_pembelian/potong_dana', [AdminReturPembelianController::class, 'storeReturDana']);
+        Route::post('/retur_pembelian/tukar_barang', [AdminDetailReturPembelianController::class, 'storeTukarBarang'])->name('retur_pembelian.storeTukarBarang');
+        Route::post('/retur_pembelian/potong_dana', [AdminDetailReturPembelianController::class, 'storeReturDana'])->name('retur_pembelian.storeReturDana');
         Route::resource('/retur_pembelian', AdminReturPembelianController::class);
 
         Route::resource('/detail_retur_pembelian', AdminDetailReturPembelianController::class);
