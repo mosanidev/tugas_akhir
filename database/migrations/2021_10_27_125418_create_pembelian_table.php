@@ -29,6 +29,7 @@ class CreatePembelianTable extends Migration
             $table->double('ppn')->default(0);
             $table->enum('metode_pembayaran', ['Transfer Bank', 'Tunai']);
             $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
+            $table->enum('status_retur', ['Tidak Ada Retur', 'Ada Retur'])->default('Tidak Ada Retur');
             $table->double('total');
         });
     }

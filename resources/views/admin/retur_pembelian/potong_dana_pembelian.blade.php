@@ -4,9 +4,9 @@
 
     <h3>Tambah Barang Retur</h3>
 
-    {{-- {{ dd($detail_pembelian) }} --}}
-
     <div class="px-2 py-3">
+        <form method="POST" action="{{ route('detail_retur_pembelian.store') }}">
+        @csrf
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Nomor Nota Retur</label>
             <div class="col-sm-8">
@@ -58,11 +58,11 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Total Harga Retur</label>
             <div class="col-sm-8">
-                <p class="mt-2">0</p>
+                <input type="hidden" name="total" id="totalReturAngka" value="">
+                <p class="mt-2" id="totalReturRupiah">Rp 0</p>
             </div>
         </div>
-        <input type="hidden" id="dataBarangRetur" value="" name="barangRetur"/>
-        
+
         <button type="button" class="btn btn-success ml-2 mt-3" data-toggle="modal" id="btnTambah" data-target="#modalTambahBarangRetur">Tambah</button>
 
         <div class="card shadow my-4">
@@ -76,12 +76,15 @@
                             <tr>
                                 <th style="width: 10px">No</th>
                                 <th>Barang Retur</th>
+                                <th>Tanggal Kadaluarsa Barang Retur</th>
                                 <th class="d-none">Barang ID</th>
                                 <th>Satuan</th>
                                 <th>Harga Beli</th>
-                                <th>Kuantitas</th>
-                                <th>Keterangan</th>
+                                <th>Jumlah Beli</th>
+                                <th>Jumlah Retur</th>
                                 <th>Subtotal</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="contentTable">
@@ -91,10 +94,74 @@
                 </div>
             </div>
         </div> 
-        <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
+            <input type="hidden" name="pembelian_id" value="{{ $retur_pembelian[0]->id }}">
+            <input type="hidden" name="retur_pembelian_id" value="{{ $retur_pembelian[0]->id }}">
+            <input type="hidden" id="dataBarangRetur" value="" name="barangRetur"/>
+            <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
+        </form>
+        
     </form>
 </div>
 
-  @include('admin.retur_pembelian.barang_retur.modal.create')
+  @include('admin.retur_pembelian.barang_retur.potong_dana.create')
 
+  <script type="text/javascript">
+
+    function implementDataOnTable()
+    {
+        let rowTable = ``;
+        let num = 1;
+        let total = 0;
+
+        if(arrBarangRetur.length > 0)
+        {
+            for(let i = 0; i < arrBarangRetur.length; i++)
+            {
+                total += parseInt(arrBarangRetur[i].subtotal);
+
+                rowTable += `<tr>
+                                <td>` + num + `</td>
+                                <td>` + arrBarangRetur[i].barang_kode + " "  + arrBarangRetur[i].barang_nama + `</td>
+                                <td class="d-none">` + arrBarangRetur[i].barang_id + `</td>
+                                <td>` + arrBarangRetur[i].barang_tanggal_kadaluarsa + `</td>
+                                <td>` + arrBarangRetur[i].barang_satuan + `</td>
+                                <td>` + arrBarangRetur[i].harga_beli + `</td>
+                                <td>` + arrBarangRetur[i].jumlah_beli + `</td>
+                                <td>` + arrBarangRetur[i].jumlah_retur + `</td>
+                                <td>` + arrBarangRetur[i].subtotal + `</td>
+                                <td>` + arrBarangRetur[i].keterangan + `</td>
+                                <td><button type="button" class="btn btn-danger" onclick="hapusBarangRetur(` + i + `)">Hapus</button></td>
+                            </tr>`;
+            }
+        }
+        else 
+        {
+            rowTable = `<tr>
+                            <td class="text-center" colspan="10">Belum ada data</td>
+                        </tr>`;
+        }
+        
+
+        $('#contentTable').html(rowTable);
+
+        $('#totalReturAngka').val(total);
+        $('#totalReturRupiah').html(convertAngkaToRupiah(total));
+    }
+
+    $('#btnSimpan').on('click', function() {
+
+        $('#btnSimpan').attr("type", "submit");
+        $('#dataBarangRetur').val(JSON.stringify(arrBarangRetur));
+        $('#btnSimpan')[0].click();
+
+    });
+
+    function hapusBarangRetur(i)
+    {
+        arrBarangRetur.splice(i, 1);
+
+        implementDataOnTable();
+    }
+
+  </script>
 @endsection

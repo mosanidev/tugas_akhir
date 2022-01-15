@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class AdminDetailReturPembelianController extends Controller
 {
@@ -33,9 +34,43 @@ class AdminDetailReturPembelianController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeDanaRetur(Request $request)
     {
-        //
+        $barangRetur = json_decode($request->barangRetur, true);
+
+        $updateTotalRetur = DB::table('retur_pembelian')
+                                ->where('id', '=', $request->retur_pembelian_id)
+                                ->update([
+                                    'total' => $request->total 
+                                ]);
+
+        for($i = 0; $i < count((array) $barangRetur); $i++)
+        {
+            $insertDetailRetur = DB::table('detail_retur_pembelian')
+                                    ->insert([
+                                        'retur_pembelian_id' => $request->retur_pembelian_id,
+                                        'barang_retur' => $barangRetur[$i]['barang_id'],
+                                        'tanggal_kadaluarsa_barang_retur' => $barangRetur[$i]['barang_tanggal_kadaluarsa'],
+                                        'kuantitas_barang_retur' => $barangRetur[$i]['jumlah_retur'],
+                                        'keterangan' => $barangRetur[$i]['keterangan'],
+                                        'subtotal' => $barangRetur[$i]['subtotal']
+                                    ]);
+        }
+
+        $updatePembelian = DB::table('pembelian')
+                            ->where('id', '=', $request->pembelian_id)
+                            ->update([
+                                'status_retur' => 'Ada Retur'
+                            ]);
+
+        return redirect()->route('retur_pembelian.index')->with(['success' => 'Data berhasil ditambah']);
+
+    }
+
+    public function storeTukarBarang(Request $request)
+    {
+        dd($request);
+
     }
 
     /**
