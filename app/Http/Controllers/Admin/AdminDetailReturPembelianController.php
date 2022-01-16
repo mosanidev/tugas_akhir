@@ -55,6 +55,11 @@ class AdminDetailReturPembelianController extends Controller
                                         'keterangan' => $barangRetur[$i]['keterangan'],
                                         'subtotal' => $barangRetur[$i]['subtotal']
                                     ]);
+
+            $updateStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $barangRetur[$i]['barang_id'])
+                                    ->where('tanggal_kadaluarsa', '=', $barangRetur[$i]['barang_tanggal_kadaluarsa'])
+                                    ->decrement('jumlah_stok',  $barangRetur[$i]['jumlah_retur']);
         }
 
         $updatePembelian = DB::table('pembelian')
@@ -68,7 +73,7 @@ class AdminDetailReturPembelianController extends Controller
     }
 
     public function storeTukarBarang(Request $request)
-    {
+    {        
         $tukarBarang = json_decode($request->tukarBarang, true);
 
         for($i = 0; $i < count((array) $tukarBarang); $i++)
@@ -85,6 +90,19 @@ class AdminDetailReturPembelianController extends Controller
                                         'keterangan' => $tukarBarang[$i]['keterangan'],
                                         'subtotal' => null
                                     ]);
+
+            $kurangiStokBarangAsal = DB::table('barang_has_kadaluarsa')
+                                        ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
+                                        ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                        ->decrement('jumlah_stok',  $tukarBarang[$i]['kuantitas_barang_ganti']);
+
+            $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
+                                    ->insert([
+                                        'barang_id' => $tukarBarang[$i]['barang_ganti_id'],
+                                        'tanggal_kadaluarsa' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
+                                        'jumlah_stok' => $tukarBarang[$i]['kuantitas_barang_ganti']
+                                    ]);
+                                    
         }
 
         return redirect()->route('retur_pembelian.index')->with(['success' => 'Data berhasil ditambah']);

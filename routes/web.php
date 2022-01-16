@@ -160,7 +160,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('generate_postal_code/{areaID}', [BiteShipAPIController::class, 'getPostalCode']);
     Route::post('generate_rates', [BiteShipAPIController::class, 'getRates'])->name('order_rates');
 
-    
     Route::group(['prefix' => 'order'], function() {
 
         Route::get('/', [OrderController::class, 'index'])->name('order');
@@ -189,11 +188,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/detail', [MidtransAPIController::class, 'coba'])->name('payment.detail');
 
     });
-
-
 });
-
-
 
 Route::group(['prefix' => 'admin'], function() {
 
@@ -202,6 +197,8 @@ Route::group(['prefix' => 'admin'], function() {
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     Route::group(['middleware' => 'admin'], function() {
+
+        Route::get('/', [AdminHomeController::class, 'index']);
 
         Route::get('/home', [AdminHomeController::class, 'index'])->name('home_admin');
     
@@ -239,7 +236,6 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/penjualan', AdminPenjualanController::class);
 
         Route::resource('/penjualanoffline', AdminPenjualanOfflineController::class);
-
 
         Route::get('/barang_retur/{pembelian_id}', [AdminReturPembelianController::class, 'loadBarangRetur']);
         Route::get('/barang_retur/info/{barang_id}', [AdminReturPembelianController::class, 'loadInfoBarangRetur']);

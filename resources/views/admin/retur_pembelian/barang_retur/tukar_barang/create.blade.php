@@ -1,4 +1,5 @@
 {{-- Start Modal --}}
+
 <div class="modal fade" id="modalTukarBarang" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -17,7 +18,7 @@
                                 <select class="form-control" name="barang_asal" id="barangAsal">
                                     <option selected disabled>Pilih Barang Asal</option>
                                     @foreach($detail_pembelian as $item)
-                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}">{{ $item->kode." - ".$item->nama }}</option>
+                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}" data-jumlah-stok="{{ $item->jumlah_stok }}">{{ $item->kode." - ".$item->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -59,7 +60,14 @@
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Kuantitas Barang Ganti</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" name="kuantitas_barang_ganti" min="0" id="kuantitasBarangGanti" value="">
+                                <input type="number" class="form-control" name="kuantitas_barang_ganti" min="1" id="kuantitasBarangGanti" value="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">Jumlah Stok</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" min="0" id="jumlahStokBarang" readonly>
                             </div>
                         </div>
                         <br>
@@ -106,6 +114,22 @@
         let barangGanti = $('#barangAsal :selected').text();
         let tglKadaluarsa = $('#barangAsal :selected').attr("data-tanggal-kadaluarsa");
         let kuantitasBarang = $('#barangAsal :selected').attr("data-kuantitas");
+        let jumlahStok = $('#barangAsal :selected').attr('data-jumlah-stok');
+
+        let batasan = null;
+
+        if(kuantitasBarang < jumlahStok)
+        {
+            batasan = kuantitasBarang;
+        }
+        else if (jumlahStok < kuantitasBarang)
+        {
+            batasan = jumlahStok;
+        }
+        else // jika sama
+        {
+            batasan = kuantitasBarang;
+        }
 
         $('#tglKadaluarsaBarangAsal').val(tglKadaluarsa);  
         $('#kuantitasBarangAsal').val(kuantitasBarang);
@@ -115,7 +139,8 @@
         $('#tglKadaluarsaBarangGanti').val("");
         $('#kuantitasBarangGanti').val("");
         $('#keterangan').html("");
-        $('#kuantitasBarangGanti').attr("max", kuantitasBarang);
+        $('#kuantitasBarangGanti').attr("max", batasan);
+        $('#jumlahStokBarang').val(jumlahStok);
 
     });
 

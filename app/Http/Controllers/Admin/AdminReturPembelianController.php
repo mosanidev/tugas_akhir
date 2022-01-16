@@ -23,7 +23,8 @@ class AdminReturPembelianController extends Controller
                         ->where('retur_pembelian.pembelian_id', '=', null)
                         ->get();
 
-        $retur_pembelian = DB::table('retur_pembelian')->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
+        $retur_pembelian = DB::table('retur_pembelian')
+                            ->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
                             ->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
                             ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
                             ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
@@ -84,8 +85,9 @@ class AdminReturPembelianController extends Controller
                                 ->get();
 
         $detail_pembelian = DB::table('detail_pembelian')
-                                ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan')
+                                ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok')
                                 ->where('detail_pembelian.pembelian_id', '=', $retur_pembelian[0]->pembelian_id)  
+                                ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_pembelian.tanggal_kadaluarsa')
                                 ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
                                 ->get();
 

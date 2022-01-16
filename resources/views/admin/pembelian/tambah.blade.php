@@ -68,7 +68,8 @@
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">PPN</label>
                 <div class="col-sm-8">
-                  <input type="number" class="form-control d-inline mr-1" name="ppn" id="inputPPN" value="0" min="0" step="1" style="width: 96.2%;" required> %
+                    Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="0" min="0" step="100" style="width: 95.8%;" required>
+                  {{-- <input type="number" class="form-control d-inline mr-1" name="ppn" id="inputPPN" value="0" min="0" step="1" style="width: 96.2%;" required> % --}}
                 </div>
               </div>
               <div class="form-group row">
@@ -261,7 +262,7 @@
 
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
+        let totalAkhir = total-diskon-ppn;
         $('#totalAkhir').val(totalAkhir);
         $('#total').val(total);
 
@@ -282,7 +283,7 @@
 
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
+        let totalAkhir = total-diskon-ppn;
 
         $('#totalAkhir').val(totalAkhir);
 
@@ -294,7 +295,7 @@
 
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = (total-diskon) - ((total-diskon)*(ppn/100));
+        let totalAkhir = total-diskon-ppn;
         $('#totalAkhir').val(totalAkhir);
         
 

@@ -16,7 +16,7 @@
                             <select class="form-control" id="selectBarangRetur" name="id_barang_retur" required>
                                 <option disabled selected>Pilih Barang Retur</option>
                                 @foreach($detail_pembelian as $item)
-                                    <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-tanggal-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-harga-beli="{{ $item->harga_beli }}" data-jumlah-beli="{{ $item->kuantitas }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
+                                    <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-tanggal-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-harga-beli="{{ $item->harga_beli }}" data-jumlah-beli="{{ $item->kuantitas }}" data-satuan="{{ $item->satuan }}" data-jumlah-stok="{{ $item->jumlah_stok }}">{{ $item->kode." - ".$item->nama }}</option>
                                 @endforeach
                             </select> 
                         </div>
@@ -44,6 +44,12 @@
                     <p class="col-sm-4 col-form-label">Jumlah Beli</p>
                     <div class="col-sm-8">
                         <input type="number" id="jumlahBeli" min="1" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Jumlah Stok Barang</p>
+                    <div class="col-sm-8">
+                        <input type="number" id="jumlahStokBarang" min="1" class="form-control" readonly>
                     </div>
                 </div> 
                 <div class="form-group row">
@@ -89,16 +95,31 @@
 
         let barang = $('#selectBarangRetur :selected').val();
         let jumlahBeli = $('#selectBarangRetur :selected').attr('data-jumlah-beli');
+        let jumlahStok = $('#selectBarangRetur :selected').attr('data-jumlah-stok');
         let hargaBeli = $('#selectBarangRetur :selected').attr('data-harga-beli');
         let satuanBarangRetur = $('#selectBarangRetur :selected').attr('data-satuan');
 
+        let batasan = null;
+
+        if(jumlahBeli < jumlahStok)
+        {
+            batasan = jumlahBeli;
+        }
+        else if (jumlahStok < jumlahBeli)
+        {
+            batasan = jumlahStok;
+        }
+        else // jika sama
+        {
+            batasan = jumlahBeli;
+        }
+
         $('#barangRetur').val(barang);
-        $('#jumlahRetur').attr('max', jumlahBeli);
+        $('#jumlahRetur').attr('max', batasan);
         $('#satuanBarangRetur').val(satuanBarangRetur);
         $('#jumlahBeli').val(jumlahBeli);
         $('#hargaBeli').val(hargaBeli);
-
-        // $('#selectTglkadaluarsaBarangRetur').html();
+        $('#jumlahStokBarang').val(jumlahStok);
 
     });
 
