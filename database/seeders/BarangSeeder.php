@@ -43,7 +43,7 @@ class BarangSeeder extends Seeder
                 'nama'                      => 'Nasi Goreng + Suwir Ayam Bungkus Plastik',
                 'deskripsi'                 => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eget erat sed dui porttitor ultrices eu vehicula augue. Nunc quis vestibulum enim, a vulputate quam. Aliquam pharetra placerat lectus, ut semper tellus egestas nec. Vestibulum porttitor aliquam purus, et vulputate sapien vulputate ut. Sed pellentesque posuere erat, et sagittis urna efficitur sollicitudin. Pellentesque eget facilisis massa. Donec consequat libero eget malesuada pellentesque. Vestibulum molestie purus vitae blandit eleifend. Nunc fringilla massa ac justo feugiat rutrum. Phasellus id tincidunt libero. Praesent scelerisque, justo ut maximus porta, nibh nunc porta est, ut euismod sem mi ac lectus. Morbi in efficitur arcu. Maecenas laoreet ipsum non maximus volutpat.',
                 // 'harga_beli'                => 8000, 
-                'harga_jual'                => 135000, 
+                'harga_jual'                => 13000, 
                 'diskon_potongan_harga'     => 0,
                 // 'jumlah_stok'               => 0,
                 'barang_konsinyasi'         => 1,

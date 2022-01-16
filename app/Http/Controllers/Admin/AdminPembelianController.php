@@ -86,7 +86,6 @@ class AdminPembelianController extends Controller
 
             }
 
-
             $insertDetailPembelian = DB::table('detail_pembelian')
                                             ->insert([
                                                 'pembelian_id'          => $idPembelian,

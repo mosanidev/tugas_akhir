@@ -62,18 +62,26 @@
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status</label>
                 <div class="col-sm-8">
-                  <select class="form-control" name="status" id="selectStatus" required>
+                  <input type="text" class="form-control" name="status" value="Belum Lunas" readonly>
+                  {{-- <select class="form-control" name="status" id="selectStatus" required>
                       <option disabled selected>Status</option>
                       <option value="Belum Lunas">Belum Lunas</option>
                       <option value="Sudah Lunas">Sudah Lunas</option>
-                  </select> 
+                  </select>  --}}
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total Hutang</label>
+                <div class="col-sm-8">
+                  <input type="hidden" name="total_hutang" id="totalHutangAngka">
+                  <input type="text" class="form-control" id="totalHutangRupiah" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total Komisi</label>
                 <div class="col-sm-8">
                   <input type="hidden" name="total_komisi" id="totalKomisiAngka">
-                  <p id="totalKomisiRupiah">Rp 0</p>
+                  <input type="text" class="form-control" id="totalKomisiRupiah" readonly>
                 </div>
               </div>
 
@@ -93,8 +101,10 @@
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Jual Akhir</th>
                                   <th>Komisi</th>
+                                  <th>Hutang</th>
                                   <th>Jumlah Titip</th>
                                   <th>Subtotal Komisi</th>
+                                  <th>Subtotal Hutang</th>
                                   <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -146,13 +156,15 @@
         {
             let rowTable = "";
             let num = 1;
-            let total = 0;
+            let totalKomisi = 0;
+            let totalHutang = 0;
 
             if(arrBarangKonsinyasi.length > 0)
             {
                 for(let i = 0; i < arrBarangKonsinyasi.length; i++)
                 {
-                    total += parseInt(arrBarangKonsinyasi[i].subtotal_komisi);
+                    totalKomisi += parseInt(arrBarangKonsinyasi[i].subtotal_komisi);
+                    totalHutang += parseInt(arrBarangKonsinyasi[i].subtotal_hutang);
 
                     rowTable += `<tr>
                                     <td style="width: 10px">` + num + `</td>
@@ -160,8 +172,10 @@
                                     <td>` + arrBarangKonsinyasi[i].tanggal_kadaluarsa + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].harga_jual_akhir) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].komisi) + `</td>
+                                    <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].hutang) + `</td>
                                     <td>` + arrBarangKonsinyasi[i].jumlah_titip + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].subtotal_komisi) + `</td>
+                                    <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].subtotal_hutang) + `</td>
                                     <td>
                                         <button type="button" class='btn btn-danger' onclick="hapusBarangKonsinyasi(` + i + `)">Hapus</button>
                                     </td>
@@ -173,14 +187,18 @@
             else 
             {
                 rowTable += `<tr>
-                                <td colspan="7"><p class="text-center">Belum ada isi</p></td>
+                                <td colspan="10"><p class="text-center">Belum ada isi</p></td>
                             </tr>`;
             }
             
 
             $('#contentTable').html(rowTable);
-            $('#totalKomisiAngka').val(total);
-            $('#totalKomisiRupiah').html(convertAngkaToRupiah(total));
+
+            $('#totalKomisiAngka').val(totalKomisi);
+            $('#totalKomisiRupiah').val(convertAngkaToRupiah(totalKomisi));
+
+            $('#totalHutangAngka').val(totalHutang);
+            $('#totalHutangRupiah').val(convertAngkaToRupiah(totalHutang));
             
         }
 
@@ -198,7 +216,7 @@
           $('#btnSimpan').attr('type', 'submit');
 
           $('#btnSimpan')[0].click();
-          
+
           $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
 

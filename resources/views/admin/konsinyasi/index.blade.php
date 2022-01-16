@@ -46,7 +46,8 @@
                           <td>{{ $item->status }}</td>
                           <td>
                             {{-- <div class="row"> --}}
-                                <a href="{{ route('konsinyasi.show', ['konsinyasi' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Titipan</a>
+                                {{-- <a href="{{ route('konsinyasi.show', ['konsinyasi' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Titipan</a> --}}
+                                <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahKonsinyasi">Lunasi</button>
                                 <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahKonsinyasi">Ubah</button>
                                 <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
                             {{-- </div> --}}
@@ -59,7 +60,6 @@
         </div>
     </div>
 </div>
-
 
 <!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>

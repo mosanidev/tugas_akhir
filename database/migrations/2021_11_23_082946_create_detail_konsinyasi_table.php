@@ -24,7 +24,9 @@ class CreateDetailKonsinyasiTable extends Migration
             // $table->foreign('tanggal_kadaluarsa_id')->references('tanggal_kadaluarsa_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
             $table->integer('jumlah_titip');
             $table->double('komisi');
+            $table->double('hutang');
             $table->double('subtotal_komisi');
+            $table->double('subtotal_hutang');
             $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
         });
     }

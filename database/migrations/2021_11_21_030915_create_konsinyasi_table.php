@@ -23,6 +23,7 @@ class CreateKonsinyasiTable extends Migration
             $table->date('tanggal_titip');
             $table->date('tanggal_jatuh_tempo');
             $table->double('total_komisi');
+            $table->double('total_hutang');
             $table->enum('metode_pembayaran', ['Transfer Bank', 'Tunai']);
             $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
         });
