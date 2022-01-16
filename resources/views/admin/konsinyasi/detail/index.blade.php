@@ -13,8 +13,6 @@
 </section>
 <div class="container-fluid">
 
-    {{-- {{dd($arr)}} --}}
-
     <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangKonsinyasi" id="btnTambah">Tambah</button>
 
     <div class="px-2 py-3">
@@ -96,9 +94,6 @@
         </div>
 </div>
 
-{{-- @include('admin.konsinyasi.modal.confirm_delete') --}}
-@include('admin.konsinyasi.detail.modal.create')
-{{-- @include('admin.konsinyasi.modal.edit')   --}}
 
 
 <!-- bootstrap datepicker -->

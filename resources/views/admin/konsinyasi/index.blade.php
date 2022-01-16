@@ -30,6 +30,7 @@
                           <th>Tanggal Titip</th>
                           <th>Tanggal Jatuh Tempo</th>
                           <th>Supplier</th>
+                          <th>Status</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
@@ -42,6 +43,7 @@
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
+                          <td>{{ $item->status }}</td>
                           <td>
                             {{-- <div class="row"> --}}
                                 <a href="{{ route('konsinyasi.show', ['konsinyasi' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Titipan</a>
@@ -57,10 +59,6 @@
         </div>
     </div>
 </div>
-
-@include('admin.konsinyasi.modal.confirm_delete')
-@include('admin.konsinyasi.modal.create')
-@include('admin.konsinyasi.modal.edit') 
 
 
 <!-- bootstrap datepicker -->
