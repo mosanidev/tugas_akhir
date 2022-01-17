@@ -27,5 +27,18 @@ class BarangHasKadaluarsaSeeder extends Seeder
             'tanggal_kadaluarsa'        => '2022-02-13 00:00:00',
             'jumlah_stok'               => 5
         ]);
+
+        DB::table('barang_has_kadaluarsa')->insert([
+            'barang_id'                 => 1,  
+            'tanggal_kadaluarsa'        => '2022-01-22 16:00:00',
+            'jumlah_stok'               => 9
+        ]);
+
+        DB::table('barang_has_kadaluarsa')->insert([
+            'barang_id'                 => 2,  
+            'tanggal_kadaluarsa'        => '2022-01-22 16:00:00',
+            'jumlah_stok'               => 8
+        ]);
     }
+
 }

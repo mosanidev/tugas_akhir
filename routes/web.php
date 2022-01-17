@@ -227,6 +227,7 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
 
+        Route::get('/konsinyasi/lunasi/{konsinyasi}', [AdminKonsinyasiController::class, 'lunasi'])->name('konsinyasi.lunasi');
         Route::resource('/konsinyasi', AdminKonsinyasiController::class);
 
         Route::resource('/stok_opname', AdminStokOpnameController::class);

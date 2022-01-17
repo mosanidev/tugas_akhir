@@ -27,39 +27,45 @@
                         <tr>
                           <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
-                          <th>Tanggal Titip</th>
+                          <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
-                          <th>Supplier</th>
                           <th>Status</th>
+                          <th>Supplier</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                      @php $num = 1; @endphp
-                      @foreach($konsinyasi as $item)
-                        <tr>
-                          <td style="width: 10px">{{ $num++ }}</td>
-                          <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('D MMMM Y') }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
-                          <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ $item->status }}</td>
-                          <td>
-                            {{-- <div class="row"> --}}
-                                {{-- <a href="{{ route('konsinyasi.show', ['konsinyasi' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Titipan</a> --}}
-                                <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahKonsinyasi">Lunasi</button>
-                                <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahKonsinyasi">Ubah</button>
-                                <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
-                            {{-- </div> --}}
-                          </td>
-                        </tr>
-                      @endforeach
+                      @if(isset($konsinyasi))
+                        @php $num = 1; @endphp
+                        @foreach($konsinyasi as $item)
+                          <tr>
+                            <td style="width: 10px">{{ $num++ }}</td>
+                            <td>{{ $item->nomor_nota }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('D MMMM Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
+                            <td>{{ $item->nama_supplier }}</td>
+                            <td>{{ $item->status }}</td>
+                            <td>
+                              {{-- <div class="row"> --}}
+                                  {{-- <a href="{{ route('konsinyasi.show', ['konsinyasi' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Titipan</a> --}}
+                                  @if($item->status == "Belum Lunas")
+                                    <button class="btn btn-success w-100 mb-2" data-id="{{ $item->id }}" data-total-hutang="{{ $item->total_hutang }}" data-toggle="modal" data-target="#modalLunasiKonsinyasi" id="btnLunasi">Lunasi</button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahKonsinyasi">Ubah</button>
+                                  <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
+                              {{-- </div> --}}
+                            </td>
+                          </tr>
+                        @endforeach
+                      @endif
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+@include('admin.konsinyasi.modal.confirm_lunasi')
 
 <!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -82,106 +88,16 @@
 
   $(document).ready(function() {
 
-    $('#selectSupplier').select2({
-      dropdownParent: $("#modalTambahKonsinyasi"),
-      theme: 'bootstrap4'
-    });
+    $('#btnLunasi').on('click', function(){
 
-    $('#selectSupplierUbah').select2({
-      dropdownParent: $("#modalUbahKonsinyasi"),
-      theme: 'bootstrap4'
-    });
+      let id = $('#btnLunasi').attr('data-id');
+      let totalHutang = $('#btnLunasi').attr('data-total-hutang');
 
-    $('#datepickerTglTitip').datepicker({
-      format: 'yyyy-mm-dd',
-      autoclose: true
-    });
-
-    $('#datepickerTglTitipUbah').datepicker({
-      format: 'yyyy-mm-dd',
-      autoclose: true
-    });
-
-    $('#datepickerTglJatuhTempo').datepicker({
-      format: 'yyyy-mm-dd',
-      autoclose: true
-    });
-
-    $('#datepickerTglJatuhTempoUbah').datepicker({
-      format: 'yyyy-mm-dd',
-      autoclose: true
-    });
-
-    $('#datepickerTglJatuhTempo').on('change', function() {
-
-      if($('#datepickerTglJatuhTempo').val() < $('#datepickerTglTitip').val())
-      {
-        $('#datepickerTglJatuhTempo').val("");
-        toastr.error("Harap isi tanggal jatuh tempo setelah tanggal titip", "Error", toastrOptions);
-      }
+      $('#formLunasi').attr('action', '/admin/konsinyasi/lunasi/'+id);
 
     });
-
-    $('#datepickerTglJatuhTempoUbah').on('change', function() {
-
-      if($('#datepickerTglJatuhTempoUbah').val() < $('#datepickerTglTitipUbah').val())
-      {
-        $('#datepickerTglJatuhTempoUbah').val("");
-        toastr.error("Harap isi tanggal jatuh tempo setelah tanggal titip", "Error", toastrOptions);
-      }
-
-    });
-
-    $('.btnUbah').on('click', function() {
-
-      let id = $(this).attr('data-id');
-
-      $.ajax({
-        type: 'GET',
-        url: '/admin/konsinyasi/'+id,
-        success: function(data) {
-
-          $('#inputNomorNotaUbah').val(data[0].nomor_nota);
-          $('#datepickerTglTitipUbah').val(data[0].tanggal_titip);
-          $('#datepickerTglJatuhTempoUbah').val(data[0].tanggal_jatuh_tempo);
-          $('#selectSupplierUbah').val(data[0].supplier_id).change();
-          $('#selectMetodePembayaranUbah').val(data[0].metode_pembayaran).change();
-          $('#selectStatusUbah').val(data[0].status).change();
-
-        }
-      })
-
-    });
-
-    $('#btnTambahKonsinyasi').on('click', function() {
-
-      $('#btnTambahKonsinyasi')[0].setAttribute("type", "submit");
-
-      $('#btnTambahKonsinyasi')[0].click();
-
-    });
-
-    $('#btnUbahKonsinyasi').on('click', function() {
-
-      let id = $(this).attr('data-id');
-
-      $('#formUbah').attr('action', '/admin/konsinyasi/'+id);
-
-      $('#formUbah').submit();
-
-    });
-
-    $('.btnHapus').on('click', function() {
-
-      let id = $(this).attr("data-id");
-
-      $('#formHapus').attr('action', '/admin/konsinyasi/'+id);
-
-    });
-
 
   });
-
 
 </script>
 @endsection

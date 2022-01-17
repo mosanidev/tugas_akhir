@@ -26,6 +26,7 @@ class CreateKonsinyasiTable extends Migration
             $table->double('total_hutang');
             $table->enum('metode_pembayaran', ['Transfer Bank', 'Tunai']);
             $table->enum('status', ['Belum Lunas', 'Sudah Lunas']);
+            $table->string('bukti_bayar', 255)->nullable();
         });
     }
 

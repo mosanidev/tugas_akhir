@@ -158,7 +158,7 @@
         timepicker: true,
         datepicker: true,
         lang: 'id',
-        defaultTime: '00:00 AM',
+        defaultTime: '16:00 AM',
         format: 'Y-m-d H:i:00'
     });
 

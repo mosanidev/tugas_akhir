@@ -31,6 +31,14 @@ class AdminKonsinyasiController extends Controller
         $supplier = DB::table('supplier')->where('jenis', '=', 'Individu')->get();
         $barang_konsinyasi = DB::table('barang')->where('barang_konsinyasi', '=', 1)->get();
 
+        $generateNomorNota = DB::table('konsinyasi')
+                                ->select(DB::raw('max(nomor_nota) as maxNomorNota'))
+                                ->get();
+
+        // $generateNomorNota = isset($generateNomorNota[0]->maxNomorNota) ? $generateNomorNota[0]->maxNomorNota + 1 : 01;
+
+        // $generateNomorNota = 'NK'.\Carbon\Carbon::now()->format('dmy').sprintf("%03s", $generateNomorNota);
+
         return view('admin.konsinyasi.tambah', ['supplier' => $supplier, 'barang_konsinyasi' => $barang_konsinyasi]);
     }
 
@@ -49,7 +57,8 @@ class AdminKonsinyasiController extends Controller
                                                     'supplier_id' => $request->supplier_id, 
                                                     'metode_pembayaran' => $request->metode_pembayaran, 
                                                     'status' => $request->status, 
-                                                    'total_komisi' => $request->total_komisi ]);
+                                                    'total_komisi' => $request->total_komisi,
+                                                    'total_hutang' => $request->total_hutang ]);
 
         $barangKonsinyasi = json_decode($request->barangKonsinyasi, true);
         
@@ -85,6 +94,7 @@ class AdminKonsinyasiController extends Controller
                                             'konsinyasi_id' => $konsinyasi_id,
                                             'barang_id' => $barangKonsinyasi[$i]['barang_id'],
                                             'jumlah_titip' => $barangKonsinyasi[$i]['jumlah_titip'],
+                                            'tanggal_kadaluarsa' => $barangKonsinyasi[$i]['tanggal_kadaluarsa'],
                                             'komisi' => $barangKonsinyasi[$i]['komisi'],
                                             'subtotal_komisi' => $barangKonsinyasi[$i]['subtotal_komisi'],
                                             'hutang' => $barangKonsinyasi[$i]['hutang'],
@@ -144,18 +154,92 @@ class AdminKonsinyasiController extends Controller
                         ->whereBetween('tanggal', [$konsinyasi[0]->tanggal_titip, $konsinyasi[0]->tanggal_jatuh_tempo])
                         ->get();
 
-            // $terjual += $penjualan[$i]->kuantitas;
-            // $hutang += $penjualan[$i]->subtotal;
-            // $komisi += $penjualan[$i]->komisi;
+        }
+    }
 
-            // if(count($penjualan) > 0)
-            // {
-                // $update = DB::table('detail_konsinyasi')->where('konsinyasi_id', '=', $konsinyasi[0]->id)->where('barang_id', '=', $barangKonsinyasi[$i]->barang_id)->update(['terjual' => $terjual, 'total_hutang' => $hutang, 'total_komisi' => $komisi]);
-                // $arr[$i] = [ 'konsinyasi_id' => $konsinyasi[0]->id, 'barang_id' => $barangKonsinyasi[$i]->barang_id, 'kuantitas' => $penjualan[$i]->kuantitas, 'subtotal' => $penjualan[$i]->subtotal, 'komisi' => $penjualan[$i]->komisi];
-            // }
+    public function lunasi($id)
+    {
+        // cari penjualan selama tanggal buat konsinyasi hingga jatuh tempo
+        $konsinyasi = DB::table('konsinyasi')
+                        ->select('konsinyasi.*', 'detail_konsinyasi.*')
+                        ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
+                        ->where('id', '=', $id)
+                        ->get();    
+                      
+
+        $dataBarang = array();
+
+        for($i = 0; $i < count($konsinyasi); $i++)
+        {
+            $penjualan = DB::table('penjualan')
+                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'penjualan.tanggal', 'detail_penjualan.barang_id', 'detail_penjualan.kuantitas')
+                        ->where('barang_has_kadaluarsa.barang_id', '=', $konsinyasi[$i]->barang_id)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '=', $konsinyasi[$i]->tanggal_kadaluarsa)
+                        ->whereBetween('penjualan.tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
+                        ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
+                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
+                        ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
+                        ->get();
+
+            for($x = 0; $x < count($penjualan); $x++)
+            {
+                $object = new \stdClass();
+                $object->barang_id = $konsinyasi[$i]->barang_id;
+                $object->barang_nama = $penjualan[$x]->barang_nama;
+                $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
+                $object->terjual = $penjualan[$x]->kuantitas;
+                $object->sisa = $konsinyasi[$i]->jumlah_titip-$penjualan[$x]->kuantitas;
+                $object->komisi = $konsinyasi[$i]->komisi;
+                $object->hutang = $konsinyasi[$i]->hutang;
+                $object->subtotal_komisi = $konsinyasi[$i]->komisi*$object->sisa;
+                $object->subtotal_hutang = $konsinyasi[$i]->hutang*$object->sisa;
+
+                array_push($dataBarang, $object);
+            }
         }
 
+        dd($dataBarang);
+
+        // $detail_konsinyasi = DB::table('detail_konsinyasi')
+        //                         ->select('barang_id', 'tanggal_kadaluarsa', 'jumlah_titip')
+        //                         ->where('konsinyasi_id', '=', $id)
+        //                         ->get();
+
+        // $idReturPembelian = DB::table('retur_pembelian')
+        //                         ->insertGetId([
+        //                             'tanggal' => Carbon\Carbon::now()->format('Y-m-d'),
+        //                             'nomor_nota' => null,
+        //                             'users_id' => auth()->user()->id,
+        //                             'konsinyasi_id' => $id,
+        //                             'kebijakan_retur' => 'Retur Sisa Barang Konsinyasi',
+        //                             'total' => $request->total_hutang
+        //                         ]);
+
+        // for($i = 0; $i < count($detail_konsinyasi); $i++)
+        // {
+        //     $updateStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+        //                                     ->where('barang_id', '=', $detail_konsinyasi[$i]->barang_id)
+        //                                     ->where('tanggal_kadaluarsa', '=', $detail_konsinyasi[$i]->tanggal_kadaluarsa)
+        //                                     ->decrement('jumlah_stok', $detail_konsinyasi[$i]->jumlah_titip);
+
+        //     $insertDetailReturPembelian = DB::table('detail_retur_pembelian')
+        //                                     ->insert([
+        //                                         'retur_pembelian_id' => $idReturPembelian,
+        //                                         'barang_retur' => $detail_konsinyasi[$i]->barang_id,
+        //                                         'tanggal_kadaluarsa_barang_retur' => $detail_konsinyasi[$i]->tanggal_kadaluarsa,
+        //                                         'kuantitas_barang_retur' => $detail_konsinyasi[$i]->jumlah_titip,
+        //                                         'subtotal' => 0,
+        //                                         'keterangan' => 'Sisa jumlah barang konsinyasi'
+        //                                     ]);
+        // }
+
+        // $updateKonsinyasi = DB::table('konsinyasi')
+        //                         ->where('id', '=', $id)
+        //                         ->update([
+        //                             'status' => 'Sudah Lunas'
+        //                         ]);
         
+        // return redirect()->back()->with(['success' => 'Konsinyasi berhasil dilunasi']);
     }
 
     /**

@@ -18,12 +18,15 @@ class CreateReturPembelianTable extends Migration
         Schema::create('retur_pembelian', function (Blueprint $table) {
             $table->increments('id');
             $table->date('tanggal');
-            $table->string('nomor_nota', 100)->unique();
+            $table->string('nomor_nota', 100)->unique()->nullable();
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('pembelian_id');
+            $table->unsignedInteger('pembelian_id')->nullable();
             $table->foreign('pembelian_id')->references('id')->on('pembelian')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('kebijakan_retur', ['Tukar Barang', 'Potong Dana Pembelian', 'Pengembalian Dana Pembelian']);
+            $table->unsignedInteger('konsinyasi_id')->nullable();
+            $table->foreign('konsinyasi_id')->references('id')->on('konsinyasi')->onUpdate('cascade')->onDelete('cascade');
+            // $table->enum('kebijakan_retur', ['Tukar Barang', 'Potong Dana Pembelian', 'Pengembalian Dana Pembelian']);
+            $table->string('kebijakan_retur', 100);
             $table->integer('total')->nullable();
         });
     }

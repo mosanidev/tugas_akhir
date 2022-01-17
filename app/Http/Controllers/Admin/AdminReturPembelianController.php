@@ -23,6 +23,14 @@ class AdminReturPembelianController extends Controller
                         ->where('retur_pembelian.pembelian_id', '=', null)
                         ->get();
 
+        $generateNomorNota = DB::table('retur_pembelian')
+                                ->select(DB::raw('max(nomor_nota) as maxNomorNota'))
+                                ->get();
+
+        // $generateNomorNota = isset($generateNomorNota[0]->maxNomorNota) ? $generateNomorNota[0]->maxNomorNota + 1 : 01;
+
+        // $generateNomorNota = 'NRB'.\Carbon\Carbon::now()->format('dmy').sprintf("%03s", $generateNomorNota);
+
         $retur_pembelian = DB::table('retur_pembelian')
                             ->select('pembelian.nomor_nota', 'retur_pembelian.*', 'supplier.nama as nama_supplier', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
                             ->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')

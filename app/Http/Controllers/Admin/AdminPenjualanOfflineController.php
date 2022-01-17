@@ -28,17 +28,36 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function create()
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
+        // $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
+
+        $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
 
         // mengambil tanggal kadaluarsa terlama 
+        // $barang = DB::table('barang')
+        //             ->select('barang.*', DB::raw('max(barang_has_kadaluarsa.tanggal_kadaluarsa) as tanggal_kadaluarsa'), DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+        //             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
+        //             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+        //             ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+        //             ->get();
+
         $barang = DB::table('barang')
                     ->select('barang.*', DB::raw('max(barang_has_kadaluarsa.tanggal_kadaluarsa) as tanggal_kadaluarsa'), DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
                     ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                    ->groupBy('barang_has_kadaluarsa.barang_id')
                     ->get();
 
         $anggotaKopkar = DB::table('users')->where('status_verifikasi_anggota', '=', 'Verified')->get();
+
+        $generateNomorNota = DB::table('penjualan')
+                                ->select(DB::raw('max(nomor_nota) as maxNomorNota'))
+                                ->where('jenis', '=', 'Offline')
+                                ->get();
+
+        // $generateNomorNota = isset($generateNomorNota[0]->maxNomorNota) ? $generateNomorNota[0]->maxNomorNota + 1 : 01;
+
+        // $generateNomorNota = 'NJ'.\Carbon\Carbon::now()->format('dmy').sprintf("%03s", $generateNomorNota);
 
         return view ('admin.penjualan_offline.tambah', ['barang' => $barang, 'anggotaKopkar' => $anggotaKopkar]);
     }
@@ -89,14 +108,13 @@ class AdminPenjualanOfflineController extends Controller
 
         $detail_penjualan = json_decode($request->detail_penjualan, true);
         
-        for($i = 0; $i < count((array)$detail_penjualan); $i++)
+        for($i = 0; $i < count((array) $detail_penjualan); $i++)
         {
             //hitung total
             $total += $detail_penjualan[$i]['subtotal'];
         
-            print_r($detail_penjualan[$i]);
-            echo "<br/>";
-            $qty=$detail_penjualan[$i]["kuantitas"]*1;
+            $qty= $detail_penjualan[$i]["kuantitas"]*1;
+
             // kurangi stok
             $dtBarang = DB::table('barang_has_kadaluarsa')
                                  ->where('barang_id', '=', $detail_penjualan[$i]['barang_id'])
@@ -105,40 +123,34 @@ class AdminPenjualanOfflineController extends Controller
                                  ->orderBy('tanggal_kadaluarsa','ASC')
                                  ->get();
 
-
             for ($j=0;$j<count($dtBarang);$j++)
             {
                 $stok=$dtBarang[$j]->jumlah_stok*1;
-                //print_r($dtBarang[$j]);
-                //$idB=$dtBarang[]
+
                 if ($qty>0)
                 {
                     if ($qty>$stok)
                     {
-                        DB::table('barang_has_kadaluarsa')->where('id','=',$dtBarang[$j]->id)->update(['jumlah_stok' => 0]);
+                        $kurangiStok = DB::table('barang_has_kadaluarsa')->where('id','=',$dtBarang[$j]->id)->update(['jumlah_stok' => 0]);
                         $qty-=$stok;
                     }
                     else {
                         $stokBaru=$stok-$qty;
-                        DB::table('barang_has_kadaluarsa')->where('id','=',$dtBarang[$j]->id)->update(['jumlah_stok' => $stokBaru]);
+                        $kurangiStok = DB::table('barang_has_kadaluarsa')->where('id','=',$dtBarang[$j]->id)->update(['jumlah_stok' => $stokBaru]);
                         $qty=0;
 
                     }
                 }
-                //print_r($dtBarang[$j]);
-                //echo "<br/>";
             }
 
-            // tambahkan detail penjualan
-
+            $insert_detail_penjualan = DB::table('detail_penjualan')
+                                        ->insert([
+                                            'penjualan_id' => $id_penjualan,
+                                            'barang_id' => $detail_penjualan[$i]['barang_id'],
+                                            'kuantitas' => $detail_penjualan[$i]['kuantitas'],
+                                            'subtotal' => $detail_penjualan[$i]['subtotal']
+                                        ]);
             
-            $detail_penjualan = DB::table('detail_penjualan')
-                                 ->insert([
-                                     'penjualan_id' => $id_penjualan,
-                                     'barang_id' => $detail_penjualan[$i]['barang_id'],
-                                     'kuantitas' => $detail_penjualan[$i]['kuantitas'],
-                                     'subtotal' => $detail_penjualan[$i]['subtotal']
-                                 ]);
         }
 
         $update = DB::table('penjualan')->where('id','=',$id_penjualan)->update(['total' => $total]);
