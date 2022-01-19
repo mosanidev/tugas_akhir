@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 use DB;
 
+use Auth;
+
 use Carbon\Carbon;
 
 class PaymentController extends Controller
@@ -66,6 +68,7 @@ class PaymentController extends Controller
     public function notification(Request $request)
     {
         $notif = new \Midtrans\Notification();
+
         $transaction = $notif->transaction_status;
         $type = $notif->payment_type;
         $order_id = $notif->order_id;
@@ -106,20 +109,44 @@ class PaymentController extends Controller
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
                         ->update(['status' => 'Pembayaran diterima namun perlu pengecekan lebih lanjut oleh admin', 'updated_at' => $dateNow]);
+
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.nomor_nota', '=', $notif->order_id) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $updateNotif = DB::table('notifikasi')
+                        ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
+                        ->update([
+                            'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." diterima namun perlu pengecekan lebih lanjut oleh admin",
+                            'status' => 'Belum Dilihat'
+                        ]);
         }
         else if($status == "paid" || $status == "captured")
         {
-            $penjualan = DB::table('penjualan')->where('nomor_nota', '=', $notif->order_id)->get();
+            $penjualan = DB::table('penjualan')
+                            ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                            ->where('penjualan.nomor_nota', '=', $notif->order_id) 
+                            ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                            ->get();
 
-            $idPembayaran = DB::table('pembayaran')->select('pembayaran.id')->join('penjualan', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.nomor_nota', '=', $notif->order_id)->get();
+            // $idPembayaran = DB::table('pembayaran')->select('pembayaran.id')->join('penjualan', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.nomor_nota', '=', $notif->order_id)->get();
             
             $updatePembayaran = DB::table('pembayaran')
-                                ->where('id', $idPembayaran[0]->id)     
+                                ->where('id', $penjualan[0]->pembayaran_id)     
                                 ->update(['waktu_lunas' => $notif->settlement_time]);
 
             $updatePenjualan = DB::table('penjualan')
                                 ->where('nomor_nota', $notif->order_id)   
                                 ->update(['status' => 'Pesanan sudah dibayar dan sedang disiapkan', 'updated_at' => $dateNow]);
+
+            $updateNotif = DB::table('notifikasi')
+                            ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
+                            ->update([
+                                'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
+                                'status' => 'Belum Dilihat'
+                            ]);
             
         }
         else if ($status == "pending")
@@ -127,30 +154,83 @@ class PaymentController extends Controller
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
                         ->update(['status' => 'Menunggu pesanan dibayarkan', 'updated_at' => $dateNow]);
+
         }
         else if ($status == "denied")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
                         ->update(['status' => 'Pembayaran pesanan ditolak', 'updated_at' => $dateNow]);
+
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.nomor_nota', '=', $notif->order_id) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $updateNotif = DB::table('notifikasi')
+                        ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
+                        ->update([
+                            'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
+                            'status' => 'Belum Dilihat'
+                        ]);
         }
         else if ($status == "expired")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
                         ->update(['status' => 'Pembayaran pesanan melebihi batas waktu yang ditentukan', 'updated_at' => $dateNow]);
+
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.nomor_nota', '=', $notif->order_id) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $updateNotif = DB::table('notifikasi')
+                        ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
+                        ->update([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
+                            'status' => 'Belum Dilihat'
+                        ]);
         }
         else if ($status == "canceled")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
                         ->update(['status' => 'Pesanan dibatalkan', 'updated_at' => $dateNow]);
+
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.nomor_nota', '=', $notif->order_id) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $updateNotif = DB::table('notifikasi')
+                        ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
+                        ->update([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
+                            'status' => 'Belum Dilihat'
+                        ]);
         }
         else if ($status == "failed")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
                         ->update(['status' => 'Pembayaran pesanan gagal diproses', 'updated_at' => $dateNow]);
+
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.nomor_nota', '=', $notif->order_id) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $updateNotif = DB::table('notifikasi')
+                        ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
+                        ->update([
+                            'isi' => "Mohon maaf terjadi kesalahan. Pesanan #".$penjualan[0]->nomor_nota." gagal diproses",
+                            'status' => 'Belum Dilihat'
+                        ]);
         }
 
     }

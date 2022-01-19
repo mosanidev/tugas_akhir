@@ -84,7 +84,16 @@
                 </li>
                 
                     @if(Auth::check())
-                        <a href='{{ route('notifikasi.index') }}' class='nav-link active'><i class='fas fa-bell'></i></a>
+
+                        @if(isset($notifikasi))
+                            @if(count($notifikasi) > 0)   
+                                <a href='{{ route('notifikasi.index') }}' class='nav-link active'><i class='fas fa-bell'></i></a>
+                                <p class="mr-1">{{ $notifikasi[0]->jumlah_notif }}</p>
+                            @else
+                                <a href='{{ route('notifikasi.index') }}' class='nav-link active'><i class='fas fa-bell'></i></a>
+                            @endif
+                        @endif 
+
                         <a href='{{ route('wishlist.index') }}' class='nav-link active'><i class='fas fa-heart'></i></a>
                     @endif
 
@@ -106,13 +115,21 @@
                                     <img src="{{ asset(auth()->user()->foto) }}" class="rounded-circle" style="width:35px; height:30px;" alt="profil"><p class="ml-2 text-dark d-inline">{{ auth()->user()->nama_depan.' '.auth()->user()->nama_belakang }}</p>
                                 </button>
                                 <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('profil') }}">Profil</a>
-                                <a class="dropdown-item" href="{{ url('alamat') }}">Alamat</a>
-                                <a class="dropdown-item" href="{{ route('order') }}">Transaksi</a>
-                                <a class="dropdown-item d-none" href="#retur">Retur</a>
-                                <a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a>
-                                <a class="dropdown-item" href="{{ route('notifikasi.index') }}">Notifikasi</a>
-                                <a class="dropdown-item" href="{{ route('logout') }}">Keluar</a>
+                                    <a class="dropdown-item" href="{{ route('profil') }}">Profil</a>
+                                    <a class="dropdown-item" href="{{ url('alamat') }}">Alamat</a>
+                                    <a class="dropdown-item" href="{{ route('order') }}">Transaksi</a>
+                                    <a class="dropdown-item d-none" href="#retur">Retur</a>
+                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a>
+
+                                    @if(isset($notifikasi))
+                                        @if(count($notifikasi) > 0)   
+                                        <a class="dropdown-item" href="{{ route('notifikasi.index') }}">Notifikasi ({{ $notifikasi[0]->jumlah_notif }})</a>
+                                        @else
+                                            <a class="dropdown-item" href="{{ route('notifikasi.index') }}">Notifikasi</a>                                    
+                                        @endif
+                                    @endif 
+        
+                                    <a class="dropdown-item" href="{{ route('logout') }}">Keluar</a>
                                 </div>
                             </div>
                             {{-- <a class="nav-link" href=""><img src="https://www.psikoma.com/wp-content/uploads/2016/07/board-361516_1280-630x380.jpg" class="rounded-circle" style="width:35px; height:30px;" alt="profil"><p class="ml-2 text-dark d-inline">Muhammad Sani</p></a> --}}

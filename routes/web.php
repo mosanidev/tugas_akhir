@@ -47,6 +47,7 @@ use App\Http\Controllers\Admin\AdminKonsinyasiController;
 use App\Http\Controllers\Admin\AdminDetailKonsinyasiController;
 use App\Http\Controllers\Admin\AdminStokOpnameController;
 use App\Http\Controllers\Admin\AdminDetailReturPembelianController;
+use App\Http\Controllers\Admin\AdminPengirimanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -249,5 +250,7 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);
+
+        Route::resource('/pengiriman', AdminPengirimanController::class);
     });
 });

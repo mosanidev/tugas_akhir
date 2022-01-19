@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class AdminPengirimanController extends Controller
 {
@@ -15,6 +16,8 @@ class AdminPengirimanController extends Controller
     public function index()
     {
         $pengiriman = DB::table('detail_penjualan')->get('pengiriman.*', 'alamat_pengiriman.*')->join('alamat_pengirman', 'pengiriman.');
+
+        return view('admin.pengiriman.index');
     }
 
     /**
