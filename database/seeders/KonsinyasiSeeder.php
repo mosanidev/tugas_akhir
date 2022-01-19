@@ -23,8 +23,6 @@ class KonsinyasiSeeder extends Seeder
                 'supplier_id'           => 3,
                 'tanggal_titip'         => '2022-01-10',
                 'tanggal_jatuh_tempo'   => '2022-02-05',
-                'total_komisi'          => 51000,
-                'total_hutang'          => 16100,
                 'metode_pembayaran'     => 'Tunai',
                 'status'                => 'Belum Lunas',
                 'bukti_bayar'           => null

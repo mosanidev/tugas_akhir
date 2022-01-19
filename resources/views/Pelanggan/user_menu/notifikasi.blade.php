@@ -2,37 +2,22 @@
     <h5 class="mb-3"><strong>Notifikasi</strong></h5>
 
     <div>
-        <div>
-            @if (count($notifikasi) == 0)
+
+        @if(isset($notifikasi) && isset($jumlah_notif))
+
+            @if ($jumlah_notif[0]->jumlah_notif == 0)
                 <h5 class="my-3">Maaf anda belum memiliki notifikasi</h5>
             @else
-                <div>
-                    {{-- <div class="w-100 text-right">
-                        <button class="btn btn-success">Beli Semua</button>
-                        <button class="btn btn-success">Beli yang Ditandai</button>
-                        <button class="btn btn-success">Hapus Semua</button>
-                        <button class="btn btn-success" id="btnHapusDitandai">Hapus yang Ditandai</button>
-                    </div> --}}
+                @foreach($notifikasi as $item) 
 
-                    <div class="">
-                        <div class="row">  
-                                @foreach($notifikasi as $item) 
-
-                                    <div class="bg-light rounded">
-                                        <p class="p-3">{{ $item->isi }}</p>
-                                    </div>
-                                    {{-- <div class="p-3 bg-light rounded">
-                                        <p>Ingat dengan barang <a href="{{ route('detail', ['id' => $item->barang_id]) }}" class="text-dark">{{ $item->nama }}</a> yang ada di wishlist anda?  Ada potongan harga lhoo !!!</p>
-                                    </div> --}}
-
-                                @endforeach
-
-                        </div>
-
+                    <div class="bg-light rounded p-2 mb-3">
+                        <p class="p-3">{{ $item->isi }}</p>
                     </div>
-                </div>
+
+                @endforeach
             @endif
-        </div>
+
+        @endif
     </div>
 
 </div>

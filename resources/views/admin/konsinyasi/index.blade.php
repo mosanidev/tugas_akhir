@@ -29,8 +29,8 @@
                           <th>Nomor Nota</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
-                          <th>Status</th>
                           <th>Supplier</th>
+                          <th>Status</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
@@ -46,14 +46,9 @@
                             <td>{{ $item->nama_supplier }}</td>
                             <td>{{ $item->status }}</td>
                             <td>
-                              {{-- <div class="row"> --}}
-                                  {{-- <a href="{{ route('konsinyasi.show', ['konsinyasi' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Titipan</a> --}}
-                                  @if($item->status == "Belum Lunas")
-                                    <button class="btn btn-success w-100 mb-2" data-id="{{ $item->id }}" data-total-hutang="{{ $item->total_hutang }}" data-toggle="modal" data-target="#modalLunasiKonsinyasi" id="btnLunasi">Lunasi</button>
-                                  @endif
-                                  <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahKonsinyasi">Ubah</button>
-                                  <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
-                              {{-- </div> --}}
+                              <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                              <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
+                              <button type="button" class="btn btn-danger btnHapusKonsinyasi" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi"><i class="fas fa-trash"></i></button>
                             </td>
                           </tr>
                         @endforeach

@@ -56,9 +56,9 @@ class AdminKonsinyasiController extends Controller
                                                     'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo, 
                                                     'supplier_id' => $request->supplier_id, 
                                                     'metode_pembayaran' => $request->metode_pembayaran, 
-                                                    'status' => $request->status, 
-                                                    'total_komisi' => $request->total_komisi,
-                                                    'total_hutang' => $request->total_hutang ]);
+                                                    'status' => $request->status]);
+                                                    // 'total_komisi' => $request->total_komisi,
+                                                    // 'total_hutang' => $request->total_hutang ]);
 
         $barangKonsinyasi = json_decode($request->barangKonsinyasi, true);
         
@@ -96,9 +96,9 @@ class AdminKonsinyasiController extends Controller
                                             'jumlah_titip' => $barangKonsinyasi[$i]['jumlah_titip'],
                                             'tanggal_kadaluarsa' => $barangKonsinyasi[$i]['tanggal_kadaluarsa'],
                                             'komisi' => $barangKonsinyasi[$i]['komisi'],
-                                            'subtotal_komisi' => $barangKonsinyasi[$i]['subtotal_komisi'],
+                                            // 'subtotal_komisi' => $barangKonsinyasi[$i]['subtotal_komisi'],
                                             'hutang' => $barangKonsinyasi[$i]['hutang'],
-                                            'subtotal_hutang' => $barangKonsinyasi[$i]['subtotal_hutang']
+                                            // 'subtotal_hutang' => $barangKonsinyasi[$i]['subtotal_hutang']
                                         ]);
 
             
@@ -116,22 +116,48 @@ class AdminKonsinyasiController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $konsinyasi = DB::table('konsinyasi')->select('konsinyasi.*', 'supplier.nama as nama_supplier')->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')->where('konsinyasi.id', '=', $id)->get();
+        $konsinyasi = DB::table('konsinyasi')
+                        ->select('konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier')
+                        ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
+                        ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
+                        ->where('konsinyasi.id', '=', $id)
+                        ->get();    
 
-        $barang = DB::table('barang')->where('barang_konsinyasi', '=', 1)->get();
-        $barangKonsinyasi = DB::table('detail_konsinyasi')->select('detail_konsinyasi.*', 'barang.nama as nama_barang')->join('barang', 'detail_konsinyasi.barang_id', '=', 'barang.id')->where('detail_konsinyasi.konsinyasi_id', '=', $id)->get();
-        $supplier = DB::table('supplier')->get();
+        $detailKonsinyasi = array();
 
-        $this->loadKonsinyasi($konsinyasi, $barangKonsinyasi);
-
-        if($request->ajax())
+        for($i = 0; $i < count($konsinyasi); $i++)
         {
-            return response()->json($konsinyasi);
+            $penjualan = DB::table('penjualan')
+                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'penjualan.tanggal', 'detail_penjualan.barang_id', 'detail_penjualan.kuantitas', 'barang.harga_jual', 'barang.diskon_potongan_harga')
+                        ->where('barang_has_kadaluarsa.barang_id', '=', $konsinyasi[$i]->barang_id)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '=', $konsinyasi[$i]->tanggal_kadaluarsa)
+                        ->whereBetween('penjualan.tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
+                        ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
+                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
+                        ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
+                        ->get();
+
+            for($x = 0; $x < count($penjualan); $x++)
+            {
+                $object = new \stdClass();
+                $object->barang_id = $konsinyasi[$i]->barang_id;
+                $object->barang_nama = $penjualan[$x]->barang_nama;
+                $object->barang_harga_jual = $penjualan[$x]->harga_jual;
+                $object->barang_diskon = $penjualan[$x]->diskon_potongan_harga;
+                $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
+                $object->terjual = $penjualan[$x]->kuantitas;
+                $object->sisa = $konsinyasi[$i]->jumlah_titip-$penjualan[$x]->kuantitas;
+                $object->komisi = $konsinyasi[$i]->komisi;
+                $object->hutang = $konsinyasi[$i]->hutang;
+                $object->subtotal_komisi = $konsinyasi[$i]->komisi*$object->sisa;
+                $object->subtotal_hutang = $konsinyasi[$i]->hutang*$object->sisa;
+
+                array_push($detailKonsinyasi, $object);
+            }
         }
-        else 
-        {
-            return view('admin.konsinyasi.detail.index', ['konsinyasi' => $konsinyasi, 'barang' => $barang, 'barangKonsinyasi' => $barangKonsinyasi, 'supplier' => $supplier]);
-        }
+
+        return view('admin.konsinyasi.detail', ['konsinyasi' => $konsinyasi, 'detail_konsinyasi' => $detailKonsinyasi]);
+
     }
 
     public function loadKonsinyasi($konsinyasi, $barangKonsinyasi)

@@ -86,11 +86,11 @@
           {
             toastr.error("Kuantitas barang mencapai maksimum stok", "Error", toastrOptions)
           }
-          else if (parseInt($(this).val()) > parseInt($(this).attr("max")))
-          {
-            $(this).val($(this).attr("max"));
-            toastr.error("Kuantitas barang melebihi maksimum stok", "Error", toastrOptions)
-          }
+          // else if (parseInt($(this).val()) > parseInt($(this).attr("max")))
+          // {
+          //   $(this).val($(this).attr("max"));
+          //   toastr.error("Kuantitas barang melebihi maksimum stok", "Error", toastrOptions)
+          // }
 
           let jumlahStok = parseInt($('#kuantitasBarangJualOffline').val());
           let hargaJual = parseInt($('#hargaBarangJualOffline').val());
@@ -124,7 +124,19 @@
       {
         toastr.error("Barang yang anda pilih sudah ada di dalam tabel", "Error", toastrOptions)
       }
-      else if($('#selectBarangJualOffline')[0].selectedIndex != 0 && $('#kuantitasBarangJualOffline').val() != "" && arrBarangDijual.filter(function(e) { return e.barang_id == $('#selectBarangJualOffline :selected').val() }).length == 0)
+      else if(parseInt($("#kuantitasBarangJualOffline").val()) > parseInt($("#kuantitasBarangJualOffline").attr("max")))
+      {
+        $("#kuantitasBarangJualOffline").val($("#kuantitasBarangJualOffline").attr("max"));
+        
+        let jumlahStok = parseInt($('#kuantitasBarangJualOffline').val());
+        let hargaJual = parseInt($('#hargaBarangJualOffline').val());
+        let diskon = parseInt($('#diskonBarangJualOffline').val());
+
+        $('#subtotalBarangJualOffline').val(jumlahStok * (hargaJual - diskon));
+
+        toastr.error("Kuantitas barang melebihi maksimum stok", "Error", toastrOptions)
+      }
+      else
       {
         arrBarangDijual.push({
             "barang_id": $('#selectBarangJualOffline :selected').val(),
@@ -141,7 +153,9 @@
 
         implementDataOnTable();
       }
-    })
+
+      // else if($('#selectBarangJualOffline')[0].selectedIndex != 0 && $('#kuantitasBarangJualOffline').val() != "" && arrBarangDijual.filter(function(e) { return e.barang_id == $('#selectBarangJualOffline :selected').val() }).length == 0)
+    });
 
 </script>
 

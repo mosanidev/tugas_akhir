@@ -48,27 +48,15 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Hutang</label>
-                  <div class="col-sm-8">
-                    <input type="text" class="form-control" min="500" id="hutang" readonly>
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Jumlah Titip</label>
                   <div class="col-sm-8">
                     <input type="number" class="form-control" name="jumlah_titip" min="1" id="inputJumlahTitip" required>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Subtotal Komisi</label>
+                  <label class="col-sm-4 col-form-label">Hutang</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="subtotalKomisi" readonly>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Subtotal Hutang</label>
-                  <div class="col-sm-8">
-                    <input type="text" class="form-control" id="subtotalHutang" readonly>
+                    <input type="text" class="form-control" min="500" id="hutang" readonly>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -124,12 +112,8 @@
       {
           let hargaJualAkhir = convertRupiahToAngka($('#hargaJualAkhir').val()); 
           let jumlahTitip = $('#inputJumlahTitip').val();
-          let subtotalKomisi = parseInt(komisi)*parseInt(jumlahTitip);
           let hutang = parseInt(hargaJualAkhir)-parseInt(komisi);
-          let subtotalHutang = hutang*parseInt(jumlahTitip);
-          $('#hutang').val(convertAngkaToRupiah(hutang));
-          $('#subtotalHutang').val(convertAngkaToRupiah(subtotalHutang));
-          $('#subtotalKomisi').val(convertAngkaToRupiah(subtotalKomisi));    
+          $('#hutang').val(convertAngkaToRupiah(hutang));   
       }
 
     });
@@ -142,12 +126,8 @@
       {
           let hargaJualAkhir = convertRupiahToAngka($('#hargaJualAkhir').val()); 
           let komisi = $('#inputKomisi').val();
-          let subtotalKomisi = parseInt(komisi)*parseInt(jumlahTitip);
           let hutang = parseInt(hargaJualAkhir)-parseInt(komisi);
-          let subtotalHutang = hutang*parseInt(jumlahTitip);
           $('#hutang').val(convertAngkaToRupiah(hutang));
-          $('#subtotalHutang').val(convertAngkaToRupiah(subtotalHutang));
-          $('#subtotalKomisi').val(convertAngkaToRupiah(subtotalKomisi));   
       }  
 
     });
@@ -173,9 +153,7 @@
         "harga_jual_akhir": convertRupiahToAngka($('#hargaJualAkhir').val()),
         "komisi": $('#inputKomisi').val(),
         "hutang": convertRupiahToAngka($('#hutang').val()),
-        "jumlah_titip": $('#inputJumlahTitip').val(),
-        "subtotal_komisi": convertRupiahToAngka($('#subtotalKomisi').val()),
-        "subtotal_hutang": convertRupiahToAngka($('#subtotalHutang').val())
+        "jumlah_titip": $('#inputJumlahTitip').val()
       });
 
       $('#modalTambahBarangKonsinyasi').modal('toggle');

@@ -52,6 +52,12 @@
               <p class="mt-2">{{ $konsinyasi[0]->status }}</p>
             </div>
           </div>
+          {{-- <div class="form-group row">
+            <div class="col-12">
+              Anda belum melunasi transaksi konsinyasi, Silahkan lunasi dengan mengklik tombol berikut 
+            </div>
+          </div> --}}
+
         <div class="card shadow my-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Tabel Konsinyasi</h6>
@@ -61,29 +67,27 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                            <th style="width: 10px">No</th>
-                            <th>Barang</th>
-                            <th>Jumlah Titip</th>
-                            <th>Terjual</th>
-                            <th>Sisa</th>
-                            <th>Total Hutang</th>
-                            <th>Total Komisi</th>
-                            <th>Aksi</th>
+                              <th style="width: 10px">No</th>
+                              <th>Barang</th>
+                              <th>Jumlah Titip</th>
+                              <th>Terjual</th>
+                              <th>Sisa</th>
+                              <th>Komisi</th>
+                              <th>Subtotal Komisi</th>
                             </tr>
                         </thead>
                         <tbody>
-                          @if(isset($barangKonsinyasi))
+                          @if(isset($detail_konsinyasi))
                             @php $num = 1; @endphp
-                            @foreach ($barangKonsinyasi as $item)
+                            @foreach ($detail_konsinyasi as $item)
                                 <tr>
                                   <td>{{ $num++ }}</td>
-                                  <td class="barangKonsinyasiDiTabel">{{ $item->nama_barang }}</td>
+                                  <td class="barangKonsinyasiDiTabel">{{ $item->barang_nama }}</td>
                                   <td>{{ $item->jumlah_titip }}</td>
                                   <td>{{ $item->terjual }}</td>
                                   <td>{{ $item->sisa }}</td>
-                                  <td>{{ $item->total_hutang }}</td>
-                                  <td>{{ $item->total_komisi }}</td>
-                                  <td>Aksi</td>
+                                  <td>{{ "Rp " . number_format($item->komisi,0,',','.') }}</td>
+                                  <td>{{ "Rp " . number_format($item->subtotal_komisi,0,',','.') }}</td>
                                 </tr>
                             @endforeach
                           @endif
@@ -92,6 +96,13 @@
                 </div>
             </div>
         </div>
+        
+        {{-- <div class="form-group row">
+          <label class="col-sm-3 col-form-label">Status</label>
+          <div class="col-sm-9">
+            <p class="mt-2">{{ $konsinyasi[0]->status }}</p>
+          </div>
+        </div> --}}
 </div>
 
 

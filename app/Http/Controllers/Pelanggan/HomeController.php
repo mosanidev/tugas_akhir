@@ -48,10 +48,15 @@ class HomeController extends Controller
 
         if (Auth::check())
         {
-            $notifikasi = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
+            $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
+            $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
             $data_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
-        }
 
-        return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'notifikasi' => $notifikasi]);
+            return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);
+        }
+        else 
+        {
+            return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files]);
+        }
     }
 }

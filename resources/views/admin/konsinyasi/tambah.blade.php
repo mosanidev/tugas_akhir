@@ -63,14 +63,9 @@
                 <label class="col-sm-4 col-form-label">Status</label>
                 <div class="col-sm-8">
                   <input type="text" class="form-control" name="status" value="Belum Lunas" readonly>
-                  {{-- <select class="form-control" name="status" id="selectStatus" required>
-                      <option disabled selected>Status</option>
-                      <option value="Belum Lunas">Belum Lunas</option>
-                      <option value="Sudah Lunas">Sudah Lunas</option>
-                  </select>  --}}
                 </div>
               </div>
-              <div class="form-group row">
+              {{-- <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total Hutang</label>
                 <div class="col-sm-8">
                   <input type="hidden" name="total_hutang" id="totalHutangAngka">
@@ -83,7 +78,7 @@
                   <input type="hidden" name="total_komisi" id="totalKomisiAngka">
                   <input type="text" class="form-control" id="totalKomisiRupiah" readonly>
                 </div>
-              </div>
+              </div> --}}
 
               <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangKonsinyasi" id="btnTambah">Tambah</button>
 
@@ -99,12 +94,10 @@
                                   <th style="width: 10px">No</th>
                                   <th>Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
-                                  <th>Harga Jual Akhir</th>
+                                  <th>Harga Jual</th>
                                   <th>Komisi</th>
                                   <th>Hutang</th>
                                   <th>Jumlah Titip</th>
-                                  <th>Subtotal Komisi</th>
-                                  <th>Subtotal Hutang</th>
                                   <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -130,6 +123,7 @@
           dropdownParent: $('#divTampungSelectSupplier'),
           theme: 'bootstrap4'
         });
+
         // jQuery.datetimepicker.setLocale('id');
 
         // $('#tglKadaluarsa').datetimepicker({
@@ -156,15 +150,15 @@
         {
             let rowTable = "";
             let num = 1;
-            let totalKomisi = 0;
-            let totalHutang = 0;
+            // let totalKomisi = 0;
+            // let totalHutang = 0;
 
             if(arrBarangKonsinyasi.length > 0)
             {
                 for(let i = 0; i < arrBarangKonsinyasi.length; i++)
                 {
-                    totalKomisi += parseInt(arrBarangKonsinyasi[i].subtotal_komisi);
-                    totalHutang += parseInt(arrBarangKonsinyasi[i].subtotal_hutang);
+                    // totalKomisi += parseInt(arrBarangKonsinyasi[i].subtotal_komisi);
+                    // totalHutang += parseInt(arrBarangKonsinyasi[i].subtotal_hutang);
 
                     rowTable += `<tr>
                                     <td style="width: 10px">` + num + `</td>
@@ -174,8 +168,6 @@
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].komisi) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].hutang) + `</td>
                                     <td>` + arrBarangKonsinyasi[i].jumlah_titip + `</td>
-                                    <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].subtotal_komisi) + `</td>
-                                    <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].subtotal_hutang) + `</td>
                                     <td>
                                         <button type="button" class='btn btn-danger' onclick="hapusBarangKonsinyasi(` + i + `)">Hapus</button>
                                     </td>
@@ -194,11 +186,11 @@
 
             $('#contentTable').html(rowTable);
 
-            $('#totalKomisiAngka').val(totalKomisi);
-            $('#totalKomisiRupiah').val(convertAngkaToRupiah(totalKomisi));
+            // $('#totalKomisiAngka').val(totalKomisi);
+            // $('#totalKomisiRupiah').val(convertAngkaToRupiah(totalKomisi));
 
-            $('#totalHutangAngka').val(totalHutang);
-            $('#totalHutangRupiah').val(convertAngkaToRupiah(totalHutang));
+            // $('#totalHutangAngka').val(totalHutang);
+            // $('#totalHutangRupiah').val(convertAngkaToRupiah(totalHutang));
             
         }
 

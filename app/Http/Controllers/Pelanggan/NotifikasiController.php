@@ -12,11 +12,14 @@ class NotifikasiController extends Controller
     {
         $ubahStatus = DB::table('notifikasi')->where('users_id', '=', auth()->user()->id)->update(['status' => 'Sudah dilihat']);
 
-        $notifikasi = DB::table('notifikasi')->select('notifikasi.isi', DB::raw('COUNT(*) as jumlah_notif'))->where('users_id', '=', auth()->user()->id)->get();
+        $jumlahNotif = DB::table('notifikasi')->select(DB::raw('COUNT(*) as jumlah_notif'))->where('users_id', '=', auth()->user()->id)->get();
+
+        $notifikasi = DB::table('notifikasi')->where('users_id', '=', auth()->user()->id)->get();
+
         $kategori = DB::table('kategori_barang')->get();
+
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-
-        return view('pelanggan.user_menu.user_menu', ['notifikasi' => $notifikasi, 'semua_kategori' => $kategori, 'total_cart' => $total_cart]);
+        return view('pelanggan.user_menu.user_menu', ['notifikasi' => $notifikasi, 'jumlah_notif' => $jumlahNotif, 'semua_kategori' => $kategori, 'total_cart' => $total_cart]);
     }
 }

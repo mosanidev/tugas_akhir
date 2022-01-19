@@ -25,8 +25,8 @@ class CreateDetailKonsinyasiTable extends Migration
             $table->integer('jumlah_titip');
             $table->double('komisi');
             $table->double('hutang');
-            $table->double('subtotal_komisi');
-            $table->double('subtotal_hutang');
+            $table->double('subtotal_komisi')->nullable();
+            $table->double('subtotal_hutang')->nullable();
         });
     }
 

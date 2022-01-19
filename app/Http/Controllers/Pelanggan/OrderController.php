@@ -283,6 +283,20 @@ class OrderController extends Controller
 
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$tarif]);
 
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.id', '=', $id_penjualan) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            
             return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]);
 
         }
@@ -410,6 +424,20 @@ class OrderController extends Controller
 
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$total_tarif]);
 
+            $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->where('penjualan.id', '=', $id_penjualan) 
+                        ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                        ->get();
+
+            $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            
             return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]);
 
         }
