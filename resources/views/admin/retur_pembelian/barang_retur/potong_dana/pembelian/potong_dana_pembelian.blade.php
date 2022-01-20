@@ -103,7 +103,7 @@
     </form>
 </div>
 
-  @include('admin.retur_pembelian.barang_retur.potong_dana.create')
+  @include('admin.retur_pembelian.barang_retur.potong_dana.pembelian.create')
 
   <script type="text/javascript">
 

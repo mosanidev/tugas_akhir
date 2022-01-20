@@ -20,7 +20,7 @@ class DetailKonsinyasiSeeder extends Seeder
             [   
                 'konsinyasi_id'         => 1,  
                 'barang_id'             => 1,
-                'tanggal_kadaluarsa'    => '2022-01-22 16:00:00',
+                'tanggal_kadaluarsa'    => '2022-01-26 16:00:00',
                 'jumlah_titip'          => 9,
                 'komisi'                => 3000,
                 'hutang'                => 9000,
@@ -33,7 +33,7 @@ class DetailKonsinyasiSeeder extends Seeder
             [   
                 'konsinyasi_id'         => 1,  
                 'barang_id'             => 2,
-                'tanggal_kadaluarsa'    => '2022-01-22 16:00:00',
+                'tanggal_kadaluarsa'    => '2022-01-26 16:00:00',
                 'jumlah_titip'          => 8,
                 'komisi'                => 3000,
                 'hutang'                => 10000,

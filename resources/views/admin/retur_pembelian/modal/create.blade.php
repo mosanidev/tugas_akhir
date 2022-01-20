@@ -38,12 +38,12 @@
                     </div>
                 </div>
                 <div class="form-group row" id="divTampungSelectNotaBeli">
-                    <p class="col-sm-4 col-form-label">Nomor Nota Pembelian</p>
+                    <p class="col-sm-4 col-form-label">Nomor Nota</p>
                     <div class="col-sm-8">
                         <select class="form-control" id="selectNotaBeli" name="id_pembelian" required>
                             <option disabled selected>Pilih Nomor Nota Pembelian</option>
                             @foreach($pembelian as $item)
-                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status }}">{{ $item->nomor_nota }}</option>
+                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota }}</option>
                             @endforeach
                         </select>    
                     </div>
@@ -92,13 +92,15 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Kebijakan Retur</p>
                     <div class="col-sm-8">
-                        <select class="form-control" id="selectKebijakanRetur" name="kebijakan_retur" required>
+                        <select class="form-control" id="selectKebijakanRetur" required>
                             <option disabled selected>Pilih Kebijakan Retur</option>
                             <option value="Tukar Barang">Tukar Barang</option>
                             <option value="Potong Dana Pembelian">Potong Dana Pembelian</option>
-                        </select>    
+                        </select> 
+                        <input type="hidden" id="kebijakan_retur" name="kebijakan_retur" value=""> 
                     </div>
                 </div>
+                <input type="hidden" id="jenis" name="jenis" value=""> 
             </div>
             <div class="modal-footer">
               <button type="button" id="btnTambahDataRetur" class="btn btn-primary">Tambah</button>
@@ -131,6 +133,12 @@
 
     });
 
+    $('#selectKebijakanRetur').on('change', function() {
+
+        $('#kebijakan_retur').val($('#selectKebijakanRetur :selected').val());
+
+    });
+
     $('#selectNotaBeli').on('change', function() {
 
         $('#datepickerTglNotaBeli').val( $('#selectNotaBeli :selected').attr("data-tanggal") );
@@ -141,7 +149,23 @@
 
         $('#datepickerTglJatuhTempoNotaBeli').val( $('#selectNotaBeli :selected').attr("data-jatuh-tempo") );
 
+        let jenisSupplier = $('#selectNotaBeli :selected').attr("data-jenis-supplier");
+
+        if(jenisSupplier == "Perusahaan")
+        {
+            $('#selectKebijakanRetur').attr("disabled", false);
+            $('#jenis').val('Pembelian');
+        }
+        else 
+        {
+            $('#jenis').val('Konsinyasi');
+            $('#selectKebijakanRetur').attr("disabled", true);
+            $('#selectKebijakanRetur').val("Potong Dana Pembelian");
+            $('#kebijakan_retur').val("Potong Dana Pembelian");
+        }
+
         $('#statusPembelian').val( $('#selectNotaBeli :selected').attr("data-status-pembelian") );
+
 
     });
 

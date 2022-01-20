@@ -122,7 +122,7 @@ class AdminKonsinyasiController extends Controller
                         ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
                         ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
                         ->where('konsinyasi.id', '=', $id)
-                        ->get(); 
+                        ->get();
 
         $detailKonsinyasi = array();
 
@@ -137,6 +137,18 @@ class AdminKonsinyasiController extends Controller
                             ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
                             ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
                             ->get();
+
+            
+            // $barangRetur = DB::table('retur_pembelian')
+            //                 ->where('kebijakan_retur', '=', 'Potong Dana Pembelian')
+            //                 ->whereBetween('tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
+            //                 ->join('detail_retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')
+            //                 ->where('retur_pembelian.konsinyasi_id', '=', $id)
+            //                 ->get();
+
+            // dd($barangRetur);
+
+            dd($penjualan);
 
             $object = new \stdClass();
 

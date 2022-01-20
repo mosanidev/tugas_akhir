@@ -77,6 +77,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                          {{dd($detail_konsinyasi)}}
                           @if(isset($detail_konsinyasi))
                             @php $num = 1; @endphp
                             @foreach ($detail_konsinyasi as $item)
