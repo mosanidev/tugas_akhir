@@ -115,45 +115,69 @@ class AdminKonsinyasiController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $id)
-    {
+    {                
         $konsinyasi = DB::table('konsinyasi')
-                        ->select('konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier')
+                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier', 'barang.harga_jual', 'barang.diskon_potongan_harga')
                         ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
                         ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
+                        ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
                         ->where('konsinyasi.id', '=', $id)
-                        ->get();    
+                        ->get(); 
 
         $detailKonsinyasi = array();
 
         for($i = 0; $i < count($konsinyasi); $i++)
         {
-            $penjualan = DB::table('penjualan')
-                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'penjualan.tanggal', 'detail_penjualan.barang_id', 'detail_penjualan.kuantitas', 'barang.harga_jual', 'barang.diskon_potongan_harga')
-                        ->where('barang_has_kadaluarsa.barang_id', '=', $konsinyasi[$i]->barang_id)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '=', $konsinyasi[$i]->tanggal_kadaluarsa)
-                        ->whereBetween('penjualan.tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
-                        ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
-                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
-                        ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
-                        ->get();
+            $penjualan = DB::table('detail_penjualan')
+                            ->select('penjualan.tanggal', 'detail_penjualan.barang_id', DB::raw('sum(detail_penjualan.kuantitas) as kuantitas'))
+                            ->where('barang_has_kadaluarsa.barang_id', '=', $konsinyasi[$i]->barang_id)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '=', $konsinyasi[$i]->tanggal_kadaluarsa)
+                            ->whereBetween('penjualan.tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
+                            ->join('penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
+                            ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
+                            ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
+                            ->get();
 
-            for($x = 0; $x < count($penjualan); $x++)
-            {
-                $object = new \stdClass();
+            $object = new \stdClass();
+
+            if(count($penjualan) == 0)
+            {  
+
                 $object->barang_id = $konsinyasi[$i]->barang_id;
-                $object->barang_nama = $penjualan[$x]->barang_nama;
-                $object->barang_harga_jual = $penjualan[$x]->harga_jual;
-                $object->barang_diskon = $penjualan[$x]->diskon_potongan_harga;
+                $object->barang_nama = $konsinyasi[$i]->barang_nama;
+                $object->barang_harga_jual = $konsinyasi[$i]->harga_jual;
+                $object->barang_diskon = $konsinyasi[$i]->diskon_potongan_harga;
                 $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
-                $object->terjual = $penjualan[$x]->kuantitas;
-                $object->sisa = $konsinyasi[$i]->jumlah_titip-$penjualan[$x]->kuantitas;
+                $object->terjual = 0;
+                $object->retur = 0;
+                $object->sisa = $konsinyasi[$i]->jumlah_titip;
                 $object->komisi = $konsinyasi[$i]->komisi;
                 $object->hutang = $konsinyasi[$i]->hutang;
-                $object->subtotal_komisi = $konsinyasi[$i]->komisi*$object->sisa;
-                $object->subtotal_hutang = $konsinyasi[$i]->hutang*$object->sisa;
+                $object->subtotal_komisi = 0;
+                $object->subtotal_hutang = 0;
 
-                array_push($detailKonsinyasi, $object);
             }
+            else 
+            {
+                for($x = 0; $x < count($penjualan); $x++)
+                {
+                    $object->barang_id = $konsinyasi[$i]->barang_id;
+                    $object->barang_nama = $konsinyasi[$i]->barang_nama;
+                    $object->barang_harga_jual = $konsinyasi[$i]->harga_jual;
+                    $object->barang_diskon = $konsinyasi[$i]->diskon_potongan_harga;
+                    $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
+                    $object->terjual = $penjualan[$x]->kuantitas;
+                    $object->retur = 0;
+                    $object->sisa = $konsinyasi[$i]->jumlah_titip-$penjualan[$x]->kuantitas;
+                    $object->komisi = $konsinyasi[$i]->komisi;
+                    $object->hutang = $konsinyasi[$i]->hutang;
+                    $object->subtotal_komisi = $konsinyasi[$i]->komisi*$object->sisa;
+                    $object->subtotal_hutang = $konsinyasi[$i]->hutang*$object->terjual;
+                }
+            }
+
+            array_push($detailKonsinyasi, $object);
+ 
         }
 
         return view('admin.konsinyasi.detail', ['konsinyasi' => $konsinyasi, 'detail_konsinyasi' => $detailKonsinyasi]);

@@ -71,9 +71,9 @@
                               <th>Barang</th>
                               <th>Jumlah Titip</th>
                               <th>Terjual</th>
+                              <th>Retur</th>
                               <th>Sisa</th>
-                              <th>Komisi</th>
-                              <th>Subtotal Komisi</th>
+                              <th>Yang harus dibayar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,9 +85,9 @@
                                   <td class="barangKonsinyasiDiTabel">{{ $item->barang_nama }}</td>
                                   <td>{{ $item->jumlah_titip }}</td>
                                   <td>{{ $item->terjual }}</td>
+                                  <td>{{ $item->retur }}</td>
                                   <td>{{ $item->sisa }}</td>
-                                  <td>{{ "Rp " . number_format($item->komisi,0,',','.') }}</td>
-                                  <td>{{ "Rp " . number_format($item->subtotal_komisi,0,',','.') }}</td>
+                                  <td>{{ "Rp " . number_format($item->subtotal_hutang,0,',','.') }}</td>
                                 </tr>
                             @endforeach
                           @endif
