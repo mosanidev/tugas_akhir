@@ -216,6 +216,10 @@
 
       $('#lunasiTotalHutang').val(totalHutang);
 
+      let arrDetailKonsinyasi  = <?php echo json_encode($detail_konsinyasi); ?>;
+
+      $('#arrLunasi').val(JSON.stringify(arrDetailKonsinyasi));
+
       $('#formLunasi').attr('action', '/admin/konsinyasi/lunasi/'+id);
 
 
