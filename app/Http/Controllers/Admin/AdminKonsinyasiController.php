@@ -35,10 +35,6 @@ class AdminKonsinyasiController extends Controller
                                 ->select(DB::raw('max(nomor_nota) as maxNomorNota'))
                                 ->get();
 
-        // $generateNomorNota = isset($generateNomorNota[0]->maxNomorNota) ? $generateNomorNota[0]->maxNomorNota + 1 : 01;
-
-        // $generateNomorNota = 'NK'.\Carbon\Carbon::now()->format('dmy').sprintf("%03s", $generateNomorNota);
-
         return view('admin.konsinyasi.tambah', ['supplier' => $supplier, 'barang_konsinyasi' => $barang_konsinyasi]);
     }
 
@@ -117,10 +113,11 @@ class AdminKonsinyasiController extends Controller
     public function show(Request $request, $id)
     {                
         $konsinyasi = DB::table('konsinyasi')
-                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier', 'barang.harga_jual', 'barang.diskon_potongan_harga')
+                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier', 'barang.harga_jual', 'barang.diskon_potongan_harga', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
                         ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
                         ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
                         ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
+                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
                         ->where('konsinyasi.id', '=', $id)
                         ->get();
 
@@ -137,24 +134,20 @@ class AdminKonsinyasiController extends Controller
                             ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
                             ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
                             ->get();
-
             
-            // $barangRetur = DB::table('retur_pembelian')
-            //                 ->where('kebijakan_retur', '=', 'Potong Dana Pembelian')
-            //                 ->whereBetween('tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
-            //                 ->join('detail_retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')
-            //                 ->where('retur_pembelian.konsinyasi_id', '=', $id)
-            //                 ->get();
-
-            // dd($barangRetur);
-
-            dd($penjualan);
+            $barangRetur = DB::table('retur_pembelian')
+                            ->select('barang_retur', DB::raw("sum(kuantitas_barang_retur) as jumlah_retur"))
+                            ->where('kebijakan_retur', '=', 'Potong Dana Pembelian')
+                            ->whereBetween('tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
+                            ->join('detail_retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')
+                            ->where('retur_pembelian.konsinyasi_id', '=', $id)
+                            ->groupBy('barang_retur')
+                            ->get();
 
             $object = new \stdClass();
 
-            if(count($penjualan) == 0)
+            if(count($penjualan) > 0 && $penjualan[0]->tanggal == null)
             {  
-
                 $object->barang_id = $konsinyasi[$i]->barang_id;
                 $object->barang_nama = $konsinyasi[$i]->barang_nama;
                 $object->barang_harga_jual = $konsinyasi[$i]->harga_jual;
@@ -165,9 +158,9 @@ class AdminKonsinyasiController extends Controller
                 $object->sisa = $konsinyasi[$i]->jumlah_titip;
                 $object->komisi = $konsinyasi[$i]->komisi;
                 $object->hutang = $konsinyasi[$i]->hutang;
+                $object->jumlah_stok = $konsinyasi[$i]->jumlah_stok;
                 $object->subtotal_komisi = 0;
                 $object->subtotal_hutang = 0;
-
             }
             else 
             {
@@ -179,12 +172,33 @@ class AdminKonsinyasiController extends Controller
                     $object->barang_diskon = $konsinyasi[$i]->diskon_potongan_harga;
                     $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
                     $object->terjual = $penjualan[$x]->kuantitas;
-                    $object->retur = 0;
-                    $object->sisa = $konsinyasi[$i]->jumlah_titip-$penjualan[$x]->kuantitas;
                     $object->komisi = $konsinyasi[$i]->komisi;
                     $object->hutang = $konsinyasi[$i]->hutang;
-                    $object->subtotal_komisi = $konsinyasi[$i]->komisi*$object->sisa;
-                    $object->subtotal_hutang = $konsinyasi[$i]->hutang*$object->terjual;
+
+                    if(count($barangRetur) > 0)
+                    {
+                        foreach($barangRetur as $item)
+                        {
+                            if($konsinyasi[$i]->barang_id == $item->barang_retur)
+                            {
+                                $object->retur = $item->jumlah_retur;
+                            }
+                            else 
+                            {
+                                $object->retur = 0;
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        $object->retur = 0;
+                    }
+
+                    $object->sisa = $object->jumlah_titip-$object->terjual-$object->retur;
+                    $object->jumlah_stok = $konsinyasi[$i]->jumlah_stok;
+                    $object->subtotal_komisi = $object->komisi*$object->sisa;
+                    $object->subtotal_hutang = $object->hutang*$object->terjual;
+                    
                 }
             }
 

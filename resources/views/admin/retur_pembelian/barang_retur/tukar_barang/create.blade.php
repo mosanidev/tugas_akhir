@@ -65,7 +65,7 @@
                         </div>
                         <br>
                         <div class="row">
-                            <label class="col-sm-4 col-form-label">Jumlah Stok</label>
+                            <label class="col-sm-4 col-form-label">Jumlah Stok Barang yang Dapat Diretur</label>
                             <div class="col-sm-8">
                                 <input type="number" class="form-control" min="0" id="jumlahStokBarang" readonly>
                             </div>

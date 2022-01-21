@@ -13,45 +13,88 @@
 </section>
 <div class="container-fluid">
 
-    <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangKonsinyasi" id="btnTambah">Tambah</button>
-
     <div class="px-2 py-3">
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Nomor Nota</label>
-            <div class="col-sm-9">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Nomor Nota</label>
+            <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->nomor_nota }}</p>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Tanggal Titip</label>
-            <div class="col-sm-9">
+            <label class="col-sm-5 col-form-label">Tanggal Titip</label>
+            <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->tanggal_titip }}</p>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Tanggal Jatuh Tempo</label>
-            <div class="col-sm-9">
+            <label class="col-sm-5 col-form-label">Tanggal Jatuh Tempo</label>
+            <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->tanggal_jatuh_tempo }}</p>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Supplier</label>
-            <div class="col-sm-9">
+            <label class="col-sm-5 col-form-label">Supplier</label>
+            <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->nama_supplier }}</p>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Metode Pembayaran</label>
-            <div class="col-sm-9">
+            <label class="col-sm-5 col-form-label">Metode Pembayaran</label>
+            <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->metode_pembayaran }}</p>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Status</label>
-            <div class="col-sm-9">
+            <label class="col-sm-5 col-form-label">Status</label>
+            <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->status }}</p>
             </div>
           </div>
+        </div>
+        <div class="col-6">
+          <div class="mx-auto my-5 p-3 border">
+            <p class="text-center"><strong>Pelunasan</strong></p> 
+            <div class="row">
+              <div class="col-6">
+                Total yang harus dibayar
+              </div>
+              <div class="col-6">
+                <p id="totalHutang"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                Bukti Bayar
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col-12">
+                <div class="form-group">
+                  <div class="input-group">
+                      <div class="custom-file">
+                          <input type="file" class="custom-file-input" name="foto" accept="image/png, image/jpg, image/jpeg" id="buktiBayar" onchange="image_select()">
+                          <label class="custom-file-label" id="image_upload_label">Choose file</label>
+                      </div>
+                      <div class="input-group-append">
+                          <span class="input-group-text">Upload</span>
+                      </div>
+                  </div>
+                  <p class="text-danger">* Opsional</p>
+                </div> 
+              </div>
+            </div>
+            <div class="row mt-1">
+              <button class="btn btn-block w-25 mx-auto btn-success">Lunasi</button>
+            </div>
+              
+            </div>
+          </div>
+
+        </div>
+      </div>
+        
           {{-- <div class="form-group row">
             <div class="col-12">
               Anda belum melunasi transaksi konsinyasi, Silahkan lunasi dengan mengklik tombol berikut 
@@ -73,11 +116,12 @@
                               <th>Terjual</th>
                               <th>Retur</th>
                               <th>Sisa</th>
+                              <th>Stok Saat Ini</th>
                               <th>Yang harus dibayar</th>
                             </tr>
                         </thead>
                         <tbody>
-                          {{dd($detail_konsinyasi)}}
+                          {{-- {{dd($detail_konsinyasi)}} --}}
                           @if(isset($detail_konsinyasi))
                             @php $num = 1; @endphp
                             @foreach ($detail_konsinyasi as $item)
@@ -88,7 +132,8 @@
                                   <td>{{ $item->terjual }}</td>
                                   <td>{{ $item->retur }}</td>
                                   <td>{{ $item->sisa }}</td>
-                                  <td>{{ "Rp " . number_format($item->subtotal_hutang,0,',','.') }}</td>
+                                  <td>{{ $item->jumlah_stok }}</td>
+                                  <td class="subtotalHutang">{{ "Rp " . number_format($item->subtotal_hutang,0,',','.') }}</td>
                                 </tr>
                             @endforeach
                           @endif
@@ -170,6 +215,12 @@
     });
 
 
+    let totalHutang = 0;
+    $('.subtotalHutang').each(function( index ) {
+      totalHutang += parseInt(convertRupiahToAngka($('.subtotalHutang')[index].innerText));
+    });
+
+    $('#totalHutang').html(convertAngkaToRupiah(totalHutang));
 
   });
 

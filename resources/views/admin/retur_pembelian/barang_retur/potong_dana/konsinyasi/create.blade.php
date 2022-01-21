@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Jumlah Stok Barang</p>
+                    <p class="col-sm-4 col-form-label">Jumlah Stok Barang yang Dapat Diretur</p>
                     <div class="col-sm-8">
                         <input type="number" id="jumlahStokBarang" min="1" class="form-control" readonly>
                     </div>
