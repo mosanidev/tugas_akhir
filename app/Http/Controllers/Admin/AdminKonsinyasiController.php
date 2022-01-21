@@ -137,13 +137,16 @@ class AdminKonsinyasiController extends Controller
             
             $barangRetur = DB::table('retur_pembelian')
                             ->select('barang_retur', DB::raw("sum(kuantitas_barang_retur) as jumlah_retur"))
-                            ->where('kebijakan_retur', '=', 'Potong Dana Pembelian')
+                            // ->where('kebijakan_retur', '=', 'Retur Sisa Barang Konsinyasi')
+                            // ->where('kebijakan_retur', '=', 'Potong Dana Pembelian')
                             ->whereBetween('tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
                             ->join('detail_retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')
                             ->where('retur_pembelian.konsinyasi_id', '=', $id)
                             ->groupBy('barang_retur')
                             ->get();
 
+            // dd($konsinyasi);
+            
             $object = new \stdClass();
 
             if(count($penjualan) > 0 && $penjualan[0]->tanggal == null)
@@ -155,7 +158,27 @@ class AdminKonsinyasiController extends Controller
                 $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
                 $object->terjual = 0;
                 $object->retur = 0;
-                $object->sisa = $konsinyasi[$i]->jumlah_titip;
+
+                if(count($barangRetur) > 0)
+                {
+                    foreach($barangRetur as $item)
+                    {
+                        if($konsinyasi[$i]->barang_id == $item->barang_retur)
+                        {
+                            $object->retur = $item->jumlah_retur;
+                        }
+                        // else 
+                        // {
+                        //     $object->retur = 0;
+                        // }
+                    }
+                }
+                else 
+                {
+                    $object->retur = 0;
+                }
+
+                $object->sisa = $object->jumlah_titip-$object->terjual-$object->retur;
                 $object->komisi = $konsinyasi[$i]->komisi;
                 $object->hutang = $konsinyasi[$i]->hutang;
                 $object->jumlah_stok = $konsinyasi[$i]->jumlah_stok;
@@ -183,10 +206,10 @@ class AdminKonsinyasiController extends Controller
                             {
                                 $object->retur = $item->jumlah_retur;
                             }
-                            else 
-                            {
-                                $object->retur = 0;
-                            }
+                            // else 
+                            // {
+                            //     $object->retur = 0;
+                            // }
                         }
                     }
                     else 
@@ -233,89 +256,48 @@ class AdminKonsinyasiController extends Controller
         }
     }
 
-    public function lunasi($id)
+    public function lunasi(Request $request, $id)
     {
-        // cari penjualan selama tanggal buat konsinyasi hingga jatuh tempo
-        $konsinyasi = DB::table('konsinyasi')
-                        ->select('konsinyasi.*', 'detail_konsinyasi.*')
-                        ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
-                        ->where('id', '=', $id)
-                        ->get();    
-                      
+        $detail_konsinyasi = DB::table('detail_konsinyasi')
+                                ->select('barang_id', 'tanggal_kadaluarsa', 'jumlah_titip', 'hutang')
+                                ->where('konsinyasi_id', '=', $id)
+                                ->get();
 
-        $dataBarang = array();
+        $idReturPembelian = DB::table('retur_pembelian')
+                                ->insertGetId([
+                                    'tanggal' => \Carbon\Carbon::now()->format('Y-m-d'),
+                                    'nomor_nota' => null,
+                                    'users_id' => auth()->user()->id,
+                                    'konsinyasi_id' => $id,
+                                    'kebijakan_retur' => 'Retur Sisa Barang Konsinyasi',
+                                    'total' => $request->total_hutang
+                                ]);
 
-        for($i = 0; $i < count($konsinyasi); $i++)
+        for($i = 0; $i < count($detail_konsinyasi); $i++)
         {
-            $penjualan = DB::table('penjualan')
-                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'penjualan.tanggal', 'detail_penjualan.barang_id', 'detail_penjualan.kuantitas')
-                        ->where('barang_has_kadaluarsa.barang_id', '=', $konsinyasi[$i]->barang_id)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '=', $konsinyasi[$i]->tanggal_kadaluarsa)
-                        ->whereBetween('penjualan.tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
-                        ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
-                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
-                        ->join('barang', 'barang.id', '=', 'detail_penjualan.barang_id')
-                        ->get();
+            $updateStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $detail_konsinyasi[$i]->barang_id)
+                                            ->where('tanggal_kadaluarsa', '=', $detail_konsinyasi[$i]->tanggal_kadaluarsa)
+                                            ->decrement('jumlah_stok', $detail_konsinyasi[$i]->jumlah_titip);
 
-            for($x = 0; $x < count($penjualan); $x++)
-            {
-                $object = new \stdClass();
-                $object->barang_id = $konsinyasi[$i]->barang_id;
-                $object->barang_nama = $penjualan[$x]->barang_nama;
-                $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
-                $object->terjual = $penjualan[$x]->kuantitas;
-                $object->sisa = $konsinyasi[$i]->jumlah_titip-$penjualan[$x]->kuantitas;
-                $object->komisi = $konsinyasi[$i]->komisi;
-                $object->hutang = $konsinyasi[$i]->hutang;
-                $object->subtotal_komisi = $konsinyasi[$i]->komisi*$object->sisa;
-                $object->subtotal_hutang = $konsinyasi[$i]->hutang*$object->sisa;
-
-                array_push($dataBarang, $object);
-            }
+            $insertDetailReturPembelian = DB::table('detail_retur_pembelian')
+                                            ->insert([
+                                                'retur_pembelian_id' => $idReturPembelian,
+                                                'barang_retur' => $detail_konsinyasi[$i]->barang_id,
+                                                'tanggal_kadaluarsa_barang_retur' => $detail_konsinyasi[$i]->tanggal_kadaluarsa,
+                                                'kuantitas_barang_retur' => $detail_konsinyasi[$i]->jumlah_titip,
+                                                'subtotal' => $detail_konsinyasi[$i]->jumlah_titip*$detail_konsinyasi[$i]->hutang,
+                                                'keterangan' => 'Sisa jumlah barang konsinyasi'
+                                            ]);
         }
 
-        dd($dataBarang);
-
-        // $detail_konsinyasi = DB::table('detail_konsinyasi')
-        //                         ->select('barang_id', 'tanggal_kadaluarsa', 'jumlah_titip')
-        //                         ->where('konsinyasi_id', '=', $id)
-        //                         ->get();
-
-        // $idReturPembelian = DB::table('retur_pembelian')
-        //                         ->insertGetId([
-        //                             'tanggal' => Carbon\Carbon::now()->format('Y-m-d'),
-        //                             'nomor_nota' => null,
-        //                             'users_id' => auth()->user()->id,
-        //                             'konsinyasi_id' => $id,
-        //                             'kebijakan_retur' => 'Retur Sisa Barang Konsinyasi',
-        //                             'total' => $request->total_hutang
-        //                         ]);
-
-        // for($i = 0; $i < count($detail_konsinyasi); $i++)
-        // {
-        //     $updateStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
-        //                                     ->where('barang_id', '=', $detail_konsinyasi[$i]->barang_id)
-        //                                     ->where('tanggal_kadaluarsa', '=', $detail_konsinyasi[$i]->tanggal_kadaluarsa)
-        //                                     ->decrement('jumlah_stok', $detail_konsinyasi[$i]->jumlah_titip);
-
-        //     $insertDetailReturPembelian = DB::table('detail_retur_pembelian')
-        //                                     ->insert([
-        //                                         'retur_pembelian_id' => $idReturPembelian,
-        //                                         'barang_retur' => $detail_konsinyasi[$i]->barang_id,
-        //                                         'tanggal_kadaluarsa_barang_retur' => $detail_konsinyasi[$i]->tanggal_kadaluarsa,
-        //                                         'kuantitas_barang_retur' => $detail_konsinyasi[$i]->jumlah_titip,
-        //                                         'subtotal' => 0,
-        //                                         'keterangan' => 'Sisa jumlah barang konsinyasi'
-        //                                     ]);
-        // }
-
-        // $updateKonsinyasi = DB::table('konsinyasi')
-        //                         ->where('id', '=', $id)
-        //                         ->update([
-        //                             'status' => 'Sudah Lunas'
-        //                         ]);
+        $updateKonsinyasi = DB::table('konsinyasi')
+                                ->where('id', '=', $id)
+                                ->update([
+                                    'status' => 'Sudah Lunas'
+                                ]);
         
-        // return redirect()->back()->with(['success' => 'Konsinyasi berhasil dilunasi']);
+        return redirect()->route('konsinyasi.index')->with(['success' => 'Konsinyasi berhasil dilunasi']);
     }
 
     /**

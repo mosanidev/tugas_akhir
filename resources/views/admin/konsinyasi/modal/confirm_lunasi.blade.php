@@ -10,7 +10,7 @@
         <div class="modal-body">
           <form class="d-inline" action="" id="formLunasi" method="GET">
             {{-- @csrf --}}
-            <input type="text" value="" id="totalHutang">
+            <input type="text" value="" name="total_hutang" id="lunasiTotalHutang">
             <p class="text-justify">Apakah anda yakin ingin melunasi transaksi konsinyasi ini ? sisa barang konsinyasi akan dikembalikan sepenuhnya ke supplier dan tercatat sebagai retur pembelian.</p>
         </div>
         <div class="modal-footer justify-content-between">

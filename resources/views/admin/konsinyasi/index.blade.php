@@ -60,8 +60,6 @@
     </div>
 </div>
 
-@include('admin.konsinyasi.modal.confirm_lunasi')
-
 <!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <!-- Toastr -->

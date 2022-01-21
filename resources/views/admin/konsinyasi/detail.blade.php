@@ -13,6 +13,8 @@
 </section>
 <div class="container-fluid">
 
+    <input type="hidden" value="{{ $konsinyasi[0]->id }}" id="konsinyasi_id">
+
     <div class="px-2 py-3">
       <div class="row">
         <div class="col-6">
@@ -86,7 +88,7 @@
               </div>
             </div>
             <div class="row mt-1">
-              <button class="btn btn-block w-25 mx-auto btn-success">Lunasi</button>
+              <button class="btn btn-block w-25 mx-auto btn-success"  data-toggle="modal" data-target="#modalLunasiKonsinyasi" id="btnLunasi">Lunasi</button>
             </div>
               
             </div>
@@ -94,12 +96,6 @@
 
         </div>
       </div>
-        
-          {{-- <div class="form-group row">
-            <div class="col-12">
-              Anda belum melunasi transaksi konsinyasi, Silahkan lunasi dengan mengklik tombol berikut 
-            </div>
-          </div> --}}
 
         <div class="card shadow my-4">
             <div class="card-header py-3">
@@ -142,20 +138,12 @@
                 </div>
             </div>
         </div>
-        
-        {{-- <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Status</label>
-          <div class="col-sm-9">
-            <p class="mt-2">{{ $konsinyasi[0]->status }}</p>
-          </div>
-        </div> --}}
+
 </div>
 
+@include('admin.konsinyasi.modal.confirm_lunasi')
 
-
-<!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
 @if(session('errors'))
@@ -221,6 +209,17 @@
     });
 
     $('#totalHutang').html(convertAngkaToRupiah(totalHutang));
+
+    $('#btnLunasi').on('click', function() {
+
+      let id = $('#konsinyasi_id').val();
+
+      $('#lunasiTotalHutang').val(totalHutang);
+
+      $('#formLunasi').attr('action', '/admin/konsinyasi/lunasi/'+id);
+
+
+    });
 
   });
 
