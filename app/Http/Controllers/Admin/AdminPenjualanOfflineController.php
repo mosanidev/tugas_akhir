@@ -16,7 +16,11 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function index()
     {
-        $penjualanOffline = DB::table('penjualan')->select('penjualan.*', 'pembayaran.metode_pembayaran as metode_pembayaran')->where('jenis', '=', 'Offline')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->get();
+        $penjualanOffline = DB::table('penjualan')
+                                ->select('penjualan.*', 'pembayaran.metode_pembayaran as metode_pembayaran')
+                                ->where('jenis', '=', 'Offline')
+                                ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                                ->get();
 
         return view ('admin.penjualan_offline.index', ['penjualan'=>$penjualanOffline]);
     }
@@ -33,13 +37,6 @@ class AdminPenjualanOfflineController extends Controller
         $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
 
         // mengambil tanggal kadaluarsa terlama 
-        // $barang = DB::table('barang')
-        //             ->select('barang.*', DB::raw('max(barang_has_kadaluarsa.tanggal_kadaluarsa) as tanggal_kadaluarsa'), DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-        //             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
-        //             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
-        //             ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
-        //             ->get();
-
         $barang = DB::table('barang')
                     ->select('barang.*', DB::raw('max(barang_has_kadaluarsa.tanggal_kadaluarsa) as tanggal_kadaluarsa'), DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                     ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)

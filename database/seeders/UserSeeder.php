@@ -68,5 +68,18 @@ class UserSeeder extends Seeder
             'tanggal_lahir' => '1992-01-20',
             'password' => Hash::make('kopkarubaya')
          ]);
+
+         DB::table('users')->insert([
+            'id' => 5,
+            'nama_depan' => 'Anggota',
+            'nama_belakang' => 'Kopkar',
+            'email' => 'anggota@kopkar.com', 
+            'jenis_kelamin' => 'Perempuan',
+            'nomor_telepon' => '087654392819', 
+            'jenis' => 'Anggota_Kopkar',
+            'status_verifikasi_anggota' => 'Verified',
+            'tanggal_lahir' => '1992-03-07',
+            'password' => Hash::make('kopkarubaya')
+         ]);
     }
 }

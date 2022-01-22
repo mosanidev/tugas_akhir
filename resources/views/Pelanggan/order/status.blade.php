@@ -78,7 +78,7 @@
                 </div>
             </div>
         @endif
-        <a href="{{ route('order') }}" class="btn btn-link float-left">Lihat Detail Pesanan</a>
+        <a href="{{ route('order') }}" class="btn btn-link float-left">Lihat Daftar Pesanan</a>
         <a href="{{ route('home') }}" class="btn btn-link float-right">Kembali ke Beranda</a>
     </div>
     

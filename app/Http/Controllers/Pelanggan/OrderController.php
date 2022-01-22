@@ -143,13 +143,56 @@ class OrderController extends Controller
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            $insertNotif = DB::table('notifikasi')
+            if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            {
+                $insertNotif = DB::table('notifikasi')
                         ->insert([
                             'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
                             'status' => 'Belum dilihat'
                         ]);
+            }
+            else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if ($penjualan[0]->status == "Pesanan dibatalkan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
 
             return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]);
             // return view('pelanggan.order.status', ['status' => $status, 'batasan_waktu' => $batasan_waktu]);
@@ -289,13 +332,56 @@ class OrderController extends Controller
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            $insertNotif = DB::table('notifikasi')
+            if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            {
+                $insertNotif = DB::table('notifikasi')
                         ->insert([
                             'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
                             'status' => 'Belum dilihat'
                         ]);
+            }
+            else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if ($penjualan[0]->status == "Pesanan dibatalkan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
             
             return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]);
 
@@ -430,13 +516,56 @@ class OrderController extends Controller
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            $insertNotif = DB::table('notifikasi')
+            if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            {
+                $insertNotif = DB::table('notifikasi')
                         ->insert([
                             'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
                             'status' => 'Belum dilihat'
                         ]);
+            }
+            else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
+            else if ($penjualan[0]->status == "Pesanan dibatalkan")
+            {
+                $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
+                            'penjualan_id' => $penjualan[0]->penjualan_id,
+                            'users_id' => $penjualan[0]->users_id,
+                            'status' => 'Belum dilihat'
+                        ]);
+            }
             
             return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]);
 
@@ -501,7 +630,9 @@ class OrderController extends Controller
 
     public function multipleShipmentNew(Request $request)
     {
-        $update_cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->update(['alamat_pengiriman_id' => $request->alamat_tujuan_pengiriman]);
+        $update_cart = DB::table('cart')
+                            ->where('users_id', '=', auth()->user()->id)
+                            ->update(['alamat_pengiriman_id' => $request->alamat_tujuan_pengiriman]);
 
         return redirect('order/shipment/multiple');
     }
@@ -509,7 +640,7 @@ class OrderController extends Controller
     public function multipleShipment()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'alamat_pengiriman.*')
+                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok) as barang_stok"), 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'alamat_pengiriman.*')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('alamat_pengiriman', 'cart.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')

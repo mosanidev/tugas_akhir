@@ -74,7 +74,6 @@
                     type: 'GET',
                     url: '/order/show/'+id,   
                     success:function(data) {
-                        // $('#modalLoading').modal('toggle');
 
                         $('#nomorNota').html("Nomor Nota #" + data.transaksi[0].nomor_nota);
 
@@ -140,6 +139,20 @@
                                                         <p>` + metodePembayaran + `</p>
                                                     </div>
                                                 </div>`;
+
+                                                if(data.transaksi[0].nomor_rekening != null)
+                                                {
+                                                    infoTransaksi += `<div class="row">
+                                                        <div class="col-4 ml-2">
+                                                                Nomor Rekening Tujuan
+                                                            </div>
+                                                            <div class="col-5">
+                                                                <p>` + data.transaksi[0].nomor_rekening + `</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>`;
+                                                }
+                                                
                         }
                         else {
                             
@@ -175,6 +188,19 @@
                                                     <p>` + metodePembayaran + `</p>
                                                 </div>
                                             </div>`;
+
+                                            if(data.transaksi[0].nomor_rekening != null)
+                                            {
+                                                infoTransaksi += `<div class="row">
+                                                    <div class="col-4 ml-2">
+                                                            Nomor Rekening Tujuan
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <p>` + data.transaksi[0].nomor_rekening + `</p>
+                                                        </div>
+                                                    </div>
+                                                </div>`;
+                                            }
                         }
 
                         $('.infoTransaksi').html(infoTransaksi);
@@ -185,8 +211,6 @@
 
                         if(data.transaksi[0].metode_transaksi == "Ambil di toko")
                         {
-                            
-                            console.log(data);
                             for(let i=0; i < data.barang.length; i++)
                             {
                                 rowBarang += `<div class="row">
@@ -215,7 +239,6 @@
                         }
                         else if(data.transaksi[0].metode_transaksi == "Dikirim ke alamat") // dikirim ke alamat
                         {   
-                            console.log("tes");
                             $('.rowInfoAlamatPengiriman').html(`<h5>Alamat Pengiriman</h5>
                                                             <div class="row">
                                                                 <div class="col-12">
@@ -247,7 +270,7 @@
                                                                     Estimasi pengiriman tiba ` + estimasiTiba + `
                                                                 </div>
                                                                 <div class="col-12">
-                                                                    Ongkos kirim ` + convertAngkaToRupiah(data.barang[i].tarif) + `
+                                                                    Ongkos kirim ` + convertAngkaToRupiah(data.barang[0].tarif) + `
                                                                 </div>
                                                             </div>
                                                             <hr>`);                                
@@ -280,8 +303,6 @@
                         }
                         else if (data.transaksi[0].metode_transaksi == "Dikirim ke berbagai alamat") // dikirim ke berbagai alamat
                         {
-                            console.log(data);
-
                             let subTotalProduk = 0;
 
                             let totalTarif = 0;

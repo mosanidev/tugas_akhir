@@ -15,7 +15,16 @@ class AdminPengirimanController extends Controller
      */
     public function index()
     {
-        $pengiriman = DB::table('detail_penjualan')->get('pengiriman.*', 'alamat_pengiriman.*')->join('alamat_pengirman', 'pengiriman.');
+        $pengiriman = DB::table('detail_penjualan')
+                        ->select('detail_penjualan.*', 'penjualan.*', 'pengiriman.*', 'alamat_pengiriman.*')
+                        ->whereNotNull('detail_penjualan.pengiriman_id')
+                        ->whereNotNull('detail_penjualan.alamat_pengiriman_id')
+                        ->where('penjualan.status', '=', 'Pesanan sudah dibayar dan sedang disiapkan')
+                        ->whereRaw("penjualan.metode_transaksi is not 'Ambil di toko'")
+                        ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
+                        ->join('pengiriman', 'detail_penjualan.pengiriman_id', '=', 'pengiriman.id')
+                        ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
+                        ->get();
 
         return view('admin.pengiriman.index');
     }

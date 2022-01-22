@@ -8,11 +8,9 @@
       <div class="col-sm-6">
         <h1>Daftar Penjualan</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 <div class="container-fluid">
-
-    {{-- <a href="{{ route('penjualan.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -47,6 +45,11 @@
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>{{ $item->status }}</td>
                           <td>
+                            
+                            @if($item->status == "Pesanan sudah dibayar dan sedang disiapkan" && $item->metode_transaksi == "Ambil di toko")
+                              <button class="btn btn-info mb-2" data-toggle="modal" data-target="#modalUbahStatusPenjualan" id="btnUbahStatus" data-id="{{$item->penjualan_id}}">Ubah Status</button>
+                            @endif
+
                             <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                           </td>
                         </tr>
@@ -58,7 +61,7 @@
     </div>
 </div>
 
-{{-- @include('admin.pembelian.modal.confirm_delete') --}}
+@include('admin.penjualan.modal.modalUbahStatusPenjualan');
 
 
   <!-- Toastr -->
@@ -66,10 +69,28 @@
 
 <script type="text/javascript">
 
-//   if("{{ session('status') }}" != "")
-//   {
-//     toastr.success("{{ session('status') }}");
-//   }
+    $('#btnUbahStatus').on('click', function() {
+
+      let id = $(this).attr("data-id");
+
+      $.ajax({
+        type: "GET",
+        url: "/admin/penjualan/" + id,
+        success: function(data) {
+          
+          const penjualan = data.penjualan[0];
+
+
+          $('#idPenjualan').val(id);
+          $('#nomorNota').val(penjualan.nomor_nota);
+          $('#metodeTransaksi').val(penjualan.metode_transaksi);
+          $('#total').val(convertAngkaToRupiah(penjualan.total));
+          $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
+                                            <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
+        }
+      });
+
+    });
 
 
 </script>

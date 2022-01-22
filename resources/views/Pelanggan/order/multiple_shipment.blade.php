@@ -93,8 +93,6 @@
             let barang = <?php echo json_encode($cart) ?>;
             let alamat = <?php echo json_encode($alamat) ?>;
 
-            console.log(alamat);
-
             let checked = $("#check-box:checked").map(function() {
                     return $(this).val()
                 }).get();

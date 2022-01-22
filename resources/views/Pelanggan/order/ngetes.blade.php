@@ -212,8 +212,6 @@
             let total_berat = 0;
             let arrTotalBerat = <?php echo json_encode($arr_total_berat) ?>;
 
-            console.log(data);
-
             for(let i = 0; i < data.length; i++)
             {
                 arrAlamatPengiriman[i] = document.getElementsByClassName('alamat_dipilih_id')[i].innerText;
@@ -434,12 +432,12 @@
 
                 let selected = $('#selectPengiriman').find(":selected").val();
 
-                if(arr_total_tarif.length > 0 && arr_total_tarif.includes(undefined) || arr_total_tarif.length == 0)
+                if(arr_total_tarif.length < arrAlamatPengiriman.length)
                 {
                     alert("Harap pilih pengiriman terlebih dahulu");
 
                 }
-                else
+                else if(arr_total_tarif.length == arrAlamatPengiriman.length)
                 {
                     loadArray();
 
