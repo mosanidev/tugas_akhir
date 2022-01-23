@@ -62,16 +62,15 @@
 </div>
 
 @include('admin.penjualan.modal.modalUbahStatusPenjualan');
-
-
-  <!-- Toastr -->
-{{-- <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script> --}}
+@include('admin.penjualan.modal.confirm_ubah_status');
 
 <script type="text/javascript">
 
     $('#btnUbahStatus').on('click', function() {
 
       let id = $(this).attr("data-id");
+
+      $('#idPenjualan').val(id);
 
       $.ajax({
         type: "GET",
@@ -80,18 +79,44 @@
           
           const penjualan = data.penjualan[0];
 
-
-          $('#idPenjualan').val(id);
           $('#nomorNota').val(penjualan.nomor_nota);
           $('#metodeTransaksi').val(penjualan.metode_transaksi);
           $('#total').val(convertAngkaToRupiah(penjualan.total));
           $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
                                             <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
         }
+
       });
 
     });
 
+    $('#btnSimpanStatus').on('click', function() {
+
+      let id = $('#idPenjualan').val();
+
+      $('#formUpdate').attr("action", "/admin/penjualan/"+id);
+
+      if($('#selectStatusPenjualan')[0].selectedIndex == 0)
+      {
+        $('#modalUbahStatusPenjualan').modal('toggle');
+      }
+      else 
+      {
+        // tutup modal edit
+        $('#modalUbahStatusPenjualan').modal('toggle');
+
+        // buka modal konfirmasi
+        $('#modalConfirmUbahStatus').modal('toggle');
+
+        $('#nomorNotaText').html($('#nomorNota').val());
+
+        $('#status_penjualan').val($('#selectStatusPenjualan :selected').val());
+
+        $('#statusUbahText').html($('#selectStatusPenjualan :selected').val());
+
+      }
+
+    });
 
 </script>
 @endsection

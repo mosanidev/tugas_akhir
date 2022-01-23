@@ -9,7 +9,7 @@
             </button>
           </div>
           <div class="modal-body">
-                <input type="text" id="idPenjualan" name="id" readonly>
+              <input type="hidden" id="idPenjualan">
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Nomor Nota</p>
                     <div class="col-sm-8">
@@ -35,7 +35,7 @@
 
                         </select>
                     </div>
-                </div> 
+                </div>
             </div>
             <div class="modal-footer">
               <button type="button" id="btnSimpanStatus" class="btn btn-primary">Simpan</button>

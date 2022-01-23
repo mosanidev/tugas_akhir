@@ -99,7 +99,27 @@ class AdminPenjualanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $update = DB::table('penjualan')
+                    ->where('id', '=', $id)
+                    ->update([
+                        'status' => $request->status_penjualan
+                    ]);
+
+        $penjualan = DB::table('penjualan')
+                        ->get();
+
+        if($request->status_penjualan == "Pesanan siap diambil di toko")
+        {
+            $updateNotif = DB::table('notifikasi')
+                            ->where('penjualan_id', '=', $id)
+                            ->update([
+                                'isi' => "Pesanan #".$penjualan[0]->nomor_nota." sudah bisa diambil di toko",
+                                'status' => 'Belum dilihat',
+                                'updated_at' => \Carbon\Carbon::now()
+                            ]);
+        }
+
+        return redirect()->back()->with(['success' => 'Status penjualan berhasil diubah']);
     }
 
     /**

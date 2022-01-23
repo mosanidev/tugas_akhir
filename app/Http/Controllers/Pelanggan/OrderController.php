@@ -138,7 +138,7 @@ class OrderController extends Controller
             $delete_cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->delete();
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
@@ -150,6 +150,8 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
                             'status' => 'Belum dilihat'
                         ]);
             }
@@ -160,6 +162,8 @@ class OrderController extends Controller
                             'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
                             'status' => 'Belum dilihat'
                         ]);
             }
@@ -170,6 +174,8 @@ class OrderController extends Controller
                             'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
                             'status' => 'Belum dilihat'
                         ]);
             }
@@ -180,6 +186,8 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
                             'status' => 'Belum dilihat'
                         ]);
             }
@@ -190,6 +198,8 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
                             'status' => 'Belum dilihat'
                         ]);
             }

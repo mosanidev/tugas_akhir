@@ -10,7 +10,11 @@
             @else
                 @foreach($notifikasi as $item) 
 
-                    <div class="bg-light rounded p-2 mb-3">
+                    @if(\Carbon\Carbon::parse($item->updated_at)->diffInHours(\Carbon\Carbon::now()) < 6)
+                        <div class="bg-light border border-success rounded p-2 mb-3" style="border-width: 2px !important">
+                    @else 
+                        <div class="bg-light rounded p-2 mb-3">
+                    @endif                     
                         <p class="p-3">{{ $item->isi }}</p>
                     </div>
 

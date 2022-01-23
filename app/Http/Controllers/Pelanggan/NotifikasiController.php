@@ -14,7 +14,10 @@ class NotifikasiController extends Controller
 
         $jumlahNotif = DB::table('notifikasi')->select(DB::raw('COUNT(*) as jumlah_notif'))->where('users_id', '=', auth()->user()->id)->get();
 
-        $notifikasi = DB::table('notifikasi')->where('users_id', '=', auth()->user()->id)->get();
+        $notifikasi = DB::table('notifikasi')
+                        ->where('users_id', '=', auth()->user()->id)
+                        ->orderBy('updated_at', 'desc')
+                        ->get();
 
         $kategori = DB::table('kategori_barang')->get();
 
