@@ -72,8 +72,16 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: '/order/show/'+id,   
+                    url: '/order/show/'+id, 
+                    beforeSend: function() {
+
+                        $('.infoTransaksi').html("");
+                        showLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
+
+                    },
                     success:function(data) {
+
+                        closeLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
 
                         $('#nomorNota').html("Nomor Nota #" + data.transaksi[0].nomor_nota);
 

@@ -9,38 +9,40 @@
             </button>
           </div>
           <div class="modal-body">
-              <input type="hidden" id="idPenjualan">
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Nomor Nota</p>
-                    <div class="col-sm-8">
-                        <input type="text" id="nomorNota" class="form-control" readonly>
+              <div id="contentUbahStatusPenjualan">
+                    <input type="hidden" id="idPenjualan">
+                    <div class="form-group row">
+                        <p class="col-sm-4 col-form-label">Nomor Nota</p>
+                        <div class="col-sm-8">
+                            <input type="text" id="nomorNota" class="form-control" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Metode Tranksaksi</p>
-                    <div class="col-sm-8">
-                        <input type="text" id="metodeTransaksi" class="form-control" readonly>
-                    </div>
-                </div> 
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Total</p>
-                    <div class="col-sm-8">
-                        <input type="text" id="total" class="form-control" readonly>
-                    </div>
-                </div> 
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Status Penjualan</p>
-                    <div class="col-sm-8">
-                        <select class="form-control" name="status_penjualan" id="selectStatusPenjualan" required>
+                    <div class="form-group row">
+                        <p class="col-sm-4 col-form-label">Metode Tranksaksi</p>
+                        <div class="col-sm-8">
+                            <input type="text" id="metodeTransaksi" class="form-control" readonly>
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <p class="col-sm-4 col-form-label">Total</p>
+                        <div class="col-sm-8">
+                            <input type="text" id="total" class="form-control" readonly>
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <p class="col-sm-4 col-form-label">Status Penjualan</p>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="status_penjualan" id="selectStatusPenjualan" required>
 
-                        </select>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnSimpanStatus" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" id="btnSimpanStatus" class="btn btn-primary">Simpan</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-            </div>
+              </div>
         </div>
     </div>
 </div>

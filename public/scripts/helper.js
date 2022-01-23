@@ -61,3 +61,27 @@ function tampilkanCustomModal(isi, durasi)
     setInterval($('#customModal').modal('toggle'), durasi);
     
 }   
+
+function showLoader(modalObject, object)
+{
+    $(modalObject).find($('#loader')).remove();
+
+    modalObject.append(
+        `<div class="m-5" id="loader">
+            <div class="text-center">
+                <div class="spinner-border" style="width: 5rem; height: 5rem; color:grey;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>`
+    );
+    
+    $('#loader').show();
+    object.hide();
+}
+
+function closeLoader(modalObject, object) 
+{
+    $(modalObject).find($('#loader')).hide();
+    object.show();
+}

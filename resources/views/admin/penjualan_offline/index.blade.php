@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Daftar Penjualan</h1>
+        <h1>Daftar Penjualan Offline</h1>
       </div>
   </div><!-- /.container-fluid -->
 </section>

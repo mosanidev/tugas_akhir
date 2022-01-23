@@ -106,6 +106,10 @@ class AdminPenjualanController extends Controller
                     ]);
 
         $penjualan = DB::table('penjualan')
+                        ->select('penjualan.nomor_nota', 'detail_penjualan.barang_id as barang_dijual', 'detail_penjualan.kuantitas as jumlah_dijual')
+                        ->where('penjualan.id', '=', $id)
+                        ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
+                        // ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
                         ->get();
 
         if($request->status_penjualan == "Pesanan siap diambil di toko")
@@ -117,6 +121,52 @@ class AdminPenjualanController extends Controller
                                 'status' => 'Belum dilihat',
                                 'updated_at' => \Carbon\Carbon::now()
                             ]);
+        }
+        else if($request->status_penjualan == "Pesanan selesai diambil")
+        {
+            $updateNotif = DB::table('notifikasi')
+                            ->where('penjualan_id', '=', $id)
+                            ->update([
+                                'isi' => "Pesanan #".$penjualan[0]->nomor_nota." selesai diambil",
+                                'status' => 'Belum dilihat',
+                                'updated_at' => \Carbon\Carbon::now()
+                            ]);
+
+            for($i = 0; $i < count($penjualan); $i++)
+            {
+                $qty= $penjualan[$i]->jumlah_dijual*1;
+
+                $dtBarang = DB::table('barang_has_kadaluarsa')
+                                ->where('barang_id', '=', $penjualan[$i]->barang_dijual)
+                                ->where('jumlah_stok','>',0)
+                                ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
+                                ->orderBy('tanggal_kadaluarsa','ASC')
+                                ->get();
+
+                for ($j=0;$j<count($dtBarang);$j++)
+                {
+                    $stok=$dtBarang[$j]->jumlah_stok*1;
+    
+                    if ($qty>0)
+                    {
+                        if ($qty>$stok)
+                        {
+                            $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                            ->where('id','=',$dtBarang[$j]->id)
+                                            ->update(['jumlah_stok' => 0]);
+                            $qty-=$stok;
+                        }
+                        else {
+                            $stokBaru=$stok-$qty;
+                            $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                                ->where('id','=',$dtBarang[$j]->id)
+                                                ->update(['jumlah_stok' => $stokBaru]);
+                            $qty=0;
+    
+                        }
+                    }
+                }
+            }   
         }
 
         return redirect()->back()->with(['success' => 'Status penjualan berhasil diubah']);

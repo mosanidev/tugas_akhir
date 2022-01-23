@@ -44,30 +44,8 @@
 
     <link rel="stylesheet" href="{{ asset('/plugins/toastr/toastr.min.css') }}">
     
-    <script type="text/javascript">
-
-        function convertAngkaToRupiah(angka)
-        {
-            var rupiah = '';		
-            var angkarev = angka.toString().split('').reverse().join('');
-            for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-            return 'Rp '+rupiah.split('',rupiah.length-1).reverse().join('');
-        }
-
-        function convertRupiahToAngka(rupiah)
-        {
-            return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
-        }
-
-        let toastrOptions = {
-            "showMethod": "slideDown",
-            "hideMethod": "slideUp",
-            "closeMethod": "slideUp",
-            "positionClass": "toast-top-center",
-            "preventDuplicates": "true"
-        }
-
-    </script>
+    <script src="{{ asset('/scripts/helper.js') }}"></script>
+    
 </head>
 
 <body id="page-top">
@@ -179,21 +157,6 @@
                     <span>Retur Pembelian</span>
                 </a>
             </li>
-
-            {{-- <li class="nav-item">
-              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiess"
-                  aria-expanded="true" aria-controls="collapseUtilities">
-                  <i class="fas fa-fw fa-wrench"></i>
-                  <span>Pengajuan Retur</span>
-              </a>
-              <div id="collapseUtilitiess" class="collapse" aria-labelledby="headingUtilities"
-                  data-parent="#accordionSidebar">
-                  <div class="bg-white py-2 collapse-inner rounded">
-                      <a class="collapse-item" href="utilities-color.html">Oleh Pelanggan</a>
-                      <a class="collapse-item" href="{{ route('retur_pembelian.index') }}">Ke Supplier</a>
-                  </div>
-              </div>
-            </li> --}}
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">

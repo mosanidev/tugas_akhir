@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Daftar Penjualan</h1>
+        <h1>Daftar Penjualan Online</h1>
       </div>
   </div>
 </section>
@@ -46,8 +46,8 @@
                           <td>{{ $item->status }}</td>
                           <td>
                             
-                            @if($item->status == "Pesanan sudah dibayar dan sedang disiapkan" && $item->metode_transaksi == "Ambil di toko")
-                              <button class="btn btn-info mb-2" data-toggle="modal" data-target="#modalUbahStatusPenjualan" id="btnUbahStatus" data-id="{{$item->penjualan_id}}">Ubah Status</button>
+                            @if($item->status == "Pesanan sudah dibayar dan sedang disiapkan" || $item->status == "Pesanan siap diambil di toko" && $item->metode_transaksi == "Ambil di toko")
+                              <button class="btn btn-info mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button>
                             @endif
 
                             <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
@@ -64,59 +64,85 @@
 @include('admin.penjualan.modal.modalUbahStatusPenjualan');
 @include('admin.penjualan.modal.confirm_ubah_status');
 
+{{-- <script src="{{ asset('/scripts/helper.js') }}"></script> --}}
+
 <script type="text/javascript">
 
-    $('#btnUbahStatus').on('click', function() {
+  $(document).ready(function() {
 
-      let id = $(this).attr("data-id");
+    $('.btnUbahStatus').on('click', function() {
 
-      $('#idPenjualan').val(id);
+    let id = $(this).attr("data-id");
 
-      $.ajax({
-        type: "GET",
-        url: "/admin/penjualan/" + id,
-        success: function(data) {
-          
-          const penjualan = data.penjualan[0];
+    $('#idPenjualan').val(id);
 
-          $('#nomorNota').val(penjualan.nomor_nota);
-          $('#metodeTransaksi').val(penjualan.metode_transaksi);
-          $('#total').val(convertAngkaToRupiah(penjualan.total));
+    $.ajax({
+      type: "GET",
+      url: "/admin/penjualan/" + id,
+      beforeSend: function() {
+
+        showLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
+
+      },
+      success: function(data) {
+        
+        closeLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
+
+        const penjualan = data.penjualan[0];
+
+        $('#nomorNota').val(penjualan.nomor_nota);
+        $('#metodeTransaksi').val(penjualan.metode_transaksi);
+        $('#total').val(convertAngkaToRupiah(penjualan.total));
+
+        if(penjualan.status == "Pesanan sudah dibayar dan sedang disiapkan")
+        {
           $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
-                                            <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
+                                          <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
+        }
+        else if (penjualan.status == "Pesanan siap diambil di toko")
+        {
+          $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
+                                          <option value="Pesanan selesai diambil">Pesanan selesai diambil</option>`);
         }
 
-      });
+        
+      }
+
+    });
 
     });
 
     $('#btnSimpanStatus').on('click', function() {
 
-      let id = $('#idPenjualan').val();
+    let id = $('#idPenjualan').val();
 
-      $('#formUpdate').attr("action", "/admin/penjualan/"+id);
+    $('#formUpdate').attr("action", "/admin/penjualan/"+id);
 
-      if($('#selectStatusPenjualan')[0].selectedIndex == 0)
-      {
-        $('#modalUbahStatusPenjualan').modal('toggle');
-      }
-      else 
-      {
-        // tutup modal edit
-        $('#modalUbahStatusPenjualan').modal('toggle');
+    if($('#selectStatusPenjualan')[0].selectedIndex == 0)
+    {
+      $('#modalUbahStatusPenjualan').modal('toggle');
+    }
+    else 
+    {
+      // tutup modal edit
+      $('#modalUbahStatusPenjualan').modal('toggle');
 
-        // buka modal konfirmasi
-        $('#modalConfirmUbahStatus').modal('toggle');
+      // buka modal konfirmasi
+      $('#modalConfirmUbahStatus').modal('toggle');
 
-        $('#nomorNotaText').html($('#nomorNota').val());
+      $('#nomorNotaText').html($('#nomorNota').val());
 
-        $('#status_penjualan').val($('#selectStatusPenjualan :selected').val());
+      $('#status_penjualan').val($('#selectStatusPenjualan :selected').val());
 
-        $('#statusUbahText').html($('#selectStatusPenjualan :selected').val());
+      $('#statusUbahText').html($('#selectStatusPenjualan :selected').val());
 
-      }
+    }
 
     });
+
+
+  });
+    
 
 </script>
 @endsection
