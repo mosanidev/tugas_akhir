@@ -350,7 +350,9 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
@@ -360,7 +362,9 @@ class OrderController extends Controller
                             'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
@@ -370,7 +374,9 @@ class OrderController extends Controller
                             'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
@@ -380,7 +386,9 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if ($penjualan[0]->status == "Pesanan dibatalkan")
@@ -390,7 +398,9 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             
@@ -535,7 +545,9 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
                         ]);
             }
             else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
@@ -545,7 +557,9 @@ class OrderController extends Controller
                             'isi' => "Harap bayar pesanan #".$penjualan[0]->nomor_nota." sebelum tanggal ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y')." jam ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
@@ -555,7 +569,9 @@ class OrderController extends Controller
                             'isi' => "Pembayaran pesanan #".$penjualan[0]->nomor_nota." ditolak",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
@@ -565,7 +581,9 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan karena pembayaran pesanan melebihi batas waktu yang ditentukan",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             else if ($penjualan[0]->status == "Pesanan dibatalkan")
@@ -575,7 +593,9 @@ class OrderController extends Controller
                             'isi' => "Pesanan #".$penjualan[0]->nomor_nota." dibatalkan oleh admin",
                             'penjualan_id' => $penjualan[0]->penjualan_id,
                             'users_id' => $penjualan[0]->users_id,
-                            'status' => 'Belum dilihat'
+                            'status' => 'Belum dilihat',
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
             
@@ -715,19 +735,52 @@ class OrderController extends Controller
     {
         $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
 
+        $pengiriman = null;
+
         if($transaksi[0]->metode_transaksi == "Dikirim ke alamat")
         {
-            $barang = DB::table('detail_penjualan')->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')->where('detail_penjualan.penjualan_id', '=', $id)->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')->get();
+            $barang = DB::table('detail_penjualan')
+                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
+                        ->where('detail_penjualan.penjualan_id', '=', $id)
+                        ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                        ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
+                        ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
+                        ->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')
+                        ->get();
+
         }
         else if ($transaksi[0]->metode_transaksi == "Ambil di toko")
         {
-            $barang = DB::table('detail_penjualan')->select('detail_penjualan.*', 'barang.*')->where('detail_penjualan.penjualan_id', '=', $id)->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->get();
+            $barang = DB::table('detail_penjualan')
+                            ->select('detail_penjualan.*', 'barang.*')
+                            ->where('detail_penjualan.penjualan_id', '=', $id)
+                            ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                            ->get();
+
         }
         else if ($transaksi[0]->metode_transaksi == "Dikirim ke berbagai alamat")
         {
-            $barang = DB::table('detail_penjualan')->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')->where('detail_penjualan.penjualan_id', '=', $id)->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')->get();
+            $pengiriman = DB::table('detail_penjualan')
+                            ->select('pengiriman.*', 'pengiriman.id as pengiriman_id', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
+                            ->where('detail_penjualan.penjualan_id', '=', $id)
+                            ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
+                            ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
+                            ->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')
+                            ->groupBy('detail_penjualan.alamat_pengiriman_id')
+                            ->get();
+
+            $barang = DB::table('detail_penjualan')
+                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*')
+                        ->where('detail_penjualan.penjualan_id', '=', $id)
+                        ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
+                        ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
+                        ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                        ->get();
+
         }
 
-        return response()->json(['transaksi'=>$transaksi, 'barang'=>$barang]);
+        return response()->json(['transaksi'=>$transaksi, 'pengiriman' => $pengiriman, 'barang'=>$barang]);
+
+
     }
 }

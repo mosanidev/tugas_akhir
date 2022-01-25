@@ -314,78 +314,133 @@
                             let subTotalProduk = 0;
 
                             let totalTarif = 0;
+                            
+                            $('.rowBarang').html("");
 
-                            for(let i=0; i < data.barang.length; i++)
+
+                            for(let i=0; i < data.pengiriman.length; i++)
                             {
-                                if(data.barang[i].nama_shipper == 'Gojek' ||data.barang[i].nama_shipper == 'Grab')
+
+                                if(data.pengiriman[i].nama_shipper == 'Gojek' ||data.pengiriman[i].nama_shipper == 'Grab')
                                 {
-                                    estimasiTiba = moment(data.barang[i].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
+                                    estimasiTiba = moment(data.pengiriman[i].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
                                 }
                                 else 
                                 {
-                                    estimasiTiba = moment(data.barang[i].estimasi_tiba).format("DD MMMM YYYY");
+                                    estimasiTiba = moment(data.pengiriman[i].estimasi_tiba).format("DD MMMM YYYY");
                                 }
 
-                                subTotalProduk += data.barang[i].subtotal;
+                                // subTotalProduk += data.pengiriman[i].subtotal;
 
-                                totalTarif += data.barang[i].tarif;
+                                totalTarif += data.pengiriman[i].tarif;
 
-                                if(data.barang.filter(function(e) { return e.alamat == data.barang[i].alamat; }).length > 1)
-                                {
-                                    index = i;
-                                    rowBarangSama += `<div class="row">
-                                                        <div class="col-4 ml-2">
-                                                                <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
-                                                        </div>
-                                                        <div class="col-7">
-                                                                <p>`+ data.barang[i].nama + `</p>
+                                $('.rowBarang').append(`<h5>Alamat Pengiriman</h5>
                                                                 <div class="row">
-                                                                    <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
-                                                                    <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                                                    <div class="col-12">
+                                                                        ` + data.pengiriman[i].alamat + `
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        ` + data.pengiriman[i].kecamatan + `, ` + data.pengiriman[i].kota_kabupaten + `, ` + data.pengiriman[i].provinsi + `, ` + data.pengiriman[i].kode_pos + `
+                                                                    </div>
+                                                                </div>`);
+
+                                for(let y=0; y < data.barang.length; y++)
+                                {
+                                    if(data.barang[y].pengiriman_id == data.pengiriman[i].pengiriman_id)
+                                    {
+                                        $('.rowBarang').append(`<div class="row">
+                                                                    <div class="col-4 ml-2">
+                                                                            <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
+                                                                    </div>
+                                                                    <div class="col-7">
+                                                                            <p>`+ data.barang[i].nama + `</p>
+                                                                            <div class="row">
+                                                                                <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
+                                                                                <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>`);
+                                    }
+                                }
+
+                                $('.rowBarang').append(`<h5>Pengiriman</h5>
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    ` + data.barang[i].jenis_pengiriman + ` ` + data.barang[i].nama_shipper + `
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    Ongkos kirim ` + convertAngkaToRupiah(data.barang[i].tarif) + `
                                                                 </div>
                                                         </div>
-                                                    </div>`;
-                                }
+                                                        <hr>`);
 
-                                if(data.barang.filter(function(e) { return e.alamat == data.barang[i].alamat; }).length == 1)
-                                {   
-                                    rowBarang += `<h5>Alamat Pengiriman</h5>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        ` + data.barang[i].alamat + `
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        ` + data.barang[i].kecamatan + `, ` + data.barang[i].kota_kabupaten + `, ` + data.barang[i].provinsi + `, ` + data.barang[i].kode_pos + `
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-4 ml-2">
-                                                            <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
-                                                    </div>
-                                                    <div class="col-7">
-                                                            <p>`+ data.barang[i].nama + `</p>
-                                                            <div class="row">
-                                                                <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
-                                                                <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
-                                                            </div>
-                                                    </div>
-                                                </div>
-                                                <h5>Pengiriman</h5>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            ` + data.barang[i].jenis_pengiriman + ` ` + data.barang[i].nama_shipper + `
-                                                        </div>
-                                                        <div class="col-12">
-                                                            Estimasi pengiriman tiba ` + estimasiTiba + `
-                                                        </div>
-                                                        <div class="col-12">
-                                                            Ongkos kirim ` + convertAngkaToRupiah(data.barang[i].tarif) + `
-                                                        </div>
-                                                </div>
-                                                <hr>`;
-                                } 
+                                // if(data.barang.filter(function(e) { return e.barang_id == data.barang[i].barang_id; }).length > 1)
+                                // {
+                                //     index = i;
+                                //     rowBarangSama += `<div class="row">
+                                //                         <div class="col-4 ml-2">
+                                //                                 <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
+                                //                         </div>
+                                //                         <div class="col-7">
+                                //                                 <p>`+ data.barang[i].nama + `</p>
+                                //                                 <div class="row">
+                                //                                     <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
+                                //                                     <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                //                                 </div>
+                                //                         </div>
+                                //                     </div>`;
+
+                                    
+                                //     $('.rowBarang').html(rowBarang);
+                                // }
+
+
+
+                                // if(data.barang.filter(function(e) { return e.alamat_pengiriman_id == data.barang[i].alamat_pengiriman_id; }).length <= 1)
+                                // {   
+                                //     index = i;
+                                //     rowBarang += `<h5>Alamat Pengiriman</h5>
+                                //                 <div class="row">
+                                //                     <div class="col-12">
+                                //                         ` + data.barang[i].alamat + `
+                                //                     </div>
+                                //                 </div>
+                                //                 <div class="row">
+                                //                     <div class="col-12">
+                                //                         ` + data.barang[i].kecamatan + `, ` + data.barang[i].kota_kabupaten + `, ` + data.barang[i].provinsi + `, ` + data.barang[i].kode_pos + `
+                                //                     </div>
+                                //                 </div>
+                                //                 <div class="row">
+                                //                     <div class="col-4 ml-2">
+                                //                             <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
+                                //                     </div>
+                                //                     <div class="col-7">
+                                //                             <p>`+ data.barang[i].nama + `</p>
+                                //                             <div class="row">
+                                //                                 <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
+                                //                                 <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                //                             </div>
+                                //                     </div>
+                                //                 </div>
+                                //                 <h5>Pengiriman</h5>
+                                //                     <div class="row">
+                                //                         <div class="col-12">
+                                //                             ` + data.barang[i].jenis_pengiriman + ` ` + data.barang[i].nama_shipper + `
+                                //                         </div>
+                                //                         <div class="col-12">
+                                //                             Estimasi pengiriman tiba ` + estimasiTiba + `
+                                //                         </div>
+                                //                         <div class="col-12">
+                                //                             Ongkos kirim ` + convertAngkaToRupiah(data.barang[i].tarif) + `
+                                //                         </div>
+                                //                 </div>
+                                //                 <hr>`;
+                                // } 
                                 
 
                             }
@@ -407,35 +462,35 @@
                                 estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY");
                             }
 
-                            rowBarang += `<h5>Alamat Pengiriman</h5>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    ` + data.barang[index].alamat + `
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    ` + data.barang[index].kecamatan + `, ` + data.barang[index].kota_kabupaten + `, ` + data.barang[index].provinsi + `, ` + data.barang[index].kode_pos + `
-                                                </div>
-                                            </div>
-                                            ` + rowBarangSama + `
-                                            <h5>Pengiriman</h5>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        ` + data.barang[index].jenis_pengiriman + ` ` + data.barang[index].nama_shipper + `
-                                                    </div>
-                                                    <div class="col-12">
-                                                        Estimasi pengiriman tiba ` + estimasiTiba + `
-                                                    </div>
-                                                    <div class="col-12">
-                                                        Ongkos kirim ` + convertAngkaToRupiah(data.barang[index].tarif) + `
-                                                    </div>
-                                            </div>
-                                            <hr>`;
+                            // rowBarang += `<h5>Alamat Pengiriman</h5>
+                            //                 <div class="row">
+                            //                     <div class="col-12">
+                            //                         ` + data.barang[index].alamat + `
+                            //                     </div>
+                            //                 </div>
+                            //                 <div class="row">
+                            //                     <div class="col-12">
+                            //                         ` + data.barang[index].kecamatan + `, ` + data.barang[index].kota_kabupaten + `, ` + data.barang[index].provinsi + `, ` + data.barang[index].kode_pos + `
+                            //                     </div>
+                            //                 </div>
+                            //                 ` + rowBarangSama + `
+                            //                 <h5>Pengiriman</h5>
+                            //                     <div class="row">
+                            //                         <div class="col-12">
+                            //                             ` + data.barang[index].jenis_pengiriman + ` ` + data.barang[index].nama_shipper + `
+                            //                         </div>
+                            //                         <div class="col-12">
+                            //                             Estimasi pengiriman tiba ` + estimasiTiba + `
+                            //                         </div>
+                            //                         <div class="col-12">
+                            //                             Ongkos kirim ` + convertAngkaToRupiah(data.barang[index].tarif) + `
+                            //                         </div>
+                            //                 </div>
+                            //                 <hr>`;
 
                         } // end if
 
-                        $('.rowBarang').html(rowBarang);
+                        // $('.rowBarang').html(rowBarang);
 
                         $('#labelTotal').html("Total :");
 
