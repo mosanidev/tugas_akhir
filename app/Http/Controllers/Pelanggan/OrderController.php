@@ -253,6 +253,7 @@ class OrderController extends Controller
         $tarif = $request->tarif;
         $kode_shipper = $request->kode_shipper;
         $jenis_pengiriman = $request->jenis_pengiriman;
+        $kode_jenis_pengiriman = $request->kode_jenis_pengiriman;
         $total_berat_pengiriman = $request->total_berat_pengiriman;
 
         $batasan_waktu = new Carbon($transaction_time);
@@ -316,7 +317,7 @@ class OrderController extends Controller
 
             $delete_cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->delete();
 
-            $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif, 'kode_shipper' => $kode_shipper, 'jenis_pengiriman' => $jenis_pengiriman, 'total_berat' => $total_berat_pengiriman, 'estimasi_tiba' => $request->estimasi_tiba]);
+            $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif, 'kode_shipper' => $kode_shipper, 'kode_jenis_pengiriman' => $kode_jenis_pengiriman, 'jenis_pengiriman' => $jenis_pengiriman, 'total_berat' => $total_berat_pengiriman, 'estimasi_tiba' => $request->estimasi_tiba]);
 
             $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id, 'total_tarif'=>$tarif]);
 
@@ -337,7 +338,7 @@ class OrderController extends Controller
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$tarif]);
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
@@ -428,6 +429,7 @@ class OrderController extends Controller
         $tarif = json_decode($request->tarif);
         $kode_shipper = json_decode($request->kode_shipper);
         $jenis_pengiriman = json_decode($request->jenis_pengiriman);
+        $kode_jenis_pengiriman = json_decode($request->kode_jenis_pengiriman);
         $estimasi_tiba = json_decode($request->estimasi_tiba);
         $total_berat_pengiriman = $request->total_berat_pengiriman;
 
@@ -498,7 +500,7 @@ class OrderController extends Controller
             
             for($i = 0; $i < count($data); $i++)
             {
-                $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif[$i], 'kode_shipper' => $kode_shipper[$i], 'jenis_pengiriman' => $jenis_pengiriman[$i], 'total_berat' => $total_berat_pengiriman[$i], 'estimasi_tiba' => $estimasi_tiba[$i]]);
+                $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif[$i], 'kode_shipper' => $kode_shipper[$i], 'kode_jenis_pengiriman' => $kode_jenis_pengiriman[$i], 'jenis_pengiriman' => $jenis_pengiriman[$i], 'total_berat' => $total_berat_pengiriman[$i], 'estimasi_tiba' => $estimasi_tiba[$i]]);
 
                 $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$data[$i]->alamat_id, 'total_tarif'=>$total_tarif]);
 
@@ -521,7 +523,7 @@ class OrderController extends Controller
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$total_tarif]);
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();

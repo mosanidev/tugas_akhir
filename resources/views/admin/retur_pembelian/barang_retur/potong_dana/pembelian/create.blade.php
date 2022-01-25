@@ -25,7 +25,7 @@
                 <div class="form-group row" id="divTampungSelectBarangRetur">
                     <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Retur</p>
                     <div class="col-sm-8">
-                        <input type="text" id="barangRetur" class="form-control" readonly>
+                        <input type="text" id="tglKadaluarsaBarangRetur" class="form-control" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -98,6 +98,7 @@
         let jumlahStok = $('#selectBarangRetur :selected').attr('data-jumlah-stok');
         let hargaBeli = $('#selectBarangRetur :selected').attr('data-harga-beli');
         let satuanBarangRetur = $('#selectBarangRetur :selected').attr('data-satuan');
+        let tglKadaluarsa = $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa');
 
         let batasan = null;
 
@@ -114,7 +115,12 @@
             batasan = jumlahBeli;
         }
 
-        $('#barangRetur').val(barang);
+        if(tglKadaluarsa == "9999-12-12 00:00:00")
+        {
+            tglKadaluarsa = "Tidak ada";
+        }
+
+        $('#tglKadaluarsaBarangRetur').val(tglKadaluarsa);
         $('#jumlahRetur').attr('max', batasan);
         $('#satuanBarangRetur').val(satuanBarangRetur);
         $('#jumlahBeli').val(jumlahBeli);
@@ -139,7 +145,7 @@
             "barang_kode": $('#selectBarangRetur :selected').attr('data-kode'),
             "barang_nama": $('#selectBarangRetur :selected').attr('data-nama'),
             "barang_satuan": $('#satuanBarangRetur').val(),
-            "barang_tanggal_kadaluarsa" : $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa'),
+            "barang_tanggal_kadaluarsa" : $('#tglKadaluarsaBarangRetur').val(),
             "harga_beli": $('#hargaBeli').val(),
             "jumlah_beli": $('#jumlahBeli').val(),
             "jumlah_retur": $('#jumlahRetur').val(),

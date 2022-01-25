@@ -149,7 +149,8 @@
 
         $('#tanggal_kadaluarsa').datepicker({
             format: 'yyyy-mm-dd',
-            autoclose: true
+            autoclose: true,
+            enableOnReadonly: false 
         }); 
 
         $('#selectSupplier').select2({

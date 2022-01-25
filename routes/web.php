@@ -160,6 +160,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('generate_kecamatan/{kecamatan}/single', [BiteShipAPIController::class, 'getSingleArea']);
     Route::get('generate_postal_code/{areaID}', [BiteShipAPIController::class, 'getPostalCode']);
     Route::post('generate_rates', [BiteShipAPIController::class, 'getRates'])->name('order_rates');
+    Route::post('create_order', [BiteShipAPIController::class, 'createOrder'])->name('order.create');
 
     Route::group(['prefix' => 'order'], function() {
 

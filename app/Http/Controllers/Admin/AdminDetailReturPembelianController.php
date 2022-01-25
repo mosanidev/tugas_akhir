@@ -46,11 +46,13 @@ class AdminDetailReturPembelianController extends Controller
 
         for($i = 0; $i < count((array) $barangRetur); $i++)
         {
+            $tglKadaluarsa = $barangRetur[$i]['barang_tanggal_kadaluarsa'] != "Tidak ada" ? $barangRetur[$i]['barang_tanggal_kadaluarsa'] : "9999-12-12 00:00:00";
+
             $insertDetailRetur = DB::table('detail_retur_pembelian')
                                     ->insert([
                                         'retur_pembelian_id' => $request->retur_pembelian_id,
                                         'barang_retur' => $barangRetur[$i]['barang_id'],
-                                        'tanggal_kadaluarsa_barang_retur' => $barangRetur[$i]['barang_tanggal_kadaluarsa'],
+                                        'tanggal_kadaluarsa_barang_retur' => $tglKadaluarsa,
                                         'kuantitas_barang_retur' => $barangRetur[$i]['jumlah_retur'],
                                         'keterangan' => $barangRetur[$i]['keterangan'],
                                         'subtotal' => $barangRetur[$i]['subtotal']
@@ -58,7 +60,7 @@ class AdminDetailReturPembelianController extends Controller
 
             $updateStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $barangRetur[$i]['barang_id'])
-                                    ->where('tanggal_kadaluarsa', '=', $barangRetur[$i]['barang_tanggal_kadaluarsa'])
+                                    ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
                                     ->decrement('jumlah_stok',  $barangRetur[$i]['jumlah_retur']);
         }
 

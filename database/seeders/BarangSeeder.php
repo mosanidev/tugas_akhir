@@ -580,5 +580,35 @@ class BarangSeeder extends Seeder
                 'merek_id'                  => 3
             ]
         );
+
+        DB::table('barang')->insert(
+            [   
+                'id'                        => 33,  
+                'kode'                      => 'B033',
+                'nama'                      => "Penggaris 30cm Besi",
+                'deskripsi'                 => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eget erat sed dui porttitor ultrices eu vehicula augue. Nunc quis vestibulum enim, a vulputate quam. Aliquam pharetra placerat lectus, ut semper tellus egestas nec. Vestibulum porttitor aliquam purus, et vulputate sapien vulputate ut. Sed pellentesque posuere erat, et sagittis urna efficitur sollicitudin. Pellentesque eget facilisis massa. Donec consequat libero eget malesuada pellentesque. Vestibulum molestie purus vitae blandit eleifend. Nunc fringilla massa ac justo feugiat rutrum. Phasellus id tincidunt libero. Praesent scelerisque, justo ut maximus porta, nibh nunc porta est, ut euismod sem mi ac lectus. Morbi in efficitur arcu. Maecenas laoreet ipsum non maximus volutpat.',
+                'harga_jual'                => 5000, 
+                'diskon_potongan_harga'     => 0,
+                'berat'                     => 860,
+                'jenis_id'                  => 7,
+                'kategori_id'               => 18,
+                'merek_id'                  => 1
+            ]
+        );
+
+        DB::table('barang')->insert(
+            [   
+                'id'                        => 34,  
+                'kode'                      => 'B034',
+                'nama'                      => "Stiker Ubaya",
+                'deskripsi'                 => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eget erat sed dui porttitor ultrices eu vehicula augue. Nunc quis vestibulum enim, a vulputate quam. Aliquam pharetra placerat lectus, ut semper tellus egestas nec. Vestibulum porttitor aliquam purus, et vulputate sapien vulputate ut. Sed pellentesque posuere erat, et sagittis urna efficitur sollicitudin. Pellentesque eget facilisis massa. Donec consequat libero eget malesuada pellentesque. Vestibulum molestie purus vitae blandit eleifend. Nunc fringilla massa ac justo feugiat rutrum. Phasellus id tincidunt libero. Praesent scelerisque, justo ut maximus porta, nibh nunc porta est, ut euismod sem mi ac lectus. Morbi in efficitur arcu. Maecenas laoreet ipsum non maximus volutpat.',
+                'harga_jual'                => 2000, 
+                'diskon_potongan_harga'     => 0,
+                'berat'                     => 60,
+                'jenis_id'                  => 7,
+                'kategori_id'               => 24,
+                'merek_id'                  => 1
+            ]
+        );
     }
 }

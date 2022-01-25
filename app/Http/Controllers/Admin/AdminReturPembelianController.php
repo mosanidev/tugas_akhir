@@ -122,9 +122,9 @@ class AdminReturPembelianController extends Controller
                                     ->where('detail_pembelian.pembelian_id', '=', $retur_pembelian[0]->pembelian_id)  
                                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_pembelian.tanggal_kadaluarsa')
                                     ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
+                                    ->groupBy('barang.id')
                                     ->get();
 
-            // dd($detail_pembelian);
 
             if($retur_pembelian[0]->kebijakan_retur == "Tukar Barang")
             {
@@ -149,6 +149,7 @@ class AdminReturPembelianController extends Controller
                                     ->where('detail_konsinyasi.konsinyasi_id', '=', $retur_pembelian[0]->konsinyasi_id)  
                                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_konsinyasi.barang_id')
                                     ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
+                                    ->groupBy('barang.id')
                                     ->get();
 
             // INI KENAPA KOK ADA EMPAT ~?

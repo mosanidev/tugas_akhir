@@ -15,18 +15,45 @@ class AdminPengirimanController extends Controller
      */
     public function index()
     {
-        $pengiriman = DB::table('detail_penjualan')
-                        ->select('detail_penjualan.*', 'penjualan.*', 'pengiriman.*', 'alamat_pengiriman.*')
-                        ->whereNotNull('detail_penjualan.pengiriman_id')
-                        ->whereNotNull('detail_penjualan.alamat_pengiriman_id')
-                        ->where('penjualan.status', '=', 'Pesanan sudah dibayar dan sedang disiapkan')
-                        ->whereRaw("penjualan.metode_transaksi is not 'Ambil di toko'")
-                        ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
-                        ->join('pengiriman', 'detail_penjualan.pengiriman_id', '=', 'pengiriman.id')
-                        ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
-                        ->get();
+        // $penjualan = DB::table('detail_penjualan')
+        //                 ->select(DB::raw("CONCAT()") 'penjualan.tanggal as tanggal_jual', 'penjualan.status', DB::raw("CONCAT('alamat_pengiriman.alamat', ' ', 'alamat_pengiriman.provinsi', ' ', 'alamat_pengiriman.kota_kabupaten', ' ', ''alamat_pengiriman.kecamatan') as alamat"), 'shipper.nama as pengirim', 'pengiriman.jenis_pengiriman', 'pengiriman.kode_jenis_pengiriman', 'pengiriman.estimasi_tiba', 'pengiriman.total_berat', 'pengiriman.tarif as tarif_pengiriman')
+        //                 ->whereNotNull('detail_penjualan.pengiriman_id')
+        //                 ->whereNotNull('detail_penjualan.alamat_pengiriman_id')
+        //                 ->where('penjualan.status', '=', 'Pesanan sudah dibayar dan sedang disiapkan')
+        //                 ->whereNotIn("penjualan.metode_transaksi", ['Ambil di toko'])
+        //                 ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
+        //                 ->join('pengiriman', 'detail_penjualan.pengiriman_id', '=', 'pengiriman.id')
+        //                 ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+        //                 ->join('shipper', 'shipper.kode', '=', 'pengiriman.kode_shipper')
+        //                 ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
+        //                 ->get();
 
-        return view('admin.pengiriman.index');
+        /*
+            nomor_nota
+            tanggal
+            status
+            pengirim
+            kode_jenis_pengiriman
+            jenis_pengiriman
+            alamt tujuan
+            estimasi tiba
+            tarif pengiriman
+            total berat
+
+            nama_penerima
+            nomor_telepon
+            email_penerima
+            alamat
+            kode pos
+            latitude 
+            longitude
+
+            barang yang dijual
+        */
+
+        $penjualan = DB::table('detail_penjualan')->get();
+
+        return view('admin.pengiriman.index', ['penjualan' => $penjualan]);
     }
 
     /**
@@ -58,7 +85,7 @@ class AdminPengirimanController extends Controller
      */
     public function show($id)
     {
-        //
+        dd($id);
     }
 
     /**

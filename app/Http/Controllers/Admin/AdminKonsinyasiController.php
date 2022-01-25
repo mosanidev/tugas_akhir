@@ -53,16 +53,16 @@ class AdminKonsinyasiController extends Controller
                                                     'supplier_id' => $request->supplier_id, 
                                                     'metode_pembayaran' => $request->metode_pembayaran, 
                                                     'status' => $request->status]);
-                                                    // 'total_komisi' => $request->total_komisi,
-                                                    // 'total_hutang' => $request->total_hutang ]);
 
         $barangKonsinyasi = json_decode($request->barangKonsinyasi, true);
         
         for($i = 0; $i < count((array) $barangKonsinyasi); $i++)
         {
+            $tglKadaluarsa = $barangKonsinyasi[$i]['tanggal_kadaluarsa'] != "Tidak ada" ? $barangKonsinyasi[$i]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
+
             $selectBarang = DB::table('barang_has_kadaluarsa')
                             ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
-                            ->where('tanggal_kadaluarsa', '=', $barangKonsinyasi[$i]['tanggal_kadaluarsa'])
+                            ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
                             ->get();
 
             if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
@@ -71,7 +71,7 @@ class AdminKonsinyasiController extends Controller
                 $tambahBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
                                             ->insert([
                                                 'barang_id' => $barangKonsinyasi[$i]['barang_id'],
-                                                'tanggal_kadaluarsa' => $barangKonsinyasi[$i]['tanggal_kadaluarsa'],
+                                                'tanggal_kadaluarsa' => $tglKadaluarsa,
                                                 'jumlah_stok' => $barangKonsinyasi[$i]['jumlah_titip']
                                             ]);
                  
@@ -80,7 +80,7 @@ class AdminKonsinyasiController extends Controller
             {
                 $tambahStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
                                                 ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
-                                                ->where('tanggal_kadaluarsa', '=', $barangKonsinyasi[$i]['tanggal_kadaluarsa'])
+                                                ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
                                                 ->increment('jumlah_stok', $barangKonsinyasi[$i]['jumlah_titip']);  
 
             }
@@ -90,7 +90,7 @@ class AdminKonsinyasiController extends Controller
                                             'konsinyasi_id' => $konsinyasi_id,
                                             'barang_id' => $barangKonsinyasi[$i]['barang_id'],
                                             'jumlah_titip' => $barangKonsinyasi[$i]['jumlah_titip'],
-                                            'tanggal_kadaluarsa' => $barangKonsinyasi[$i]['tanggal_kadaluarsa'],
+                                            'tanggal_kadaluarsa' => $tglKadaluarsa,
                                             'komisi' => $barangKonsinyasi[$i]['komisi'],
                                             // 'subtotal_komisi' => $barangKonsinyasi[$i]['subtotal_komisi'],
                                             'hutang' => $barangKonsinyasi[$i]['hutang'],

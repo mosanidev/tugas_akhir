@@ -68,6 +68,10 @@
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                       </div>
+                      <div class="custom-control custom-checkbox mt-2">
+                        <input type="checkbox" class="custom-control-input" id="checkTglKadaluarsaNull">
+                        <label class="custom-control-label" for="checkTglKadaluarsaNull">Tidak ada tanggal kadaluarsa</label>
+                    </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -135,21 +139,56 @@
     jQuery.datetimepicker.setLocale('id');
 
     $('#tglKadaluarsa').datetimepicker({
-        timepicker: true,
-        datepicker: true,
-        lang: 'id',
-        defaultTime: '16:00 AM',
-        format: 'Y-m-d H:i:00'
+      timepicker: true,
+      datepicker: true,
+      lang: 'id',
+      defaultTime: '16:00 AM',
+      format: 'Y-m-d H:i:00'
+    }); 
+
+    jQuery('#tglKadaluarsa').click(function(){
+
+      if(!jQuery('#tglKadaluarsa').prop('readonly'))
+      {
+        jQuery('#tglKadaluarsa').datetimepicker();
+        jQuery('#tglKadaluarsa').datetimepicker('show');
+      }
+      else
+      {
+        jQuery('#tglKadaluarsa').datetimepicker('destroy'); 
+      }
+
     });
+
+    $('#checkTglKadaluarsaNull').on('change', function() {
+
+        if($("#checkTglKadaluarsaNull")[0].checked)
+        {
+            $('#tglKadaluarsa').val("");
+            $('#tglKadaluarsa').attr("readonly", true);
+        }
+        else 
+        {
+            $('#tglKadaluarsa').attr("readonly", false);
+        }
+
+      });
 
     let arrBarangKonsinyasi = [];
 
     $('#btnTambahBarangKonsinyasi').on('click', function() {
 
+      let tglKadaluarsa = $('#tglKadaluarsa').val();
+
+      if(tglKadaluarsa == "")
+      {
+        tglKadaluarsa = "Tidak ada";
+      }
+
       arrBarangKonsinyasi.push({
         "barang_id": $('#selectBarangKonsinyasi :selected').val(),
         "barang":  $('#selectBarangKonsinyasi :selected').text(),
-        "tanggal_kadaluarsa": $('#tglKadaluarsa').val(),
+        "tanggal_kadaluarsa": tglKadaluarsa,
         "harga_jual_akhir": convertRupiahToAngka($('#hargaJualAkhir').val()),
         "komisi": $('#inputKomisi').val(),
         "hutang": convertRupiahToAngka($('#hutang').val()),

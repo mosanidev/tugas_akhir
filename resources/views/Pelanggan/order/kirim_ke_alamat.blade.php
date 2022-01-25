@@ -254,6 +254,7 @@
         <input type="hidden" name="tarif" id="tarif" value="">
         <input type="hidden" name="kode_shipper" id="kode_shipper" value="">
         <input type="hidden" name="jenis_pengiriman" id="jenis_pengiriman" value="">
+        <input type="hidden" name="kode_jenis_pengiriman" id="kode_jenis_pengiriman" value="">
         <input type="hidden" name="total_berat_pengiriman" id="total_berat_pengiriman" value="">
         <input type="hidden" name="estimasi_tiba" id="estimasi_tiba" value="">
     </form>
@@ -439,6 +440,8 @@
                     $('#loadPengiriman').remove();
 
                     let hasil = JSON.parse(data.response);
+
+                    console.log(hasil);
                     
                     arr = hasil;
                     // console.log(hasil);
@@ -466,6 +469,7 @@
                             $("#tarif").val(arr.pricing[num].price);
                             $("#kode_shipper").val(arr.pricing[num].courier_code);
                             $("#jenis_pengiriman").val(arr.pricing[num].courier_service_name);
+                            $("#kode_jenis_pengiriman").val(arr.pricing[num].courier_service_code);
                             $("#total_berat_pengiriman").val($('#total_berat').val());
                             
                             // $('#estimasi_tiba').val($('#info-tiba').html());

@@ -131,12 +131,25 @@
             batasan = kuantitasBarang;
         }
 
-        $('#tglKadaluarsaBarangAsal').val(tglKadaluarsa);  
         $('#kuantitasBarangAsal').val(kuantitasBarang);
         $('#barangGanti').val(barangGanti);
 
         $('#barangGanti').attr("data-id", idBarangGanti);
-        $('#tglKadaluarsaBarangGanti').val("");
+
+        if(tglKadaluarsa == '9999-12-12')
+        {
+            tglKadaluarsa = "Tidak ada";
+            $('#tglKadaluarsaBarangGanti').attr("readonly", true);
+            $('#tglKadaluarsaBarangGanti').val(tglKadaluarsa);
+        }
+        else 
+        { 
+            $('#tglKadaluarsaBarangGanti').attr("readonly", false);
+            $('#tglKadaluarsaBarangGanti').val("");
+        }
+        
+        $('#tglKadaluarsaBarangAsal').val(tglKadaluarsa);  
+        
         $('#kuantitasBarangGanti').val("");
         $('#keterangan').html("");
         $('#kuantitasBarangGanti').attr("max", batasan);

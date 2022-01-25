@@ -60,6 +60,8 @@ class AdminPembelianController extends Controller
 
         for ($i = 0; $i < count((array) $dataBarang); $i++)
         {
+            $tglKadaluarsa = $dataBarang[$i]['tanggal_kadaluarsa'] != "Tidak ada" ? $dataBarang[$i]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
+
             $selectBarang = DB::table('barang_has_kadaluarsa')
                             ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
                             ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
@@ -72,7 +74,7 @@ class AdminPembelianController extends Controller
                 $insertStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->insert([
                                         'barang_id' => $dataBarang[$i]['barang_id'],
-                                        'tanggal_kadaluarsa' => $dataBarang[$i]['tanggal_kadaluarsa'],
+                                        'tanggal_kadaluarsa' => $tglKadaluarsa,
                                         'jumlah_stok' => $dataBarang[$i]['kuantitas']
                                     ]);
                  
@@ -81,7 +83,7 @@ class AdminPembelianController extends Controller
             {
                 $insertStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
-                                    ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
+                                    ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
                                     ->increment('jumlah_stok', $dataBarang[$i]['kuantitas']);  
 
             }
@@ -91,7 +93,7 @@ class AdminPembelianController extends Controller
                                                 'pembelian_id'          => $idPembelian,
                                                 'barang_id'             => $dataBarang[$i]['barang_id'],
                                                 'kuantitas'             => $dataBarang[$i]['kuantitas'],
-                                                'tanggal_kadaluarsa'    => $dataBarang[$i]['tanggal_kadaluarsa'],
+                                                'tanggal_kadaluarsa'    => $tglKadaluarsa,
                                                 'harga_beli'            => $dataBarang[$i]['harga_beli'],
                                                 'subtotal'              => $dataBarang[$i]['subtotal']
                                             ]);

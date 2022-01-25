@@ -8,25 +8,25 @@
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Nomor Nota</label>
               <div class="col-sm-10">
-                <p>{{ $penjualan[0]->nomor_nota }}</p>
+                <p class="mt-2">{{ $penjualan[0]->nomor_nota }}</p>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Tanggal</label>
               <div class="col-sm-10">
-                  <p>{{ \Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('D MMMM Y') }}</p>
+                  <p class="mt-2">{{ \Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('D MMMM Y').", jam ".\Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('H:m:s')." WIB" }}</p>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Pelanggan</label>
               <div class="col-sm-10">
-                <p>{{ $penjualan[0]->nama_depan." ".$penjualan[0]->nama_belakang }}</p>
+                <p class="mt-2">{{ $penjualan[0]->nama_depan." ".$penjualan[0]->nama_belakang }}</p>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Metode Transaksi</label>
               <div class="col-sm-10">
-                <p>{{ $penjualan[0]->metode_transaksi }}</p>
+                <p class="mt-2">{{ $penjualan[0]->metode_transaksi }}</p>
               </div>
             </div>
             <hr>
@@ -35,19 +35,40 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Metode Transaksi</label>
                 <div class="col-sm-10">
-                  <p>{{ $penjualan[0]->metode_pembayaran }}</p>
+                  <p class="mt-2">{{ $penjualan[0]->metode_pembayaran }}</p>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Status Pembayaran</label>
                 <div class="col-sm-10">
-                  <p>{{ $penjualan[0]->status }}</p>
+                  <p class="mt-2">{{ $penjualan[0]->status }}</p>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Total</label>
                 <div class="col-sm-10">
-                  <p>{{ "Rp " . number_format($detail_penjualan[0]->total,0,',','.') }}</p>
+                  <p class="mt-2">{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>
+                </div>
+            </div>
+            <hr>
+            <h5>Pengiriman</h5>
+            <br>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Metode Transaksi</label>
+                <div class="col-sm-10">
+                  <p class="mt-2">{{ $penjualan[0]->metode_pembayaran }}</p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Status Pembayaran</label>
+                <div class="col-sm-10">
+                  <p class="mt-2">{{ $penjualan[0]->status }}</p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Total</label>
+                <div class="col-sm-10">
+                  <p class="mt-2">{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>
                 </div>
             </div>
             <div class="card shadow my-4">

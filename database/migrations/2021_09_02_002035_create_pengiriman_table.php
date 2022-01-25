@@ -21,6 +21,7 @@ class CreatePengirimanTable extends Migration
             $table->double('tarif');
             $table->string('kode_shipper');
             $table->foreign('kode_shipper')->references('kode_shipper')->on('shipper')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('kode_jenis_pengiriman', 55);
             $table->string('jenis_pengiriman', 55);
             $table->integer('total_berat');
             $table->datetime('estimasi_tiba');

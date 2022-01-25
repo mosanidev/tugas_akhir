@@ -5,13 +5,20 @@
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1>Daftar Pengiriman</h1>
+      <div class="col-sm-12">
+        <h1>Daftar Pengiriman Penjualan</h1>
       </div>
   </div>
 </section>
 
 <div class="container-fluid">
+
+    <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalPilihPengirimanPenjualan" id="tambahPengirimanPenjualan">Tambah</button>
+
+    <form action="{{ route('order.create') }}" method="POST">
+      @csrf
+      <button type="submit" class="btn btn-info ml-5">TEst Order API</button>
+    </form>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -27,9 +34,7 @@
                           <th>Tanggal</th>
                           <th>Pelanggan</th>
                           <th>Metode Transaksi</th>
-                          <th>Metode Pembayaran</th>
-                          <th>Total</th>
-                          <th>Status Pembayaran</th>
+                          <th>Status</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
@@ -41,6 +46,8 @@
         </div>
     </div>
 </div>
+
+@include('admin.pengiriman.modal.create')
 
 <script type="text/javascript">
 

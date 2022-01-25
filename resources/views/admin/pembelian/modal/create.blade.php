@@ -23,6 +23,7 @@
                       </select> 
                     </div>
                 </div>
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa</p>
                     <div class="col-sm-8">
@@ -34,9 +35,14 @@
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
+                            <div class="custom-control custom-checkbox mt-2">
+                                <input type="checkbox" class="custom-control-input" id="checkTglKadaluarsaNull">
+                                <label class="custom-control-label" for="checkTglKadaluarsaNull">Tidak ada tanggal kadaluarsa</label>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Harga Beli</p>
                     <div class="col-sm-8">
@@ -80,6 +86,20 @@
 
     });
 
+    $('#checkTglKadaluarsaNull').on('change', function() {
+
+        if($("#checkTglKadaluarsaNull")[0].checked)
+        {
+            $('#tanggal_kadaluarsa').val("");
+            $('#tanggal_kadaluarsa').attr("readonly", true);
+        }
+        else 
+        {
+            $('#tanggal_kadaluarsa').attr("readonly", false);
+        }
+
+    });
+
     $('#kuantitas').on('change', function() {
 
         if($('#harga_beli').val() != "")
@@ -106,11 +126,18 @@
         }
         else if(barangDibeli.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val()}).length == 0)
         {
+            let tglKadaluarsa = $('#tanggal_kadaluarsa').val();
+
+            if(tglKadaluarsa == "")
+            {
+                tglKadaluarsa = "Tidak ada";
+            }
+
             barangDibeli.push({
                 "barang_id": $('#barang :selected').val(),
                 "barang_kode": $('#barang :selected').attr("data-kode"),
                 "barang_nama": $('#barang :selected').attr("data-nama"),
-                "tanggal_kadaluarsa": $('#tanggal_kadaluarsa').val(),
+                "tanggal_kadaluarsa": tglKadaluarsa,
                 "harga_beli": $('#harga_beli').val(),
                 "kuantitas": $('#kuantitas').val(),
                 "subtotal": parseInt($('#harga_beli').val())*parseInt($('#kuantitas').val())

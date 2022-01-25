@@ -177,5 +177,12 @@ class KategoriBarangSeeder extends Seeder
             ]
         );
 
+        DB::table('kategori_barang')->insert(
+            [   
+                'id'                => 24,  
+                'kategori_barang'   => 'Aksesoris'
+            ]
+        );
+
     }
 }

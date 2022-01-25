@@ -150,6 +150,7 @@
     <input type="hidden" name="tarif" id="tarif" value="">
     <input type="hidden" name="kode_shipper" id="kode_shipper" value="">
     <input type="hidden" name="jenis_pengiriman" id="jenis_pengiriman" value="">
+    <input type="hidden" name="kode_jenis_pengiriman" id="kode_jenis_pengiriman" value="">
     <input type="hidden" name="total_berat_pengiriman" id="total_berat_pengiriman" value="">
     <input type="hidden" name="estimasi_tiba" id="estimasi_tiba" value="">
 </form>
@@ -201,6 +202,7 @@
         let arrAlamatPengiriman = [];
         let arrTarif = [];
         let arrKodeShipper = [];
+        let arrKodeJenisPengiriman = [];
         let arrJenisPengiriman = [];
         let arrTotalBeratPengiriman = [];
         let arrEstimasiTiba = [];
@@ -252,7 +254,7 @@
                         for(let u =0; u < hasil.pricing.length; u++)
                         {
                             $('#selectPengiriman'+i).append(
-                                "<option id='pilihan-pengiriman-" + i + "' value='" + u + "' data='" + hasil.pricing[u].courier_service_name + " - " + hasil.pricing[u].price + "'>" + hasil.pricing[u].courier_service_name + " - " + convertAngkaToRupiah(hasil.pricing[u].price) +"</option>"
+                                "<option id='pilihan-pengiriman-" + i + "' value='" + u + "' data='" + hasil.pricing[u].courier_service_name + " - " + hasil.pricing[u].price + "' data-kode-jenis-pengiriman='" + hasil.pricing[u].courier_service_code + "'>" + hasil.pricing[u].courier_service_name + " - " + convertAngkaToRupiah(hasil.pricing[u].price) +"</option>"
                             );
                         }
 
@@ -408,6 +410,7 @@
                     arrTarif[i] = convertRupiahToAngka($('.selectPengiriman :selected')[i].innerText.split(" - ")[1]);
                     arrKodeShipper[i] = $('.kodeShipper')[i].innerText;
                     arrJenisPengiriman[i] = $('.selectPengiriman :selected')[i].innerText.split(" - ")[0];
+                    arrKodeJenisPengiriman[i] = $('.selectPengiriman :selected')[i].getAttribute("data-kode-jenis-pengiriman");
                     let date = document.getElementsByClassName('estimasiTiba')[i].innerText;
                     arrEstimasiTiba[i] = moment(date).format('YYYY-MM-DD HH:mm:ss');
                 }
@@ -418,6 +421,7 @@
                 $('#tarif').val(JSON.stringify(arrTarif));
                 $('#kode_shipper').val(JSON.stringify(arrKodeShipper));
                 $('#jenis_pengiriman').val(JSON.stringify(arrJenisPengiriman));
+                $('#kode_jenis_pengiriman').val(JSON.stringify(arrKodeJenisPengiriman));
                 $('#estimasi_tiba').val(JSON.stringify(arrEstimasiTiba));
                 
             }
