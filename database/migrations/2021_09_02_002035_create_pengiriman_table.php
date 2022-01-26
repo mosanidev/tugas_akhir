@@ -24,9 +24,8 @@ class CreatePengirimanTable extends Migration
             $table->string('kode_jenis_pengiriman', 55);
             $table->string('jenis_pengiriman', 55);
             $table->integer('total_berat');
+            $table->string('status', 100)->nullable();
             $table->datetime('estimasi_tiba');
-            // $table->unsignedInteger('alamat_pengiriman_id');
-            // $table->foreign('alamat_pengiriman_id')->references('id')->on('alamat_pengiriman')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

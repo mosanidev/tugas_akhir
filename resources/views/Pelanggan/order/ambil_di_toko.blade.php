@@ -15,6 +15,8 @@
                 </div>
             @endif
 
+            <a href="{{ route('orderMethod') }}" class="btn btn-link text-success mb-3"><strong> <- Kembali ke halaman pilih metode transaksi </strong></a>
+
             <h3 class="mb-4"><strong>Belanja Ambil di Toko</strong></h3>
 
             @php $totalDiskon = 0; @endphp
@@ -106,9 +108,12 @@
                     <p class="text-justify">Buka Hari Senin-Sabtu <br> jam 08:00 - 16:00</p>
                     <p class="text-justify" id="maks_ambil"></p>
 
-
-                    <a class="btn btn-success text-light" id="pay">Beli</a><br>
-                    
+                    @if(auth()->user()->jenis == "Pelanggan")
+                        <a class="btn btn-success text-light" id="pay">Beli</a><br>
+                    @else  
+                        {{-- anggota kopkar --}}
+                        <button class="btn btn-success text-light" id="pay">Beli</button><br>
+                    @endif
 
                 </div>
             </div>

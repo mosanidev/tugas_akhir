@@ -638,14 +638,13 @@ class OrderController extends Controller
 
     public function shipment(Request $request)
     {
-        $alamat_dipilih =  DB::table('alamat_pengiriman')->where('alamat_utama', '=', 1)->get();
+        $alamat_dipilih =  DB::table('alamat_pengiriman')->where('alamat_utama', '=', 1)->where('users_id', '=', auth()->user()->id)->get();
 
         if($request->alamat_id != null)
         {
             $alamat_dipilih = DB::table('alamat_pengiriman')->select('*')->where('id','=',$request->alamat_id)->where('users_id', '=', auth()->user()->id)->get();
         }
 
-        
         $cart = DB::table('cart')
                 ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')

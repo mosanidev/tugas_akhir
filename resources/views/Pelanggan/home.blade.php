@@ -6,8 +6,6 @@
 
 @section('content')
 
-    {{-- {{session()->flush();}} --}}
-
     <div class="bg-secondary">
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
@@ -90,7 +88,7 @@
                                                         <p><b><a href="{{ route('detail', ['id' => $barang_promo[$i]->id]) }}" class="text-dark">{{ $barang_promo[$i]->nama }}</a></b></p>
                                                     </div>
                                                     <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_promo[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_promo[$i]->harga_jual-$barang_promo[$i]->diskon_potongan_harga,0,',','.') }}</p>
-                                                    <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_promo[$i]->id }}" type="button"> Beli </button>
+                                                    <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_promo[$i]->id }}" type="button"> Masukkan ke keranjang </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -171,7 +169,7 @@
                                                         <p><b><a href="{{ route('detail', ['id' => $barang_konsinyasi[$i]->id]) }}" class="text-dark">{{ $barang_konsinyasi[$i]->nama }}</a></b></p>
                                                     </div>
                                                     <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_konsinyasi[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_konsinyasi[$i]->harga_jual-$barang_konsinyasi[$i]->diskon_potongan_harga,0,',','.') }}</p>
-                                                    <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_konsinyasi[$i]->id }}" type="button"> Beli </button>
+                                                    <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_konsinyasi[$i]->id }}" type="button"> Masukkan ke keranjang </button>
                                                 </div>
                                             </div>
                                         </div>

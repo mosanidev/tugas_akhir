@@ -33,7 +33,7 @@
                             <p class="d-inline">Jumlah </p><button type="button" class="btn btn-info d-inline btn-qty-min"> - </button><input type="number" class="form-control d-inline text-center" id="kuantitas-cart" style="width:63px; padding-bottom: 8.3px;" min="1" max="{{$barang[0]->jumlah_stok}}" value="1"><button type="button" class="btn btn-info d-inline btn-qty-plus mr-2" data-max="{{ $barang[0]->jumlah_stok }}"> + </button><p class="d-inline">Stok</p> <p class="d-inline"><strong>{{$barang[0]->jumlah_stok}}</strong></p>
                             
                             <input type="hidden" name="barang_id" id="barangID" value="{{ $barang[0]->id }}">
-                            <button class="btn btn-success ml-3" type="button" id="btnBeli" style="width:17%;">Beli</button>
+                            <button class="btn btn-success ml-3" type="button" id="btnBeli" style="width:40%;">Masukkan ke keranjang</button>
 
 
 

@@ -52,7 +52,7 @@ class AlamatController extends Controller
             'kecamatan' => explode(',', $request->kecamatan)[0],
             'kode_pos' => $request->kode_pos,
             'alamat' => $request->alamat,
-            'alamat_utama' => 0,
+            'alamat_utama' => $alamat_utama,
             'kota_kabupaten' => explode(',', $request->kecamatan)[1],
             'provinsi' => explode(',', $request->kecamatan)[2],
             'users_id' => auth()->user()->id

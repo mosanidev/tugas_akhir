@@ -4,6 +4,8 @@
 
     <div class="p-5 my-5" style="background-color: #FFF47D;" id="content-cart">
 
+        <a href="{{ route('show') }}" class="btn btn-link text-success mb-3"><strong> <- Kembali ke halaman keranjang </strong></a>
+
         <h3 class="mb-4"><strong>Metode Transaksi</strong></h3>
 
         <div class="row">
@@ -90,8 +92,8 @@
 
                 <h5 class="mt-3"><strong>Pilih Metode Transaksi</strong></h5>
 
-                <a href="{{ route('orderShipment') }}" id="btn-kirim-ke-alamat" class="btn btn-outline-success mr-2">Kirim ke Alamat</a>
-                <a href="{{ route('pickInStore') }}" id="btn-ambil-di-toko" class="btn btn-outline-success">Ambil di Toko</a>
+                <a href="{{ route('orderShipment') }}" id="btn-kirim-ke-alamat" class="btn btn-outline-success mr-2"><strong>Kirim ke Alamat</strong></a>
+                <a href="{{ route('pickInStore') }}" id="btn-ambil-di-toko" class="btn btn-outline-success"><strong>Ambil di Toko</strong></a>
 
 
 

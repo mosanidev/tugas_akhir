@@ -21,6 +21,7 @@ class CreatePembayaranTable extends Migration
             $table->string('bank', 10)->nullable();
             $table->string('nomor_rekening', 35)->nullable();
             $table->datetime('batasan_waktu')->nullable();
+            $table->enum('status', ['Belum lunas', 'Sudah lunas'])->default('Belum lunas');
             $table->datetime('waktu_lunas')->nullable();
         });
     }

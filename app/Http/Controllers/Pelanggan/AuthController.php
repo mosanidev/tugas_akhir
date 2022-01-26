@@ -121,11 +121,9 @@ class AuthController extends Controller
         {
             return redirect()->back()->with(['error' => 'Email belum terdaftar di sistem']);
 
-        } else if ($user[0]->jenis != "Pelanggan")  // false
-        {
-            return redirect()->back()->with(['error' => 'Mohon maaf anda tidak memiliki hak akses']);
-
-        } else { // true
+        } 
+        else if($user[0]->jenis == "Pelanggan" || $user[0]->jenis == "Anggota_Kopkar") 
+        { // true
 
             Auth::attempt($data);
             
@@ -140,6 +138,11 @@ class AuthController extends Controller
                 // login fail
                 return redirect()->back()->with(['error' => 'Email atau password salah']);
             }
+        }
+        else  // false
+        {
+            return redirect()->back()->with(['error' => 'Mohon maaf anda tidak memiliki hak akses']);
+
         }
        
     }

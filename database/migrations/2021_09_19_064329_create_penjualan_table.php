@@ -26,7 +26,6 @@ class CreatePenjualanTable extends Migration
             $table->enum('metode_transaksi', ['Dikirim ke alamat', 'Ambil di toko', 'Dikirim ke berbagai alamat']);
             $table->string('status')->nullable();
             $table->enum('jenis', ['Online', 'Offline'])->default('Online');
-            // $table->date('batasan_waktu_pengambilan')->nullable();
             $table->double('total')->nullable();
             $table->timestamps();
         });

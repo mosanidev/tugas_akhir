@@ -28,7 +28,6 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
 
-        
         <a class="navbar-brand" href="{{ route('home') }}"><i>Toko Kopkar Ubaya</i></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -40,8 +39,6 @@
 
                 <form class="form-inline ml-5" method="GET" id="formCariProduk" action="{{ route('search')}}">
                     
-                    {{-- {{ dd($_GET['input_kategori']); }} --}}
-
                     <div class="dropdown d-inline mr-1">
                         <button class="btn btn-success dropdown-toggle btnPilihKategori" style="width: 250px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
                             @if(isset($_GET['input_kategori']) && $_GET['input_kategori'] != "")

@@ -12,6 +12,8 @@
             </div>
         @endif
 
+        <a href="{{ route('orderMethod') }}" class="btn btn-link text-success mb-3"><strong> <- Kembali ke halaman pilih metode transaksi </strong></a>
+
         <h3 class="mb-4"><strong>Belanja Dikirim ke Alamat</strong></h3>
 
         <div class="row">
@@ -22,20 +24,20 @@
 
                 <div style="overflow: hidden;">
 
-                    @if(count($alamat) == 0)
-                        <button type="button" class="btn btn-link text-success float-left" data-toggle="modal" data-target="#modalAddAddress">Buat Alamat</button>
-                    @else 
-                        <button type="button" class="btn btn-link text-success float-left" data-toggle="modal" data-target="#modalPickAddress">Pilih Alamat</button>   
+                    {{-- jika user memiliki alamat lebih dari satu maka tampilkan button pilih alamat --}}
+                    @if(count($alamat) > 1) 
+                        <button type="button" class="btn btn-link text-success float-left" data-toggle="modal" data-target="#modalPickAddress"><strong>Pilih Alamat</strong></button> 
+                        
+                        <form method="GET" action="{{ route('multipleShipmentNew') }}">
+                            {{-- <input type="hidden" value="" id="alamat_tujuan_pengiriman" name="alamat_tujuan_pengiriman"> --}}
+                            @foreach($cart as $item)
+                                <input type="hidden" value="{{ $item->barang_id }}" name="barang_id[]">
+                            @endforeach
+                            <input type="hidden" value="" id="alamat_tujuan_pengiriman" name="alamat_tujuan_pengiriman">
+                            <button type="submit" id="multiple_shipment" class="btn btn-link text-success float-right"><strong>Kirim ke beberapa Alamat</strong></button>
+                        </form>
                     @endif
-
-                    <form method="GET" action="{{ route('multipleShipmentNew') }}">
-                        {{-- <input type="hidden" value="" id="alamat_tujuan_pengiriman" name="alamat_tujuan_pengiriman"> --}}
-                        @foreach($cart as $item)
-                            <input type="hidden" value="{{ $item->barang_id }}" name="barang_id[]">
-                        @endforeach
-                        <input type="hidden" value="" id="alamat_tujuan_pengiriman" name="alamat_tujuan_pengiriman">
-                        <button type="submit" id="multiple_shipment" class="btn btn-link text-success float-right">Kirim ke beberapa Alamat</button>
-                    </form>
+                    
                 </div>
                 
                 <div class="border border-success rounded p-2 mb-3">
@@ -172,40 +174,6 @@
                             <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
                         </div>
                 </div>
-
-                {{-- <div class="row">
-                    <div class="col-6 text-right">
-                        <p>Total Harga Produk</p>
-                    </div>
-                    <div class="col-6" id="pengiriman">
-                        <p id="origin-total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p>
-                    </div>
-                    <div class="col-6 text-right">
-                        <p>Pengiriman</p>
-                    </div>
-                    <div class="col-6" id="pengiriman">
-                        <select class="form-control" id="selectPengiriman">
-                            <option selected disabled>Pilih Pengiriman</option>
-                            <option id="loadPengiriman" disabled>Loading . . .</div>
-                        </select>               
-                    </div>
-                    <div id="label-info-pengiriman" class="col-6 text-right">
-                        <p>Info Pengiriman</p>
-                        {{-- <p>Estimasi Tiba</p> --}}
-                    {{-- </div>
-                    <div id="info-pengiriman" class="col-6">
-                        <div>
-                            <p id="info-kurir">-</p>
-                            <p id="info-tiba"></p>
-                        </div>
-                    </div>
-                    <div class="col-6 text-right"> 
-                        <p>Total Harga Pesanan</p>
-                    </div>
-                    <div class="col-6"> 
-                        <p id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p>
-                    </div>
-                </div>  --}}
                 
                 <a class="btn btn-success text-light float-right" id="pay" >Beli</a>
             </div>
@@ -259,67 +227,29 @@
         <input type="hidden" name="estimasi_tiba" id="estimasi_tiba" value="">
     </form>
 
-    <div class="modal fade" id="modalAddAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="judulModal">Tambah Alamat</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <form method="POST" id="form-alamat-modal" action="{{ url('alamat') }}">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" name="alamat_id" id="alamat_id">
-                    <div class="form-group">
-                        <label>Label Alamat</label>
-                        <input type="text" class="form-control" id="label-alamat" name="label_alamat" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Penerima</label>
-                        <input type="text" class="form-control" id="nama-penerima" name="nama_penerima" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nomor Telepon</label>
-                        <input type="tel" class="form-control" id="nomor-telepon" name="nomor_telepon" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Kecamatan</label>
-                        <div id="loader-container">
-                            <input type="text" class="form-control" name="kecamatan" id="input-kecamatan" list="kecamatanList" autocomplete="off" required>
-                        </div>
-                        <datalist id="kecamatanList">
-                            {{-- hasil api --}}
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label>Kode Pos</label>
-                        <input type="number" class="form-control" name="kode_pos" id="input-kode-pos" list="kodePosList" autocomplete="off" required>
-                        
-                        <div id='loader-kode-pos' class='my-1'>
-                            <p class='d-inline ml-1'>Loading . . .</p>
-                            <div class='spinner-border spinner-border-sm float-right mt-1 mr-1' role='status'>
-                            <span class='sr-only'>Loading...</span>
-                            </div>
-                        </div>
-                        
-                        <datalist id="kodePosList">
-                            {{-- hasil api --}}
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label>Alamat</label>
-                        <textarea class="form-control" name="alamat" id="text-alamat" rows="3"></textarea>
-                    </div>
-
-                    <button type="submit" id="btn-simpan-alamat" class="btn btn-success">Simpan</button>
-                </div>
-            </form>
-        </div>
-        </div>
-    </div>
 @endsection
+
+<!-- Modal -->
+<div class="modal fade" id="modalBelumAdaAlamat" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5><strong>Tunggu dulu . . .</strong></h5>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex justify-content-center" >
+                <p id="isi-info" class="text-justify">Mohon maaf anda tidak dapat melanjutkan transaksi sebelum membuat alamat terlebih dahulu. Sebentar lagi anda akan dialihkan ke halaman alamat untuk membuat alamat</p><br>
+            </div>
+            {{-- <div>
+                <small class="d-inline"><p id="timer" class="d-inline">5</p> detik</small>
+            </div> --}}
+          </div>
+          <div class="modal-footer">
+            <a  href="{{ route('alamat.index') }}" class="btn btn-block mx-auto btn-success w-50 d-none" id="btnBuatAlamat">Buat alamat</a>
+          </div>
+      </div>
+    </div>
+</div>
 
 @push('script')
     {{-- End Pick Main Address Modal --}}
@@ -371,6 +301,17 @@
                 return findKategori;
             }
 
+            let alamat = <?php echo json_encode($alamat) ?>;
+
+            if(alamat.length == 0)
+            {
+                $('#modalBelumAdaAlamat').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+                setInterval(function() {
+                    $('#btnBuatAlamat')[0].click();
+
+                }, 5000);
+            }
 
             let arr = null;
             let param = null;
@@ -441,18 +382,28 @@
 
                     let hasil = JSON.parse(data.response);
 
-                    console.log(hasil);
-                    
-                    arr = hasil;
-                    // console.log(hasil);
+                    console.log(hasil.error);
 
-                    for(let i =0; i < hasil.pricing.length; i++)
+                    if(hasil.error == "No courier available for requested location. Please activate other courier option to receive other pricing rate")
                     {
+                        tampilkanCustomModal('Mohon maaf tidak ada kurir yang dapat mengantarkan pesanan anda', 100);
+
                         $('#selectPengiriman').append(
-                            "<option id='pilihan-pengiriman' value='" + i + "'>" + hasil.pricing[i].courier_service_name + " - " + convertAngkaToRupiah(hasil.pricing[i].price) +"</option>"
+                            "<option id='pilihan-pengiriman'>Tidak ada pengiriman</option>"
                         );
                     }
+                    else 
+                    {
+                        arr = hasil;
+                        // console.log(hasil);
 
+                        for(let i =0; i < hasil.pricing.length; i++)
+                        {
+                            $('#selectPengiriman').append(
+                                "<option id='pilihan-pengiriman' value='" + i + "'>" + hasil.pricing[i].courier_service_name + " - " + convertAngkaToRupiah(hasil.pricing[i].price) +"</option>"
+                            );
+                        }
+                    }
                     
                 },
                 complete: function(data) {
@@ -460,177 +411,77 @@
                     let append = 0;
                     $("#selectPengiriman").on("click", function() {
 
-                        if(arr.message == "Success to retrieve courier pricing")
+                        if(arr != null)
                         {
-                            let num = $('#selectPengiriman').find(":selected").val();
-
-                            // load input
-                            $('#alamat_pengiriman_id').val($('#alamat_dipilih_id').html());
-                            $("#tarif").val(arr.pricing[num].price);
-                            $("#kode_shipper").val(arr.pricing[num].courier_code);
-                            $("#jenis_pengiriman").val(arr.pricing[num].courier_service_name);
-                            $("#kode_jenis_pengiriman").val(arr.pricing[num].courier_service_code);
-                            $("#total_berat_pengiriman").val($('#total_berat').val());
-                            
-                            // $('#estimasi_tiba').val($('#info-tiba').html());
-
-                            $("#info-kurir").html(arr.pricing[num].courier_name); 
-
-                            append += 1;
-                            $('#label-info-pengiriman').append(function() {
-                                if(append == 1)
-                                {
-                                    return "<p>Estimasi Tiba</p><p>Total Tarif Pengiriman</p>";
-                                }
-                            });
-
-                            $("#tarifOngkir").html(convertAngkaToRupiah(arr.pricing[num].price)); 
-
-                            let infoTiba = null;
-                            let durasi = null;
-                            
-                            if(arr.pricing[num].duration.toLowerCase().includes('days'))
+                            if(arr.message == "Success to retrieve courier pricing")
                             {
-                                if(arr.pricing[num].duration.includes("-"))
-                                {
-                                    durasi = arr.pricing[num].duration.split(" - ")[1].replace(" days", "");
-                                }
-                                else
-                                {
-                                    durasi = arr.pricing[num].duration.replace(" days", "");
-                                }
-                                infoTiba = moment().add(durasi, 'days').format('DD MMMM YYYY'); 
-                                $("#info-tiba").html(infoTiba);
-                            }
-                            else if (arr.pricing[num].duration.toLowerCase().includes('hours'))
-                            {
-                                if(arr.pricing[num].duration.includes("-"))
-                                {
-                                    durasi = arr.pricing[num].duration.split(" - ")[1].replace(" Hours", "");
-                                }
-                                else
-                                {
-                                    durasi = arr.pricing[num].duration.replace(" Hours", "");
-                                }
-                                let roundUp = moment().second() || moment().millisecond() ? moment().add(1, 'hour').startOf('hour') : moment().startOf('hour'); // dibulatkan ke jam terdekat
-                                infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm:ss'); 
-                                $("#info-tiba").html(infoTiba + " WIB");
-                            }
-                            
-                            $('#estimasi_tiba').val(moment(infoTiba).format('YYYY-MM-DD HH:mm:ss'));
+                                let num = $('#selectPengiriman').find(":selected").val();
 
-                            total_pesanan = parseInt(convertRupiahToAngka($('#origin-total-pesanan').html()))+parseInt(convertRupiahToAngka($('#tarifOngkir').html()));
+                                // load input
+                                $('#alamat_pengiriman_id').val($('#alamat_dipilih_id').html());
+                                $("#tarif").val(arr.pricing[num].price);
+                                $("#kode_shipper").val(arr.pricing[num].courier_code);
+                                $("#jenis_pengiriman").val(arr.pricing[num].courier_service_name);
+                                $("#kode_jenis_pengiriman").val(arr.pricing[num].courier_service_code);
+                                $("#total_berat_pengiriman").val($('#total_berat').val());
+                                
+                                // $('#estimasi_tiba').val($('#info-tiba').html());
 
-                            $('#total-pesanan').html(convertAngkaToRupiah(total_pesanan));
+                                $("#info-kurir").html(arr.pricing[num].courier_name); 
+
+                                append += 1;
+                                $('#label-info-pengiriman').append(function() {
+                                    if(append == 1)
+                                    {
+                                        return "<p>Estimasi Tiba</p><p>Total Tarif Pengiriman</p>";
+                                    }
+                                });
+
+                                $("#tarifOngkir").html(convertAngkaToRupiah(arr.pricing[num].price)); 
+
+                                let infoTiba = null;
+                                let durasi = null;
+                                
+                                if(arr.pricing[num].duration.toLowerCase().includes('days'))
+                                {
+                                    if(arr.pricing[num].duration.includes("-"))
+                                    {
+                                        durasi = arr.pricing[num].duration.split(" - ")[1].replace(" days", "");
+                                    }
+                                    else
+                                    {
+                                        durasi = arr.pricing[num].duration.replace(" days", "");
+                                    }
+                                    infoTiba = moment().add(durasi, 'days').format('DD MMMM YYYY'); 
+                                    $("#info-tiba").html(infoTiba);
+                                }
+                                else if (arr.pricing[num].duration.toLowerCase().includes('hours'))
+                                {
+                                    if(arr.pricing[num].duration.includes("-"))
+                                    {
+                                        durasi = arr.pricing[num].duration.split(" - ")[1].replace(" Hours", "");
+                                    }
+                                    else
+                                    {
+                                        durasi = arr.pricing[num].duration.replace(" Hours", "");
+                                    }
+                                    let roundUp = moment().second() || moment().millisecond() ? moment().add(1, 'hour').startOf('hour') : moment().startOf('hour'); // dibulatkan ke jam terdekat
+                                    infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm:ss'); 
+                                    $("#info-tiba").html(infoTiba + " WIB");
+                                }
+                                
+                                $('#estimasi_tiba').val(moment(infoTiba).format('YYYY-MM-DD HH:mm:ss'));
+
+                                total_pesanan = parseInt(convertRupiahToAngka($('#origin-total-pesanan').html()))+parseInt(convertRupiahToAngka($('#tarifOngkir').html()));
+
+                                $('#total-pesanan').html(convertAngkaToRupiah(total_pesanan));
+                            }  
                         }
+                        
 
                     });
                 }   
             });
-
-            $("#input-kecamatan").on('keyup', function() {
-
-                clearTimeout(timer);       // clear timer
-
-                timer = setTimeout(generate_kecamatan, 500);
-
-            });
-
-            let xTriggered = 0;
-            $('#input-kecamatan').on('keydown', function () {
-
-                clearTimeout(timer);       // clear timer if user pressed key again
-
-                xTriggered++;
-
-                if(xTriggered == 1)
-                {
-                    $("#loader-container").append("<div id='loader-kecamatan' class='my-1'><p class='d-inline ml-1'>Loading . . .</p><div class='spinner-border spinner-border-sm float-right mt-1 mr-1' role='status'><span class='sr-only'>Loading...</span></div></div>");
-                }
-
-                areaID = "Not Found";
-                kodePos = "Not Found";
-
-                $('#loader-kecamatan').show();
-
-            });
-
-
-            function generate_kecamatan() 
-            { 
-                let input_kecamatan = $.trim($("#input-kecamatan").val());
-
-                if($('#input-kecamatan').val().length > 0)
-                {
-
-                    $.ajax({
-                        type: 'GET',
-                        url: '/generate_kecamatan/'+input_kecamatan,
-                        cache: false,
-                        success:function(data) {
-
-                            let hasil = JSON.parse(data);
-
-                            // mengosongkan option dulu
-                            $('#kecamatanList').empty()
-
-                            for(let i=0; i<hasil.areas.length; i++)
-                            {
-                                $("#kecamatanList").append("<option id='" + hasil.areas[i].id + "' class='data-kecamatan' value='" +  hasil.areas[i].name + "'>")
-                                
-                            }
-                        }
-                    });
-
-                    $('.data-kecamatan').each(function() {
-                        if($('#input-kecamatan').val() == $(this).val())
-                        {
-                            $('#loader-kecamatan').hide();
-                            areaID = $(this).attr('id');
-                            return;
-                        }
-                    });
-
-                    if(areaID != "Not Found")
-                    {
-                        // clear input 
-                        $("#input-kode-pos").val("");
-
-                        // show loader 
-                        $("#loader-kode-pos").show();
-
-                        // clear option 
-                        $('#kodePosList').empty();
-
-                        // focus on input kode pos
-                        $('#input-kode-pos').focus();
-
-                        $.ajax({
-                            type: 'GET',
-                            url: '/generate_postal_code/'+areaID,
-                            cache: false,
-                            success:function(data) {
-
-                                let hasil = JSON.parse(data);
-
-                                for(let i=0; i<hasil.areas.length; i++)
-                                {
-                                    $("#kodePosList").append("<option value='"  + hasil.areas[i].postal_code + "'' class='data-kode-pos'>");
-                                    $('#loader-kode-pos').hide();
-                                }
-
-                                
-                            }
-                            });
-                        }     
-                    }
-                    else 
-                    {
-                        $('#loader-kecamatan').hide();
-                        $('#kodePosList').empty();
-                                    
-                    }
-            }
 
             $('#pay').on('click', function() {
 

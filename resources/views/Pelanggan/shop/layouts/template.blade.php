@@ -58,7 +58,7 @@
                                         @else
                                             <p class="card-text">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</p>
                                         @endif
-                                        <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang[$i]->id }}" type="submit"> Beli </button>
+                                        <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang[$i]->id }}" type="submit">Masukkan ke keranjang</button>
                                     </div>
                                 </div>
                             </div>

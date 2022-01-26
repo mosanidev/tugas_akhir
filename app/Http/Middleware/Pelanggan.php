@@ -17,7 +17,7 @@ class Pelanggan
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->jenis == "Pelanggan")
+        if(Auth::check() && Auth::user()->jenis == "Pelanggan" || Auth::user()->jenis == "Anggota_Kopkar")
         {
             return $next($request);
         }

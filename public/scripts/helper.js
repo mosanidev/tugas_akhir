@@ -54,12 +54,9 @@ function cekApakahTokoTutup()
 
 function tampilkanCustomModal(isi, durasi)
 {
-    $('#isi-info').text(isi);
+    $('.isi-info').text(isi);
 
-    $('#customModal').modal('toggle')
-
-    setInterval($('#customModal').modal('toggle'), durasi);
-    
+    $('#customModal').modal('toggle');
 }   
 
 function showLoader(modalObject, object)
