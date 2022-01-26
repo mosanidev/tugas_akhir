@@ -27,7 +27,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $penjualan = DB::table('penjualan')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->select('penjualan.id', 'penjualan.nomor_nota', 'penjualan.tanggal', 'pembayaran.id as pembayaran_id', 'penjualan.status', 'penjualan.total')->where('penjualan.users_id', '=', auth()->user()->id)->orderByDesc('penjualan.tanggal')->distinct()->paginate(10);
+        $penjualan = DB::table('penjualan')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->select('penjualan.id', 'penjualan.nomor_nota', 'penjualan.tanggal', 'pembayaran.id as pembayaran_id', 'penjualan.status', 'penjualan.total', 'penjualan.metode_transaksi')->where('penjualan.users_id', '=', auth()->user()->id)->orderByDesc('penjualan.tanggal')->distinct()->paginate(10);
 
         $detail_penjualan = DB::table('detail_penjualan')
                             ->select('penjualan.nomor_nota', 'barang.nama', DB::raw('SUM(detail_penjualan.kuantitas) as kuantitas'))
@@ -745,14 +745,31 @@ class OrderController extends Controller
 
         if($transaksi[0]->metode_transaksi == "Dikirim ke alamat")
         {
+            $pengiriman = DB::table('detail_penjualan')
+                            ->select('pengiriman.*', 'pengiriman.id as pengiriman_id', 'pengiriman.jenis_pengiriman', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
+                            ->where('detail_penjualan.penjualan_id', '=', $id)
+                            ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
+                            ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
+                            ->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')
+                            ->groupBy('detail_penjualan.alamat_pengiriman_id')
+                            ->get();
+
             $barang = DB::table('detail_penjualan')
-                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
-                        ->where('detail_penjualan.penjualan_id', '=', $id)
-                        ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
-                        ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
-                        ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
-                        ->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')
-                        ->get();
+                            ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*')
+                            ->where('detail_penjualan.penjualan_id', '=', $id)
+                            ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
+                            ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
+                            ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                            ->get();
+
+            // $barang = DB::table('detail_penjualan')
+            //             ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
+            //             ->where('detail_penjualan.penjualan_id', '=', $id)
+            //             ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+            //             ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
+            //             ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
+            //             ->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')
+            //             ->get();
 
         }
         else if ($transaksi[0]->metode_transaksi == "Ambil di toko")

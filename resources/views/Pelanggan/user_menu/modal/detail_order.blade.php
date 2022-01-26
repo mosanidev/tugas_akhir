@@ -9,43 +9,11 @@
         </div>
         <div class="modal-body">
             <div class="infoTransaksi">
-                {{-- <div class="row">
-                    <div class="col-4 ml-2">
-                        Tanggal
-                    </div>
-                    <div class="col-5">
-                        <p id="tanggalTransaksi"></p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4 ml-2">
-                        Metode
-                    </div>
-                    <div class="col-5">
-                        <p id="metodeTransaksi"></p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4 ml-2">
-                        Status
-                    </div>
-                    <div class="col-5">
-                        <p id="statusTransaksi"></p>
-                    </div>
-                </div> --}}
                 
             </div>
             
             <hr>
-            <div class="rowBarang">
-                
-            </div>
-            
-            <div class="rowInfoAlamatPengiriman">
-
-            </div>
-            <br>
-            <div class="rowInfoPengiriman">
+            <div class="rowContent">
                 
             </div>
             <div class="row">
@@ -78,30 +46,6 @@
                     </div>
                 </div>
             </div> 
-            {{-- <div class="row">
-                <div class="col-6">
-                    Metode
-                </div>
-                <div class="col-6">
-                    <p id="metodeTransaksi"></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    Metode
-                </div>
-                <div class="col-6">
-                    <p id="metodeTransaksi"></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    Metode
-                </div>
-                <div class="col-6">
-                    <p id="metodeTransaksi"></p>
-                </div>
-            </div> --}}
         </div>
       </div>
     </div>

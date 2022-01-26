@@ -8,19 +8,36 @@
                 @for($i = 0; $i<count($penjualan); $i++) 
                     <div class="bg-light border border-4 p-3 mb-3">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <p>Nomor Nota #<strong>{{ $penjualan[$i]->nomor_nota }}</strong></p>
-                            </div>
-                            <div class="col-6 text-right">
-                                <p>{{ $penjualan[$i]->status }}</p>
-                                {{-- {{ "Rp ".number_format($penjualan[$i]->total,0,',','.')  }} --}}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <p>Tanggal {{ \Carbon\Carbon::parse($penjualan[$i]->tanggal)->isoFormat('D MMMM Y HH:mm') }} WIB</p>
+                            <div class="col-4">
+                                <p>Status</p>
+                            </div>
+                            <div class="col-8">
+                                <p>{{ $penjualan[$i]->status }}</p>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <p>Metode Transaksi</p>
+                            </div>
+                            <div class="col-8">
+                                <p>{{ $penjualan[$i]->metode_transaksi }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                Tanggal 
+                            </div>
+                            <div class="col-8">
+                                <p>{{ \Carbon\Carbon::parse($penjualan[$i]->tanggal)->isoFormat('D MMMM Y HH:mm') }} WIB</p>
+                            </div>
+                        </div>
+                        <p>Barang dibeli :</p> 
+                        <hr>
                         <div class="row">
                                 
                             @for($x=0; $x < count($detail_penjualan); $x++)
@@ -35,13 +52,21 @@
                             @endfor
 
                         </div>
-                        <div class="float-right">
-                            Total : {{ "Rp ".number_format($penjualan[$i]->total,0,',','.')  }}
-                        </div>
-                        <br>
+                        <hr> 
                         <div class="row">
-                            {{-- <a href="" class="btn btn-link text-success mx-auto">Lihat Detail</a> --}}
-                            <button class="btn btn-link text-success mx-auto btnLihatDetailOrder"  data-dismiss="modal" data-toggle="modal" data-target="#modalDetailOrder" data-id="{{$penjualan[$i]->id}}">Lihat Detail</button>
+                            <div class="col-10">
+                                <p class="text-right">
+                                    Total : 
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <p class="text-right">
+                                    {{ "Rp ".number_format($penjualan[$i]->total,0,',','.')  }}
+                                </p>
+                            </div>
+                        </div>
+                        <br> 
+                        <button class="btn btn-block btn-link text-success mx-auto btnLihatDetailOrder"  data-dismiss="modal" data-toggle="modal" data-target="#modalDetailOrder" data-id="{{$penjualan[$i]->id}}">Lihat Detail</button>
                         </div>
 
                     </div>
@@ -75,10 +100,15 @@
                     url: '/order/show/'+id, 
                     beforeSend: function() {
                         
-                        $('.rowBarang').html("");
-                        $('.rowInfoAlamatPengiriman').html("");
-                        $('.rowInfoPengiriman').html("");
+                        $('.rowContent').html("");
                         $('.infoTransaksi').html("");
+                        $('#labelTotalTarifOngkir').html("");                        
+                        $('#totalTarifOngkir').html("");
+                        $('#labelSubtotalProduk').html("");
+                        $('#subtotalProduk').html("");
+                        $('#totalTransaksi').html("");
+                        $('#labelTotal').html("");
+
                         showLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
 
                     },
@@ -216,15 +246,14 @@
 
                         $('.infoTransaksi').html(infoTransaksi);
 
-                        let rowBarang = "";
-                        let rowBarangSama = "";
-                        let rowInfoPengiriman = "";
+                        let rowContent = "";
 
                         if(data.transaksi[0].metode_transaksi == "Ambil di toko")
                         {
+                            // tampilkan data barang
                             for(let i=0; i < data.barang.length; i++)
                             {
-                                rowBarang += `<div class="row">
+                                rowContent += `<div class="row">
                                                     <div class="col-4 ml-2">
                                                             <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                     </div>
@@ -241,67 +270,65 @@
 
                             $('#labelTotalTarifOngkir').html("");
 
-                            $('.rowInfoAlamatPengiriman').html("");
-
-                            $('.rowInfoPengiriman').html("");
+                            $('.rowContent').html("");
 
                             $('#totalTarifOngkir').html("");
 
                         }
                         else if(data.transaksi[0].metode_transaksi == "Dikirim ke alamat") // dikirim ke alamat
                         {   
-                            $('.rowInfoAlamatPengiriman').html(`<h5>Alamat Pengiriman</h5>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    ` + data.barang[0].alamat + `
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    ` + data.barang[0].kecamatan + `, ` + data.barang[0].kota_kabupaten + `, ` + data.barang[0].kode_pos + `
-                                                                </div>
-                                                            </div>`);
+                            $('.rowContent').append(`<h5>Alamat Pengiriman</h5>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            ` + data.pengiriman[0].alamat + `
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            ` + data.pengiriman[0].kecamatan + `, ` + data.pengiriman[0].kota_kabupaten + `, ` + data.pengiriman[0].kode_pos + `
+                                                        </div>
+                                                    </div>`);
 
                             // let estimasiTiba = null;
-                            if(data.barang[0].nama_shipper == 'Gojek' || data.barang[0].nama_shipper == 'Grab')
+                            if(data.pengiriman[0].nama_shipper == 'Gojek' || data.pengiriman[0].nama_shipper == 'Grab')
                             {
-                                estimasiTiba = moment(data.barang[0].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
+                                estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
                             }
                             else 
                             {
-                                estimasiTiba = moment(data.barang[0].estimasi_tiba).format("DD MMMM YYYY");
+                                estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY");
                             }
 
-                            $('.rowInfoPengiriman').html(`<h5>Pengiriman</h5>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    ` + data.barang[0].jenis_pengiriman + ` ` + data.barang[0].nama_shipper + `
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    Estimasi pengiriman tiba ` + estimasiTiba + `
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    Ongkos kirim ` + convertAngkaToRupiah(data.barang[0].tarif) + `
-                                                                </div>
-                                                            </div>
-                                                            <hr>`);                                
-                            
                             for(let i=0; i < data.barang.length; i++)
                             {
-                                rowBarang += `<div class="row">
-                                                    <div class="col-4 ml-2">
-                                                            <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
-                                                    </div>
-                                                    <div class="col-7">
-                                                            <p>`+ data.barang[i].nama + `</p>
-                                                            <div class="row">
-                                                                <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
-                                                                <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                $('.rowContent').append(`<div class="row">
+                                                            <div class="col-4 ml-2">
+                                                                    <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                             </div>
-                                                    </div>
-                                                </div>`;
+                                                            <div class="col-7">
+                                                                    <p>`+ data.barang[i].nama + `</p>
+                                                                    <div class="row">
+                                                                        <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
+                                                                        <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                                                    </div>
+                                                            </div>
+                                                        </div>`);
 
                             }
+
+                            $('.rowContent').append(`<h5>Pengiriman</h5>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            ` + data.pengiriman[0].jenis_pengiriman + ` ` + data.pengiriman[0].nama_shipper + `
+                                                        </div>
+                                                        <div class="col-12">
+                                                            Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                        </div>
+                                                        <div class="col-12">
+                                                            Ongkos kirim ` + convertAngkaToRupiah(data.pengiriman[0].tarif) + `
+                                                        </div>
+                                                    </div>
+                                                    <hr>`);               
 
                             $('#labelSubtotalProduk').html("Subtotal Produk :");
 
@@ -320,7 +347,6 @@
 
                             for(let i=0; i < data.pengiriman.length; i++)
                             {
-
                                 if(data.pengiriman[i].nama_shipper == 'Gojek' ||data.pengiriman[i].nama_shipper == 'Grab')
                                 {
                                     estimasiTiba = moment(data.pengiriman[i].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
@@ -332,7 +358,7 @@
 
                                 totalTarif += data.pengiriman[i].tarif;
 
-                                $('.rowBarang').append(`<h5>Alamat Pengiriman</h5>
+                                $('.rowContent').append(`<h5>Alamat Pengiriman</h5>
                                                                 <div class="row">
                                                                     <div class="col-12">
                                                                         ` + data.pengiriman[i].alamat + `
@@ -346,11 +372,9 @@
 
                                 for(let y=0; y < data.barang.length; y++)
                                 {
-                                    
-                                    subTotalProduk += data.barang[i].subtotal;
                                     if(data.barang[y].pengiriman_id == data.pengiriman[i].pengiriman_id)
                                     {
-                                        $('.rowBarang').append(`<div class="row">
+                                        $('.rowContent').append(`<div class="row">
                                                                     <div class="col-4 ml-2">
                                                                             <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                                     </div>
@@ -365,7 +389,9 @@
                                     }
                                 }
 
-                                $('.rowBarang').append(`<h5>Pengiriman</h5>
+                                subTotalProduk += data.barang[i].subtotal;
+
+                                $('.rowContent').append(`<h5>Pengiriman</h5>
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     ` + data.pengiriman[i].jenis_pengiriman + ` ` + data.pengiriman[i].nama_shipper + `
@@ -389,20 +415,22 @@
 
                             $('#totalTarifOngkir').html(convertAngkaToRupiah(totalTarif));
 
-                            if(data.barang[index].nama_shipper == 'Gojek' || data.barang[index].nama_shipper == 'Grab')
-                            {
-                                estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
-                            }
-                            else 
-                            {
-                                estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY");
-                            }
+                            // if(data.barang[index].nama_shipper == 'Gojek' || data.barang[index].nama_shipper == 'Grab')
+                            // {
+                            //     estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
+                            // }
+                            // else 
+                            // {
+                            //     estimasiTiba = moment(data.barang[index].estimasi_tiba).format("DD MMMM YYYY");
+                            // }
 
                         } // end if
 
                         $('#labelTotal').html("Total :");
 
                         $('#totalTransaksi').html(convertAngkaToRupiah(data.transaksi[0].total));
+
+                        console.log(data.transaksi[0].total);
                         
                     }   
                 });
