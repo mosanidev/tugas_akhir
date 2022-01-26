@@ -29,7 +29,13 @@ class OrderController extends Controller
     {
         $penjualan = DB::table('penjualan')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->select('penjualan.id', 'penjualan.nomor_nota', 'penjualan.tanggal', 'pembayaran.id as pembayaran_id', 'penjualan.status', 'penjualan.total')->where('penjualan.users_id', '=', auth()->user()->id)->orderByDesc('penjualan.tanggal')->distinct()->paginate(10);
 
-        $detail_penjualan = DB::table('detail_penjualan')->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')->where('penjualan.users_id', '=', auth()->user()->id)->get();
+        $detail_penjualan = DB::table('detail_penjualan')
+                            ->select('penjualan.nomor_nota', 'barang.nama', DB::raw('SUM(detail_penjualan.kuantitas) as kuantitas'))
+                            ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                            ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
+                            ->where('penjualan.users_id', '=', auth()->user()->id)
+                            ->groupBy('penjualan.id')
+                            ->get();
 
         $kategori = DB::table('kategori_barang')->get();
     
@@ -761,7 +767,7 @@ class OrderController extends Controller
         else if ($transaksi[0]->metode_transaksi == "Dikirim ke berbagai alamat")
         {
             $pengiriman = DB::table('detail_penjualan')
-                            ->select('pengiriman.*', 'pengiriman.id as pengiriman_id', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
+                            ->select('pengiriman.*', 'pengiriman.id as pengiriman_id', 'pengiriman.jenis_pengiriman', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
                             ->where('detail_penjualan.penjualan_id', '=', $id)
                             ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
                             ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')

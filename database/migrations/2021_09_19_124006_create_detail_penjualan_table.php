@@ -16,6 +16,7 @@ class CreateDetailPenjualanTable extends Migration
         Schema::dropIfExists('detail_penjualan');
 
         Schema::create('detail_penjualan', function (Blueprint $table) {
+            // $table->increments('id');
             $table->unsignedInteger('penjualan_id');
             $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('barang_id');

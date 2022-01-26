@@ -40,7 +40,7 @@
             <div class="rowBarang">
                 
             </div>
-            <hr>
+            
             <div class="rowInfoAlamatPengiriman">
 
             </div>
