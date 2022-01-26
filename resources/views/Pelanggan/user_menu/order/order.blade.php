@@ -65,8 +65,7 @@
                                 </p>
                             </div>
                         </div>
-                        <br> 
-                        <button class="btn btn-block btn-link text-success mx-auto btnLihatDetailOrder"  data-dismiss="modal" data-toggle="modal" data-target="#modalDetailOrder" data-id="{{$penjualan[$i]->id}}">Lihat Detail</button>
+                        <button class="btn btn-block btn-link text-success mx-auto border border-black btnLihatDetailOrder"  data-dismiss="modal" data-toggle="modal" data-target="#modalDetailOrder" data-id="{{$penjualan[$i]->id}}">Lihat Detail</button>
                         </div>
 
                     </div>
