@@ -117,8 +117,10 @@
 
                 </div>
             </div>
-
-            @include('pelanggan.order.modal.choose_payment')
+            
+            @if(auth()->user()->jenis == "Anggota_Kopkar")
+                @include('pelanggan.order.modal.choose_payment')
+            @endif
 
             <form action="{{ route('checkoutPickInStore') }}" method="GET" id="submitPaymentForm">
                 <input type="hidden" name="nomor_nota" id="nomor_nota" value="">

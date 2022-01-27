@@ -48,7 +48,6 @@
 
                         @if(isset($alamat_dipilih))
 
-                            {{-- {{dd($alamat_dipilih)}} --}}
                             @php $latitude = isset($alamat_dipilih[0]->latitude) ? $alamat_dipilih[0]->latitude : false; @endphp
                             @php $longitude = isset($alamat_dipilih[0]->longitude) ? $alamat_dipilih[0]->longitude : false; @endphp
 
@@ -105,7 +104,7 @@
                             <img src="{{ asset($item->barang_foto) }}" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
                         </div>
                         <div class="col-10">
-                            <p class="barang_id d-none">{{ $item->id }}</p>
+                            <p class="barang_id d-none">{{ $item->barang_id }}</p>
                             <p class="barang_nama">{{ $item->barang_nama }}</p>
                             <div class="mb-3">
                                 <p class="barang_jumlah d-inline">{{$item->kuantitas}}</p><p class="d-inline"> barang ( {{$item->kuantitas*$item->barang_berat}} gram )</p>
@@ -179,7 +178,7 @@
                         <a class="btn btn-success text-light" id="pay">Beli</a><br>
                 @else  
                     {{-- anggota kopkar --}}
-                    <button class="btn btn-success text-light" data-toggle="modal" data-target="#modalBeliAnggotaKopkar">Beli</button>
+                    <button class="btn btn-success text-light" id="modalPayPotongGaji">Beli</button>
                 @endif
 
             </div>
@@ -257,7 +256,9 @@
     </div>
 </div>
 
-@include('pelanggan.order.modal.choose_payment')
+@if(auth()->user()->jenis == "Anggota_Kopkar")
+    @include('pelanggan.order.modal.choose_payment')
+@endif
 
 @push('script')
     {{-- End Pick Main Address Modal --}}
@@ -307,6 +308,66 @@
                 }
 
                 return findKategori;
+            }
+
+            function createArrBarang()
+            {
+                let arrBarang = { "item_details" : [] };
+
+                for(let i = 0; i < $('.barang_id').length; i++)
+                {
+                    let obj = { 
+                        "id": $('.barang_id')[i].innerHTML,
+                        "price": convertRupiahToAngka($('.barang_harga')[i].innerHTML),
+                        "quantity": $('.barang_jumlah')[i].innerHTML,
+                        "name": $('.barang_nama')[i].innerHTML
+                    }
+                    arrBarang.item_details.push(obj)
+                }
+
+                let tarifOngkir = parseInt(convertRupiahToAngka($('#tarifOngkir').html()));
+
+                let obj = {
+                    id: "P01",
+                    price: +tarifOngkir,
+                    quantity: 1,
+                    name: "Shipment Fee"
+                }
+
+                arrBarang.item_details.push(obj)
+
+                if($('#total-diskon').html() != undefined)
+                {
+                    let nominal = parseInt(convertRupiahToAngka($('#total-diskon').html()));
+                    let obj = {
+                        id: "D01",
+                        price: -nominal,
+                        quantity: 1,
+                        name: "Discount"
+                    }
+                    arrBarang.item_details.push(obj)
+                }
+
+                return arrBarang;
+            }
+
+            function createArrShippingAddress()
+            {
+                let arrShippingAddress = { "shipping_address" : [] };
+
+                let obj = { 
+                    "first_name": $('#namaPenerima').html(),
+                    "last_name": "",
+                    "phone": $('#nomorTeleponPenerima').html(),
+                    "address": $('#alamatPenerima').html(),
+                    "city": $('#kotaPenerima').html(),
+                    "postal_code": $('#kodePosPenerima').html(),
+                    "country_code": 'IDN'
+                }
+                
+                arrShippingAddress.shipping_address.push(obj);
+
+                return arrShippingAddress;
             }
 
             let alamat = <?php echo json_encode($alamat) ?>;
@@ -389,8 +450,6 @@
                     $('#loadPengiriman').remove();
 
                     let hasil = JSON.parse(data.response);
-
-                    console.log(hasil.error);
 
                     if(hasil.error == "No courier available for requested location. Please activate other courier option to receive other pricing rate")
                     {
@@ -491,139 +550,15 @@
                 }   
             });
 
-            $('#pay').on('click', function() {
-
-                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
-
-                let arrBarang = createArrBarang();
-
-                let arrShippingAddress = createArrShippingAddress();
-
-                let selected = $('#selectPengiriman').find(":selected").val();
-
-                if(selected == "Pilih Pengiriman")
-                {
-                    alert("Harap pilih pengiriman terlebih dahulu");
-                }
-                else 
-                {
-                    if($('#modalBeliAnggotaKopkar').hasClass('show'))
-                    {
-                        $('#modalBeliAnggotaKopkar').modal('toggle');
-                    }
-
-                    $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '{{ route('initPayment') }}',
-                        data: { 'total_pesanan': total_pesanan, 'nomor_nota': nomor_nota, 'arr_barang': arrBarang, 'arr_shipping_address': arrShippingAddress},
-                        success:function(data) {
-
-                            console.log(data);
-
-                            try {
-                                snap.pay(data.snapToken, {
-                                    onSuccess: function (result) {
-
-                                        $('#nomor_nota').val(nomor_nota);
-                                        $('#payment-form').submit();
-                                    },
-                                    onPending: function (result) {
-
-                                        $('#nomor_nota').val(nomor_nota);
-                                        $('#payment-form').submit();
-                                    },
-                                    onError: function (result) {
-
-                                        $('#modalLoading').modal('toggle');
-                                    },
-                                    onClose: function() {
-
-                                        $('#modalLoading').modal('toggle');
-                                    },
-                                    gopayMode: 'qr'
-                                });
-                            } catch(err) {
-
-                                snap.hide();           
-                            }
-                            
-                        }
-                    });
-                }
-                
-            });
-
-            function createArrBarang()
-            {
-                let arrBarang = { "item_details" : [] };
-
-                for(let i = 0; i < $('.barang_id').length; i++)
-                {
-                    let obj = { 
-                        "id": $('.barang_id')[i].innerHTML,
-                        "price": convertRupiahToAngka($('.barang_harga')[i].innerHTML),
-                        "quantity": $('.barang_jumlah')[i].innerHTML,
-                        "name": $('.barang_nama')[i].innerHTML
-                    }
-                    arrBarang.item_details.push(obj)
-                }
-
-                let tarifOngkir = parseInt(convertRupiahToAngka($('#tarifOngkir').html()));
-
-                let obj = {
-                    id: "P01",
-                    price: +tarifOngkir,
-                    quantity: 1,
-                    name: "Shipment Fee"
-                }
-
-                arrBarang.item_details.push(obj)
-
-                if($('#total-diskon').html() != undefined)
-                {
-                    let nominal = parseInt(convertRupiahToAngka($('#total-diskon').html()));
-                    let obj = {
-                        id: "D01",
-                        price: -nominal,
-                        quantity: 1,
-                        name: "Discount"
-                    }
-                    arrBarang.item_details.push(obj)
-                }
-
-                return arrBarang;
-            }
-
-            function createArrShippingAddress()
-            {
-                let arrShippingAddress = { "shipping_address" : [] };
-
-                let obj = { 
-                    "first_name": $('#namaPenerima').html(),
-                    "last_name": "",
-                    "phone": $('#nomorTeleponPenerima').html(),
-                    "address": $('#alamatPenerima').html(),
-                    "city": $('#kotaPenerima').html(),
-                    "postal_code": $('#kodePosPenerima').html(),
-                    "country_code": 'IDN'
-                }
-                
-                arrShippingAddress.shipping_address.push(obj);
-
-                return arrShippingAddress;
-            }
-
             $('#payPotongGaji').on('click', function() {
 
                 const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
 
                 let arrBarang = createArrBarang();
 
-                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+                let arrShipment = createArrShippingAddress();
 
-                let arrShippingAddress = createArrShippingAddress();
+                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
 
                 $('#arrBarang').val(JSON.stringify(arrBarang));
 
@@ -631,9 +566,22 @@
 
                 $('#nomorNota').val(nomor_nota);
 
-                $('#arrShipment').val(arrShippingAddress);
+                $('#idAlamatPengiriman').val($('input[name=alamat_id]').val());
 
-                $('#metodeTransaksi').val("Kirim ke alamat");
+                $('#metodeTransaksi').val("Dikirim ke alamat");
+
+                let num = $('#selectPengiriman').find(":selected").val();
+
+                // load input
+                $("#tarif_").val(arr.pricing[num].price);
+                $("#kodeShipper_").val(arr.pricing[num].courier_code);
+                $("#jenisPengiriman_").val(arr.pricing[num].courier_service_name);
+                $("#kodeJenisPengiriman_").val(arr.pricing[num].courier_service_code);
+                $("#totalBerat_").val($('#total_berat').val());
+
+                let estimasiTiba = moment($('#info-tiba').html()).format('Y-MM-DD HH:mm:ss');
+
+                $('#estimasiTiba_').val(estimasiTiba);
 
                 $('#modalBeliAnggotaKopkar').modal('toggle');
 
@@ -642,6 +590,85 @@
 
                 $('#payPotongGaji').attr('type', 'submit');
                 $('#payPotongGaji')[0].click();
+
+            });
+
+            $('#modalPayPotongGaji').on('click', function() {
+
+                let selected = $('#selectPengiriman :selected').index();
+
+                if(selected == 0)
+                {
+                    alert("Harap pilih pengiriman terlebih dahulu");
+                }
+                else  
+                {
+                    $('#modalBeliAnggotaKopkar').modal('toggle');
+                }
+                });
+
+                $('#pay').on('click', function() {
+
+                    let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+
+                    let arrBarang = createArrBarang();
+
+                    let arrShippingAddress = createArrShippingAddress();
+
+                    let selected = $('#selectPengiriman :selected').index()
+
+                    if(selected == 0)
+                    {
+                        alert("Harap pilih pengiriman terlebih dahulu");
+                        console.log("nggak bisa pay");
+                    }
+                    else 
+                    {
+                        if($('#modalBeliAnggotaKopkar').hasClass('show'))
+                        {
+                            $('#modalBeliAnggotaKopkar').modal('toggle');
+                        }
+
+                        console.log("bisa pay");
+
+                        $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ route('initPayment') }}',
+                            data: { 'total_pesanan': total_pesanan, 'nomor_nota': nomor_nota, 'arr_barang': arrBarang, 'arr_shipping_address': arrShippingAddress},
+                            success:function(data) {
+
+                                try {
+                                    snap.pay(data.snapToken, {
+                                        onSuccess: function (result) {
+
+                                            $('#nomor_nota').val(nomor_nota);
+                                            $('#payment-form').submit();
+                                        },
+                                        onPending: function (result) {
+
+                                            $('#nomor_nota').val(nomor_nota);
+                                            $('#payment-form').submit();
+                                        },
+                                        onError: function (result) {
+
+                                            $('#modalLoading').modal('toggle');
+                                        },
+                                        onClose: function() {
+
+                                            $('#modalLoading').modal('toggle');
+                                        },
+                                        gopayMode: 'qr'
+                                    });
+                                } catch(err) {
+
+                                    snap.hide();           
+                                }
+                                
+                            }
+                        });
+                    }
 
             });
             

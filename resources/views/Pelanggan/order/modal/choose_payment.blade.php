@@ -11,7 +11,13 @@
           <form action="{{ route('pembayaranPotongGaji') }}" method="GET">
             <div class="modal-body">
                 <input type="hidden" name="arrBarang" id="arrBarang">
-                <input type="hidden" name="arrShipment" id="arrShipment">
+                <input type="hidden" name="alamat_pengiriman_id" id="idAlamatPengiriman">
+                <input type="hidden" name="kode_shipper" id="kodeShipper_">
+                <input type="hidden" name="kode_jenis_pengiriman" id="kodeJenisPengiriman_">
+                <input type="hidden" name="jenis_pengiriman" id="jenisPengiriman_">
+                <input type="hidden" name="total_berat" id="totalBerat_">
+                <input type="hidden" name="estimasi_tiba" id="estimasiTiba_">
+                <input type="hidden" name="tarif" id="tarif_">
                 <input type="hidden" name="nomor_nota" id="nomorNota">
                 <input type="hidden" name="metode_transaksi" id="metodeTransaksi">
                 <input type="hidden" name="total_pesanan" id="totalPesanan">

@@ -638,6 +638,35 @@ class OrderController extends Controller
 
     public function pembayaranPotongGaji(Request $request) 
     {
+        $alamat_pengiriman_id = isset($request->alamat_pengiriman_id) ? $request->alamat_pengiriman_id : null;
+        $kode_shipper = isset($request->kode_shipper) ? $request->kode_shipper : null;
+        $kode_jenis_pengiriman = isset($request->kode_jenis_pengiriman) ? $request->kode_jenis_pengiriman : null;
+        $jenis_pengiriman = isset($request->jenis_pengiriman) ? $request->jenis_pengiriman : null;
+        $total_berat = isset($request->total_berat) ? $request->total_berat : null;
+        $estimasi_tiba = isset($request->estimasi_tiba) ? $request->estimasi_tiba : null;
+        $tarif = isset($request->tarif) ? $request->tarif : null;
+
+        $idPengiriman = null;
+
+        if($kode_shipper != null)
+        {
+            $idPengiriman = DB::table('pengiriman')
+                                ->insertGetId([
+                                    'tarif' => $tarif,
+                                    'kode_shipper' => $kode_shipper,
+                                    'kode_jenis_pengiriman' => $request->kode_jenis_pengiriman,
+                                    'jenis_pengiriman' => $request->jenis_pengiriman,
+                                    'total_berat' => $request->total_berat,
+                                    'estimasi_tiba' => $request->estimasi_tiba
+                                ]);
+
+            $insertMultiplePengiriman = DB::table('multiple_pengiriman')
+                                            ->insert([
+                                                'pengiriman_id' => $idPengiriman,
+                                                'alamat_pengiriman_id' => $alamat_pengiriman_id,
+                                                'total_tarif' => $tarif
+                                            ]);
+        }
         $idPembayaran = DB::table('pembayaran')
                             ->insertGetId([
                                 'metode_pembayaran' => 'Pemotongan gaji',
@@ -656,23 +685,28 @@ class OrderController extends Controller
                                 'updated_at' => Carbon::now(),
                                 'total' => $request->total_pesanan
                             ]);
-
+        
         if($request->arrShipment != null)
         {
             $arrShipment = json_decode($request->arrShipment, true);
         }
-        
+
         $arrBarang = json_decode($request->arrBarang, true);
 
         for($i = 0; $i < count($arrBarang); $i++)
         {
-            $detailPenjualan = DB::table('detail_penjualan')
-                                    ->insertGetId([
+            if($arrBarang['item_details'][$i]['name'] != 'Shipment Fee')
+            {
+                $detailPenjualan = DB::table('detail_penjualan')
+                                    ->insert([
                                         'penjualan_id' => $idPenjualan,
                                         'barang_id' => $arrBarang['item_details'][$i]['id'],
                                         'kuantitas' => $arrBarang['item_details'][$i]['quantity'],
-                                        'subtotal' => $arrBarang['item_details'][$i]['price']*$arrBarang['item_details'][$i]['quantity']
+                                        'subtotal' => $arrBarang['item_details'][$i]['price']*$arrBarang['item_details'][$i]['quantity'],
+                                        'pengiriman_id' => $idPengiriman,
+                                        'alamat_pengiriman_id' => $alamat_pengiriman_id
                                     ]);
+            }
         }
 
         $deleteCart = DB::table('cart')

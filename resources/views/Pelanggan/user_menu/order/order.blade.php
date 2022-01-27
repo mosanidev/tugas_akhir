@@ -94,6 +94,8 @@
                 let id = event.target.getAttribute('data-id');
                 let index = null;
 
+                alert(id);
+
                 $.ajax({
                     type: 'GET',
                     url: '/order/show/'+id, 
