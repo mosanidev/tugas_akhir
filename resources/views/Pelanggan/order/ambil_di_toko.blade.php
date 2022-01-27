@@ -112,11 +112,13 @@
                         <a class="btn btn-success text-light" id="pay">Beli</a><br>
                     @else  
                         {{-- anggota kopkar --}}
-                        <button class="btn btn-success text-light" id="pay">Beli</button><br>
+                        <button class="btn btn-success text-light" data-toggle="modal" data-target="#modalBeliAnggotaKopkar">Beli</button>
                     @endif
 
                 </div>
             </div>
+
+            @include('pelanggan.order.modal.choose_payment')
 
             <form action="{{ route('checkoutPickInStore') }}" method="GET" id="submitPaymentForm">
                 <input type="hidden" name="nomor_nota" id="nomor_nota" value="">
@@ -127,32 +129,10 @@
                 <input type="hidden" name="nomor_nota" value="{{ strtoupper(substr(md5(uniqid()), 10)) }}">
             </form>
 
-            {{-- testing midtrans --}}
-
-            {{-- @php 
-
-                $params = array(
-                    'transaction_details' => array(
-                        'order_id' => 'testing03',
-                        'gross_amount' => 30000,
-                    ),
-                    'customer_details' => array(
-                        'first_name' => auth()->user()->nama_depan,
-                        'last_name' => auth()->user()->nama_belakang,
-                        'email' => auth()->user()->email,
-                        'phone' => auth()->user()->nomor_telepon,
-                    ),
-                    // 'item_details' => array()
-                );
-
-
-                $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-
-            @endphp --}}
-
         </div>
     </div>
+
+
 
 @endsection
 
@@ -179,6 +159,11 @@
             let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
 
             $('#pay').on('click', function() {
+
+                if($('#modalBeliAnggotaKopkar').hasClass('show'))
+                {
+                    $('#modalBeliAnggotaKopkar').modal('toggle');
+                }
 
                 // loading . . .
                 $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
@@ -224,6 +209,32 @@
                 });
 
             });
+
+        });
+
+        $('#payPotongGaji').on('click', function() {
+
+            const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
+
+            let arrBarang = createArrBarang();
+
+            let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+
+            $('#arrBarang').val(JSON.stringify(arrBarang));
+            
+            $('#totalPesanan').val(total_pesanan);
+
+            $('#nomorNota').val(nomor_nota);
+
+            $('#metodeTransaksi').val("Ambil di toko");
+
+            $('#modalBeliAnggotaKopkar').modal('toggle');
+
+            // loading . . .
+            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+            $('#payPotongGaji').attr('type', 'submit');
+            $('#payPotongGaji')[0].click();
 
         });
 

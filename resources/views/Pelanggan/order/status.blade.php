@@ -73,7 +73,7 @@
                     <p>Sebesar</p>
                 </div>
                 <div class="col-6">
-                    <p>{{ "E-Wallet" }}</p>
+                    <p>{{ $penjualan[0]->metode_pembayaran }}</p>
                     <p>{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>
                 </div>
             </div>

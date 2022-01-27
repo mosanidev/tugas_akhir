@@ -126,7 +126,7 @@
                         }
                         else 
                         {
-                            metodePembayaran = "E-Wallet";
+                            metodePembayaran = data.transaksi[0].metode_pembayaran;
                         }
 
                         if(data.transaksi[0].status == "Pesanan sudah dibayar dan sedang disiapkan")
@@ -201,7 +201,7 @@
                                                     Tanggal
                                                 </div>
                                                 <div class="col-5">
-                                                    <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") +`</p>
+                                                    <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -245,31 +245,28 @@
 
                         $('.infoTransaksi').html(infoTransaksi);
 
-                        let rowContent = "";
-
                         if(data.transaksi[0].metode_transaksi == "Ambil di toko")
                         {
                             // tampilkan data barang
                             for(let i=0; i < data.barang.length; i++)
                             {
-                                rowContent += `<div class="row">
-                                                    <div class="col-4 ml-2">
-                                                            <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
-                                                    </div>
-                                                    <div class="col-7">
-                                                            <p>`+ data.barang[i].nama + `</p>
-                                                            <div class="row">
-                                                                <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
-                                                                <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                $('.rowContent').append(`<div class="row">
+                                                            <div class="col-4 ml-2">
+                                                                    <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                             </div>
-                                                    </div>
-                                                </div>`;
+                                                            <div class="col-7">
+                                                                    <p>`+ data.barang[i].nama + `</p>
+                                                                    <div class="row">
+                                                                        <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
+                                                                        <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
+                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr>`);
 
                             }
 
                             $('#labelTotalTarifOngkir').html("");
-
-                            $('.rowContent').html("");
 
                             $('#totalTarifOngkir').html("");
 

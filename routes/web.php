@@ -180,6 +180,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/checkout/shipment', [OrderController::class, 'addOrderShipment'])->name('checkoutShipment');
         Route::get('/checkout/multiple/shipment', [OrderController::class, 'addOrderMultipleShipment'])->name('checkoutMultipleShipment');
 
+        Route::get('/pay_potong_gaji', [OrderController::class, 'pembayaranPotongGaji'])->name('pembayaranPotongGaji');
+        
         Route::post('initpayment', [PaymentController::class, 'initPayment'])->name('initPayment');
         Route::get('/detailpayment', [OrderController::class, 'detailPayment'])->name('order.detailpayment');        
     });

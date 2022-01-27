@@ -636,6 +636,63 @@ class OrderController extends Controller
         }
     }
 
+    public function pembayaranPotongGaji(Request $request) 
+    {
+        $idPembayaran = DB::table('pembayaran')
+                            ->insertGetId([
+                                'metode_pembayaran' => 'Pemotongan gaji',
+                                'status' => 'Belum lunas'
+                            ]);
+
+        $idPenjualan = DB::table('penjualan')
+                            ->insertGetId([
+                                'nomor_nota' => $request->nomor_nota,
+                                'users_id' => auth()->user()->id,
+                                'tanggal' => Carbon::now(),
+                                'pembayaran_id' => $idPembayaran,
+                                'metode_transaksi' => $request->metode_transaksi,
+                                'status' => 'Pesanan sudah dibayar dan sedang disiapkan',
+                                'created_at'=> Carbon::now(),
+                                'updated_at' => Carbon::now(),
+                                'total' => $request->total_pesanan
+                            ]);
+
+        if($request->arrShipment != null)
+        {
+            $arrShipment = json_decode($request->arrShipment, true);
+        }
+        
+        $arrBarang = json_decode($request->arrBarang, true);
+
+        for($i = 0; $i < count($arrBarang); $i++)
+        {
+            $detailPenjualan = DB::table('detail_penjualan')
+                                    ->insertGetId([
+                                        'penjualan_id' => $idPenjualan,
+                                        'barang_id' => $arrBarang['item_details'][$i]['id'],
+                                        'kuantitas' => $arrBarang['item_details'][$i]['quantity'],
+                                        'subtotal' => $arrBarang['item_details'][$i]['price']*$arrBarang['item_details'][$i]['quantity']
+                                    ]);
+        }
+
+        $deleteCart = DB::table('cart')
+                        ->where('users_id', '=', auth()->user()->id)
+                        ->delete();
+
+        $insertNotif = DB::table('notifikasi')
+                        ->insert([
+                            'isi' => "Pesanan #".$request->nomor_nota." telah dibayar sedang menunggu pesanan diproses",
+                            'penjualan_id' => $idPenjualan,
+                            'users_id' => auth()->user()->id,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now(),
+                            'status' => 'Belum dilihat'
+                        ]);
+
+        return redirect()->route('info_order', ['nomor_nota' => $request->nomor_nota]); 
+
+    }
+
     public function shipment(Request $request)
     {
         $alamat_dipilih =  DB::table('alamat_pengiriman')->where('alamat_utama', '=', 1)->where('users_id', '=', auth()->user()->id)->get();

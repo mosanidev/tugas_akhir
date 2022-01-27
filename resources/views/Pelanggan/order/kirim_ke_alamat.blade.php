@@ -175,7 +175,13 @@
                         </div>
                 </div>
                 
-                <a class="btn btn-success text-light float-right" id="pay" >Beli</a>
+                @if(auth()->user()->jenis == "Pelanggan")
+                        <a class="btn btn-success text-light" id="pay">Beli</a><br>
+                @else  
+                    {{-- anggota kopkar --}}
+                    <button class="btn btn-success text-light" data-toggle="modal" data-target="#modalBeliAnggotaKopkar">Beli</button>
+                @endif
+
             </div>
         </div>
     </div>
@@ -250,6 +256,8 @@
       </div>
     </div>
 </div>
+
+@include('pelanggan.order.modal.choose_payment')
 
 @push('script')
     {{-- End Pick Main Address Modal --}}
@@ -499,7 +507,10 @@
                 }
                 else 
                 {
-                    // total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
+                    if($('#modalBeliAnggotaKopkar').hasClass('show'))
+                    {
+                        $('#modalBeliAnggotaKopkar').modal('toggle');
+                    }
 
                     $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
@@ -603,6 +614,36 @@
 
                 return arrShippingAddress;
             }
+
+            $('#payPotongGaji').on('click', function() {
+
+                const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
+
+                let arrBarang = createArrBarang();
+
+                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+
+                let arrShippingAddress = createArrShippingAddress();
+
+                $('#arrBarang').val(JSON.stringify(arrBarang));
+
+                $('#totalPesanan').val(total_pesanan);
+
+                $('#nomorNota').val(nomor_nota);
+
+                $('#arrShipment').val(arrShippingAddress);
+
+                $('#metodeTransaksi').val("Kirim ke alamat");
+
+                $('#modalBeliAnggotaKopkar').modal('toggle');
+
+                // loading . . .
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+                $('#payPotongGaji').attr('type', 'submit');
+                $('#payPotongGaji')[0].click();
+
+            });
             
         });
     </script>
