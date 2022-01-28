@@ -87,7 +87,7 @@ class OrderController extends Controller
             
             if($transaction_status == "settlement")
             {
-                $status = "Pesanan sudah dibayar dan sedang disiapkan";
+                $status = "Pesanan sudah dibayar";
             }
             else if($transaction_status == "pending")
             {
@@ -149,7 +149,7 @@ class OrderController extends Controller
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            if($penjualan[0]->status == "Pesanan sudah dibayar")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -279,7 +279,7 @@ class OrderController extends Controller
             
             if($transaction_status == "settlement")
             {
-                $status = "Pesanan sudah dibayar dan sedang disiapkan";
+                $status = "Pesanan sudah dibayar";
             }
             else if($transaction_status == "pending")
             {
@@ -349,7 +349,7 @@ class OrderController extends Controller
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            if($penjualan[0]->status == "Pesanan sudah dibayar")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -466,7 +466,7 @@ class OrderController extends Controller
             
             if($transaction_status == "settlement")
             {
-                $status = "Pesanan sudah dibayar dan sedang disiapkan";
+                $status = "Pesanan sudah dibayar";
             }
             else if($transaction_status == "pending")
             {
@@ -544,7 +544,7 @@ class OrderController extends Controller
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+            if($penjualan[0]->status == "Pesanan sudah dibayar")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -679,7 +679,7 @@ class OrderController extends Controller
                                 'tanggal' => Carbon::now(),
                                 'pembayaran_id' => $idPembayaran,
                                 'metode_transaksi' => $request->metode_transaksi,
-                                'status' => 'Pesanan sudah dibayar dan sedang disiapkan',
+                                'status' => 'Pesanan sudah dibayar',
                                 'created_at'=> Carbon::now(),
                                 'updated_at' => Carbon::now(),
                                 'total' => $request->total_pesanan

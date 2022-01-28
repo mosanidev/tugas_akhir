@@ -48,6 +48,7 @@ use App\Http\Controllers\Admin\AdminDetailKonsinyasiController;
 use App\Http\Controllers\Admin\AdminStokOpnameController;
 use App\Http\Controllers\Admin\AdminDetailReturPembelianController;
 use App\Http\Controllers\Admin\AdminPengirimanController;
+use App\Http\Controllers\Admin\AdminAnggotaKopkarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -255,5 +256,12 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/karyawan', AdminKaryawanController::class);
 
         Route::resource('/pengiriman', AdminPengirimanController::class);
+
+        Route::get('/anggota/pembelian', [AdminAnggotaKopkarController::class, 'indexPembelian'])->name('anggota.pembelian');
+        Route::get('/anggota/pembelian/filter', [AdminAnggotaKopkarController::class, 'filterPembelian'])->name('anggota.pembelian.filter');
+
+        Route::get('/anggota/hutang', [AdminAnggotaKopkarController::class, 'indexHutang'])->name('anggota.hutang');
+        Route::get('/anggota/hutang/filter', [AdminAnggotaKopkarController::class, 'filterHutang'])->name('anggota.hutang.filter');
+
     });
 });

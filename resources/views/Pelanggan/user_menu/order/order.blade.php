@@ -129,7 +129,7 @@
                             metodePembayaran = data.transaksi[0].metode_pembayaran;
                         }
 
-                        if(data.transaksi[0].status == "Pesanan sudah dibayar dan sedang disiapkan")
+                        if(data.transaksi[0].status == "Pesanan sudah dibayar")
                         {
                             infoTransaksi =  `<div class="row">
                                                     <div class="col-4 ml-2">

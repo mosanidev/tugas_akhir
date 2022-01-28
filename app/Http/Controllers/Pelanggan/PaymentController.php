@@ -139,7 +139,7 @@ class PaymentController extends Controller
 
             $updatePenjualan = DB::table('penjualan')
                                 ->where('nomor_nota', $notif->order_id)   
-                                ->update(['status' => 'Pesanan sudah dibayar dan sedang disiapkan', 'updated_at' => $dateNow]);
+                                ->update(['status' => 'Pesanan sudah dibayar', 'updated_at' => $dateNow]);
 
             $updateNotif = DB::table('notifikasi')
                             ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)

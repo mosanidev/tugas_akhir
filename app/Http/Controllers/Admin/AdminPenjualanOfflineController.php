@@ -100,7 +100,7 @@ class AdminPenjualanOfflineController extends Controller
                                 'users_id' => $pelanggan_kopkar,
                                 'jenis' => 'Offline',
                                 'metode_transaksi' => 'Ambil di toko',
-                                'status' => 'Pesanan telah selesai'
+                                'status' => 'Pesanan sudah dibayar'
                             ]);
 
         $detail_penjualan = json_decode($request->detail_penjualan, true);

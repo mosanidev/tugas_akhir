@@ -241,7 +241,7 @@ class AdminKonsinyasiController extends Controller
                         ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
                         ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
                         ->where('detail_penjualan.barang_id', '=', $barangKonsinyasi[$i]->barang_id)
-                        ->where('penjualan.status', '=', 'Pesanan sudah dibayar dan sedang disiapkan')
+                        ->where('penjualan.status', '=', 'Pesanan sudah dibayar')
                         ->whereBetween('tanggal', [$konsinyasi[0]->tanggal_titip, $konsinyasi[0]->tanggal_jatuh_tempo])
                         ->get();
 

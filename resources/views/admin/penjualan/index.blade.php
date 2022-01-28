@@ -50,7 +50,7 @@
           <select class="form-control w-50 selectFilter" id="selectStatus">
             <option selected>Semua</option>
             <option>Menunggu pesanan dibayarkan</option>
-            <option>Pesanan sudah dibayar dan sedang disiapkan</option>
+            <option>Pesanan sudah dibayar</option>
             <option>Pembayaran pesanan melebihi batas waktu yang ditentukan</option>
             <option>Pesanan siap diambil di toko</option>
             <option>Pesanan selesai diambil</option>
@@ -92,7 +92,7 @@
                           <td>{{ $item->status }}</td>
                           <td>
                             
-                            @if($item->status == "Pesanan sudah dibayar dan sedang disiapkan" || $item->status == "Pesanan siap diambil di toko" && $item->metode_transaksi == "Ambil di toko")
+                            @if($item->status == "Pesanan sudah dibayar" || $item->status == "Pesanan siap diambil di toko" && $item->metode_transaksi == "Ambil di toko")
                               <button class="btn btn-info mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button>
                             @endif
 
@@ -145,7 +145,7 @@
         $('#metodeTransaksi').val(penjualan.metode_transaksi);
         $('#total').val(convertAngkaToRupiah(penjualan.total));
 
-        if(penjualan.status == "Pesanan sudah dibayar dan sedang disiapkan")
+        if(penjualan.status == "Pesanan sudah dibayar")
         {
           $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
                                           <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);

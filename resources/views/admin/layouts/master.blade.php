@@ -165,6 +165,22 @@
                 <span>Karyawan</span></a>
             </li>
 
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiesAnggota"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Anggota Kopkar</span>
+                </a>
+                <div id="collapseUtilitiesAnggota" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('anggota.pembelian') }}">Pembelian</a>
+                        <a class="collapse-item" href="{{ route('anggota.hutang') }}">Hutang</a>
+                    </div>
+                </div>
+            </li>
+
         </ul>
         <!-- End of Sidebar -->
 

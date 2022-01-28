@@ -6,7 +6,7 @@
 
     <div class="content">
 
-        @if($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+        @if($penjualan[0]->status == "Pesanan sudah dibayar")
             <h5 class="text-center"><strong>Terimakasih Sudah Membayar<br>Kami sedang mempersiapkan pesanan anda</strong></h5>
             {{-- <p class="text-center">Kami sedang mempersiapkan pesanan anda</p> --}}
         @elseif ($penjualan[0]->status == "Menunggu pesanan dibayarkan")
@@ -44,14 +44,14 @@
                 <div class="col-6">
                     @if($penjualan[0]->status == "Menunggu pesanan dibayarkan") 
                         <p>Sebelum</p> 
-                    @elseif($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+                    @elseif($penjualan[0]->status == "Pesanan sudah dibayar")
                         <p>Waktu Pelunasan</p>    
                     @endif
                 </div>
                 <div class="col-6">
                     @if($penjualan[0]->status == "Menunggu pesanan dibayarkan") 
                         <p> {{ \Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('D MMMM Y').", Pukul ".\Carbon\Carbon::parse($penjualan[0]->batasan_waktu)->isoFormat('HH:mm')." WIB"; }} </p> 
-                    @elseif($penjualan[0]->status == "Pesanan sudah dibayar dan sedang disiapkan")
+                    @elseif($penjualan[0]->status == "Pesanan sudah dibayar")
                         <p> {{ \Carbon\Carbon::parse($penjualan[0]->waktu_lunas)->isoFormat('D MMMM Y').", Pukul ".\Carbon\Carbon::parse($penjualan[0]->waktu_lunas)->isoFormat('HH:mm'); }} </p>    
                     @endif
                 </div>
