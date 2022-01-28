@@ -18,7 +18,11 @@ class AdminBarangController extends Controller
      */
     public function index()
     {
-        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->get();
+        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')
+                    ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                    ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                    ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                    ->get();
 
         return view('admin.barang.index', ['barang' => $barang]);
     }
@@ -188,5 +192,34 @@ class AdminBarangController extends Controller
         $delete_barang = DB::table('barang')->where('id', '=', $id)->delete();
 
         return redirect()->back()->with(['success'=>'Data barang berhasil dihapus']);
+    }
+
+    public function viewStokBarang()
+    {
+        $barang = DB::table('barang')
+                        ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum')
+                        ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                        ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                        ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->groupBy('barang.id')
+                        ->orderBy('nama')
+                        ->get();
+
+        $stokBarang = DB::table('barang')
+                        ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                        ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                        ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                        ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                        ->groupBy('barang.id')
+                        ->orderBy('nama')
+                        ->get();
+
+        return view('admin.barang.stok.index', ['barang' => $barang, 'stokBarang' => $stokBarang]);
+    }
+
+    public function viewDetailStokBarang()
+    {
+
     }
 }

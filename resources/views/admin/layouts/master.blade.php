@@ -104,6 +104,7 @@
                         <a class="collapse-item" href="{{ route('merek.index') }}">Merek</a>
                         <a class="collapse-item" href="{{ route('barang.index') }}">Barang</a>
                         <a class="collapse-item" href="{{ route('periode_diskon.index') }}">Periode Diskon</a>
+                        <a class="collapse-item" href="{{ route('stok.barang.index') }}">Stok</a>
                         <a class="collapse-item" href="{{ route('stok_opname.index') }}">Stok Opname</a>
 
                     </div>

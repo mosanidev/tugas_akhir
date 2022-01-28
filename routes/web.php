@@ -220,6 +220,10 @@ Route::group(['prefix' => 'admin'], function() {
 
         });
         
+        Route::get('/barang/stok', [AdminBarangController::class, 'viewStokBarang'])->name('stok.barang.index');
+
+        Route::get('/barang/stok/detail', [AdminBarangController::class, 'viewDetailStokBarang'])->name('stok.barang.detail');
+
         Route::resource('/barang', AdminBarangController::class);
 
         Route::get('/periode_diskon/barang_diskon', [AdminBarangDiskonController::class, 'load'])->name('loadBarangDiskon');
