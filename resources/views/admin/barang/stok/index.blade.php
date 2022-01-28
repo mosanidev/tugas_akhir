@@ -10,7 +10,27 @@
       </div>
   </div><!-- /.container-fluid -->
   <hr>
-    <p class="text-justify">Halaman barang berisi tabel barang yang dipasok oleh perusahaan dan barang konsinyasi yang dipasok oleh individu. Di menu ini pengguna dapat menambahkan, mengubah dan menghapus barang</p>
+  <p class="mt-2 ml-2">Filter : </p> 
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Masa durasi kadaluarsa</p> 
+    </div>
+    <div class="col-9">
+        <select class="form-control w-50 selectFilter" id="selectMetodeTransaksi">
+          <option selected>Semua</option>
+            <option>Kemarin</option>
+            <option>Hari Ini</option>
+            <option>Besok</option>
+            <option>7 Hari Terakhir</option>
+            <option>30 Hari Terakhir</option>
+            <option>3 Bulan Terakhir</option>
+            <option>6 Bulan Terakhir</option>
+            <option>1 Tahun Terakhir</option>
+            <option>> 1 Tahun terakhir</option>
+        </select>
+    </div>
+  </div>
+
 </section>
 
 <div class="container-fluid">
@@ -30,7 +50,7 @@
                         <th style="width: 8%">Merek</th>
                         <th style="width: 8%">Jumlah Stok</th>
                         <th style="width: 8%">Jumlah Stok Minimum</th>
-                        <th>Aksi</th>
+                        <th style="width: 8%">Aksi</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -40,15 +60,25 @@
                             <td>{{ $barang[$i]->nama_jenis }}</td>
                             <td>{{ $barang[$i]->nama_kategori }}</td>
                             <td>{{ $barang[$i]->nama_merek }}</td>
-                            @for($x = 0; $x < count($stokBarang); $x++)
-                                @if($barang[$i]->barang_id == $stokBarang[$x]->barang_id)
-                                    <td>{{ $stokBarang[$x]->jumlah_stok }}</td>
-                                @else 
-                                    <td>{{ 0 }}</td>
-                                @endif
+                            @php $stok = 0; @endphp
+                            @for($x = 0; $x < count($stokBarang); $x++) 
+                              @if($barang[$i]->barang_id == $stokBarang[$x]->barang_id)
+                                @php 
+                                  $stok = $stokBarang[$x]->jumlah_stok; 
+                                @endphp
+                              @endif
                             @endfor
+                            <td>
+                              @if($stok <= $barang[$i]->batasan_stok_minimum)
+                                <p class="text-danger">{{ $stok }}</p> 
+                              @else 
+                                <p>{{ $stok }}</p> 
+                              @endif
+                            </td>
                             <td>{{ $barang[$i]->batasan_stok_minimum }}</td>
-                            <td>{{ "detail" }}</td>
+                            <td>
+                              <button class="btn btn-link text-info btnDetailStokBarang" data-toggle="modal" data-target="#modalDetailStokBarang" data-id="{{ $barang[$i]->barang_id }}" data-barang="{{ $barang[$i]->nama }}">detail</button>
+                            </td>
                         </tr>
                     @endfor 
                   </tbody>
@@ -57,12 +87,70 @@
       </div>
     </div>
 
+  @include('admin.barang.modal.detail_stok_barang')
+
   <!-- Toastr -->
   <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
   <script type="text/javascript">
 
-    
+    $('.btnDetailStokBarang').on('click', function(){
+
+      let id = $(this).attr('data-id');
+      let namaBarang = $(this).attr('data-barang');
+
+      $.ajax({
+          url: "/admin/barang/stok/detail/"+id,
+          type: 'GET',
+          beforeSend: function() {
+
+            $('#modalBodyDetailStok').html(`<div class="m-5" id="loader">
+                                              <div class="text-center">
+                                                  <div class="spinner-border" style="width: 5rem; height: 5rem; color:grey;" role="status">
+                                                      <span class="sr-only">Loading...</span>
+                                                  </div>
+                                              </div>
+                                            </div>`);
+
+          },
+          success:function(data) {
+
+            if(data.detail.length > 0)
+            {
+              let rowContent = "<p>" + namaBarang + "</p>";
+
+              for(let i = 0; i < data.detail.length; i++)
+              {
+                rowContent += `<tr>    
+                                  <td>` + data.detail[i].tanggal_kadaluarsa + `</td>
+                                  <td>` + data.detail[i].jumlah_stok + `</td>
+                              <tr>`;
+              }
+
+              $('#modalBodyDetailStok').html(`<table class="table table-bordered" id="dataTableStokBarang" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                      <th style="width: 8%"><p class="text-small">Tanggal Kadaluarsa</p></th>
+                                                      <th style="width: 8%"><p class="text-small">Jumlah Stok</p></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    ` + rowContent + `
+                                                </tbody>
+                                            </table>`);
+            }
+            else 
+            {
+              $('#modalBodyDetailStok').html("<p class='my-2'>Tidak ada data detail mengenai stok barang</p>");
+            }
+          }
+
+      });
+
+      
+
+
+    });
 
   </script>
 

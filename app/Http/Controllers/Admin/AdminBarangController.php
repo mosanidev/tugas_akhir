@@ -218,8 +218,13 @@ class AdminBarangController extends Controller
         return view('admin.barang.stok.index', ['barang' => $barang, 'stokBarang' => $stokBarang]);
     }
 
-    public function viewDetailStokBarang()
+    public function viewDetailStokBarang($id)
     {
+        $detailStokBarang = DB::table('barang_has_kadaluarsa')
+                                ->select('tanggal_kadaluarsa', 'jumlah_stok')
+                                ->where('barang_id', '=', $id)
+                                ->get();
 
+        return response()->json(['detail'=>$detailStokBarang]);
     }
 }

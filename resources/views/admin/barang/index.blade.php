@@ -10,12 +10,24 @@
       </div>
   </div><!-- /.container-fluid -->
   <hr>
-        <p class="text-justify">Halaman barang berisi tabel barang yang dipasok oleh perusahaan dan barang konsinyasi yang dipasok oleh individu. Di menu ini pengguna dapat menambahkan, mengubah dan menghapus barang</p>
+  <p class="mt-2 ml-2">Filter : </p> 
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Tipe barang</p> 
+    </div>
+    <div class="col-9">
+        <select class="form-control w-50 selectFilter" id="selectMetodeTransaksi">
+          <option selected>Semua</option>
+          <option>Barang reguler</option>
+          <option>Barang konsinyasi</option>
+        </select>
+    </div>
+  </div>
 </section>
-{{-- {{ dd($barang) }} --}}
+
 <div class="container-fluid">
 
-  <a href="{{ route('barang.create') }}" class="btn btn-success ml-2 mb-3">Tambah</a>
+  <a href="{{ route('barang.create') }}" class="btn btn-success ml-2 my-3">Tambah</a>
   
   <div class="card shadow my-4">
       <div class="card-header py-3">

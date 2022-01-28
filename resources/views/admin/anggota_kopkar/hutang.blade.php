@@ -17,7 +17,7 @@
   <form action="{{ route('anggota.hutang.filter') }}" method="GET">
     <div class="row">
       <div class="col-12">
-        <p class="mt-2 ml-2">Jangka Waktu</p> 
+        <p class="mt-2 ml-2">Rentang Waktu</p> 
       </div>
     </div>
     <div class="row">

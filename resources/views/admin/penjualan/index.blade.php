@@ -29,7 +29,7 @@
 
     <div class="row">
       <div class="col-3">
-        <p class="mt-2 ml-2">Jangka Waktu</p> 
+        <p class="mt-2 ml-2">Rentang Waktu</p> 
       </div>
       <div class="col-9">
           <select class="form-control w-50 selectFilter" id="selectJangkaWaktu">
