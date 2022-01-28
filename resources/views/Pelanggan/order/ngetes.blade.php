@@ -136,7 +136,13 @@
                 </div>
             </div>
             
-            <a class="btn btn-success text-light float-right" id="pay" >Beli</a>
+            @if(auth()->user()->jenis == "Pelanggan")
+                <a class="btn btn-success text-light float-right" id="pay">Beli</a><br>
+            @else  
+                {{-- anggota kopkar --}}
+                <button class="btn btn-success text-light float-right" id="modalPayPotongGaji">Beli</button>
+            @endif
+
         </div>
     </div>
   </div>
@@ -182,7 +188,9 @@
 
 {{-- End Pick Main Address Modal --}}
 
-
+@if(auth()->user()->jenis == "Anggota_Kopkar")
+    @include('pelanggan.order.modal.choose_payment')
+@endif
 
 @endsection
 
@@ -425,6 +433,20 @@
                 $('#estimasi_tiba').val(JSON.stringify(arrEstimasiTiba));
                 
             }
+
+            $('#modalPayPotongGaji').on('click', function() {
+
+                let selected = $('#selectPengiriman :selected').index();
+
+                if(arr_total_tarif.length < arrAlamatPengiriman.length)
+                {
+                    alert("Harap pilih pengiriman terlebih dahulu");
+                }
+                else if(arr_total_tarif.length == arrAlamatPengiriman.length)
+                {
+                    $('#modalBeliAnggotaKopkar').modal('toggle');
+                }
+            });
             
             $('#pay').on('click', function() {
 
@@ -443,6 +465,11 @@
                 }
                 else if(arr_total_tarif.length == arrAlamatPengiriman.length)
                 {
+                    if($('#modalBeliAnggotaKopkar').hasClass('show'))
+                    {
+                        $('#modalBeliAnggotaKopkar').modal('toggle');
+                    }
+                    
                     loadArray();
 
                     total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
@@ -488,7 +515,51 @@
                 }
 
             });
-            
+
+            $('#payPotongGaji').on('click', function() {
+
+                const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
+
+                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+
+                $('#totalPesanan').val(total_pesanan);
+
+                $('#nomorNota').val(nomor_nota);
+
+                $('#metodeTransaksi').val("Dikirim ke berbagai alamat");
+
+                let num = $('#selectPengiriman').find(":selected").val();
+
+                // load input
+                for(let i = 0; i < $('.selectPengiriman').length; i++)
+                {
+                    arrTarif[i] = convertRupiahToAngka($('.selectPengiriman :selected')[i].innerText.split(" - ")[1]);
+                    arrKodeShipper[i] = $('.kodeShipper')[i].innerText;
+                    arrJenisPengiriman[i] = $('.selectPengiriman :selected')[i].innerText.split(" - ")[0];
+                    arrKodeJenisPengiriman[i] = $('.selectPengiriman :selected')[i].getAttribute("data-kode-jenis-pengiriman");
+                    let date = document.getElementsByClassName('estimasiTiba')[i].innerText;
+                    arrEstimasiTiba[i] = moment(date).format('YYYY-MM-DD HH:mm:ss');
+                }
+
+                $('#arrBarang').val(JSON.stringify(data));
+                $('#totalBerat_').val(JSON.stringify(total_berat));
+                $('#idAlamatPengiriman').val(JSON.stringify(arrAlamatPengiriman));
+                $('#tarif_').val(JSON.stringify(arrTarif));
+                $('#kodeShipper_').val(JSON.stringify(arrKodeShipper));
+                $('#jenisPengiriman_').val(JSON.stringify(arrJenisPengiriman));
+                $('#kodeJenisPengiriman_').val(JSON.stringify(arrKodeJenisPengiriman));
+                $('#estimasiTiba_').val(JSON.stringify(arrEstimasiTiba));
+
+                $('#modalBeliAnggotaKopkar').modal('toggle');
+
+                // loading . . .
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+                $('#payPotongGaji').attr('type', 'submit');
+                $('#payPotongGaji')[0].click();
+
+            });
+        
         });
         
     </script>

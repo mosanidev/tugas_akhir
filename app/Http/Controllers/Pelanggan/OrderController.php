@@ -638,35 +638,34 @@ class OrderController extends Controller
 
     public function pembayaranPotongGaji(Request $request) 
     {
-        $alamat_pengiriman_id = isset($request->alamat_pengiriman_id) ? $request->alamat_pengiriman_id : null;
-        $kode_shipper = isset($request->kode_shipper) ? $request->kode_shipper : null;
-        $kode_jenis_pengiriman = isset($request->kode_jenis_pengiriman) ? $request->kode_jenis_pengiriman : null;
-        $jenis_pengiriman = isset($request->jenis_pengiriman) ? $request->jenis_pengiriman : null;
-        $total_berat = isset($request->total_berat) ? $request->total_berat : null;
-        $estimasi_tiba = isset($request->estimasi_tiba) ? $request->estimasi_tiba : null;
-        $tarif = isset($request->tarif) ? $request->tarif : null;
+        // $arrBarang = json_decode($request->arrBarang, true);
+        // dd($arrBarang[0]['rincian']);
+        // dd($request);
+
+        if($request->metode_transaksi != "Dikirim ke berbagai alamat")
+        {
+            $alamat_pengiriman_id = isset($request->alamat_pengiriman_id) ? $request->alamat_pengiriman_id : null;
+            $kode_shipper = isset($request->kode_shipper) ? $request->kode_shipper : null;
+            $kode_jenis_pengiriman = isset($request->kode_jenis_pengiriman) ? $request->kode_jenis_pengiriman : null;
+            $jenis_pengiriman = isset($request->jenis_pengiriman) ? $request->jenis_pengiriman : null;
+            $total_berat = isset($request->total_berat) ? $request->total_berat : null;
+            $estimasi_tiba = isset($request->estimasi_tiba) ? $request->estimasi_tiba : null;
+            $tarif = isset($request->tarif) ? $request->tarif : null;
+        }
+        else 
+        {
+            $alamat_pengiriman_id = json_decode($request->alamat_pengiriman_id);
+            $kode_shipper = json_decode($request->kode_shipper);
+            $kode_jenis_pengiriman = json_decode($request->kode_jenis_pengiriman);
+            $jenis_pengiriman = json_decode($request->jenis_pengiriman);
+            $total_berat = json_decode($request->total_berat);
+            $estimasi_tiba = json_decode($request->estimasi_tiba);
+            $tarif = json_decode($request->tarif);
+        }
+        
 
         $idPengiriman = null;
 
-        if($kode_shipper != null)
-        {
-            $idPengiriman = DB::table('pengiriman')
-                                ->insertGetId([
-                                    'tarif' => $tarif,
-                                    'kode_shipper' => $kode_shipper,
-                                    'kode_jenis_pengiriman' => $request->kode_jenis_pengiriman,
-                                    'jenis_pengiriman' => $request->jenis_pengiriman,
-                                    'total_berat' => $request->total_berat,
-                                    'estimasi_tiba' => $request->estimasi_tiba
-                                ]);
-
-            $insertMultiplePengiriman = DB::table('multiple_pengiriman')
-                                            ->insert([
-                                                'pengiriman_id' => $idPengiriman,
-                                                'alamat_pengiriman_id' => $alamat_pengiriman_id,
-                                                'total_tarif' => $tarif
-                                            ]);
-        }
         $idPembayaran = DB::table('pembayaran')
                             ->insertGetId([
                                 'metode_pembayaran' => 'Pemotongan gaji',
@@ -685,27 +684,70 @@ class OrderController extends Controller
                                 'updated_at' => Carbon::now(),
                                 'total' => $request->total_pesanan
                             ]);
-        
-        if($request->arrShipment != null)
+
+        if($request->metode_transaksi == "Dikirim ke alamat")
         {
-            $arrShipment = json_decode($request->arrShipment, true);
+            $idPengiriman = DB::table('pengiriman')
+                                ->insertGetId([
+                                    'tarif' => $tarif,
+                                    'kode_shipper' => $kode_shipper,
+                                    'kode_jenis_pengiriman' => $request->kode_jenis_pengiriman,
+                                    'jenis_pengiriman' => $request->jenis_pengiriman,
+                                    'total_berat' => $request->total_berat,
+                                    'estimasi_tiba' => $request->estimasi_tiba
+                                ]);
+
+            $insertMultiplePengiriman = DB::table('multiple_pengiriman')
+                                            ->insert([
+                                                'pengiriman_id' => $idPengiriman,
+                                                'alamat_pengiriman_id' => $alamat_pengiriman_id,
+                                                'total_tarif' => $tarif
+                                            ]);
         }
 
         $arrBarang = json_decode($request->arrBarang, true);
 
-        for($i = 0; $i < count($arrBarang); $i++)
+        if($request->metode_transaksi != "Dikirim ke berbagai alamat")
         {
-            if($arrBarang['item_details'][$i]['name'] != 'Shipment Fee')
+            for($i = 0; $i < count($arrBarang); $i++)
             {
-                $detailPenjualan = DB::table('detail_penjualan')
-                                    ->insert([
-                                        'penjualan_id' => $idPenjualan,
-                                        'barang_id' => $arrBarang['item_details'][$i]['id'],
-                                        'kuantitas' => $arrBarang['item_details'][$i]['quantity'],
-                                        'subtotal' => $arrBarang['item_details'][$i]['price']*$arrBarang['item_details'][$i]['quantity'],
-                                        'pengiriman_id' => $idPengiriman,
-                                        'alamat_pengiriman_id' => $alamat_pengiriman_id
-                                    ]);
+                if($arrBarang['item_details'][$i]['name'] != 'Shipment Fee')
+                {
+                    $detailPenjualan = DB::table('detail_penjualan')
+                                        ->insert([
+                                            'penjualan_id' => $idPenjualan,
+                                            'barang_id' => $arrBarang['item_details'][$i]['id'],
+                                            'kuantitas' => $arrBarang['item_details'][$i]['quantity'],
+                                            'subtotal' => $arrBarang['item_details'][$i]['price']*$arrBarang['item_details'][$i]['quantity'],
+                                            'pengiriman_id' => $idPengiriman,
+                                            'alamat_pengiriman_id' => $alamat_pengiriman_id
+                                        ]);
+                }
+            }
+        }
+        else 
+        {
+            // untuk metode transaksi dikirim ke berbagai alamat
+
+            $total_tarif = array_sum($tarif);
+
+            for($i = 0; $i < count($arrBarang); $i++)
+            {
+                $id_pengiriman = DB::table('pengiriman')->insertGetId(['tarif' => $tarif[$i], 'kode_shipper' => $kode_shipper[$i], 'kode_jenis_pengiriman' => $kode_jenis_pengiriman[$i], 'jenis_pengiriman' => $jenis_pengiriman[$i], 'total_berat' => $total_berat, 'estimasi_tiba' => $estimasi_tiba[$i]]);
+
+                $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$arrBarang[$i]['alamat_id'], 'total_tarif'=>$total_tarif]);
+
+                for($x = 0; $x < count($arrBarang[$i]['rincian']); $x++)
+                {
+                    $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                        'penjualan_id' => $idPenjualan,
+                        'barang_id' => $arrBarang[$i]['rincian'][$x]['barang_id'],
+                        'kuantitas' => $arrBarang[$i]['rincian'][$x]['kuantitas'],
+                        'subtotal' => $arrBarang[$i]['rincian'][$x]['barang_harga']*$arrBarang[$i]['rincian'][$x]['kuantitas'],
+                        'pengiriman_id' => $id_pengiriman,
+                        'alamat_pengiriman_id'=>$arrBarang[$i]['alamat_id']
+                    ]);
+                }
             }
         }
 
@@ -889,7 +931,6 @@ class OrderController extends Controller
                         ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
                         ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
                         ->get();
-
         }
 
         return response()->json(['transaksi'=>$transaksi, 'pengiriman' => $pengiriman, 'barang'=>$barang]);

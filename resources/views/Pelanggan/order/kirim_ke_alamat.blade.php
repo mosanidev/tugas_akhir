@@ -605,70 +605,67 @@
                 {
                     $('#modalBeliAnggotaKopkar').modal('toggle');
                 }
-                });
+            });
 
-                $('#pay').on('click', function() {
+            $('#pay').on('click', function() {
 
-                    let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
+                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
 
-                    let arrBarang = createArrBarang();
+                let arrBarang = createArrBarang();
 
-                    let arrShippingAddress = createArrShippingAddress();
+                let arrShippingAddress = createArrShippingAddress();
 
-                    let selected = $('#selectPengiriman :selected').index()
+                let selected = $('#selectPengiriman :selected').index()
 
-                    if(selected == 0)
+                if(selected == 0)
+                {
+                    alert("Harap pilih pengiriman terlebih dahulu");
+                }
+                else 
+                {
+                    if($('#modalBeliAnggotaKopkar').hasClass('show'))
                     {
-                        alert("Harap pilih pengiriman terlebih dahulu");
-                        console.log("nggak bisa pay");
+                        $('#modalBeliAnggotaKopkar').modal('toggle');
                     }
-                    else 
-                    {
-                        if($('#modalBeliAnggotaKopkar').hasClass('show'))
-                        {
-                            $('#modalBeliAnggotaKopkar').modal('toggle');
-                        }
 
-                        console.log("bisa pay");
+                    $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
-                        $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('initPayment') }}',
+                        data: { 'total_pesanan': total_pesanan, 'nomor_nota': nomor_nota, 'arr_barang': arrBarang, 'arr_shipping_address': arrShippingAddress},
+                        success:function(data) {
 
-                        $.ajax({
-                            type: 'POST',
-                            url: '{{ route('initPayment') }}',
-                            data: { 'total_pesanan': total_pesanan, 'nomor_nota': nomor_nota, 'arr_barang': arrBarang, 'arr_shipping_address': arrShippingAddress},
-                            success:function(data) {
+                            try {
+                                snap.pay(data.snapToken, {
+                                    onSuccess: function (result) {
 
-                                try {
-                                    snap.pay(data.snapToken, {
-                                        onSuccess: function (result) {
+                                        $('#nomor_nota').val(nomor_nota);
+                                        $('#payment-form').submit();
+                                    },
+                                    onPending: function (result) {
 
-                                            $('#nomor_nota').val(nomor_nota);
-                                            $('#payment-form').submit();
-                                        },
-                                        onPending: function (result) {
+                                        $('#nomor_nota').val(nomor_nota);
+                                        $('#payment-form').submit();
+                                    },
+                                    onError: function (result) {
 
-                                            $('#nomor_nota').val(nomor_nota);
-                                            $('#payment-form').submit();
-                                        },
-                                        onError: function (result) {
+                                        $('#modalLoading').modal('toggle');
+                                    },
+                                    onClose: function() {
 
-                                            $('#modalLoading').modal('toggle');
-                                        },
-                                        onClose: function() {
+                                        $('#modalLoading').modal('toggle');
+                                    },
+                                    gopayMode: 'qr'
+                                });
+                            } catch(err) {
 
-                                            $('#modalLoading').modal('toggle');
-                                        },
-                                        gopayMode: 'qr'
-                                    });
-                                } catch(err) {
-
-                                    snap.hide();           
-                                }
-                                
+                                snap.hide();           
                             }
-                        });
-                    }
+                            
+                        }
+                    });
+                }
 
             });
             

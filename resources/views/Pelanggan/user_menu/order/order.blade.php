@@ -94,8 +94,6 @@
                 let id = event.target.getAttribute('data-id');
                 let index = null;
 
-                alert(id);
-
                 $.ajax({
                     type: 'GET',
                     url: '/order/show/'+id, 
@@ -343,6 +341,8 @@
 
                             let totalTarif = 0;
 
+                            console.log(data);
+
                             for(let i=0; i < data.pengiriman.length; i++)
                             {
                                 if(data.pengiriman[i].nama_shipper == 'Gojek' ||data.pengiriman[i].nama_shipper == 'Grab')
@@ -427,8 +427,6 @@
                         $('#labelTotal').html("Total :");
 
                         $('#totalTransaksi').html(convertAngkaToRupiah(data.transaksi[0].total));
-
-                        console.log(data.transaksi[0].total);
                         
                     }   
                 });
