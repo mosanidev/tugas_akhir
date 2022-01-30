@@ -22,7 +22,7 @@ class AdminPenjualanController extends Controller
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->groupBy('penjualan.id')
-                        ->orderByDesc('penjualan.created_at')
+                        ->orderBy('penjualan.created_at', 'desc')
                         ->get();
 
         return view('admin.penjualan.index', ['penjualan'=>$penjualan]);
@@ -58,7 +58,7 @@ class AdminPenjualanController extends Controller
     public function show(Request $request, $id)
     {
         $penjualan = DB::table('penjualan')
-                        ->select('penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.id as penjualan_id', 'penjualan.status as status_jual', 'pembayaran.status as status_bayar')
+                        ->select('penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.id as penjualan_id', 'penjualan.status_jual as status_jual', 'pembayaran.status as status_bayar')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->where('penjualan.id', '=', $id)
@@ -102,7 +102,7 @@ class AdminPenjualanController extends Controller
         $update = DB::table('penjualan')
                     ->where('id', '=', $id)
                     ->update([
-                        'status' => $request->status_penjualan
+                        'status_jual' => $request->status_penjualan
                     ]);
 
         $penjualan = DB::table('penjualan')

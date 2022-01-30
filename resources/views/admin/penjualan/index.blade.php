@@ -133,6 +133,7 @@
         },
         success: function(data) {
           
+          console.log(data);  
           closeLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
 
           const penjualan = data.penjualan[0];
@@ -141,14 +142,9 @@
           $('#metodeTransaksi').val(penjualan.metode_transaksi);
           $('#total').val(convertAngkaToRupiah(penjualan.total));
 
-          if(penjualan.status == "Pesanan sudah dibayar")
+          if(penjualan.status_jual == "Pesanan sudah dibayar")
           {
-            $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
-                                            <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
-          }
-          else if (penjualan.status == "Pesanan siap diambil di toko")
-          {
-            $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
+            $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status_jual + `</option>
                                             <option value="Pesanan selesai diambil">Pesanan selesai diambil</option>`);
           }
         }
@@ -204,7 +200,7 @@
           filterStatus = $('#selectStatus').val();
 
           let metodeTransaksi = data[3];
-          let status = data[6];
+          let status = data[5];
           let tanggal = data[1].replace(" WIB", "");
 
           var showMetodeTransaksi = false;

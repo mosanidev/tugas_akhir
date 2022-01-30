@@ -130,7 +130,7 @@ class BiteShipAPIController extends Controller
                 ],
                 "destination_contact_name"=>"John Doe",
                 "destination_contact_phone"=>"08170032123",
-                "destination_contact_email"=>"jon@test.com",
+                "destination_contact_email"=>"",
                 "destination_address"=>"Lebak Bulus MRT...",
                 "destination_postal_code"=>12950,
                 "destination_note"=>"Near the gas station",

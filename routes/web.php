@@ -261,6 +261,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);
 
+        Route::get('/pengiriman/konfirmasi/{pembelian}', [AdminPengirimanController::class, 'changeDraftToComplete'])->name('pengiriman.konfirmasi');
+
         Route::resource('/pengiriman', AdminPengirimanController::class);
 
         Route::get('/anggota/pembelian', [AdminAnggotaKopkarController::class, 'indexPembelian'])->name('anggota.pembelian');

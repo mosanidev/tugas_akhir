@@ -131,8 +131,6 @@
                             metodePembayaran = data.transaksi[0].metode_pembayaran;
                         }
 
-                        
-
                         if(data.transaksi[0].status == "Pesanan sudah dibayar")
                         {
                             if(data.transaksi[0].metode_transaksi == "Ambil di toko")
@@ -174,6 +172,14 @@
                                                     </div>
                                                     <div class="col-7">
                                                         <p>` + data.transaksi[0].status_jual + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Status Bayar
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + data.transaksi[0].status_bayar + `</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -238,6 +244,14 @@
                                                     </div>
                                                     <div class="col-7">
                                                         <p>` + data.transaksi[0].status_jual + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Status Bayar
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + data.transaksi[0].status_bayar + `</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -326,6 +340,14 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-4 ml-2">
+                                                            Status Bayar
+                                                        </div>
+                                                        <div class="col-7">
+                                                            <p>` + data.transaksi[0].status_bayar + `</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-4 ml-2">
                                                             Metode Pembayaran
                                                         </div>
                                                         <div class="col-5">
@@ -379,6 +401,14 @@
                                                     </div>
                                                     <div class="col-5">
                                                         <p>` + data.transaksi[0].status_jual + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Status Bayar
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + data.transaksi[0].status_bayar + `</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">

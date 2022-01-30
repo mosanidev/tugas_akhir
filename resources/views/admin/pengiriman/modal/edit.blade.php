@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalTambahPengiriman" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalUbahPengiriman" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
           <div class="modal-header">
@@ -8,19 +8,17 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ route('pengiriman.store') }}"> 
+            <form method="POST" action="" id="formUbahPengiriman"> 
                 @csrf
-
-                <input type="hidden" value="" name="pelanggan_id">
-                <input type="hidden" value="" name="penjualan_id">
-                <input type="hidden" value="" name="pengiriman_id">
-                <input type="hidden" value="" name="alamat_pengiriman_id">
+                @method('PUT')
                 
+                <input type="hidden" value="" name="id_pengiriman">
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Waktu Jemput</p>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" id="waktuJemput" name="waktu_jemput" class="form-control pull-right">
+                            <input type="text" id="waktuJemputUbah" name="waktu_jemput" class="form-control pull-right">
                             <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -46,7 +44,7 @@
 
     jQuery.datetimepicker.setLocale('id');
 
-    $('#waktuJemput').datetimepicker({
+    $('#waktuJemputUbah').datetimepicker({
         timepicker: true,
         datepicker: true,
         lang: 'id',
