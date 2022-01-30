@@ -17,19 +17,6 @@
     <div class="my-4">
       <p>Filter : </p>
 
-      {{-- <div class="form-check d-inline mr-3">
-        <input class="form-check-input" type="radio" name="radioFilter" value="Draft" checked>
-        <label class="form-check-label">
-          Draft
-        </label>
-      </div>
-      <div class="form-check d-inline">
-        <input class="form-check-input" type="radio" name="radioFilter" value="Complete">
-        <label class="form-check-label">
-          Complete
-        </label>
-      </div> --}}
-
       <div class="row">
         <div class="col-3">
           <p class="mt-2 ml-2">Status</p> 
@@ -54,7 +41,7 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th class="d-none">Status</th>
+                          <th>Status</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
@@ -69,7 +56,7 @@
                       @php $num = 1; @endphp
                       @foreach($pembelian as $item)
                         <tr class="rowPembelian">
-                          <td class="d-none">{{$item->status}}</td>
+                          <td>{{$item->status}}</td>
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
@@ -225,6 +212,10 @@
   if("{{ session('success') }}" != "")
   {
     toastr.success("{{ session('success') }}", "Success", toastrOptions);
+  }
+  else if ("{{ session('error') }}" != "")
+  {
+    toastr.error("{{ session('error') }}", "Error", toastrOptions);
   }
 
   $('.btnHapus').on('click', function() {

@@ -13,12 +13,23 @@
 
 <div class="container-fluid">
 
-    <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalPilihPengirimanPenjualan" id="tambahPengirimanPenjualan">Tambah</button>
+    <div class="my-4">
+      <p>Filter : </p>
 
-    <form action="{{ route('order.create') }}" method="POST">
-      @csrf
-      <button type="submit" class="btn btn-info ml-5">TEst Order API</button>
-    </form>
+      <div class="row">
+        <div class="col-3">
+          <p class="mt-2 ml-2">Status</p> 
+        </div>
+        <div class="col-9">
+            <select class="form-control w-50 selectFilter">
+              <option selected>Semua</option>
+              <option>Draft</option>
+              <option>Complete</option>
+            </select>
+        </div>
+      </div>
+
+    </div>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -29,7 +40,8 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th>ID Pengiriman</th>
+                          <th>Status</th>
+                          <th>Nomor Nota</th>
                           <th>Tanggal Penjualan</th>
                           <th>Nomor Resi</th>
                           <th>Metode Transaksi</th>
@@ -44,6 +56,7 @@
                       @if(count($penjualan) > 0)
                         @foreach($penjualan as $item)
                           <tr>
+                            <td>{{ $item->status }}</td>
                             <td>{{ $item->nomor_nota }}</td>
                             <td>{{ $item->tanggal_jual }}</td>
                             <td>@if($item->nomor_resi == null) {{ "-" }} @else {{ $item->nomor_resi }} @endif</td>
@@ -61,7 +74,7 @@
                             </td>
                             <td>
                               <div class="form-check">
-                                <input class="form-check-input checkComplete" type="checkbox" value="" data-id-pengiriman="{{ $item->id_pengiriman }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled @elseif($item->status_pengiriman == null) disabled @endif>
+                                <input class="form-check-input checkComplete" type="checkbox" value="" data-id-pengiriman="{{ $item->nomor_nota }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled @elseif($item->status_pengiriman == null) disabled @endif>
                               </div>
                             </td>
                           </tr>
@@ -144,6 +157,50 @@
   {
     toastr.error("{{ session('error') }}", "Error", toastrOptions);
   }
+
+  $(document).ready(function() {
+
+    let table = $('#dataTable').DataTable({});
+
+    let filter = $('.selectFilter :selected').val();
+
+    $('.selectFilter').on('click', function() {
+    
+      filterByStatus();
+
+    });
+
+    function filterByStatus() 
+    { 
+      $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+
+              filter = $('.selectFilter :selected').val();
+
+              var showFilter = false;
+
+              let dataFiltered = data[0];
+              
+              $.fn.dataTable.ext.search.length == 0; 
+              
+              if (filter == "Semua" || filter == "Draft" && dataFiltered == 'Draft') 
+              {
+                showFilter = true;
+              }
+
+              if (filter == "Semua" || filter == "Complete" && dataFiltered == 'Complete') 
+              {
+                showFilter = true;
+              }
+
+              return showFilter;
+
+        });
+
+        table.draw();
+    }
+
+  });
 
 
 </script>
