@@ -74,9 +74,8 @@
                           <th>Tanggal</th>
                           <th>Pelanggan</th>
                           <th>Metode Transaksi</th>
-                          <th>Metode Pembayaran</th>
                           <th>Total</th>
-                          <th>Status Pembayaran</th>
+                          <th>Status</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
@@ -87,9 +86,8 @@
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
                           <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                           <td>{{ $item->metode_transaksi }}</td>
-                          <td>{{ $item->metode_pembayaran }}</td>
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
-                          <td>{{ $item->status }}</td>
+                          <td>{{ $item->status_jual }}</td>
                           <td>
                             <a href="{{ route('penjualan.show', ['penjualan'=>$item->penjualan_id]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                             @if($item->status_jual == "Pesanan sudah dibayar" && $item->metode_transaksi == "Ambil di toko")
