@@ -54,14 +54,14 @@
                             <td>
                                 @if($item->status_pengiriman == null)
                                   <button type="button" class="btn btn-info btnPanggilKurir" data-toggle="modal" data-target="#modalTambahPengiriman" data-pelanggan="{{ $item->pelanggan_id }}" data-penjualan="{{ $item->penjualan_id }}" data-pengiriman="{{ $item->pengiriman_id }}" data-alamat="{{ $item->alamat_pengiriman_id }}">Panggil kurir</button>
-                                @elseif($item->status_pengiriman == "Menunggu konfirmasi penjemputan kurir")
-                                  <button type="button" class="btn btn-warning mb-2 btnUbahPanggilKurir" data-toggle="modal" data-target="#modalUbahPengiriman" data-id="{{ $item->pengiriman_id }}" data-id-pengiriman="{{ $item->id_pengiriman }}" data-waktu-jemput="{{ $item->waktu_jemput }}">Ubah waktu jemput</button>
-                                  <button type="button" class="btn btn-danger btnBatalPanggilKurir" data-toggle="modal" data-target="#modalBatalPengiriman" data-id-pengiriman="{{ $item->id_pengiriman }}" data-id="{{ $item->pengiriman_id }}">Batal panggil kurir</button>
+                                @else
+                                  <button type="button" class="btn btn-warning mb-2 btnUbahPanggilKurir" data-toggle="modal" data-target="#modalUbahPengiriman" data-id="{{ $item->pengiriman_id }}" data-id-pengiriman="{{ $item->id_pengiriman }}" data-waktu-jemput="{{ $item->waktu_jemput }}" @if($item->status == "Complete") checked disabled  @endif>Ubah penjemputan</button>
+                                  <button type="button" class="btn btn-danger btnBatalPanggilKurir" data-toggle="modal" data-target="#modalBatalPengiriman" data-id-pengiriman="{{ $item->id_pengiriman }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled  @endif>Batal panggil kurir</button>
                                 @endif
                             </td>
                             <td>
                               <div class="form-check">
-                                <input class="form-check-input checkComplete" type="checkbox" value="" data-id-pengiriman="{{ $item->id_pengiriman }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled  @endif>
+                                <input class="form-check-input checkComplete" type="checkbox" value="" data-id-pengiriman="{{ $item->id_pengiriman }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled @elseif($item->status_pengiriman == null) disabled @endif>
                               </div>
                             </td>
                           </tr>

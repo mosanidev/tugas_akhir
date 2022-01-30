@@ -17,7 +17,7 @@ class AdminPengirimanController extends Controller
     public function index()
     {
         $penjualan = DB::table('detail_penjualan')
-                        ->select('penjualan.nomor_nota', 'pengiriman.nomor_resi', 'penjualan.tanggal as tanggal_jual', 'penjualan.status_jual as status', 'penjualan.metode_transaksi', 'shipper.nama as pengirim', 'pengiriman.status_pengiriman', DB::raw("CONCAT(shipper.nama, ' ', pengiriman.jenis_pengiriman) as pengiriman"), 'pengiriman.tarif as tarif_pengiriman', 'multiple_pengiriman.pengiriman_id as pengiriman_id', 'penjualan.id as penjualan_id', 'multiple_pengiriman.alamat_pengiriman_id', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as pelanggan"), "users.id as pelanggan_id", "pengiriman.id_pengiriman", "pengiriman.waktu_jemput")
+                        ->select('penjualan.nomor_nota', 'pengiriman.nomor_resi', 'penjualan.tanggal as tanggal_jual', 'penjualan.status_jual','pengiriman.status', 'penjualan.metode_transaksi', 'shipper.nama as pengirim', 'pengiriman.status_pengiriman', DB::raw("CONCAT(shipper.nama, ' ', pengiriman.jenis_pengiriman) as pengiriman"), 'pengiriman.tarif as tarif_pengiriman', 'multiple_pengiriman.pengiriman_id as pengiriman_id', 'penjualan.id as penjualan_id', 'multiple_pengiriman.alamat_pengiriman_id', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as pelanggan"), "users.id as pelanggan_id", "pengiriman.id_pengiriman", "pengiriman.waktu_jemput")
                         ->whereNotNull('detail_penjualan.pengiriman_id')
                         ->whereNotNull('detail_penjualan.alamat_pengiriman_id')
                         ->where('penjualan.status_jual', '=', 'Pesanan sudah dibayar')
@@ -77,7 +77,6 @@ class AdminPengirimanController extends Controller
 
         $result = json_decode($response->body(), true);
 
-        dd($result);
         if($result['success'] == false)
         {
             return redirect()->back()->with(['error' => 'Terjadi kesalahan : '.$result['error']]);
@@ -132,8 +131,8 @@ class AdminPengirimanController extends Controller
             "shipper_organization"=>"Kopkar Ubaya",
             "origin_contact_name"=>"Admin",
             "origin_contact_phone"=>"081740781720",
-            "origin_address"=>"Universitas Surabaya, Jalan Rungkut",
-            "origin_note"=>"Depan halte ubaya",
+            "origin_address"=>"Universitas Surabaya, Jl. Raya Kalirungkut, Kali Rungkut, Kec. Rungkut, Kota SBY, Jawa Timur 60293",
+            "origin_note"=>"Di dalam Universitas Surabaya, di Lapangan",
             "origin_postal_code"=>60293,
             "origin_coordinate" => [
                 "latitude"=>-7.320228755327554,
@@ -154,7 +153,7 @@ class AdminPengirimanController extends Controller
             "delivery_type"=>"later",
             "delivery_date"=>$tanggalJemput,
             "delivery_time"=>$jamJemput,
-            "order_note"=> "Please be carefull",
+            "order_note"=> "Please be careful",
             "metadata"=> [],
             "items" => []
         ];
@@ -211,6 +210,7 @@ class AdminPengirimanController extends Controller
                             'id_pengiriman' => $result['id'],
                             'status_pengiriman' => 'Menunggu konfirmasi penjemputan kurir',
                             'waktu_jemput' => $request->waktu_jemput
+                            // 'catatan_untuk_kurir' => $request->catatan_untuk_kurir
                         ]);
 
             return redirect()->route('pengiriman.index')->with(['success' => 'Data pengiriman berhasil disimpan']);
@@ -256,6 +256,7 @@ class AdminPengirimanController extends Controller
             ])->post("https://api.biteship.com/v1/orders/$request->id_pengiriman", [
                 "delivery_date" => $tanggalJemput,
                 "delivery_time" => $jamJemput
+
             ]);
 
         $result = json_decode($response->body(), true);

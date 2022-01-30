@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Pilih Waktu Penjemputan Paket Pengiriman</h5>
+            <h5 class="modal-title">Penjemputan Paket Pengiriman oleh Kurir</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -20,13 +20,31 @@
                     <p class="col-sm-4 col-form-label">Waktu Jemput</p>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" id="waktuJemput" name="waktu_jemput" class="form-control pull-right">
+                            <input type="text" id="waktuJemput" name="waktu_jemput" class="form-control pull-right" required>
                             <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {{-- <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Lokasi Jemput</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <textarea cols="30" class="form-control" rows="3" name="lokasi_jemput">Minimarket Kopkar Ubaya di dalam Universitas Surabaya, Jl. Raya Kalirungkut, Kali Rungkut, Kec. Rungkut, Kota SBY, Jawa Timur 60293</textarea>
+                        </div>
+                    </div>
+                </div> --}}
+
+                {{-- <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Catatan untuk kurir</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <textarea cols="30" class="form-control" rows="3" name="catatan_untuk_kurir"></textarea>
+                        </div>
+                    </div>
+                </div> --}}
 
             </div>
             <div class="modal-footer">
@@ -50,7 +68,7 @@
         timepicker: true,
         datepicker: true,
         lang: 'id',
-        format: 'Y-m-d H:i:s'
+        format: 'Y-m-d H:i'
     });
 
 </script>
