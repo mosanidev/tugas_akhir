@@ -91,12 +91,10 @@
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>{{ $item->status }}</td>
                           <td>
-                            
-                            @if($item->status == "Pesanan sudah dibayar" || $item->status == "Pesanan siap diambil di toko" && $item->metode_transaksi == "Ambil di toko")
-                              <button class="btn btn-info mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button>
+                            <a href="{{ route('penjualan.show', ['penjualan'=>$item->penjualan_id]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
+                            @if($item->status_jual == "Pesanan sudah dibayar" && $item->metode_transaksi == "Ambil di toko")
+                              <button class="btn btn-info mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button> 
                             @endif
-
-                            <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                           </td>
                         </tr>
                       @endforeach
@@ -123,41 +121,41 @@
     
     $('.btnUbahStatus').on('click', function() {
 
-    let id = $(this).attr("data-id");
+      let id = $(this).attr("data-id");
 
-    $('#idPenjualan').val(id);
+      $('#idPenjualan').val(id);
 
-    $.ajax({
-      type: "GET",
-      url: "/admin/penjualan/" + id,
-      beforeSend: function() {
+      $.ajax({
+        type: "GET",
+        url: "/admin/penjualan/" + id,
+        beforeSend: function() {
 
-        showLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
+          showLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
 
-      },
-      success: function(data) {
-        
-        closeLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
+        },
+        success: function(data) {
+          
+          closeLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
 
-        const penjualan = data.penjualan[0];
+          const penjualan = data.penjualan[0];
 
-        $('#nomorNota').val(penjualan.nomor_nota);
-        $('#metodeTransaksi').val(penjualan.metode_transaksi);
-        $('#total').val(convertAngkaToRupiah(penjualan.total));
+          $('#nomorNota').val(penjualan.nomor_nota);
+          $('#metodeTransaksi').val(penjualan.metode_transaksi);
+          $('#total').val(convertAngkaToRupiah(penjualan.total));
 
-        if(penjualan.status == "Pesanan sudah dibayar")
-        {
-          $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
-                                          <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
+          if(penjualan.status == "Pesanan sudah dibayar")
+          {
+            $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
+                                            <option value="Pesanan siap diambil di toko">Pesanan siap diambil di toko</option>`);
+          }
+          else if (penjualan.status == "Pesanan siap diambil di toko")
+          {
+            $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
+                                            <option value="Pesanan selesai diambil">Pesanan selesai diambil</option>`);
+          }
         }
-        else if (penjualan.status == "Pesanan siap diambil di toko")
-        {
-          $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status + `</option>
-                                          <option value="Pesanan selesai diambil">Pesanan selesai diambil</option>`);
-        }
-      }
 
-    });
+      });
 
     });
 
@@ -251,8 +249,6 @@
 
           return showMetodeTransaksi && showJangkaWaktu && showStatus;
     });
-
-
 
     // $('#selectMetodeTransaksi').on('change', function() {
 

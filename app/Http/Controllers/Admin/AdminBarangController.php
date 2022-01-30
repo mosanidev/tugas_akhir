@@ -22,6 +22,7 @@ class AdminBarangController extends Controller
                     ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                     ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                     ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                    ->orderBy('barang.kode')
                     ->get();
 
         return view('admin.barang.index', ['barang' => $barang]);

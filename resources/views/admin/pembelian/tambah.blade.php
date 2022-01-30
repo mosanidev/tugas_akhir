@@ -73,9 +73,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Status</label>
+                <label class="col-sm-4 col-form-label">Status Bayar</label>
                 <div class="col-sm-8">
-                  <select class="form-control" name="status" id="selectStatus" required>
+                  <select class="form-control" name="status" id="selectStatusBayar" required>
                       <option disabled selected>Status</option>
                       <option value="Belum Lunas">Belum Lunas</option>
                       <option value="Sudah Lunas">Sudah Lunas</option>
@@ -197,7 +197,7 @@
             {
                 toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
             }
-            else if ($('#selectStatus')[0].selectedIndex == 0)
+            else if ($('#selectStatusBayar')[0].selectedIndex == 0)
             {
                 toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
             }

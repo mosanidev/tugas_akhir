@@ -27,7 +27,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $penjualan = DB::table('penjualan')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->select('penjualan.id', 'penjualan.nomor_nota', 'penjualan.tanggal', 'pembayaran.id as pembayaran_id', 'penjualan.status', 'penjualan.total', 'penjualan.metode_transaksi')->where('penjualan.users_id', '=', auth()->user()->id)->orderByDesc('penjualan.tanggal')->distinct()->paginate(10);
+        $penjualan = DB::table('penjualan')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->select('penjualan.id', 'penjualan.nomor_nota', 'penjualan.tanggal', 'pembayaran.id as pembayaran_id', 'penjualan.status_jual as status_jual', 'penjualan.total', 'penjualan.metode_transaksi')->where('penjualan.users_id', '=', auth()->user()->id)->orderByDesc('penjualan.tanggal')->distinct()->paginate(10);
 
         $detail_penjualan = DB::table('detail_penjualan')
                             ->select('penjualan.nomor_nota', 'barang.nama', DB::raw('SUM(detail_penjualan.kuantitas) as kuantitas'))
@@ -124,7 +124,7 @@ class OrderController extends Controller
             }
             
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
-            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Ambil di toko', 'status'=>$status, 'created_at'=>$dateNow]);
+            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Ambil di toko', 'status_jual'=>$status, 'status' => 'Complete', 'created_at'=>$dateNow]);
 
             $total = 0;
             for($i = 0; $i < count($cart); $i++)
@@ -144,12 +144,12 @@ class OrderController extends Controller
             $delete_cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->delete();
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual', 'penjualan.status')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            if($penjualan[0]->status == "Pesanan sudah dibayar")
+            if($penjualan[0]->status_jual == "Pesanan sudah dibayar")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -161,7 +161,7 @@ class OrderController extends Controller
                             'status' => 'Belum dilihat'
                         ]);
             }
-            else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            else if($penjualan[0]->status_jual == "Menunggu pesanan dibayarkan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -173,7 +173,7 @@ class OrderController extends Controller
                             'status' => 'Belum dilihat'
                         ]);
             }
-            else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
+            else if ($penjualan[0]->status_jual = "Pembayaran pesanan ditolak")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -185,7 +185,7 @@ class OrderController extends Controller
                             'status' => 'Belum dilihat'
                         ]);
             }
-            else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
+            else if ( $penjualan[0]->status_jual == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -197,7 +197,7 @@ class OrderController extends Controller
                             'status' => 'Belum dilihat'
                         ]);
             }
-            else if ($penjualan[0]->status == "Pesanan dibatalkan")
+            else if ($penjualan[0]->status_jual == "Pesanan dibatalkan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -223,7 +223,14 @@ class OrderController extends Controller
 
     public function infoOrder(Request $request)
     {
-        $order = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*')->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')->where('penjualan.nomor_nota', '=', $request->nomor_nota)->where('users_id', '=', auth()->user()->id)->get();
+        $order = DB::table('penjualan')
+                        ->select('penjualan.*',
+                                 'pembayaran.*',
+                                 'penjualan.status_jual as status_jual',
+                                 'pembayaran.status as status_bayar')
+                        ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
+                        ->where('penjualan.nomor_nota', '=', $request->nomor_nota)
+                        ->where('users_id', '=', auth()->user()->id)->get();
      
         if(count($order) == 0)
         {
@@ -317,7 +324,7 @@ class OrderController extends Controller
 
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
 
-            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke alamat', 'status'=>$status, 'created_at'=>$dateNow]);
+            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke alamat', 'status_jual' => $status, 'status' => 'Complete', 'created_at'=>$dateNow]);
 
             $total = 0;
 
@@ -344,12 +351,12 @@ class OrderController extends Controller
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$tarif]);
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual', 'penjualan.status')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            if($penjualan[0]->status == "Pesanan sudah dibayar")
+            if($penjualan[0]->status_jual == "Pesanan sudah dibayar")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -361,7 +368,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            else if($penjualan[0]->status_jual == "Menunggu pesanan dibayarkan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -373,7 +380,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
+            else if ($penjualan[0]->status_jual = "Pembayaran pesanan ditolak")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -385,7 +392,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
+            else if ( $penjualan[0]->status_jual == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -397,7 +404,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if ($penjualan[0]->status == "Pesanan dibatalkan")
+            else if ($penjualan[0]->status_jual == "Pesanan dibatalkan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -502,7 +509,7 @@ class OrderController extends Controller
 
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
 
-            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke berbagai alamat', 'status'=>$status, 'created_at'=>$dateNow]);
+            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke berbagai alamat', 'status_jual'=>$status, 'status' => 'Complete', 'created_at'=>$dateNow]);
 
             $total = 0;
 
@@ -539,12 +546,12 @@ class OrderController extends Controller
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$total_tarif]);
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual', 'penjualan.status')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
 
-            if($penjualan[0]->status == "Pesanan sudah dibayar")
+            if($penjualan[0]->status_jual == "Pesanan sudah dibayar")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -556,7 +563,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now(),
                         ]);
             }
-            else if($penjualan[0]->status == "Menunggu pesanan dibayarkan")
+            else if($penjualan[0]->status_jual == "Menunggu pesanan dibayarkan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -568,7 +575,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if ($penjualan[0]->status = "Pembayaran pesanan ditolak")
+            else if ($penjualan[0]->status_jual = "Pembayaran pesanan ditolak")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -580,7 +587,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if ( $penjualan[0]->status == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
+            else if ( $penjualan[0]->status_jual == "Pembayaran pesanan melebihi batas waktu yang ditentukan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -592,7 +599,7 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
             }
-            else if ($penjualan[0]->status == "Pesanan dibatalkan")
+            else if ($penjualan[0]->status_jual == "Pesanan dibatalkan")
             {
                 $insertNotif = DB::table('notifikasi')
                         ->insert([
@@ -871,7 +878,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
+        $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*', 'penjualan.status_jual as status_jual', 'pembayaran.status as status_bayar')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
 
         $pengiriman = null;
 

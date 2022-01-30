@@ -8,7 +8,7 @@
       <div class="col-sm-6">
         <h1><strong>Stok Barang</strong></h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
   <hr>
   <p class="mt-2 ml-2">Filter : </p> 
   <div class="row">
@@ -16,7 +16,7 @@
       <p class="mt-2 ml-2">Masa durasi kadaluarsa</p> 
     </div>
     <div class="col-9">
-        <select class="form-control w-50 selectFilter" id="selectMetodeTransaksi">
+        <select class="form-control w-50 selectFilter">
           <option selected>Semua</option>
             <option>Kemarin</option>
             <option>Hari Ini</option>
@@ -94,7 +94,9 @@
 
   <script type="text/javascript">
 
-    $('.btnDetailStokBarang').on('click', function(){
+    $(document).ready(function() {
+
+      $('.btnDetailStokBarang').on('click', function(){
 
       let id = $(this).attr('data-id');
       let namaBarang = $(this).attr('data-barang');
@@ -147,10 +149,50 @@
 
       });
 
+      let filterMasaDurasiKadaluarsa = $('.selectFilter').val();
+
+      var table = $('#dataTable').DataTable({});
+
+      $('.selectFilter').on('click', function() {
+        
+        table.draw();
+
+      });
+
+      $.fn.dataTable.ext.search.push(
+          function( settings, data, dataIndex ) {
+            
+            filterMasaDurasiKadaluarsa = $('.selectFilter').val();
+
+            let tipeBarang = data[1];
+
+            var showTipeBarang = false;
+            
+            if (filterMasaDurasiKadaluarsa == "Semua") {
+              $.fn.dataTable.ext.search.length == 0; 
+            }
+
+            var REFERENCE = moment(); // fixed just for testing, use moment();
+            var TODAY = REFERENCE.clone().startOf('day');
+            var YESTERDAY = REFERENCE.clone().subtract(1, 'days').startOf('day');
+            var A_WEEK_OLD = REFERENCE.clone().subtract(7, 'days').startOf('day');
+
+            if (filterTipeBarang == "Semua" || filterTipeBarang == tipeBarang) {
+              showTipeBarang = true;
+            }
+
+            return showTipeBarang;
+      });
+
+
+      });
+
+
       
-
-
     });
+
+
+    
 
   </script>
 

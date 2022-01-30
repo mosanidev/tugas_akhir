@@ -16,7 +16,7 @@ class AdminPenjualanController extends Controller
     public function index()
     {
         $penjualan = DB::table('penjualan')
-                        ->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*')
+                        ->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.status as status_jual', 'pembayaran.status as status_bayar')
                         ->where('penjualan.jenis', '=', 'Online')
                         ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
@@ -58,7 +58,7 @@ class AdminPenjualanController extends Controller
     public function show(Request $request, $id)
     {
         $penjualan = DB::table('penjualan')
-                        ->select('penjualan.*', 'pembayaran.*', 'users.*')
+                        ->select('penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.id as penjualan_id', 'penjualan.status as status_jual', 'pembayaran.status as status_bayar')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->where('penjualan.id', '=', $id)

@@ -16,10 +16,10 @@
       <p class="mt-2 ml-2">Tipe barang</p> 
     </div>
     <div class="col-9">
-        <select class="form-control w-50 selectFilter" id="selectMetodeTransaksi">
+        <select class="form-control w-50 selectFilter">
           <option selected>Semua</option>
-          <option>Barang reguler</option>
-          <option>Barang konsinyasi</option>
+          <option value="0">Barang reguler</option>
+          <option value="1">Barang konsinyasi</option>
         </select>
     </div>
   </div>
@@ -38,32 +38,20 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                       <tr>
-                        <th style="width: 5%">No</th>
-                        <th style="width: 10%">Kode</th>
                         <th style="width: 40%">Barang</th>
+                        <th class="d-none">Tipe</th>
                         <th style="width: 8%">Jenis</th>
                         <th style="width: 8%">Kategori</th>
                         <th style="width: 8%">Merek</th>
-                        <th style="width: 35%">Aksi</th>
+                        <th style="width: 18%">Aksi</th>
                       </tr>
                   </thead>
                   <tbody>
                     @php $num = 1; @endphp
                     @foreach($barang as $item)
                       <tr>
-                        <td style="width: 10px">{{ $num++ }}</td>
-                        <td>{{ $item->kode }}</td>
-
-                        <td>
-                            
-                            {{ $item->nama }} 
-
-                            @if($item->barang_konsinyasi)
-                              <span class="badge badge-success">Barang Konsinyasi</span>
-                            @endif
-                            
-                        </td>
-
+                        <td>{{ $item->kode." - ".$item->nama }}</td>
+                        <td class="d-none">{{ $item->barang_konsinyasi }}</td>
                         <td>{{ $item->jenis_barang }}</td>
                         <td>{{ $item->kategori_barang }}</td>
                         <td>{{ $item->merek_barang }}</td>
@@ -112,6 +100,36 @@
       {
         toastr.success("{{ session('error') }}", "Error", toastrOptions);
       }
+
+      let filterTipeBarang = $('.selectFilter').val();
+
+      var table = $('#dataTable').DataTable({});
+
+      $('.selectFilter').on('click', function() {
+        
+        table.draw();
+
+      });
+
+      $.fn.dataTable.ext.search.push(
+          function( settings, data, dataIndex ) {
+            
+            filterTipeBarang = $('.selectFilter').val();
+
+            let tipeBarang = data[1];
+
+            var showTipeBarang = false;
+            
+            if (filterTipeBarang == "Semua") {
+              $.fn.dataTable.ext.search.length == 0; 
+            }
+
+            if (filterTipeBarang == "Semua" || filterTipeBarang == tipeBarang) {
+              showTipeBarang = true;
+            }
+
+            return showTipeBarang;
+      });
 
     });
 

@@ -52,7 +52,7 @@ class AdminPembelianController extends Controller
                                 'diskon' => $request->diskon,
                                 'ppn' => $request->ppn,
                                 'metode_pembayaran' => $request->metodePembayaran,
-                                'status' => $request->status,
+                                'status_bayar' => $request->status,
                                 'total' => $request->total
                             ]);
 
@@ -140,6 +140,15 @@ class AdminPembelianController extends Controller
             return view('admin.pembelian.barang_dibeli.index', ['pembelian'=>$pembelian, 'detailPembelian' => $detailPembelian, 'barang'=>$barang]);
         }
 
+    }
+
+    public function changeDraftToComplete ($id)
+    {
+        $update = DB::table('pembelian')
+                    ->where('id', $id)
+                    ->update(['status' => 'Complete']);
+
+        return redirect()->route('pembelian.index')->with(['success'=>'Data pembelian berhasil dikonfirmasi']);
     }
 
     /**

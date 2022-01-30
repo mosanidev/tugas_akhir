@@ -26,7 +26,8 @@ class PembelianSeeder extends Seeder
                 'diskon'                    => 0,
                 'ppn'                       => '0',
                 'metode_pembayaran'         => 'Transfer Bank',
-                'status'                    => 'Belum Lunas',
+                'status_bayar'              => 'Belum Lunas',
+                'status'                    => 'Draft',
                 'total'                     => 10000
             ]
         );

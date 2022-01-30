@@ -12,9 +12,38 @@
 </section>
 <div class="container-fluid">
 
-    {{-- <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPembelian">Tambah</button> --}}
-
     <a href="{{ route('pembelian.create') }}" class="btn btn-success ml-2">Tambah</a>
+
+    <div class="my-4">
+      <p>Filter : </p>
+
+      {{-- <div class="form-check d-inline mr-3">
+        <input class="form-check-input" type="radio" name="radioFilter" value="Draft" checked>
+        <label class="form-check-label">
+          Draft
+        </label>
+      </div>
+      <div class="form-check d-inline">
+        <input class="form-check-input" type="radio" name="radioFilter" value="Complete">
+        <label class="form-check-label">
+          Complete
+        </label>
+      </div> --}}
+
+      <div class="row">
+        <div class="col-3">
+          <p class="mt-2 ml-2">Status</p> 
+        </div>
+        <div class="col-9">
+            <select class="form-control w-50 selectFilter">
+              <option selected>Semua</option>
+              <option>Draft</option>
+              <option>Complete</option>
+            </select>
+        </div>
+      </div>
+
+    </div>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -25,29 +54,39 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th style="width: 10px">No</th>
+                          <th class="d-none">Status</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
                           <th>Supplier</th>
                           <th>Total</th>
+                          <th>Status Bayar</th>
                           <th>Aksi</th>
+                          <th></th>
                         </tr>
                     </thead>
                     <tbody>
                       @php $num = 1; @endphp
                       @foreach($pembelian as $item)
-                        <tr>
-                          <td style="width: 10px">{{ $num++ }}</td>
+                        <tr class="rowPembelian">
+                          <td class="d-none">{{$item->status}}</td>
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
                           <td>{{ "Rp " . number_format($item->total-$item->diskon - ($item->total-$item->diskon)*($item->ppn/100) ,0,',','.') }}</td>
                           <td>
-                              <a href="{{ route('pembelian.show', ['pembelian' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Barang Dibeli</a>
-                              <button type="button" class="btn btn-success btnUbah w-100 mb-2" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahPembelian">Ubah</button>
-                              <button type="button" class="btn btn-danger w-100 mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian">Hapus</button>
+                            {{ $item->status_bayar }}
+                          </td>
+                          <td>
+                            <a href="{{ route('barang.show', ['barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                              <button type="button" class="btn btn-warning btnUbah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahPembelian" @if($item->status == "Complete") disabled  @endif><i class="fas fa-edit"></i></button>
+                              <button type="button" class="btn btn-danger btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian" @if($item->status == "Complete") disabled  @endif><i class="fas fa-trash"></i></button>
+                          </td>
+                          <td>
+                            <div class="form-check">
+                              <input class="form-check-input checkComplete" type="checkbox" value="" data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" @if($item->status == "Complete") checked disabled  @endif>
+                            </div>
                           </td>
                         </tr>
                       @endforeach
@@ -60,6 +99,8 @@
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+
+@include('admin.pembelian.modal.confirm_complete')
 
 @if(session('errors'))
     <script type="text/javascript">
@@ -190,6 +231,94 @@
 
     let id = $(this).attr('data-id');
     $('#formHapus').attr("action", '/admin/pembelian/'+id);
+
+  });
+
+  
+  $('.checkComplete').on('change', function() {
+
+    let pembelian_id = $(this).attr('data-id');
+
+    $('#formKonfirmasi').attr('action', '/admin/pembelian/konfirmasi/'+pembelian_id)
+
+    $('#nomorNota').html($(this).attr('data-nomor-nota'));
+
+    $('#modalKonfirmasiComplete').modal('toggle');
+
+  });
+
+  $(document).ready(function() {
+
+    let table = $('#dataTable').DataTable({});
+
+    let filter = $('.selectFilter :selected').val();
+
+    function showSpecificStatus(status)
+    {
+      $('.rowPembelian').each(function() {
+        if($(this).children().html() != status)
+        {
+          $(this).children().hide();
+        }
+        else if($(this).children().html() == status)
+        {
+          $(this).children().show();
+        }
+      });
+
+      // if(status == "Draft")
+      // {
+      //   $('td:nth-child(7),th:nth-child(7)').show();
+      //   $('td:nth-child(8),th:nth-child(8)').show();
+      // }
+      // else if (status == "Complete")
+      // {
+      //   $('td:nth-child(7),th:nth-child(7)').hide();
+      //   $('td:nth-child(8),th:nth-child(8)').hide();
+      // }
+      
+    }
+
+    filterByStatus();
+
+    $('.selectFilter').on('click', function() {
+    
+      console.log($('.selectFilter :selected').val());
+      filterByStatus();
+
+    });
+
+    function filterByStatus() 
+    { 
+      $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+
+              filter = $('.selectFilter :selected').val();
+
+              var showFilter = false;
+
+              let dataFiltered = data[0];
+              
+              $.fn.dataTable.ext.search.length == 0; 
+              
+              if (filter == "Semua" || filter == "Draft" && dataFiltered == 'Draft') 
+              {
+                showFilter = true;
+              }
+
+              if (filter == "Semua" || filter == "Complete" && dataFiltered == 'Complete') 
+              {
+                showFilter = true;
+              }
+
+              return showFilter;
+
+        });
+
+        table.draw();
+    }
+
+
 
   });
 

@@ -2,6 +2,8 @@
 
 @section('content')
 
+    <a href="{{ route('penjualan.index') }}" class="btn btn-link text-info"><- Kembali ke daftar penjualan</a>
+
     <h3>Detail Penjualan</h3>
 
     <div class="px-2 py-3">
@@ -29,6 +31,13 @@
                 <p class="mt-2">{{ $penjualan[0]->metode_transaksi }}</p>
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Status</label>
+              <div class="col-sm-10">
+                <p class="mt-2">{{ $penjualan[0]->status_jual }}</p>
+              </div>
+            </div>
+            
             <hr>
             <h5>Pembayaran</h5>
             <br>
@@ -41,7 +50,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Status Pembayaran</label>
                 <div class="col-sm-10">
-                  <p class="mt-2">{{ $penjualan[0]->status }}</p>
+                  <p class="mt-2">{{ $penjualan[0]->status_bayar }}</p>
                 </div>
             </div>
             <div class="form-group row">
@@ -106,6 +115,16 @@
             </div>
         </div>
     </div>
-    
+  
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+          
+
+        });
+
+
+    </script>
 
 @endsection

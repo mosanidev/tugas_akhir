@@ -232,6 +232,8 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::resource('/barang_diskon', AdminBarangDiskonController::class);
 
+        Route::get('/pembelian/konfirmasi/{pembelian}', [AdminPembelianController::class, 'changeDraftToComplete'])->name('pembelian.konfirmasi');
+
         Route::resource('/pembelian', AdminPembelianController::class);
 
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);

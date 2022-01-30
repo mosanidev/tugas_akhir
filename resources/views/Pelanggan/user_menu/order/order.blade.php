@@ -14,18 +14,18 @@
                         </div>
                         <div class="row">
                             <div class="col-4">
-                                <p>Status</p>
-                            </div>
-                            <div class="col-8">
-                                <p>{{ $penjualan[$i]->status }}</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4">
                                 <p>Metode Transaksi</p>
                             </div>
                             <div class="col-8">
                                 <p>{{ $penjualan[$i]->metode_transaksi }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <p>Status</p>
+                            </div>
+                            <div class="col-8">
+                                <p>{{ $penjualan[$i]->status_jual }}</p>
                             </div>
                         </div>
                         <div class="row">
@@ -113,6 +113,8 @@
                     },
                     success:function(data) {
 
+                        console.log(data);
+
                         closeLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
 
                         $('#nomorNota').html("Nomor Nota #" + data.transaksi[0].nomor_nota);
@@ -129,9 +131,13 @@
                             metodePembayaran = data.transaksi[0].metode_pembayaran;
                         }
 
+                        
+
                         if(data.transaksi[0].status == "Pesanan sudah dibayar")
                         {
-                            infoTransaksi =  `<div class="row">
+                            if(data.transaksi[0].metode_transaksi == "Ambil di toko")
+                            {
+                                infoTransaksi =  `<div class="row">
                                                     <div class="col-4 ml-2">
                                                         Tanggal
                                                     </div>
@@ -149,10 +155,25 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-4 ml-2">
+                                                        Alamat Pengambilan
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>Minimarket KopKar
+                                                        <br>
+
+                                                        Jl. Raya Rungkut, Kec. Rungkut, Kota Surabaya, Jawa Timur 60293
+
+                                                        <br>
+                                                        Buka Hari Senin-Sabtu
+                                                        jam 08:00 - 16:00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
                                                         Status
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>` + data.transaksi[0].status + `</p>
+                                                        <p>` + data.transaksi[0].status_jual + `</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -192,55 +213,205 @@
                                                         </div>
                                                     </div>`;
                                                 }
+                            }
+                            else 
+                            {
+                                infoTransaksi =  `<div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Tanggal
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") +` WIB</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Metode Transaksi
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + data.transaksi[0].metode_transaksi + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Status
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + data.transaksi[0].status_jual + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Waktu Lunas
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + moment(data.transaksi[0].waktu_lunas).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") + ` WIB</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Batasan Waktu Pengambilan
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + moment(data.transaksi[0].batasan_waktu_pengambilan).tz('Asia/Jakarta').format("DD MMMM YYYY")  + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Metode Pembayaran
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p>` + metodePembayaran + `</p>
+                                                    </div>
+                                                </div>`;
+
+                                                if(data.transaksi[0].nomor_rekening != null)
+                                                {
+                                                    infoTransaksi += `<div class="row">
+                                                        <div class="col-4 ml-2">
+                                                                Nomor Rekening Tujuan
+                                                            </div>
+                                                            <div class="col-5">
+                                                                <p>` + data.transaksi[0].nomor_rekening + `</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>`;
+                                                }
+                            }
+                            
                                                 
                         }
                         else {
                             
-                           infoTransaksi =  `<div class="row">
-                                                <div class="col-4 ml-2">
-                                                    Tanggal
-                                                </div>
-                                                <div class="col-5">
-                                                    <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-4 ml-2">
-                                                    Metode Transaksi
-                                                </div>
-                                                <div class="col-5">
-                                                    <p>` + data.transaksi[0].metode_transaksi + `</p>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-4 ml-2">
-                                                    Status
-                                                </div>
-                                                <div class="col-5">
-                                                    <p>` + data.transaksi[0].status + `</p>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-4 ml-2">
-                                                    Metode Pembayaran
-                                                </div>
-                                                <div class="col-5">
-                                                    <p>` + metodePembayaran + `</p>
-                                                </div>
-                                            </div>`;
-
-                                            if(data.transaksi[0].nomor_rekening != null)
-                                            {
-                                                infoTransaksi += `<div class="row">
-                                                    <div class="col-4 ml-2">
-                                                            Nomor Rekening Tujuan
+                            if(data.transaksi[0].metode_transaksi == "Ambil di toko")
+                            {
+                                infoTransaksi =  `<div class="row">
+                                                        <div class="col-4 ml-2">
+                                                            Tanggal
                                                         </div>
                                                         <div class="col-5">
-                                                            <p>` + data.transaksi[0].nomor_rekening + `</p>
+                                                            <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
                                                         </div>
                                                     </div>
+                                                    <div class="row">
+                                                        <div class="col-4 ml-2">
+                                                            Metode Transaksi
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <p>` + data.transaksi[0].metode_transaksi + `</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-4 ml-2">
+                                                            Alamat Pengambilan
+                                                        </div>
+                                                        <div class="col-7">
+                                                            <p>Minimarket KopKar
+                                                            <br>
+
+                                                            Jl. Raya Rungkut, Kec. Rungkut, Kota Surabaya, Jawa Timur 60293
+
+                                                            <br>
+                                                            Buka Hari Senin-Sabtu
+                                                            jam 08:00 - 16:00</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-4 ml-2">
+                                                            Status
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <p>` + data.transaksi[0].status_jual + `</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-4 ml-2">
+                                                            Metode Pembayaran
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <p>` + metodePembayaran + `</p>
+                                                        </div>
+                                                    </div>`;
+
+                                                    if(data.transaksi[0].nomor_rekening != null)
+                                                    {
+                                                        infoTransaksi += `<div class="row">
+                                                            <div class="col-4 ml-2">
+                                                                    Nomor Rekening Tujuan
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <p>` + data.transaksi[0].nomor_rekening + `</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>`;
+                                                    }
+
+                                                    infoTransaksi += `<div class="row">
+                                                                        <div class="col-4 ml-2">
+                                                                            Batasan Waktu Pembayaran
+                                                                        </div>
+                                                                        <div class="col-5">
+                                                                            <p>` + moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                                        </div>
+                                                                    </div>`;
+                            }
+                            else 
+                            {
+                                infoTransaksi =  `<div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Tanggal
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Metode Transaksi
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <p>` + data.transaksi[0].metode_transaksi + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Status
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <p>` + data.transaksi[0].status_jual + `</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-4 ml-2">
+                                                        Metode Pembayaran
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <p>` + metodePembayaran + `</p>
+                                                    </div>
                                                 </div>`;
-                                            }
+
+                                                if(data.transaksi[0].nomor_rekening != null)
+                                                {
+                                                    infoTransaksi += `<div class="row">
+                                                        <div class="col-4 ml-2">
+                                                                Nomor Rekening Tujuan
+                                                            </div>
+                                                            <div class="col-5">
+                                                                <p>` + data.transaksi[0].nomor_rekening + `</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>`;
+                                                }
+
+                                                infoTransaksi += `<div class="row">
+                                                                    <div class="col-4 ml-2">
+                                                                        Batasan Waktu Pembayaran
+                                                                    </div>
+                                                                    <div class="col-5">
+                                                                        <p>` + moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                                    </div>
+                                                                </div>`;
+                            }
                         }
 
                         $('.infoTransaksi').html(infoTransaksi);
