@@ -14,11 +14,14 @@ class BarangController extends Controller
         $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
 
         $data_barang = DB::table('barang')
+                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->where('barang.id', '=', $id)
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->select('barang.*', 'kategori_barang.kategori_barang', 'jenis_barang.jenis_barang', 'merek_barang.merek_barang', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok"))
                         ->get();
         $data_kategori = DB::table('kategori_barang')->get();

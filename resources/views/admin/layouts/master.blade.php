@@ -159,6 +159,21 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiesReturJual"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Retur Penjualan</span>
+                </a>
+                <div id="collapseUtilitiesReturJual" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('retur_penjualan.index') }}">Pengajuan dari pelanggan</a>
+                        {{-- <a class="collapse-item" href="{{ route('anggota.hutang') }}">Retur Penjualan</a> --}}
+                    </div>
+                </div>
+            </li>
+
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('karyawan.index') }}">
@@ -214,13 +229,18 @@
                                     src="{{ asset(auth()->user()->foto) }}">
                                 <p class="ml-2 mt-3 text-dark">{{ auth()->user()->nama_depan." ".auth()->user()->nama_belakang }}</p>
                             </a>
-                            <!-- Dropdown - User Information -->
+
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profil
+                                </a>
+                            
                             </div>
                         </li>
 

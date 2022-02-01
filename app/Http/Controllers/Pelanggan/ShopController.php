@@ -238,7 +238,8 @@ class ShopController extends Controller
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->inRandomOrder()
-                        ->paginate(15);  
+                        ->groupBy('barang.id')
+                        ->paginate(15);                  
 
         $total_cart = null;
 

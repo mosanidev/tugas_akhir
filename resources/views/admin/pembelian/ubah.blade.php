@@ -1,70 +1,105 @@
 @extends('admin.layouts.master')
 
 @section('content')
+    
+    <a href="{{ route('pembelian.index') }}" class="btn btn-link"><- Kembali ke daftar pembelian</a>
 
     <h3>Ubah Pembelian</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="" id="form" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('pembelian.update', ['pembelian' => $pembelian[0]->id]) }}" id="formUbah">
             @csrf
             @method('PUT')
-            <input type="hidden" id="pembelian_id" value="{{ $pembelian[0]->id }}"/>
             <input type="hidden" id="data_barang" value="" name="barang"/>
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Nomor Nota</label>
-              <div class="col-sm-10">
+              <label class="col-sm-4 col-form-label">Nomor Nota</label>
+              <div class="col-sm-8">
                 <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" value="{{ $pembelian[0]->nomor_nota }}" required>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Tanggal</label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                    <input type="text" class="form-control pull-right" name="tanggal" value="{{ $pembelian[0]->tanggal }}" autocomplete="off" id="datePickerTgl" required>
-                    <div class="input-group-append">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>   
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Supplier</label>
-              <div class="col-sm-10">
-                <select class="form-control select2bs4" name="supplier_id" id="selectSupplier" required>
-                    <option disabled selected>Supplier</option>
-                    @foreach($supplier as $item)
-                        <option value="{{ $item->id }}" @if($pembelian[0]->supplier_id == $item->id) selected @endif>{{$item->nama}}</option>
-                    @endforeach
-                </select> 
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Status</label>
-              <div class="col-sm-10">
-                <select class="form-control select2bs4" name="status" id="selectStatus" required>
-                    <option disabled selected>Status</option>
-                    <option value="selesai" @if($pembelian[0]->status == "selesai") selected @endif>Selesai</option>
-                    <option value="menunggu_pengiriman" @if($pembelian[0]->status == "menunggu_pengiriman") selected @endif>Menunggu Pengiriman</option>
-                </select>
-              </div>
-            </div>
-            {{-- <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Foto Bukti</label>
-                <div class="col-sm-10">
-                    <input type="file" class="form-control-file" id="inputFoto">
+                <label class="col-sm-4 col-form-label">Tanggal Buat</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggal_buat" autocomplete="off" id="datepickerTgl" value="{{ $pembelian[0]->tanggal }}">
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
                 </div>
-            </div> --}}
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" value="{{ $pembelian[0]->tanggal_jatuh_tempo }}" required>
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Supplier</label>
+                <div class="col-sm-8">
+                  <select class="form-control" name="supplier_id" id="selectSupplier" required>
+                      <option disabled selected>Supplier</option>
+                      @foreach($supplier as $item)
+                          <option value="{{ $item->id }}" @if($pembelian[0]->supplier_id == $item->id) selected @endif>{{$item->nama}}</option>
+                      @endforeach
+                  </select> 
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
+                <div class="col-sm-8">
+                  <select class="form-control" name="metode_pembayaran" id="selectMetodePembayaran" required>
+                      <option disabled selected>Metode Pembayaran</option>
+                      <option value="Transfer Bank" @if($pembelian[0]->metode_pembayaran == "Transfer Bank") selected @endif>Transfer Bank</option>
+                      <option value="Tunai" @if($pembelian[0]->metode_pembayaran == "Tunai") selected @endif>Tunai</option>
+                  </select> 
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Diskon Potongan Harga</label>
+                <div class="col-sm-8">
+                  Rp <input type="number" class="form-control d-inline ml-1" name="diskon" value="{{ $pembelian[0]->diskon }}" id="inputDiskon" min="0" step="100" style="width: 95.8%;" required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">PPN</label>
+                <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="{{ $pembelian[0]->ppn }}" min="0" step="100" style="width: 95.8%;" required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Status Bayar</label>
+                <div class="col-sm-8">
+                  <select class="form-control" name="status_bayar" id="selectStatusBayar" required>
+                      <option disabled selected>Status</option>
+                      <option value="Belum Lunas" @if($pembelian[0]->status_bayar == "Belum Lunas") selected @endif>Belum Lunas</option>
+                      <option value="Sudah Lunas" @if($pembelian[0]->status_bayar == "Sudah Lunas") selected @endif>Sudah Lunas</option>
+                  </select> 
+                </div>
+              </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Total</label>
-                <div class="col-sm-10">
-                    <input type="hidden" class="form-control d-inline" style="width: 96.9%;" id="inputTotal" name="total" readonly/>
-                    <p id="total">{{ "Rp " . number_format($detail_pembelian[0]->total,0,',','.') }}</p>
+                <label class="col-sm-4 col-form-label">Total</label>
+                <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" value="{{ $pembelian[0]->total }}" min="500" style="width: 95.8%;" id="total" name="total" readonly/>
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total Akhir</label>
+                <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" value="{{ $pembelian[0]->total-$pembelian[0]->diskon-$pembelian[0]->ppn }}" min="500" style="width: 95.8%;" id="totalAkhir" name="total_akhir" readonly/>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangDibeli" id="btnTambah">Tambah</button>
+
             <div class="card shadow my-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Tabel Barang </h6>
-                    <button type="button" class="btn btn-success ml-2 mt-3" data-toggle="modal" id="btnTambah" data-target="#modalTambahBarangDibeli">Tambah</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -73,6 +108,7 @@
                                 <tr>
                                   <th style="width: 10px">No</th>
                                   <th>Barang</th>
+                                  <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
@@ -80,285 +116,196 @@
                                 </tr>
                             </thead>
                             <tbody id="contentTable">
-                                {{-- @php $num = 1; @endphp
-                                @for($i=0; $i < count($detail_pembelian); $i++)
-                                    <tr>
-                                        <td>{{ $num++ }}</td>
-                                        <td>{{ $detail_pembelian[$i]->nama_barang }}</td>
-                                        <td>{{ "Rp " . number_format($detail_pembelian[$i]->subtotal/$detail_pembelian[$i]->kuantitas,0,',','.')  }}</td>
-                                        <td>{{ $detail_pembelian[$i]->kuantitas }}</td>
-                                        <td>{{ "Rp " . number_format($detail_pembelian[$i]->subtotal,0,',','.')  }}</td>
-                                        <td><button type="button" class="btn btn-info d-inline" onclick="edit($i)" data-toggle="modal" data-target="#modalUbahBarangDibeli">Ubah</button> <button type="button" class="btn btn-danger d-inline" onclick="hapus($i)" id="btnHapus">Hapus</button></td>
-                                    </tr>
-
-                                @endfor --}}
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
+            <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto">Simpan</button>
         </form>
     </div>
     
 @include('admin.pembelian.modal.create')
 @include('admin.pembelian.modal.edit')
 
-
-<!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
-<!-- Select2 -->
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
 <script type="text/javascript">
 
-    $('#datePickerTgl').datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true
-    });
+    $(document).ready(function() {
 
-    let barang = <?php echo $detail_pembelian; ?>;
+        let detailPembelian = <?php echo $detail_pembelian; ?>;
 
-    let dataBarang = [];
+        barangDibeli = detailPembelian;
 
+        implementDataOnTable();
 
-    for(let i=0; i< barang.length; i++)
-    {
-        dataBarang.push({
-                "id_barang" : barang[i].barang_id,
-                "nama_barang" : barang[i].nama_barang,
-                "harga_beli" : barang[i].harga_beli,
-                "kuantitas" : barang[i].kuantitas,
-                "subtotal" : barang[i].subtotal
-            });
-    }
-    
-    loadTableBarang(barang)
+        $('#datepickerTgl').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
 
-    let subtotal = 0;
+        $('#datepickerTglJatuhTempo').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
 
-    function convertAngkaToRupiah(angka)
-    {
-        var rupiah = '';		
-        var angkarev = angka.toString().split('').reverse().join('');
-        for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-        return 'Rp '+rupiah.split('',rupiah.length-1).reverse().join('');
-    }
+        $('#tanggal_kadaluarsa').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            enableOnReadonly: false 
+        }); 
 
-    function convertRupiahToAngka(rupiah)
-    {
-        return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
-    }
+        $('#selectSupplier').select2({
+            dropdownParent: $("#formTambah"),
+            theme: 'bootstrap4'
+        });
 
-    $('.numberTambah').on('change', function() {
+        $('#barang').select2({
+            dropdownParent: $("#divTambahBarangDibeli"),
+            theme: 'bootstrap4'
+        });
 
-        subtotal = parseInt($('#harga_beli').val())*parseInt($('#kuantitas').val());
+        $('#datepickerTglJatuhTempo').on('change', function() {
 
-        if(!isNaN(subtotal))
-        {
-            $('#subtotal').html(convertAngkaToRupiah(subtotal));
+            let tglBuat = new Date($('#datepickerTgl').val());
+            let tglJatuhTempo = new Date($('#datepickerTglJatuhTempo').val());
 
-        }
+            if(tglJatuhTempo != "")
+            {
+                if(tglJatuhTempo <= tglBuat)
+                {
+                    $('#datepickerTglJatuhTempo').val("");
+                    toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+                }
+            }
 
-    });
+        });
 
-    $('.numberUbah').on('change', function() {
+        $('#btnSimpan').on('click', function() {
 
-        subtotal = parseInt($('#hargaBeliUbah').val())*parseInt($('#kuantitasUbah').val());
+            if($('#inputNomorNota').val() == "")
+            {
+                toastr.error("Harap isi nomor nota terlebih dahulu", "Error", toastrOptions);
+            }
+            else if($('#datepickerTglJatuhTempo').val() == "")
+            {
+                toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Error", toastrOptions);
+            }
+            else if($('#selectSupplier')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih supplier terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#selectStatusBayar')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
+            }
+            else if(barangDibeli.length == 0)
+            {
+                toastr.error("Harap pilih barang yang dibeli terlebih dahulu", "Error", toastrOptions);
+            }
+            else 
+            {
+                $('#data_barang').val(JSON.stringify(barangDibeli));
 
-        if(!isNaN(subtotal))
-        {
-            $('#subtotalUbah').html(convertAngkaToRupiah(subtotal));
+                $('#btnSimpan').attr("type", "submit");
+                $('#btnSimpan')[0].click();
 
-        }
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+            }
+
+        });
+
 
     });
 
     $('#btnTambah').on('click', function() {
 
-        $("#barang")[0].selectedIndex = 0;
+        $("#barang option").eq(0).prop('selected', true).change();
         $("#harga_beli").val("");
         $("#kuantitas").val("");
-        $('#subtotal').html("");
+        $('#subtotal').val("");
+        $('#tanggal_kadaluarsa').val("");
 
     });
 
-
-    $('#btnTambahBarangDibeli').on('click', function() {
-
-        if($('#barang').val() == null || $('#harga_beli').val() == "" || $('#kuantitas').val() == "" || $('#subtotal').html() == "")
-        {
-            toastr.error("Harap isi data secara lengkap terlebih dahulu");
-        }
-        if(checkDuplicate($('#barang').val().split("-")[0]))
-        {
-            toastr.error("Sudah ada barang yang sama di tabel");
-        }
-        else 
-        {
-            $('#modalTambahBarangDibeli').modal('toggle');
-
-            dataBarang.push({
-                "id_barang" : $('#barang').val().split("-")[0],
-                "nama_barang" : $('#barang').val().split("-")[1],
-                "harga_beli" : $('#harga_beli').val(),
-                "kuantitas" : $('#kuantitas').val(),
-                "subtotal" : convertRupiahToAngka($('#subtotal').html())
-            });
-
-            loadTableBarang(dataBarang);
-        }
-
-    });
-
-    // dataBarang.push({
-    //     "id_barang" : 0,
-    //     "nama_barang" : "dhaskdakjdsah",
-    //     "harga_beli" : "9000",
-    //     "kuantitas" : "3",
-    //     "subtotal" : "18000"
-    // });
-
-    // loadTableBarang(dataBarang);
-
-
-    $('#btnSimpan').on('click', function() {
-
-        
-        if($('#inputNomorNota').val() == "")
-        {
-            toastr.error("Harap isi nomor nota terlebih dahulu");
-        }
-        else if($('#datePickerTgl').val() == "")
-        {
-            toastr.error("Harap isi tanggal terlebih dahulu");
-        }
-        else if($("#selectSupplier")[0].selectedIndex == 0)
-        {
-            toastr.error("Harap pilih supplier terlebih dahulu");
-        }
-        else if($("#selectStatus")[0].selectedIndex == 0)
-        {
-            toastr.error("Harap pilih status terlebih dahulu");
-        }
-        // else if(document.getElementById("inputFoto").files.length == 0)
-        // {
-        //     toastr.error("Harap upload foto terlebih dahulu");
-        // }
-        else if(dataBarang.length == 0)
-        {
-            toastr.error("Harap isi data barang terlebih dahulu");
-        }
-        else 
-        {
-            $('#data_barang').val(JSON.stringify(dataBarang));
-
-            $('#form').attr("action", "/admin/pembelian/"+ $('#pembelian_id').val());
-
-            $('#form').submit();
-        }
-
-    });
-
-    function loadTableBarang(arrBarang)
+    function implementDataOnTable()
     {
-        let contentTable = document.getElementById('contentTable');
-        let string = "";
+        let rowTable = "";
         let num = 0;
         let total = 0;
 
-        for(let i = 0; i < arrBarang.length; i++)
+        if(barangDibeli.length > 0)
         {
-            num += 1;
-            total += arrBarang[i].subtotal;
-            string += `
-                    <tr>    
-                        <td>` + num +  `</td>
-                        <td>` + arrBarang[i].nama_barang + `</td>
-                        <td>` + convertAngkaToRupiah(arrBarang[i].harga_beli) +  `</td>
-                        <td>` + arrBarang[i].kuantitas +  `</td>
-                        <td>` + convertAngkaToRupiah(arrBarang[i].subtotal) +  `</td>
-                        <td> <button type="button" class="btn btn-info d-inline" onclick="edit(` + i + `)" data-toggle="modal" data-target="#modalUbahBarangDibeli">Ubah</button> <button type="button" class="btn btn-danger d-inline" onclick="hapus(` + i + `)" id="btnHapus">Hapus</button> </td>
-                    </tr>
-            `;
-        }
-
-        contentTable.innerHTML = string;
-        $('#total').html(convertAngkaToRupiah(total));
-        $('#inputTotal').val(total);
-
-    }
-
-    function checkDuplicate(idBarang, idBarangLama)
-    {
-        if(idBarangLama != idBarang)
-        {
-            if(dataBarang.length > 0)
+            for(let i = 0; i < barangDibeli.length; i++)
             {
-                for(let i=0; i<dataBarang.length; i++)
-                {
-                    if(idBarang == dataBarang[i].id_barang)
-                    {
-                        return true;
-                    }
-                }
+                num += 1;
+                total += barangDibeli[i].subtotal;
+                rowTable += `<tr>    
+                                <td>` + num +  `</td>
+                                <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
+                                <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
+                                <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
+                                <td>` + barangDibeli[i].kuantitas +  `</td>
+                                <td>` + convertAngkaToRupiah(barangDibeli[i].subtotal) +  `</td>
+                                <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDibeli(` + i + `)" id="btnHapus">Hapus</button> </td>
+                            </tr>`;
             }
-        }
-        
-    }
-
-    function edit(index)
-    {
-
-        $('#barangIndex').val(index);
-        // console.log(dataBarang[index].id_barang+"-"+dataBarang[index].nama_barang);
-        $('#barangUbah').val(dataBarang[index].id_barang+"-"+dataBarang[index].nama_barang);
-        $('#hargaBeliUbah').val(dataBarang[index].harga_beli);
-        $('#kuantitasUbah').val(dataBarang[index].kuantitas);
-        $('#subtotalUbah').html(convertAngkaToRupiah(dataBarang[index].subtotal));
-
-
-    }
-
-    $('#btnUbahBarangDibeli').on('click', function() {
-
-        let index = $('#barangIndex').val();
-
-        // console.log($('#barangUbah').val().split("-")[0]);
-
-        if($('#barangUbah').val() == null || $('#hargaBeliUbah').val() == "" || $('#kuantitasUbah').val() == "" || $('#subtotalUbah').html() == "")
-        {
-            toastr.error("Harap isi data secara lengkap terlebih dahulu");
-        }
-        if(checkDuplicate($('#barangUbah').val().split("-")[0], dataBarang[index].id_barang))
-        {
-            toastr.error("Sudah ada barang yang sama di tabel");
         }
         else 
         {
-
-            dataBarang[index].id_barang = $('#barangUbah').val().split("-")[0];
-            dataBarang[index].nama_barang = $('#barangUbah').val().split("-")[1];
-            dataBarang[index].harga_beli = $('#hargaBeliUbah').val();
-            dataBarang[index].kuantitas = $('#kuantitasUbah').val();
-            dataBarang[index].subtotal = convertRupiahToAngka($('#subtotalUbah').html());
-
-            loadTableBarang(dataBarang);
-
-            $('#modalUbahBarangDibeli').modal('toggle');
-
+            rowTable += `<tr>
+                            <td colspan="7"><p class="text-center">Belum ada isi</p></td>
+                        </tr>`;
         }
+
+        let diskon = parseInt($('#inputDiskon').val());
+        let ppn = parseInt($('#inputPPN').val());
+        let totalAkhir = total-diskon-ppn;
+        $('#totalAkhir').val(totalAkhir);
+        $('#total').val(total);
+
+        $('#contentTable').html(rowTable);
+
+    }
+    
+    function hapusBarangDibeli(index)
+    {
+        barangDibeli.splice(index, 1);
+
+        implementDataOnTable();
+    }
+
+    $('#inputDiskon').on('change', function() {
+
+        let total = parseInt($('#total').val());
+
+        let diskon = parseInt($('#inputDiskon').val());
+        let ppn = parseInt($('#inputPPN').val());
+        let totalAkhir = total-diskon-ppn;
+
+        $('#totalAkhir').val(totalAkhir);
 
     });
 
-    function hapus(index)
-    {
-        dataBarang.splice(index, 1);
+    $('#inputPPN').on('change', function() {
 
-        loadTableBarang(dataBarang);
-    }
+        let total = parseInt($('#total').val());
+
+        let diskon = parseInt($('#inputDiskon').val());
+        let ppn = parseInt($('#inputPPN').val());
+        let totalAkhir = total-diskon-ppn;
+        $('#totalAkhir').val(totalAkhir);
+
+    });
 
     
 </script>

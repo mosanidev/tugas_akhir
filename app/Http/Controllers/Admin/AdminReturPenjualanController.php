@@ -14,7 +14,7 @@ class AdminReturPenjualanController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.retur_penjualan.index');
     }
 
     /**

@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalHapusPembelian">
+<div class="modal fade" id="modalKonfirmasiHapusPembelian">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -8,10 +8,10 @@
           </button>
         </div>
         <div class="modal-body">
-          <form class="d-inline" action="{{ route('pembelian.destroy', 'id') }}" id="formHapus" method="POST">
+          <form class="d-inline" action="" id="formHapus" method="POST">
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data pembelian ? Jika anda menghapus data pembelian ini semua barang yang terkait pembelian akan terhapus</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data pembelian dengan nomor nota <p class="nomorNotaPembelian d-inline"></p> ?</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>

@@ -163,6 +163,40 @@
 
     @yield('content')
 
+    <footer class="page-footer font-small pt-5 border-top border-grey mt-5">
+
+        <div class="container-fluid text-center text-md-left">
+    
+        <div class="row">
+    
+            <div class="col-md-6 mt-md-0 mt-3">
+    
+                <h5 class="text-uppercase">Lokasi Toko Kopkar UBAYA</h5>
+                <p> Lapangan Parkir Universitas Surabaya  <br>
+                    Jl. Raya Kalirungkut,Surabaya, Jawa Timur, Indonesia</p>
+
+                <h5 class="text-uppercase">Jam Operasional Toko Kopkar UBAYA</h5>
+                <p> Jam 08:00 - 16:00 WIB <br>
+    
+            </div>
+    
+            <hr class="clearfix w-100 d-md-none pb-3">
+    
+            <div class="col-md-6 mt-md-0 mt-3">
+    
+                <h5 class="text-uppercase">Kontak</h5>
+                <p class="d-inline">Untuk komplain dan saran silahkan hubungi kami via Whatsapp di <a href="https://wa.me/6281252921016" target="_blank" class="d-inline">081252921016</a> </p>
+        
+            </div>
+            
+        </div>
+        </div>
+    
+        <div class="footer-copyright text-center py-3">© 2022 Copyright:
+            <a href="#" class="text-dark"> Kopkar Ubaya</a>
+        </div>
+    </footer>
+
 
 </body>
 

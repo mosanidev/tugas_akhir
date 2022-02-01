@@ -42,6 +42,7 @@ use App\Http\Controllers\Admin\AdminDetailPembelianController;
 use App\Http\Controllers\Admin\AdminPenjualanController;
 use App\Http\Controllers\Admin\AdminPenjualanOfflineController;
 use App\Http\Controllers\Admin\AdminReturPembelianController;
+use App\Http\Controllers\Admin\AdminReturPenjualanController;
 use App\Http\Controllers\Admin\AdminKaryawanController;
 use App\Http\Controllers\Admin\AdminKonsinyasiController;
 use App\Http\Controllers\Admin\AdminDetailKonsinyasiController;
@@ -232,7 +233,7 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::resource('/barang_diskon', AdminBarangDiskonController::class);
 
-        Route::get('/pembelian/konfirmasi/{pembelian}', [AdminPembelianController::class, 'changeDraftToComplete'])->name('pembelian.konfirmasi');
+        // Route::get('/pembelian/konfirmasi/{pembelian}', [AdminPembelianController::class, 'changeDraftToComplete'])->name('pembelian.konfirmasi');
 
         Route::resource('/pembelian', AdminPembelianController::class);
 
@@ -255,6 +256,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/retur_pembelian/tukar_barang', [AdminDetailReturPembelianController::class, 'storeTukarBarang'])->name('retur_pembelian.storeTukarBarang');
         Route::post('/retur_pembelian/potong_dana', [AdminDetailReturPembelianController::class, 'storeReturDana'])->name('retur_pembelian.storeReturDana');
         Route::resource('/retur_pembelian', AdminReturPembelianController::class);
+
+        Route::resource('/retur_penjualan', AdminReturPenjualanController::class);
 
         Route::resource('/detail_retur_pembelian', AdminDetailReturPembelianController::class);
 

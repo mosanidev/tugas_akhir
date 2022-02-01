@@ -31,7 +31,6 @@
       </div>
 
     </div>
-
     <div class="card shadow my-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tabel Pembelian</h6>
@@ -41,7 +40,6 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th>Status</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
@@ -49,31 +47,30 @@
                           <th>Total</th>
                           <th>Status Bayar</th>
                           <th>Aksi</th>
-                          <th></th>
                         </tr>
                     </thead>
                     <tbody>
                       @php $num = 1; @endphp
                       @foreach($pembelian as $item)
                         <tr class="rowPembelian">
-                          <td>{{$item->status}}</td>
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ "Rp " . number_format($item->total-$item->diskon - ($item->total-$item->diskon)*($item->ppn/100) ,0,',','.') }}</td>
+                          <td>{{ "Rp " . number_format($item->total-$item->diskon-$item->ppn ,0,',','.') }}</td>
                           <td>
                             {{ $item->status_bayar }}
                           </td>
                           <td>
                             <a href="{{ route('barang.show', ['barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
-                              <button type="button" class="btn btn-warning btnUbah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahPembelian" @if($item->status == "Complete") disabled  @endif><i class="fas fa-edit"></i></button>
-                              <button type="button" class="btn btn-danger btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian" @if($item->status == "Complete") disabled  @endif><i class="fas fa-trash"></i></button>
-                          </td>
-                          <td>
-                            <div class="form-check">
-                              <input class="form-check-input checkComplete" type="checkbox" value="" data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" @if($item->status == "Complete") checked disabled  @endif>
-                            </div>
+                            
+                            @if($item->status_retur == "Tidak Ada Retur")
+                              <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
+                              <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian"><i class="fas fa-trash"></i></button>
+                            @elseif ($item->status_retur == "Ada Retur")
+                              <button class='btn btn-warning btnInfo' data-aksi="ubah" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-edit"></i></button>
+                              <button class='btn btn-danger btnInfo' data-aksi="hapus" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-trash"></i></button>
+                            @endif
                           </td>
                         </tr>
                       @endforeach
@@ -87,7 +84,8 @@
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
-@include('admin.pembelian.modal.confirm_complete')
+@include('admin.pembelian.modal.confirm_delete')
+@include('admin.pembelian.modal.info')
 
 @if(session('errors'))
     <script type="text/javascript">
@@ -218,59 +216,11 @@
     toastr.error("{{ session('error') }}", "Error", toastrOptions);
   }
 
-  $('.btnHapus').on('click', function() {
-
-    let id = $(this).attr('data-id');
-    $('#formHapus').attr("action", '/admin/pembelian/'+id);
-
-  });
-
-  
-  $('.checkComplete').on('change', function() {
-
-    let pembelian_id = $(this).attr('data-id');
-
-    $('#formKonfirmasi').attr('action', '/admin/pembelian/konfirmasi/'+pembelian_id)
-
-    $('#nomorNota').html($(this).attr('data-nomor-nota'));
-
-    $('#modalKonfirmasiComplete').modal('toggle');
-
-  });
-
   $(document).ready(function() {
 
     let table = $('#dataTable').DataTable({});
 
     let filter = $('.selectFilter :selected').val();
-
-    function showSpecificStatus(status)
-    {
-      $('.rowPembelian').each(function() {
-        if($(this).children().html() != status)
-        {
-          $(this).children().hide();
-        }
-        else if($(this).children().html() == status)
-        {
-          $(this).children().show();
-        }
-      });
-
-      // if(status == "Draft")
-      // {
-      //   $('td:nth-child(7),th:nth-child(7)').show();
-      //   $('td:nth-child(8),th:nth-child(8)').show();
-      // }
-      // else if (status == "Complete")
-      // {
-      //   $('td:nth-child(7),th:nth-child(7)').hide();
-      //   $('td:nth-child(8),th:nth-child(8)').hide();
-      // }
-      
-    }
-
-    filterByStatus();
 
     $('.selectFilter').on('click', function() {
     
@@ -309,7 +259,27 @@
         table.draw();
     }
 
+    
+    $(".btnHapus").on('click', function() {
 
+      let id = $(this).attr('data-id');
+      let nomorNota = $(this).attr('data-nomor-nota');
+
+      $('.nomorNotaPembelian').html(nomorNota);
+
+      $('#formHapus').attr("action", "/admin/pembelian/"+id);
+
+    });
+
+    $('.btnInfo').on('click', function(){
+
+      let aksi = $(this).attr('data-aksi');
+      let nomorNota = $(this).attr('data-nomor-nota'); 
+
+      $('.keterangan').html(aksi);
+      $('.nomorNotaKeterangan').html(nomorNota);
+
+    });
 
   });
 

@@ -59,7 +59,9 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Subtotal</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" name="subtotal" class="form-control d-inline ml-1" id="subtotal" style="width: 94.2%;" val="" readonly>
+                        <input type="text" id="subtotal" class="form-control d-inline ml-1" name="subtotal" min="1" required readonly>
+
+                        {{-- Rp   <input type="number" name="subtotal" class="form-control d-inline ml-1" id="subtotal" style="width: 94.2%;" val="" readonly> --}}
                     </div>
                 </div>
             </div>
@@ -107,7 +109,7 @@
             let hargaBeli = parseInt($('#harga_beli').val());
             let kuantitas = parseInt($('#kuantitas').val());
 
-            $('#subtotal').val(hargaBeli*kuantitas);
+            $('#subtotal').val(convertAngkaToRupiah(hargaBeli*kuantitas));
         }
 
     });

@@ -27,7 +27,7 @@ class CreatePengirimanTable extends Migration
             $table->integer('total_berat');
             $table->datetime('waktu_jemput')->nullable();
             // $table->string('catatan_untuk_kurir', 100)->nullable();
-            $table->string('status')->default('Draft');
+            // $table->string('status')->default('Draft');
             $table->string('status_pengiriman', 100);
             $table->datetime('estimasi_tiba');
         });

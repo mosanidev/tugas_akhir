@@ -55,44 +55,6 @@
             </div>
           </div>
         </div>
-        <div class="col-6">
-          <div class="mx-auto my-5 p-3 border">
-            <p class="text-center"><strong>Pelunasan</strong></p> 
-            <div class="row">
-              <div class="col-6">
-                Total yang harus dibayar
-              </div>
-              <div class="col-6">
-                <p id="totalHutang"></p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                Bukti Bayar
-              </div>
-            </div>
-            <div class="row mt-1">
-              <div class="col-12">
-                <div class="form-group">
-                  <div class="input-group">
-                      <div class="custom-file">
-                          <input type="file" class="custom-file-input" name="foto" accept="image/png, image/jpg, image/jpeg" id="buktiBayar" onchange="image_select()">
-                          <label class="custom-file-label" id="image_upload_label">Choose file</label>
-                      </div>
-                      <div class="input-group-append">
-                          <span class="input-group-text">Upload</span>
-                      </div>
-                  </div>
-                  <p class="text-danger">* Opsional</p>
-                </div> 
-              </div>
-            </div>
-            <div class="row mt-1">
-              <button class="btn btn-block w-25 mx-auto btn-success"  data-toggle="modal" data-target="#modalLunasiKonsinyasi" id="btnLunasi">Lunasi</button>
-            </div>
-              
-            </div>
-          </div>
 
         </div>
       </div>
