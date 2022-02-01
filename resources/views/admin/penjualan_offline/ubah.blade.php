@@ -4,24 +4,25 @@
 
     <a href="{{ route('penjualanoffline.index') }}" class="btn btn-link"><- Kembali ke daftar penjualan offline</a>
 
-    <h3 class="mt-3 mb-2 ml-3">Tambah Penjualan Offline</h3>
+    <h3 class="mt-3 mb-2 ml-3">Ubah Penjualan Offline</h3>
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('penjualanoffline.store') }}" id="formTambah" novalidate>
+            <form method="POST" action="{{ route('penjualan_offline.update', ['penjualan_offline'=>$penjualan_offline[0]->$id] ) }}" novalidate>
                 @csrf
+                @method('PUT')
                 <input type="hidden" id="dataBarangDijual" name="detail_penjualan">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Nomor Nota</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" required>
+                        <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" value="{{ $penjualan_offline[0]->$nomor_nota }}" required>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Tanggal</label>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" value="{{ \Carbon\Carbon::now() }}" id="datepickerTgl" required>
+                            <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" value="{{ $penjualan_offline[0]->$tanggal }}" id="datepickerTgl" required>
                             <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -35,7 +36,7 @@
                             <select class="form-control" name="pelanggan_kopkar" id="selectPelangganKopkar" style="width: 85%" required>
                                 <option disabled selected>Ketikkan NIK atau nama anggota koperasi</option>
                                 @foreach($anggotaKopkar as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nomor_anggota." - ".$item->nama_depan." ".$item->nama_belakang }}</option>
+                                    <option value="{{ $item->id }}" @if($item->id == $penjualan_offline[0]->users_id) selected @endif)>{{ $item->nomor_anggota." - ".$item->nama_depan." ".$item->nama_belakang }}</option>
                                 @endforeach
                             </select>
                             <button type="button" class="btn btn-danger ml-2" id="btnKosongiInputAnggotaKopkar">Kosongi</button>
@@ -48,9 +49,9 @@
                     <div class="col-sm-8">
                         <select class="form-control" name="metodePembayaran" id="selectMetodePembayaran" required>
                             <option disabled selected>Metode Pembayaran</option>
-                            <option value="Tunai">Tunai</option>
-                            <option value="Debet Bank">Transfer Bank</option>
-                            <option value="E-Wallet">E - Wallet</option>
+                            <option value="Tunai" @if("Tunai" == $penjualan_offline[0]->metode_pembayaran) selected @endif>Tunai</option>
+                            <option value="Debet Bank" @if("Debet Bank" == $penjualan_offline[0]->metode_pembayaran) selected @endif>Transfer Bank</option>
+                            <option value="E-Wallet" @if("E-Wallet" == $penjualan_offline[0]->metode_pembayaran) selected @endif>E - Wallet</option>
                         </select> 
                     </div>
                 </div>
@@ -96,7 +97,6 @@
     </div>
 
     @include('admin.penjualan_offline.modal.create')
-    @include('admin.penjualan_offline.modal.confirm_add')
 
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -217,20 +217,12 @@
             }
             else 
             {
-                $('#modalKonfirmasiPenjualanOffline').modal('toggle');
-            }
-
-            $('.btnIyaSubmit').on('click', function() {
-
-                $('#modalKonfirmasiPenjualanOffline').modal('toggle');
-
                 $('#dataBarangDijual').val(JSON.stringify(arrBarangDijual));
-
-                $('#formTambah').submit();
+                $('#btnSimpan').attr("type", "submit");
+                $('#btnSimpan')[0].click();
 
                 $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
-
-            });
+            }
 
         });
     

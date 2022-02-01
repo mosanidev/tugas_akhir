@@ -41,7 +41,9 @@
                           <td>{{ $item->metode_pembayaran }}</td>
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>
-                            <a href="{{ route('penjualan.show', ['penjualan'=>$item->nomor_nota]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
+                            <a href="{{ route('penjualan_offline.show', ['penjualan_offline'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                            <a href="{{ route('penjualan_offline.edit', ['penjualan_offline'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
+
                           </td>
                         </tr>
                       @endforeach

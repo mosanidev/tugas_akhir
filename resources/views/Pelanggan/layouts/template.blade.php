@@ -173,7 +173,7 @@
     
                 <h5 class="text-uppercase">Lokasi Toko Kopkar UBAYA</h5>
                 <p> Lapangan Parkir Universitas Surabaya  <br>
-                    Jl. Raya Kalirungkut,Surabaya, Jawa Timur, Indonesia</p>
+                    Jl. Raya Kalirungkut, Surabaya, Jawa Timur, Indonesia</p>
 
                 <h5 class="text-uppercase">Jam Operasional Toko Kopkar UBAYA</h5>
                 <p> Jam 08:00 - 16:00 WIB <br>

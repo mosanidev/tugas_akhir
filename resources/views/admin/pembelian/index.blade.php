@@ -19,13 +19,13 @@
 
       <div class="row">
         <div class="col-3">
-          <p class="mt-2 ml-2">Status</p> 
+          <p class="mt-2 ml-2">Status Bayar</p> 
         </div>
         <div class="col-9">
             <select class="form-control w-50 selectFilter">
               <option selected>Semua</option>
-              <option>Draft</option>
-              <option>Complete</option>
+              <option>Belum Lunas</option>
+              <option>Sudah Lunas</option>
             </select>
         </div>
       </div>
@@ -62,7 +62,7 @@
                             {{ $item->status_bayar }}
                           </td>
                           <td>
-                            <a href="{{ route('barang.show', ['barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                            <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             
                             @if($item->status_retur == "Tidak Ada Retur")
                               <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>

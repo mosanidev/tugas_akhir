@@ -109,42 +109,24 @@ class AdminPembelianController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showLama(Request $request, $id)
-    {
-        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier', 'users.nama_depan as nama_depan', 'users.nama_belakang as nama_belakang')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->join('users', 'pembelian.users_id', '=', 'users.id')->where('pembelian.id', '=', $id)->get();
-        
-        $detailPembelian = DB::table('detail_pembelian')->select('detail_pembelian.*', 'barang.id as barang_id', 'barang.nama as nama_barang')->join('barang', 'detail_pembelian.barang_id', '=', 'barang.id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
-
-        $barangDibeli = DB::table('barang')->select('barang.id')->where('barang_konsinyasi', '=', 0)->join('detail_pembelian', 'barang.id', '=', 'detail_pembelian.barang_id')->where('detail_pembelian.pembelian_id', '=', $id)->get();
-
-        $arrIdBarang = array();
-
-        $total = 0;
-        for($i = 0; $i < count($barangDibeli); $i++)
-        {
-            $total += $detailPembelian[$i]->subtotal;
-            array_push($arrIdBarang, $barangDibeli[$i]->id);
-        }
-
-        //update agak lama
-        $updatePembelian = DB::table('pembelian')->where('pembelian.id', $id)->update(['total' => $total]);
-
-        $barang = DB::table('barang')->select('barang.id', 'barang.kode', 'barang.nama')->whereNotin('id', $arrIdBarang)->get();        
-
-        if($request->ajax())
-        {
-            return response()->json(['pembelian'=>$pembelian]);
-        }
-        else
-        {
-            return view('admin.pembelian.barang_dibeli.index', ['pembelian'=>$pembelian, 'detailPembelian' => $detailPembelian, 'barang'=>$barang]);
-        }
-
-    }
 
     public function show(Request $request, $id)
     {
-    }
+        $pembelian = DB::table('pembelian')
+                        ->select('pembelian.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                        ->where('pembelian.id', $id)
+                        ->get();
+
+        $detailPembelian = DB::table('detail_pembelian')
+                            ->select('barang.kode', 'barang.nama', 'detail_pembelian.tanggal_kadaluarsa', 'detail_pembelian.harga_beli', 'detail_pembelian.kuantitas', 'detail_pembelian.subtotal')
+                            ->where('pembelian.id', $id)
+                            ->join('pembelian', 'pembelian.id', '=', 'detail_pembelian.pembelian_id')
+                            ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
+                            ->get();
+
+        return view('admin.pembelian.lihat', ['pembelian' => $pembelian, 'detail_pembelian' => $detailPembelian]);
+    }   
 
     /**
      * Show the form for editing the specified resource.
@@ -154,9 +136,15 @@ class AdminPembelianController extends Controller
      */
     public function edit($id)
     {
+        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->where('pembelian.id', '=', $id)->get();
+        
+        if($pembelian[0]->status_retur == "Ada Retur")
+        {
+            abort(404);
+        }
+
         $supplier = DB::table('supplier')->where('jenis', '=', 'Perusahaan')->get();
         $barang = DB::table('barang')->where('barang_konsinyasi', '=', 0)->get();
-        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->where('pembelian.id', '=', $id)->get();
         $detail_pembelian = DB::table('detail_pembelian')
                             ->select('detail_pembelian.barang_id',
                                      'barang.kode as barang_kode',

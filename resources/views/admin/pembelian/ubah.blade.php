@@ -127,7 +127,7 @@
     </div>
     
 @include('admin.pembelian.modal.create')
-@include('admin.pembelian.modal.edit')
+@include('admin.pembelian.modal.confirm_update')
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -213,15 +213,22 @@
             }
             else 
             {
-                $('#data_barang').val(JSON.stringify(barangDibeli));
-
-                $('#btnSimpan').attr("type", "submit");
-                $('#btnSimpan')[0].click();
-
-                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+                $('#modalKonfirmasiUbahPembelian').modal('toggle');
 
             }
 
+        });
+
+        $('.btnIyaSubmit').on('click', function() {
+
+            $('#modalKonfirmasiUbahPembelian').modal('toggle');
+
+            $('#data_barang').val(JSON.stringify(barangDibeli));
+
+            $('#btnSimpan').attr("type", "submit");
+            $('#btnSimpan')[0].click();
+
+            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
         });
 
 
