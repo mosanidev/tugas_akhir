@@ -102,7 +102,22 @@ class BarangController extends Controller
 
         if(count($data_barang) > 0)
         {
-            $data_merek = DB::table('merek_barang')->select('merek_barang.*')->join('barang', 'merek_barang.id', '=', 'barang.merek_id')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->where('kategori_barang.kategori_barang', '=', $request->input_kategori)->distinct()->get();   
+            $data_merek =  DB::table('barang')
+                            ->select('merek_barang.id', 'merek_barang.merek_barang')
+                            ->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')
+                            ->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')
+                            ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
+                            ->where('barang.nama', 'like', '%'.strtolower($request->key).'%')
+                            ->distinct()
+                            ->get(); 
+
+            // $data_merek = DB::table('merek_barang')
+            //                 ->select('merek_barang.*')
+            //                 ->join('barang', 'merek_barang.id', '=', 'barang.merek_id')
+            //                 ->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')
+            //                 ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
+            //                 ->distinct()
+            //                 ->get();   
         }
 
         if(Auth::check())

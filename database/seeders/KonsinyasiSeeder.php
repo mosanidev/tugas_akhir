@@ -21,8 +21,8 @@ class KonsinyasiSeeder extends Seeder
                 'id'                    => 1,  
                 'nomor_nota'            => 'NK0001',
                 'supplier_id'           => 3,
-                'tanggal_titip'         => '2022-01-10',
-                'tanggal_jatuh_tempo'   => '2022-02-05',
+                'tanggal_titip'         => '2022-02-06',
+                'tanggal_jatuh_tempo'   => '2022-02-26',
                 'metode_pembayaran'     => 'Tunai',
                 'status'                => 'Belum Lunas',
                 'bukti_bayar'           => null

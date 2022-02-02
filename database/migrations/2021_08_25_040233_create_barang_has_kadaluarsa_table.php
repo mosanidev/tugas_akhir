@@ -16,7 +16,7 @@ class CreateBarangHasKadaluarsaTable extends Migration
         Schema::dropIfExists('barang_has_kadaluarsa');
 
         Schema::create('barang_has_kadaluarsa', function (Blueprint $table) {
-            $table->increments('id');
+            // $table->increments('id');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade');
             $table->datetime('tanggal_kadaluarsa');
