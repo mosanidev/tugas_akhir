@@ -48,7 +48,7 @@
                                                             <p>Kuantitas</p>
                                                         </div>
                                                         <div class="col-8">
-                                                            <input type="number" class="form-control w-50 input-kuantitas" id="input-kuantitas-{{ $cart[$i]->barang_id }}" min="1" data-id="{{ $cart[$i]->barang_id }}" name="kuantitas_{{ $cart[$i]->barang_id }}[]" @if($alamat[$x]->id == $cart[0]->alamat_pengiriman_id) value="{{ $cart[$i]->kuantitas }}" @else value="1" @endif>
+                                                            <input type="number" class="form-control w-50 input-kuantitas" id="input-kuantitas-{{ $cart[$i]->barang_id }}" min="1" data-id="{{ $cart[$i]->barang_id }}" name="kuantitas_{{ $cart[$i]->barang_id }}[]" @if($alamat[$x]->id == $cart[0]->alamat_pengiriman_id) value="{{ $cart[$i]->kuantitas }}" @else value="0" @endif>
                                                         </div>
                                                     </div>
     

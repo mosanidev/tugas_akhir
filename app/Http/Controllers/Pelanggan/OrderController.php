@@ -509,7 +509,15 @@ class OrderController extends Controller
 
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
 
-            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke berbagai alamat', 'status_jual'=>$status, 'status' => 'Complete', 'created_at'=>$dateNow]);
+            $id_penjualan = DB::table('penjualan')
+                                ->insertGetId([
+                                    'nomor_nota' => $request->nomor_nota, 
+                                    'users_id' => auth()->user()->id, 
+                                    'tanggal' => $transaction_time,
+                                    'pembayaran_id' => $id_pembayaran, 
+                                    'metode_transaksi' => 'Dikirim ke berbagai alamat', 
+                                    'status_jual'=>$status, 
+                                    'created_at'=>$dateNow]);
 
             $total = 0;
 
