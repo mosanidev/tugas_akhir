@@ -23,7 +23,8 @@ class ShopController extends Controller
                         ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                         ->where('nama', 'like', '%'.strtolower($request->key).'%')
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
-                        ->where('kategori_barang.kategori_barang', '=', $request->input_kategori);
+                        ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
+                        ->groupBy('barang.id');
 
         $data_merek = DB::table('barang')
                         ->select('merek_barang.id', 'merek_barang.merek_barang')
@@ -92,7 +93,8 @@ class ShopController extends Controller
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
-                        ->where('barang.kategori_id', '=', $id);
+                        ->where('barang.kategori_id', '=', $id)
+                        ->groupBy('barang.id');
 
         $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.kategori_id', '=', $request->kategori_id)->distinct()->get();
 
@@ -171,50 +173,59 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                             ->inRandomOrder()
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "a-z")
         {
             $data_barang = DB::table('barang')
                                 ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                                ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                                 ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                                 ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                                 ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                                 ->where('barang.jenis_id', '=', $id)
                                 ->orderBy('nama', 'asc')
+                                ->groupBy('barang.id')
                                 ->paginate(15);
         }
         else if($request->urutkan == "z-a")
         {
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                             ->orderBy('nama', 'desc')
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "maxharga")
         {
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) desc')
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "minharga")
         {
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
 
@@ -274,6 +285,7 @@ class ShopController extends Controller
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->where('jenis_id', '=', $id)
                         ->inRandomOrder()
+                        ->groupBy('barang.id')
                         ->paginate(15);
 
         if (Auth::check())
@@ -306,6 +318,7 @@ class ShopController extends Controller
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->where('barang.kategori_id', '=', $id)
                         ->distinct()
+                        ->groupBy('barang.id')
                         ->paginate(15);
         $data_jenis = DB::table('jenis_barang')->where('id', '=', $id);
         $data_merek = DB::table('barang')->select('merek_barang.id', 'merek_barang.merek_barang')->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')->where('barang.kategori_id', '=', $id)->distinct()->get();
@@ -338,6 +351,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->inRandomOrder()
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "a-z")
@@ -348,6 +362,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderBy('nama', 'asc')
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "z-a")
@@ -358,6 +373,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderBy('nama', 'desc')
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "maxharga")
@@ -368,6 +384,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) desc')
+                            ->groupBy('barang.id')
                             ->paginate(15);
         }
         else if($request->urutkan == "minharga")
@@ -378,6 +395,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')
+                            ->groupBy('barang.id')
                             ->paginate(15);        
         }   
 

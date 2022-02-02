@@ -15,17 +15,19 @@ class CreateReturPenjualanTable extends Migration
     {
         Schema::dropIfExists('retur_penjualan');
 
-        // Schema::create('retur_penjualan', function (Blueprint $table) {
-        //     $table->increments('id');
-        //     $table->date('tanggal');
-        //     $table->unsignedInteger('users_id');
-        //     $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-        //     $table->unsignedInteger('penjualan_id');
-        //     $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
-        //     $table->enum('status', ['Menunggu pengajuan dicek admin', 'Pengajuan retur ditolak', 'Pengajuan retur diterima dan sedang di proses', 'Barang retur dikirim ke alamat anda', 'Proses retur selesai']);
-        //     $table->string('link', 500);
-        //     $table->integer('total')->nullable();
-        // });
+        Schema::create('retur_penjualan', function (Blueprint $table) {
+            $table->increments('id');
+            $table->date('tanggal');
+            $table->unsignedInteger('users_id');
+            $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger('penjualan_id');
+            $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('status');
+            // $table->enum('status', ['Menunggu pengajuan dicek admin', 'Pengajuan retur ditolak', 'Pengajuan retur diterima dan sedang di proses', 'Barang retur dikirim ke alamat anda', 'Proses retur selesai']);
+            // $table->string('nomor_resi')->nullable();
+            $table->string('link', 500);
+            $table->integer('total')->nullable();
+        });
     }
 
     /**

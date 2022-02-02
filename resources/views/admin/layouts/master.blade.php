@@ -160,18 +160,10 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiesReturJual"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                <a class="nav-link" href="{{ route('retur_penjualan.index') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
                     <span>Retur Penjualan</span>
                 </a>
-                <div id="collapseUtilitiesReturJual" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('retur_penjualan.index') }}">Pengajuan dari pelanggan</a>
-                        {{-- <a class="collapse-item" href="{{ route('anggota.hutang') }}">Retur Penjualan</a> --}}
-                    </div>
-                </div>
             </li>
 
             <!-- Nav Item - Charts -->

@@ -32,5 +32,22 @@ class PembelianSeeder extends Seeder
             ]
         );
 
+        DB::table('pembelian')->insert(
+            [   
+                'id'                        => 2,  
+                'nomor_nota'                => 'NB0002',
+                'supplier_id'               => 1,
+                'tanggal'                   => '2022-02-02',
+                'tanggal_jatuh_tempo'       => '2022-02-16',
+                'diskon'                    => 0,
+                'ppn'                       => '0',
+                'metode_pembayaran'         => 'Tunai',
+                'status_bayar'              => 'Belum Lunas',
+                // 'status'                    => 'Draft',
+                'total'                     => 2215900
+            ]
+        );
+        
+
     }
 }
