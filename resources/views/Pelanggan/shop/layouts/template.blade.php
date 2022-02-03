@@ -110,17 +110,7 @@
                     },
                     success:function(data) {
 
-                        console.log(data);
-                        // $('#modalLoading').modal('toggle');
-
-                        // tampilkanCustomModal(data.status, 3000);
-                        // toastr.success(status, "Sukses", toastrOptions);
-
-                        Swal.fire({
-                            html: data.status,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
+                        toastr.success(data.status, "Success", toastrOptions);
 
                         let total_cart = $("#total_cart")[0].innerText;
 

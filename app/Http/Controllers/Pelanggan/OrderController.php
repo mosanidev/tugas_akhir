@@ -124,7 +124,14 @@ class OrderController extends Controller
             }
             
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
-            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Ambil di toko', 'status_jual'=>$status, 'status' => 'Complete', 'created_at'=>$dateNow]);
+            $id_penjualan = DB::table('penjualan')->insertGetId([
+                                'nomor_nota' => $request->nomor_nota, 
+                                'users_id' => auth()->user()->id, 
+                                'tanggal' => $transaction_time,
+                                'pembayaran_id' => $id_pembayaran, 
+                                'metode_transaksi' => 'Ambil di toko', 
+                                'status_jual'=>$status, 
+                                'created_at'=>$dateNow]);
 
             $total = 0;
             for($i = 0; $i < count($cart); $i++)
@@ -144,7 +151,7 @@ class OrderController extends Controller
             $delete_cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->delete();
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual', 'penjualan.status')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
@@ -324,7 +331,15 @@ class OrderController extends Controller
 
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
 
-            $id_penjualan = DB::table('penjualan')->insertGetId(['nomor_nota' => $request->nomor_nota, 'users_id' => auth()->user()->id, 'tanggal' => $transaction_time,'pembayaran_id' => $id_pembayaran, 'metode_transaksi' => 'Dikirim ke alamat', 'status_jual' => $status, 'status' => 'Complete', 'created_at'=>$dateNow]);
+            $id_penjualan = DB::table('penjualan')
+                                ->insertGetId([
+                                    'nomor_nota' => $request->nomor_nota, 
+                                    'users_id' => auth()->user()->id, 
+                                    'tanggal' => $transaction_time,
+                                    'pembayaran_id' => $id_pembayaran, 
+                                    'metode_transaksi' => 'Dikirim ke alamat', 
+                                    'status_jual' => $status, 
+                                    'created_at'=>$dateNow]);
 
             $total = 0;
 
@@ -351,7 +366,7 @@ class OrderController extends Controller
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$tarif]);
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual', 'penjualan.status')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();
@@ -554,7 +569,7 @@ class OrderController extends Controller
             $update_penjualan = DB::table('penjualan')->where('id', $id_penjualan)->update(['total' => $total+$total_tarif]);
 
             $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual', 'penjualan.status')
+                        ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu', 'penjualan.status_jual')
                         ->where('penjualan.id', '=', $id_penjualan) 
                         ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                         ->get();

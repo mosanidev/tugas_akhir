@@ -56,7 +56,7 @@
                                                 </div>
                                                 
                                                 <div class="float-right">
-                                                    <p class="d-inline">Jumlah </p><button type="button" class="btn btn-info d-inline btn-qty-min" data-id="{{$item->barang_id}}"> - </button><input type="number" class="form-control kuantitas-cart d-inline text-center" style="width:63px; padding-bottom: 8.3px;" min="1" max="{{$item->barang_stok}}" data-id="{{$item->barang_id}}" value="{{ $item->kuantitas }}"><button type="button" data-id="{{$item->barang_id}}" data-max="{{ $item->barang_stok }}" class="btn btn-info d-inline btn-qty-plus mr-2"> + </button><p class="d-inline">Stok</p> <p class="d-inline"><strong>{{$item->barang_stok}}</strong></p>
+                                                    <p class="d-inline">Jumlah </p><button type="button" class="btn btn-info d-inline btn-qty-min" data-id="{{$item->barang_id}}"> - </button><input type="number" class="form-control kuantitas-cart d-inline text-center" style="width:63px; padding-bottom: 8.3px;" min="1" max="{{$item->barang_stok}}" data-id="{{$item->barang_id}}" value="{{ $item->kuantitas }}"><button type="button" data-id="{{$item->barang_id}}" data-max="{{ $item->barang_stok }}" class="btn btn-info d-inline btn-qty-plus mr-2"> + </button><p class="d-inline">Sisa Stok</p> <p class="d-inline"><strong>{{$item->barang_stok}}</strong></p>
                                                     
                                                     <a class="btn btn-danger btn-hapus ml-3" data-id="{{$item->barang_id}}">Hapus</a><br>
                                                     <p class="message text-danger"></p>

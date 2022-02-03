@@ -28,14 +28,16 @@
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Satuan</p><p class="d-inline">{{ $barang[0]->satuan }}</p><br>
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Berat</p><p class="d-inline">{{ $barang[0]->berat }} gram</p><br>
                             <p class="mb-2">Deskripsi</p>
-                            <p class="text-justify">{{ $barang[0]->deskripsi }}</p>
+                            <div class="bg-light p-2 mb-3 rounded">
+                                <p class="text-justify">{{ $barang[0]->deskripsi }}</p>
+                            </div>
  
-                            <p class="d-inline">Jumlah </p><button type="button" class="btn btn-info d-inline btn-qty-min"> - </button><input type="number" class="form-control d-inline text-center" id="kuantitas-cart" style="width:63px; padding-bottom: 8.3px;" min="1" max="{{$barang[0]->jumlah_stok}}" value="1"><button type="button" class="btn btn-info d-inline btn-qty-plus mr-2" data-max="{{ $barang[0]->jumlah_stok }}"> + </button><p class="d-inline">Stok</p> <p class="d-inline"><strong>{{$barang[0]->jumlah_stok}}</strong></p>
+                            <p class="d-inline">Jumlah </p><button type="button" class="btn btn-info d-inline btn-qty-min"> - </button><input type="number" class="form-control d-inline text-center" id="kuantitas-cart" style="width:63px; padding-bottom: 8.3px;" min="1" max="{{$barang[0]->jumlah_stok}}" value="1"><button type="button" class="btn btn-info d-inline btn-qty-plus mr-2" data-max="{{ $barang[0]->jumlah_stok }}"> + </button>
+
+                            {{-- <p class="d-inline">Stok</p> <p class="d-inline"><strong>{{$barang[0]->jumlah_stok}}</strong></p> --}}
                             
                             <input type="hidden" name="barang_id" id="barangID" value="{{ $barang[0]->id }}">
                             <button class="btn btn-success ml-3" type="button" id="btnBeli" style="width:40%;">Masukkan ke keranjang</button>
-
-
 
                         @if(isset($data_barang_wishlist))
                             {{-- <button type="button" id="wishlist" data-id="{{ $barang[0]->id }}" class="btn btn-success ml-3"><i class="far fa-heart mr-2"></i>Wishlist</button> --}}
@@ -60,7 +62,7 @@
                             @endif 
                         @endif
                         
-                        <p id="message" class="text-danger"></p>
+                        <p id="message" class="text-danger">@if($barang[0]->jumlah_stok <= 3) {{ "Sisa jumlah stok ".$barang[0]->jumlah_stok }} @endif</p>
                     </div>
                 </div>
             </div>
