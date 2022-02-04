@@ -19,7 +19,8 @@ class MultiplePengirimanSeeder extends Seeder
         DB::table('multiple_pengiriman')->insert(
             [   
                 'pengiriman_id'             => 1,  
-                'alamat_pengiriman_id'      => 1
+                'alamat_pengiriman_id'      => 1,
+                'total_tarif'               => 7000
             ]
         );
     }

@@ -29,6 +29,7 @@ class AdminPengirimanController extends Controller
                         ->join('pengiriman', 'multiple_pengiriman.pengiriman_id', '=', 'pengiriman.id')
                         ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
                         ->join('shipper', 'shipper.kode_shipper', '=', 'pengiriman.kode_shipper')
+                        ->groupBy('detail_penjualan.alamat_pengiriman_id')
                         ->get();
 
         /*

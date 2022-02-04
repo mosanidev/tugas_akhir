@@ -46,12 +46,12 @@ class CartController extends Controller
         {
             $cart = session()->get('cart');
 
-            for($i=0; $i<count($cart); $i++)
+            foreach($cart as $item)
             {
-                if($cart[$i]->barang_id == $request->barang_id)
+                if($item->barang_id == $request->barang_id)
                 {
-                    $cart[$i]->subtotal  = $barang[0]->harga_jual*$request->kuantitas;
-                    $cart[$i]->kuantitas = $request->kuantitas;
+                    $item->subtotal  = $barang[0]->harga_jual*$request->kuantitas;
+                    $item->kuantitas = $request->kuantitas;
                 }
             }
 
@@ -100,12 +100,12 @@ class CartController extends Controller
         {
             $cart = session()->get('cart');
 
-            for($i=0; $i<count($cart); $i++)
+            foreach($cart as $key => $item)
             {
-                if($cart[$i]->barang_id == $request->barang_id)
+                if($item->barang_id ==  $request->barang_id)
                 {
                     // hapus elemen pada sebuah array
-                    unset($cart[$i]);
+                    unset($cart[$key]);
                 }
             }
 
@@ -269,17 +269,17 @@ class CartController extends Controller
 
                 $status = array();
 
-                for($i=0; $i<count($cart); $i++)
-                {   
-                    if($cart[$i]->barang_id == $request->barang_id)
+                foreach($cart as $item)
+                {
+                    if($item->barang_id == $request->barang_id)
                     {
-                        if ($cart[$i]->kuantitas+$qty > $barang[0]->jumlah_stok)
+                        if ($item->kuantitas+$qty > $barang[0]->jumlah_stok)
                         {
                             $find = "true";
 
-                            $cart[$i]->kuantitas = $cart[$i]->barang_stok;
+                            $item->kuantitas = $item->barang_stok;
 
-                            $cart[$i]->subtotal = $barang[0]->harga_jual*$cart[$i]->kuantitas;
+                            $item->subtotal = $barang[0]->harga_jual*$item->kuantitas;
                             
                             $status = "Maaf jumlah barang yang ditambahkan melebihi jumlah stok";
                         } 
@@ -287,7 +287,7 @@ class CartController extends Controller
                         {
                             $find = "true";
 
-                            $cart[$i]->kuantitas+=$qty;
+                            $item->kuantitas+=$qty;
 
                             $status = "Jumlah barang berhasil ditambahkan di keranjang";
                         }

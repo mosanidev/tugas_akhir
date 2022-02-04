@@ -63,7 +63,7 @@
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Deskripsi</p>
                     <div class="col-sm-9">
-                        <textarea class="form-control" name="deskripsi" rows="5" required>{{ old('deskripsi') }}</textarea>
+                        <textarea class="form-control" name="deskripsi" id="deskripsi" rows="5" required>{{ old('deskripsi') }}</textarea>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -153,6 +153,9 @@
     <!-- Moment  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
+    {{-- ckeditor --}}
+    <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
 
     <script type="text/javascript">
@@ -183,15 +186,7 @@
                 theme: 'bootstrap4'
             });
 
-            // jQuery.datetimepicker.setLocale('id');
-
-            // $('#datepicker').datetimepicker({
-            //     timepicker: true,
-            //     datepicker: true,
-            //     lang: 'id',
-            //     defaultTime: '00:00 AM',
-            //     format: 'Y-m-d H:i:00'
-            // });
+            CKEDITOR.replace('deskripsi');
 
 
         });

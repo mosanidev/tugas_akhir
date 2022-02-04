@@ -115,6 +115,14 @@ Route::group(['middleware' => 'ensure_user_is_not_admin'], function () {
         return view ('tes_tambah_cart');
     });
 
+    Route::get('tes_ubah_cart', function() {
+        return view ('tes_ubah_cart');
+    });
+
+    Route::get('tes_hapus_cart', function() {
+        return view ('tes_hapus_cart');
+    });
+
     Route::get('tes_cek_ongkir', function() {
         return view ('tes_cek_ongkir');
     });
