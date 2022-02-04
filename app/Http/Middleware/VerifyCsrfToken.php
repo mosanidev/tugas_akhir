@@ -12,7 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        'http://2d1c-180-253-165-66.ngrok.io/order/webhook',
-        'http://2d1c-180-253-165-66.ngrok.io/order/initpayment'
+        'http://edea-103-121-18-11.ngrok.io/order/webhook',
+        'http://edea-103-121-18-11.ngrok.io/order/initpayment'
     ];
 }

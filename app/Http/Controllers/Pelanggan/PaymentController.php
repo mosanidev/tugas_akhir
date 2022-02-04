@@ -136,7 +136,7 @@ class PaymentController extends Controller
             $updatePembayaran = DB::table('pembayaran')
                                 ->where('id', $penjualan[0]->pembayaran_id)     
                                 ->update([
-                                    'status' => 'Sudah lunas',
+                                    'status_bayar' => 'Sudah lunas',
                                     'waktu_lunas' => $notif->settlement_time
                                 ]);
 

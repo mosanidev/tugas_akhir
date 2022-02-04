@@ -112,15 +112,11 @@ class OrderController extends Controller
 
             if($metode_pembayaran == "bank_transfer")
             {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => "Transfer Bank", 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
             }
-            else if ($metode_pembayaran == "gopay")
+            else if ($metode_pembayaran == "gopay" || $metode_pembayaran == "qris")
             {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
-            }
-            else if ($metode_pembayaran == "qris")
-            {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => "E-Wallet", 'batasan_waktu' => $batasan_waktu]);
             }
             
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
@@ -233,8 +229,8 @@ class OrderController extends Controller
         $order = DB::table('penjualan')
                         ->select('penjualan.*',
                                  'pembayaran.*',
-                                 'penjualan.status_jual as status_jual',
-                                 'pembayaran.status as status_bayar')
+                                 'penjualan.status_jual',
+                                 'pembayaran.status_bayar')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->where('penjualan.nomor_nota', '=', $request->nomor_nota)
                         ->where('users_id', '=', auth()->user()->id)->get();
@@ -318,15 +314,11 @@ class OrderController extends Controller
 
             if($metode_pembayaran == "bank_transfer")
             {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => "Transfer Bank", 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
             }
-            else if ($metode_pembayaran == "gopay")
+            else if ($metode_pembayaran == "gopay" || $metode_pembayaran == "qris")
             {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
-            }
-            else if ($metode_pembayaran == "qris")
-            {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => "E-Wallet", 'batasan_waktu' => $batasan_waktu]);
             }
 
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
@@ -511,15 +503,11 @@ class OrderController extends Controller
 
             if($metode_pembayaran == "bank_transfer")
             {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => "Transfer Bank", 'bank' => $current_status->va_numbers[0]->bank, 'nomor_rekening' => $current_status->va_numbers[0]->va_number, 'batasan_waktu' => $batasan_waktu]);
             }
-            else if ($metode_pembayaran == "gopay")
+            else if ($metode_pembayaran == "gopay" || $metode_pembayaran == "qris")
             {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
-            }
-            else if ($metode_pembayaran == "qris")
-            {
-                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => $metode_pembayaran, 'batasan_waktu' => $batasan_waktu]);
+                $id_pembayaran = DB::table('pembayaran')->insertGetId(['metode_pembayaran' => "E-Wallet", 'batasan_waktu' => $batasan_waktu]);
             }
 
             $dateNow = \Carbon\Carbon::now()->toDateTimeString();
@@ -699,7 +687,7 @@ class OrderController extends Controller
         $idPembayaran = DB::table('pembayaran')
                             ->insertGetId([
                                 'metode_pembayaran' => 'Pemotongan gaji',
-                                'status' => 'Belum lunas'
+                                'status_bayar' => 'Belum lunas'
                             ]);
 
         $idPenjualan = DB::table('penjualan')
@@ -901,7 +889,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*', 'penjualan.status_jual as status_jual', 'pembayaran.status as status_bayar')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
+        $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
 
         $pengiriman = null;
 

@@ -45,7 +45,6 @@
                           <th>Tanggal Penjualan</th>
                           <th>Nomor Resi</th>
                           <th>Metode Transaksi</th>
-                          <th>Status Pesanan</th>
                           <th>Status Pengiriman</th>
                           <th>Tarif Pengiriman</th>
                           <th>Aksi</th>
@@ -61,7 +60,6 @@
                             <td>{{ $item->tanggal_jual }}</td>
                             <td>@if($item->nomor_resi == null) {{ "-" }} @else {{ $item->nomor_resi }} @endif</td>
                             <td>{{ $item->metode_transaksi }}</td>
-                            <td>{{ $item->status }}</td>
                             <td>@if($item->status_pengiriman == null) {{ "-" }} @else {{ $item->status_pengiriman }} @endif</td>
                             <td>{{ "Rp " . number_format($item->tarif_pengiriman,0,',','.') }}</td>
                             <td>

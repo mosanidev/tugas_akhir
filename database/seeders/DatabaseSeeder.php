@@ -32,7 +32,12 @@ class DatabaseSeeder extends Seeder
             DetailReturPembelianSeeder::class,
             PeriodeDiskonSeeder::class,
             KonsinyasiSeeder::class,
-            DetailKonsinyasiSeeder::class
+            DetailKonsinyasiSeeder::class,
+            PengirimanSeeder::class,
+            MultiplePengirimanSeeder::class,
+            PenjualanSeeder::class,
+            DetailPenjualanSeeder::class
+
 
         ]);
     

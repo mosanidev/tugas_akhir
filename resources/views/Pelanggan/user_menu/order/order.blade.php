@@ -113,8 +113,6 @@
                     },
                     success:function(data) {
 
-                        console.log(data);
-
                         closeLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
 
                         $('#nomorNota').html("Nomor Nota #" + data.transaksi[0].nomor_nota);
@@ -131,7 +129,7 @@
                             metodePembayaran = data.transaksi[0].metode_pembayaran;
                         }
 
-                        if(data.transaksi[0].status == "Pesanan sudah dibayar")
+                        if(data.transaksi[0].status_jual == "Pesanan sudah dibayar")
                         {
                             if(data.transaksi[0].metode_transaksi == "Ambil di toko")
                             {
@@ -171,7 +169,9 @@
                                                         Status
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>` + data.transaksi[0].status_jual + `</p>
+                                                        <p>` + data.transaksi[0].status_jual + `</p>\n
+                                                        <p>Harap ambil pesanan anda di toko</p>\n
+                                                        <p>Jika pesanan belum diambil hingga ` + moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').add(3, 'days').format("DD MMMM YYYY") + ` ` + moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').add(3, 'days').format("HH:mm") + `, maka bukan tanggung jawab dari toko</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -188,14 +188,6 @@
                                                     </div>
                                                     <div class="col-7">
                                                         <p>` + moment(data.transaksi[0].waktu_lunas).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") + ` WIB</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-4 ml-2">
-                                                        Batasan Waktu Pengambilan
-                                                    </div>
-                                                    <div class="col-7">
-                                                        <p>` + moment(data.transaksi[0].batasan_waktu_pengambilan).tz('Asia/Jakarta').format("DD MMMM YYYY")  + `</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -243,7 +235,8 @@
                                                         Status
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>` + data.transaksi[0].status_jual + `</p>
+                                                        <p>` + data.transaksi[0].status_jual + `</p><br>
+                                                        <p>Harap menunggu pesanan sedang diproses untuk dikirimkan</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -260,14 +253,6 @@
                                                     </div>
                                                     <div class="col-7">
                                                         <p>` + moment(data.transaksi[0].waktu_lunas).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") + ` WIB</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-4 ml-2">
-                                                        Batasan Waktu Pengambilan
-                                                    </div>
-                                                    <div class="col-7">
-                                                        <p>` + moment(data.transaksi[0].batasan_waktu_pengambilan).tz('Asia/Jakarta').format("DD MMMM YYYY")  + `</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -292,7 +277,6 @@
                                                     </div>`;
                                                 }
                             }
-                            
                                                 
                         }
                         else {
