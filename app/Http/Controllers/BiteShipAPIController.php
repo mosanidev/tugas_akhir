@@ -51,7 +51,7 @@ class BiteShipAPIController extends Controller
                         "destination_postal_code" => $request->destination_postal_code,
                         "couriers" => $request->couriers,
                         "items" => $request->items
-                    ]);
+                    ]); 
         
         // return response()->json(['response'=>$request->items]);
         return response()->json(['response'=>$response->body()]);

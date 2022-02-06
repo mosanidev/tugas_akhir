@@ -34,7 +34,7 @@ class OrderController extends Controller
                             ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
                             ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
                             ->where('penjualan.users_id', '=', auth()->user()->id)
-                            ->groupBy('penjualan.id')
+                            ->groupBy('detail_penjualan.barang_id', 'detail_penjualan.penjualan_id')
                             ->get();
 
         $kategori = DB::table('kategori_barang')->get();

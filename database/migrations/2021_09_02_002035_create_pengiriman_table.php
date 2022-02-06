@@ -25,10 +25,10 @@ class CreatePengirimanTable extends Migration
             $table->string('kode_jenis_pengiriman', 55);
             $table->string('jenis_pengiriman', 55);
             $table->integer('total_berat');
-            $table->datetime('waktu_jemput')->nullable();
+            $table->datetime('tanggal_diserahkan_ke_pengirim')->nullable();
             // $table->string('catatan_untuk_kurir', 100)->nullable();
             $table->string('status')->nullable();
-            $table->string('status_pengiriman', 100);
+            $table->string('status_pengiriman', 100)->default('Pesanan sedang disiapkan untuk diserahkan ke pengirim');
             $table->datetime('estimasi_tiba');
         });
     }

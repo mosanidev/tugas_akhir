@@ -20,6 +20,7 @@ class ReturPenjualanController extends Controller
 
     public function store(Request $request)
     {
+        dd($request);
         $detailReturPenjualan = json_decode($request->arrBarangDitukar);
         
         $tanggal = $request->tanggal;

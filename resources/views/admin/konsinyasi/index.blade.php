@@ -30,7 +30,7 @@
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
                           <th>Supplier</th>
-                          <th>Status</th>
+                          <th>Status Bayar</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
@@ -44,7 +44,7 @@
                             <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('D MMMM Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                             <td>{{ $item->nama_supplier }}</td>
-                            <td>{{ $item->status }}</td>
+                            <td>{{ $item->status_bayar }}</td>
                             <td>
                               <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                               <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>

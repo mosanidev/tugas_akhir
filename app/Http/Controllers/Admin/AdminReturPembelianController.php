@@ -16,14 +16,14 @@ class AdminReturPembelianController extends Controller
     public function index()
     {
         $konsinyasi = DB::table('konsinyasi')
-                        ->select('konsinyasi.id', 'konsinyasi.nomor_nota', 'konsinyasi.tanggal_titip', 'konsinyasi.status', 'konsinyasi.tanggal_jatuh_tempo', 'konsinyasi.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
+                        ->select('konsinyasi.id', 'konsinyasi.nomor_nota', 'konsinyasi.tanggal_titip', 'konsinyasi.status_bayar', 'konsinyasi.tanggal_jatuh_tempo', 'konsinyasi.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
                         ->leftJoin('retur_pembelian', 'retur_pembelian.pembelian_id', '=', 'konsinyasi.id')
                         ->join('supplier', 'supplier.id', '=', 'konsinyasi.supplier_id')
                         ->where('retur_pembelian.konsinyasi_id', '=', null);
 
         // select pembelian yang datanya tidak ada di retur pembelian
         $pembelian = DB::table('pembelian')
-                        ->select('pembelian.id', 'pembelian.nomor_nota', 'pembelian.tanggal', 'pembelian.status_bayar as status', 'pembelian.tanggal_jatuh_tempo', 'pembelian.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
+                        ->select('pembelian.id', 'pembelian.nomor_nota', 'pembelian.tanggal', 'pembelian.status_bayar', 'pembelian.tanggal_jatuh_tempo', 'pembelian.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
                         ->leftJoin('retur_pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
                         ->join('supplier', 'supplier.id', '=', 'pembelian.supplier_id')
                         ->where('retur_pembelian.pembelian_id', '=', null)

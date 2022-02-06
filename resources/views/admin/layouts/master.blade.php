@@ -138,6 +138,9 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
+                        <a class="collapse-item" href="{{ route('pemesanan.index') }}">Pemesanan</a>
+                        <a class="collapse-item" href="{{ route('penerimaan_pesanan.index') }}">Penerimaan Pesanan</a>
+                        <a class="collapse-item" href="{{ route('back_order.index') }}">Back Order</a>
                         <a class="collapse-item" href="{{ route('pembelian.index') }}">Pembelian</a>
                         <a class="collapse-item" href="{{ route('konsinyasi.index') }}">Konsinyasi</a>
 

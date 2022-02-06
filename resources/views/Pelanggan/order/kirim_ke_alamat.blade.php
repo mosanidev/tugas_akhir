@@ -137,7 +137,7 @@
 
                 <div class="row">
                         <div class="col-5">
-                            <p>Total Harga <br> ( {{ count($cart) }} Produk )</p>
+                            <p class="totalHargaProduk">Total Harga <br> ( {{ count($cart) }} Produk )</p>
                         </div>
                         <div class="col-7">
                             <p id="origin-total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</p>
@@ -167,7 +167,7 @@
                             <hr>
                         </div>
                         <div class="col-5"> 
-                            <p>Total Harga Pesanan</p>
+                            <p>Jumlah</p>
                         </div>
                         <div class="col-7"> 
                             <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
@@ -327,14 +327,22 @@
 
                 let tarifOngkir = parseInt(convertRupiahToAngka($('#tarifOngkir').html()));
 
-                let obj = {
+                let objTarifPengiriman = {
                     id: "P01",
                     price: +tarifOngkir,
                     quantity: 1,
-                    name: "Shipment Fee"
+                    name: "Tarif Pengiriman"
                 }
 
-                arrBarang.item_details.push(obj)
+                // let objTotalHargaProduk = {
+                //     id: "J01",
+                //     price: +parseInt(convertRupiahToAngka($('#origin-total-pesanan').html())),
+                //     quantity: 1,
+                //     name: $('.totalHargaProduk').text()
+                // }
+
+                // arrBarang.item_details.push(objTotalHargaProduk);
+                arrBarang.item_details.push(objTarifPengiriman);
 
                 if($('#total-diskon').html() != undefined)
                 {
@@ -500,7 +508,7 @@
                                 $('#label-info-pengiriman').append(function() {
                                     if(append == 1)
                                     {
-                                        return "<p>Estimasi Tiba</p><p>Total Tarif Pengiriman</p>";
+                                        return "<p>Estimasi Tiba</p><p>Tarif Pengiriman</p>";
                                     }
                                 });
 

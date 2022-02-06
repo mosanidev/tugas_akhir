@@ -51,7 +51,7 @@
           <div class="form-group row">
             <label class="col-sm-5 col-form-label">Status</label>
             <div class="col-sm-7">
-              <p class="mt-2">{{ $konsinyasi[0]->status }}</p>
+              <p class="mt-2">{{ $konsinyasi[0]->status_bayar }}</p>
             </div>
           </div>
         </div>

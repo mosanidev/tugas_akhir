@@ -86,7 +86,7 @@
                 <input type="text" class="form-control" name="nomor_anggota" id="nomor_anggota" placeholder="Masukkan nomor anggota Koperasi Karyawan Universitas Surabaya">
                 <p class="text-danger" style="font-size: 1rem">* Kosongi jika anda bukan anggota Koperasi Karyawan Universitas Surabaya</p>
             </div>
-            <button type="button" id="btnRegister" class="btn btn-block btn-success w-25 mx-auto">Submit</button>
+            <button type="button" id="btnRegister" class="btn btn-block btn-success w-25 mx-auto">Daftar</button>
         </form>
     </div>
 

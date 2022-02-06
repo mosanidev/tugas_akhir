@@ -21,6 +21,7 @@ use App\Http\Controllers\Pelanggan\OrderController;
 use App\Http\Controllers\Pelanggan\WishlistController;
 use App\Http\Controllers\Pelanggan\NotifikasiController;
 use App\Http\Controllers\Pelanggan\ReturPenjualanController;
+use App\Http\Controllers\TesssController;
 
 // api
 use App\Http\Controllers\BiteShipAPIController;
@@ -50,6 +51,9 @@ use App\Http\Controllers\Admin\AdminStokOpnameController;
 use App\Http\Controllers\Admin\AdminDetailReturPembelianController;
 use App\Http\Controllers\Admin\AdminPengirimanController;
 use App\Http\Controllers\Admin\AdminAnggotaKopkarController;
+use App\Http\Controllers\Admin\AdminPemesananController;
+use App\Http\Controllers\Admin\AdminPenerimaanPesananController;
+use App\Http\Controllers\Admin\AdminBackOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +66,10 @@ use App\Http\Controllers\Admin\AdminAnggotaKopkarController;
 |
 */
 
+Route::get('/tescon', [TesssController::class, 'tescon'])->name('tescon');
+
 Route::group(['middleware' => 'ensure_user_is_not_admin'], function () {
+
 
     Route::get('/', [HomeController::class, 'showHome']);
 
@@ -244,6 +251,13 @@ Route::group(['prefix' => 'admin'], function() {
         // Route::get('/pembelian/konfirmasi/{pembelian}', [AdminPembelianController::class, 'changeDraftToComplete'])->name('pembelian.konfirmasi');
 
         Route::resource('/pembelian', AdminPembelianController::class);
+
+        Route::resource('/pemesanan', AdminPemesananController::class);
+
+        Route::resource('/penerimaan_pesanan', AdminPenerimaanPesananController::class);
+        
+        Route::resource('/back_order', AdminBackOrderController::class);
+
 
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
 

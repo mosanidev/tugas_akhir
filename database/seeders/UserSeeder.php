@@ -78,6 +78,7 @@ class UserSeeder extends Seeder
             'nomor_telepon' => '087654392819', 
             'jenis' => 'Anggota_Kopkar',
             'status_verifikasi_anggota' => 'Verified',
+            'nomor_anggota' => '160416154',
             'tanggal_lahir' => '1992-03-07',
             'password' => Hash::make('kopkarubaya')
          ]);

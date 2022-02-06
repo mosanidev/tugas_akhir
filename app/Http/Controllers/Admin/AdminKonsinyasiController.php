@@ -52,7 +52,7 @@ class AdminKonsinyasiController extends Controller
                                                     'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo, 
                                                     'supplier_id' => $request->supplier_id, 
                                                     'metode_pembayaran' => $request->metode_pembayaran, 
-                                                    'status' => $request->status]);
+                                                    'status_bayar' => $request->status_bayar]);
 
         $barangKonsinyasi = json_decode($request->barangKonsinyasi, true);
         
@@ -283,7 +283,7 @@ class AdminKonsinyasiController extends Controller
         $updateKonsinyasi = DB::table('konsinyasi')
                                 ->where('id', '=', $id)
                                 ->update([
-                                    'status' => 'Sudah Lunas'
+                                    'status_bayar' => 'Sudah Lunas'
                                 ]);
         
         return redirect()->route('konsinyasi.index')->with(['success' => 'Konsinyasi berhasil dilunasi']);

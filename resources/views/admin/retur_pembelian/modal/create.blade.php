@@ -43,7 +43,7 @@
                         <select class="form-control" id="selectNotaBeli" name="id_pembelian" required>
                             <option disabled selected>Pilih Nomor Nota Pembelian</option>
                             @foreach($pembelian as $item)
-                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota }}</option>
+                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status_bayar }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota }}</option>
                             @endforeach
                         </select>    
                     </div>

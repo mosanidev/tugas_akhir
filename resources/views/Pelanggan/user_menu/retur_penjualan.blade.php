@@ -50,13 +50,13 @@
         <br>
         <div class="row">
             <div class="col-4">
-                <label class="mt-1">Nama Barang</label>
+                <label class="mt-1">Barang</label>
             </div>
             <div class="col-8 parentSelect2">
                 <select class="form-control select2bs4" name="barang">
                     <option disabled selected>Pilih Barang</option>
                     @foreach($barang as $item)
-                        <option value="{{ $item->id }}">{{$item->nama}}</option>
+                        <option value="{{ $item->id }}">{{$item->kode." - ".$item->nama}}</option>
                     @endforeach
                 </select>
             </div>
@@ -93,7 +93,7 @@
             <thead>
                 <tr>
                   <th scope="col">No</th>
-                  <th scope="col">Nama Barang</th>
+                  <th scope="col">Barang</th>
                   <th scope="col">Jumlah</th>
                   <th scope="col">Alasan</th>
                   <th scope="col">Aksi</th>

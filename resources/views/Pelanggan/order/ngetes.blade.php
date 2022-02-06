@@ -129,7 +129,7 @@
                     <p id="total-tarif">-</p>
                 </div>
                 <div class="col-6 text-right"> 
-                    <p>Total Harga Pesanan</p>
+                    <p>Jumlah</p>
                 </div>
                 <div class="col-6"> 
                     <p id="total-pesanan">-</p>
@@ -372,7 +372,7 @@
                     id: "P01",
                     price: +tarifOngkir,
                     quantity: 1,
-                    name: "Shipment Fee"
+                    name: "Total Tarif Pengiriman"
                 }
 
                 arrBarang.item_details.push(obj)

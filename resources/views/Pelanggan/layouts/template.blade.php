@@ -120,7 +120,7 @@
                                     <a class="dropdown-item" href="{{ route('profil') }}">Profil</a>
                                     <a class="dropdown-item" href="{{ url('alamat') }}">Alamat</a>
                                     <a class="dropdown-item" href="{{ route('order') }}">Transaksi</a>
-                                    <a class="dropdown-item d-none" href="#retur">Retur</a>
+                                    <a class="dropdown-item" href="{{ route('returPenjualan.showForm') }}">Retur</a>
                                     <a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a>
 
                                     @if(isset($jumlah_notif))

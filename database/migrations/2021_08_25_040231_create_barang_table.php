@@ -23,6 +23,7 @@ class CreateBarangTable extends Migration
             $table->double('harga_jual');
             // $table->double('harga_beli');
             $table->double('diskon_potongan_harga')->default(0);
+            $table->double('perkiraan_harga_beli')->default(0);
             // $table->integer('jumlah_stok')->default(0);
             // $table->datetime('tanggal_kadaluarsa');
             // $table->time('jam_kadaluarsa')->default('23:59:59');

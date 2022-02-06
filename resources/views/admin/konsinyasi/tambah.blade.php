@@ -62,7 +62,7 @@
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="status" value="Belum Lunas" readonly>
+                  <input type="text" class="form-control" name="status_bayar" value="Belum Lunas" readonly>
                 </div>
               </div>
               {{-- <div class="form-group row">

@@ -1,46 +1,108 @@
-<div class="modal fade" id="modalUbahPengiriman" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalUbahProsesKirim" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Penjemputan Paket Pengiriman oleh Kurir</h5>
+            <h5 class="modal-title">Proses Pengiriman Penjualan</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="" id="formUbahPengiriman"> 
-                @csrf
-                @method('PUT')
-
-                <input type="hidden" value="" name="id_pengiriman">
-
+            {{-- <form method="POST" action="{{ route('pengiriman.store') }}"> 
+                @csrf --}}
+                
                 <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Waktu Jemput</p>
+                    <p class="col-sm-4 col-form-label">Tanggal Diserahkan ke Pengirim</p>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" id="waktuJemputUbah" name="waktu_jemput" class="form-control pull-right" required>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+                            <input type="text" name="tanggal_diserahkan_ke_pengirim" class="form-control ubah_tanggal_diserahkan_ke_pengirim" required>
                         </div>
                     </div>
                 </div>
 
-                {{-- <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Catatan untuk kurir</p>
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Nomor Resi</p>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <textarea cols="30" class="form-control" rows="3" name="catatan_untuk_kurir"></textarea>
+                            <input type="text" name="nomor_resi" class="form-control ubah_nomor_resi" required>
                         </div>
                     </div>
-                </div> --}}
+                </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Pengirim</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" name="shipper" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Jenis Pengiriman</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" name="jenis_pengiriman" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                Dikirim ke :
+                
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Kota / Kabupaten</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" id="kotaKabupaten" name="kota_kabupaten" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Alamat Pengiriman</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <textarea name="alamat" id="" cols="30" rows="4" class="form-control" readonly>
+
+
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Tarif Pengiriman</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" id="tarifPengiriman" name="tarif_pengiriman" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Estimasi Pesanan Tiba di Rumah Pelanggan</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" name="estimasi_tiba" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Status Pengiriman</p>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" name="status" class="form-control" value="" readonly>
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <div class="modal-footer">
-              <button type="submit" id="btnSimpan" class="btn btn-primary">Simpan</button>
+              <button type="button" id="btnUbah" class="btn btn-primary">Simpan</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
-            </form>
+            {{-- </form> --}}
         </div>
     </div>
 </div>
@@ -53,11 +115,11 @@
 
     jQuery.datetimepicker.setLocale('id');
 
-    $('#waktuJemputUbah').datetimepicker({
+    $('#tanggalDiserahkan').datetimepicker({
         timepicker: true,
         datepicker: true,
         lang: 'id',
-        format: 'Y-m-d H:i:s'
+        format: 'Y-m-d H:i'
     });
 
 </script>

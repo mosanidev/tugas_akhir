@@ -40,40 +40,37 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th>Status</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal Penjualan</th>
                           <th>Nomor Resi</th>
-                          <th>Metode Transaksi</th>
                           <th>Status Pengiriman</th>
                           <th>Tarif Pengiriman</th>
                           <th>Aksi</th>
-                          <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                      @if(count($penjualan) > 0)
-                        @foreach($penjualan as $item)
+                      @if(count($pengiriman) > 0)
+                        @foreach($pengiriman as $item)
                           <tr>
-                            <td>{{ $item->status }}</td>
                             <td>{{ $item->nomor_nota }}</td>
-                            <td>{{ $item->tanggal_jual }}</td>
+                            <td>{{ $item->tanggal_penjualan }}</td>
                             <td>@if($item->nomor_resi == null) {{ "-" }} @else {{ $item->nomor_resi }} @endif</td>
-                            <td>{{ $item->metode_transaksi }}</td>
-                            <td>@if($item->status_pengiriman == null) {{ "-" }} @else {{ $item->status_pengiriman }} @endif</td>
+                            <td> {{ $item->status_pengiriman }} </td>
                             <td>{{ "Rp " . number_format($item->tarif_pengiriman,0,',','.') }}</td>
                             <td>
-                                @if($item->status_pengiriman == null)
-                                  <button type="button" class="btn btn-info btnPanggilKurir" data-toggle="modal" data-target="#modalTambahPengiriman" data-pelanggan="{{ $item->pelanggan_id }}" data-penjualan="{{ $item->penjualan_id }}" data-pengiriman="{{ $item->pengiriman_id }}" data-alamat="{{ $item->alamat_pengiriman_id }}">Panggil kurir</button>
+                                <a href="{{ route('pengiriman.show', ['pengiriman' => $item->pengiriman_id]) }}" class="btn btn-success">Lihat</a>
+
+                                @if($item->status_pengiriman == "Pesanan sedang disiapkan untuk diserahkan ke pengirim")
+
+                                  <button type="button" class="btn btn-warning btnProsesKirim" data-toggle="modal" data-target="#modalProsesKirim" data-id="{{$item->pengiriman_id}}">Proses Kirim</button>
+                                
                                 @else
-                                  <button type="button" class="btn btn-warning mb-2 btnUbahPanggilKurir" data-toggle="modal" data-target="#modalUbahPengiriman" data-id="{{ $item->pengiriman_id }}" data-id-pengiriman="{{ $item->id_pengiriman }}" data-waktu-jemput="{{ $item->waktu_jemput }}" @if($item->status == "Complete") checked disabled  @endif>Ubah penjemputan</button>
-                                  <button type="button" class="btn btn-danger btnBatalPanggilKurir" data-toggle="modal" data-target="#modalBatalPengiriman" data-id-pengiriman="{{ $item->id_pengiriman }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled  @endif>Batal panggil kurir</button>
+
+                                  <button type="button" class="btn btn-warning btnUbahProsesKirim" data-toggle="modal" data-target="#modalUbahProsesKirim" data-id="{{$item->pengiriman_id}}">Ubah</button>
+                                  
+                                  <button type="button" class="btn btn-danger btnResetProsesKirim" data-toggle="modal" data-target="#modalConfirmReset" data-id="{{$item->pengiriman_id}}">Reset</button>
+
                                 @endif
-                            </td>
-                            <td>
-                              <div class="form-check">
-                                <input class="form-check-input checkComplete" type="checkbox" value="" data-id-pengiriman="{{ $item->nomor_nota }}" data-id="{{ $item->pengiriman_id }}" @if($item->status == "Complete") checked disabled @elseif($item->status_pengiriman == null) disabled @endif>
-                              </div>
                             </td>
                           </tr>
                         @endforeach
@@ -87,25 +84,144 @@
 
 @include('admin.pengiriman.modal.create')
 @include('admin.pengiriman.modal.edit')
-@include('admin.pengiriman.modal.confirm_cancel')
-@include('admin.pengiriman.modal.confirm_complete')
+
+@include('admin.pengiriman.modal.confirm_proses_kirim')
+@include('admin.pengiriman.modal.confirm_reset_proses_kirim')
+@include('admin.pengiriman.modal.confirm_ubah_proses_kirim')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="text/javascript">
 
-  $('.btnPanggilKurir').on('click', function() {
+  $('.btnProsesKirim').on('click', function() {
 
-    let pengiriman_id = $(this).attr('data-pengiriman');
-    let pelanggan_id = $(this).attr('data-pelanggan');
-    let penjualan_id = $(this).attr('data-penjualan');
-    let alamat_pengiriman_id = $(this).attr('data-alamat');
+    let pengiriman_id = $(this).attr('data-id');
+        
+    $.ajax({
+        url: "/admin/pengiriman/"+pengiriman_id,
+        type: 'GET',
+        beforeSend: function() {
+          
+        },
+        success:function(data) {
 
-    $('input[name=pengiriman_id]').val(pengiriman_id);
-    $('input[name=pelanggan_id]').val(pelanggan_id);
-    $('input[name=penjualan_id]').val(penjualan_id);
-    $('input[name=alamat_pengiriman_id]').val(alamat_pengiriman_id);
+          let pengiriman = data.pengiriman[0];
+
+
+          $('.nomor_resi').val(pengiriman.nomor_resi);
+          $('input[name=estimasi_tiba]').val(pengiriman.estimasi_tiba);
+          $('.tanggal_diserahkan_ke_pengirim').val(pengiriman.tanggal_diserahkan_ke_pengirim);
+          $('input[name=shipper]').val(pengiriman.nama_shipper);
+          $('input[name=jenis_pengiriman]').val(pengiriman.jenis_pengiriman);
+          $('input[name=kota_kabupaten]').val(pengiriman.kota_kabupaten + ", " + pengiriman.provinsi);
+          $('input[name=tarif_pengiriman]').val(convertAngkaToRupiah(pengiriman.tarif_pengiriman));
+          $('textarea[name=alamat]').html(pengiriman.alamat + ", " + pengiriman.kecamatan + ", " + pengiriman.kota_kabupaten + ", " + pengiriman.provinsi + ", " + pengiriman.kode_pos);
+          $('#btnSimpan').attr('data-id', pengiriman.pengiriman_id);
+          $('input[name=status]').val(pengiriman.status)
+        }
+    });
+
+  });
+
+  $('.btnResetProsesKirim').on('click', function() {
+
+    let pengiriman_id = $(this).attr('data-id');
+
+    $('#formResetPengiriman').attr('action', '/admin/pengiriman/'+pengiriman_id);
+
+  });
+
+  $('.btnUbahProsesKirim').on('click', function() {
+
+    let pengiriman_id = $(this).attr('data-id');
+        
+    $.ajax({
+        url: "/admin/pengiriman/"+pengiriman_id,
+        type: 'GET',
+        beforeSend: function() {
+          
+        },
+        success:function(data) {
+
+          let pengiriman = data.pengiriman[0];
+
+          $('.ubah_nomor_resi').val(pengiriman.nomor_resi);
+          $('input[name=estimasi_tiba]').val(pengiriman.estimasi_tiba);
+          $('.ubah_tanggal_diserahkan_ke_pengirim').val(pengiriman.tanggal_diserahkan_ke_pengirim);
+          $('input[name=shipper]').val(pengiriman.nama_shipper);
+          $('input[name=jenis_pengiriman]').val(pengiriman.jenis_pengiriman);
+          $('input[name=kota_kabupaten]').val(pengiriman.kota_kabupaten + ", " + pengiriman.provinsi);
+          $('input[name=tarif_pengiriman]').val(convertAngkaToRupiah(pengiriman.tarif_pengiriman));
+          $('textarea[name=alamat]').html(pengiriman.alamat + ", " + pengiriman.kecamatan + ", " + pengiriman.kota_kabupaten + ", " + pengiriman.provinsi + ", " + pengiriman.kode_pos);
+          $('#btnUbah').attr('data-id', pengiriman.pengiriman_id);
+          $('input[name=status]').val(pengiriman.status)
+        }
+    });
+  });
+
+  $('#btnSimpan').on('click', function() {
+
+    let pengiriman_id = $(this).attr('data-id');
+    let tglDiserahkan = $('.tanggal_diserahkan_ke_pengirim').val();
+    let nomor_resi =  $('.nomor_resi').val();
+
+    if(tglDiserahkan == "")
+    {
+      toastr.error("Mohon isi tanggal diserahkan ke pengirim terlebih dahulu", "Error", toastrOptions);
+    }
+    else if (nomor_resi == "")
+    {
+      toastr.error("Mohon isi nomor resi terlebih dahulu", "Error", toastrOptions);
+    }
+    else 
+    {
+      $('#modalProsesKirim').modal('toggle');
+      $('#modalKonfirmasiProsesKirim').modal('toggle');
+      $('input[name=pengiriman_id]').val(pengiriman_id);
+      $('input[name=nomor_resi]').val(nomor_resi);
+      $('input[name=tanggal_diserahkan_ke_pengirim]').val(tglDiserahkan);
+      $('input[name=status_pengiriman]').val("Pesanan sudah diserahkan ke pihak pengirim");
+
+      $('#formKonfirmasiProsesKirim').attr('action', '/admin/pengiriman/'+pengiriman_id)
+    }
+  });
+
+  jQuery.datetimepicker.setLocale('id');
+
+  $('input[name=tanggal_diserahkan_ke_pengirim]').datetimepicker({
+      timepicker: true,
+      datepicker: true,
+      lang: 'id',
+      format: 'Y-m-d H:i:s'
+  });
+
+  $('#btnUbah').on('click', function() {
+
+    let pengiriman_id = $(this).attr('data-id');
+    let tglDiserahkan = $('.ubah_tanggal_diserahkan_ke_pengirim').val();
+    let nomor_resi =  $('.ubah_nomor_resi').val();
+
+    if(tglDiserahkan == "")
+    {
+      toastr.error("Mohon isi tanggal diserahkan ke pengirim terlebih dahulu", "Error", toastrOptions);
+    }
+    else if (nomor_resi == "")
+    {
+      toastr.error("Mohon isi nomor resi terlebih dahulu", "Error", toastrOptions);
+    }
+    else 
+    {
+      $('#modalUbahProsesKirim').modal('toggle');
+      $('#modalKonfirmasiUbahProsesKirim').modal('toggle');
+      $('input[name=pengiriman_id]').val(pengiriman_id);
+      $('input[name=nomor_resi]').val(nomor_resi);
+      $('input[name=tanggal_diserahkan_ke_pengirim]').val(tglDiserahkan);
+      $('input[name=status_pengiriman]').val("Pesanan sudah diserahkan ke pihak pengirim");
+
+      $('#formKonfirmasiUbahProsesKirim').attr('action', '/admin/pengiriman/'+pengiriman_id)
+    }
 
   });
 

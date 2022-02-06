@@ -16,48 +16,24 @@ class AdminPengirimanController extends Controller
      */
     public function index()
     {
-        $penjualan = DB::table('detail_penjualan')
-                        ->select('penjualan.nomor_nota', 'pengiriman.nomor_resi', 'penjualan.tanggal as tanggal_jual', 'penjualan.status_jual','pengiriman.status_pengiriman', 'penjualan.metode_transaksi', 'shipper.nama as pengirim', 'pengiriman.status_pengiriman', DB::raw("CONCAT(shipper.nama, ' ', pengiriman.jenis_pengiriman) as pengiriman"), 'pengiriman.tarif as tarif_pengiriman', 'multiple_pengiriman.pengiriman_id as pengiriman_id', 'penjualan.id as penjualan_id', 'multiple_pengiriman.alamat_pengiriman_id', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as pelanggan"), "users.id as pelanggan_id", "pengiriman.id_pengiriman", "pengiriman.waktu_jemput", "pengiriman.status")
+        $pengiriman = DB::table('detail_penjualan')
+                        ->select('penjualan.nomor_nota', 
+                                 'penjualan.tanggal as tanggal_penjualan', 
+                                 'pengiriman.nomor_resi', 
+                                 'pengiriman.status_pengiriman', 
+                                 'pengiriman.tarif as tarif_pengiriman',
+                                 'pengiriman.id as pengiriman_id')
                         ->whereNotNull('detail_penjualan.pengiriman_id')
-                        ->whereNotNull('detail_penjualan.alamat_pengiriman_id')
                         ->where('penjualan.status_jual', '=', 'Pesanan sudah dibayar')
                         ->where('penjualan.jenis', '=', 'Online')
                         ->whereNotIn("penjualan.metode_transaksi", ['Ambil di toko'])
                         ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
-                        ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->join('multiple_pengiriman', 'detail_penjualan.pengiriman_id', '=', 'multiple_pengiriman.pengiriman_id')
                         ->join('pengiriman', 'multiple_pengiriman.pengiriman_id', '=', 'pengiriman.id')
-                        ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
-                        ->join('shipper', 'shipper.kode_shipper', '=', 'pengiriman.kode_shipper')
-                        ->groupBy('detail_penjualan.alamat_pengiriman_id')
+                        ->groupBy('detail_penjualan.pengiriman_id')
                         ->get();
 
-        /*
-            nomor_nota
-            tanggal
-            status
-            pengirim
-            kode_jenis_pengiriman
-            jenis_pengiriman
-            alamt tujuan
-            estimasi tiba
-            tarif pengiriman
-            total berat
-
-            nama_penerima
-            nomor_telepon
-            email_penerima
-            alamat
-            kode pos
-            latitude 
-            longitude
-
-            barang yang dijual
-        */
-
-        // $penjualan = DB::table('detail_penjualan')->get();
-
-        return view('admin.pengiriman.index', ['penjualan' => $penjualan]);
+        return view('admin.pengiriman.index', ['pengiriman' => $pengiriman]);
     }
 
     /**
@@ -224,9 +200,95 @@ class AdminPengirimanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        dd($id);
+        if($request->ajax())
+        {
+            $pengiriman = DB::table('detail_penjualan')
+                            ->select('pengiriman.nomor_resi', 
+                                    'pengiriman.id as pengiriman_id',
+                                    'shipper.nama as nama_shipper',
+                                    'pengiriman.jenis_pengiriman', 
+                                    'pengiriman.tarif as tarif_pengiriman',
+                                    'pengiriman.status_pengiriman as status',
+                                    'pengiriman.tanggal_diserahkan_ke_pengirim',
+                                    'pengiriman.estimasi_tiba',
+                                    'alamat_pengiriman.provinsi',
+                                    'alamat_pengiriman.kota_kabupaten',
+                                    'alamat_pengiriman.kecamatan',
+                                    'alamat_pengiriman.alamat',
+                                    'alamat_pengiriman.kode_pos')
+                            ->where('detail_penjualan.pengiriman_id', '=', $id)
+                            ->join('multiple_pengiriman', 'detail_penjualan.pengiriman_id', '=', 'multiple_pengiriman.pengiriman_id')
+                            ->join('alamat_pengiriman', 'multiple_pengiriman.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
+                            ->join('pengiriman', 'multiple_pengiriman.pengiriman_id', '=', 'pengiriman.id')
+                            ->join('shipper', 'pengiriman.kode_shipper', '=', 'shipper.kode_shipper')
+                            ->groupBy('detail_penjualan.pengiriman_id')
+                            ->get();
+
+            return response()->json(['pengiriman' => $pengiriman]);
+        }
+        else 
+        {
+            $pengiriman = DB::table('detail_penjualan')
+                            ->select('penjualan.nomor_nota',
+                                    'penjualan.tanggal as tanggal_penjualan',
+                                    'pengiriman.nomor_resi', 
+                                    'pengiriman.id as pengiriman_id',
+                                    'shipper.nama as nama_shipper',
+                                    'pengiriman.kode_shipper',
+                                    'pengiriman.jenis_pengiriman', 
+                                    'pengiriman.tarif as tarif_pengiriman',
+                                    'pengiriman.status_pengiriman as status',
+                                    'pengiriman.tanggal_diserahkan_ke_pengirim',
+                                    'pengiriman.estimasi_tiba',
+                                    'pengiriman.total_berat',
+                                    'pengiriman.tarif',
+                                    'pengiriman.status_pengiriman',
+                                    'alamat_pengiriman.nama_penerima',
+                                    'alamat_pengiriman.provinsi',
+                                    'alamat_pengiriman.kota_kabupaten',
+                                    'alamat_pengiriman.kecamatan',
+                                    'alamat_pengiriman.alamat',
+                                    'alamat_pengiriman.kode_pos')
+                            ->where('detail_penjualan.pengiriman_id', '=', $id)
+                            ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
+                            ->join('multiple_pengiriman', 'detail_penjualan.pengiriman_id', '=', 'multiple_pengiriman.pengiriman_id')
+                            ->join('alamat_pengiriman', 'multiple_pengiriman.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
+                            ->join('pengiriman', 'multiple_pengiriman.pengiriman_id', '=', 'pengiriman.id')
+                            ->join('shipper', 'pengiriman.kode_shipper', '=', 'shipper.kode_shipper')
+                            ->groupBy('detail_penjualan.pengiriman_id')
+                            ->get();
+
+            $barang = DB::table('detail_penjualan')
+                        ->select('barang.kode', 'barang.nama', 'barang.berat', 'detail_penjualan.kuantitas')
+                        ->where('detail_penjualan.pengiriman_id', '=', $id)
+                        ->join('barang_has_kadaluarsa', 'detail_penjualan.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
+                        ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                        ->groupBy('detail_penjualan.barang_id')
+                        ->get();
+
+            // contoh riwayat pengiriman
+            // $riwayat_pengiriman = Http::withHeaders([
+            //     'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+            //     ])->get("https://api.biteship.com/v1/trackings/JP9480199312/couriers/jnt")->body();
+
+            // $riwayat_pengiriman = json_decode($riwayat_pengiriman);
+
+            $riwayat_pengiriman = null;
+
+            if($pengiriman[0]->nomor_resi != null)
+            {
+                // tracking via biteship melalui nomer resi
+                $riwayat_pengiriman = Http::withHeaders([
+                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+                    ])->get("https://api.biteship.com/v1/trackings/$pembelian[0]->nomor_resi/couriers/$pembelian[0]->kode_shipper")->body();
+
+                $riwayat_pengiriman = json_decode($riwayat_pengiriman);
+            }
+
+            return view('admin.pengiriman.lihat', ['pengiriman' => $pengiriman, 'barang' => $barang, 'riwayat_pengiriman' => $riwayat_pengiriman]);
+        }
     }
 
     /**
@@ -249,27 +311,37 @@ class AdminPengirimanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tanggalJemput = \Carbon\Carbon::parse($request->waktu_jemput)->format("Y-m-d");
-        $jamJemput = \Carbon\Carbon::parse($request->waktu_jemput)->format("H:i");
+        $update = DB::table('pengiriman')
+                    ->where('id', $id)
+                    ->update([
+                        'nomor_resi' => $request->nomor_resi,
+                        'tanggal_diserahkan_ke_pengirim' => $request->tanggal_diserahkan_ke_pengirim,
+                        'status_pengiriman' => $request->status_pengiriman
+                    ]);
 
-        $response = Http::withHeaders([
-            'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-            ])->post("https://api.biteship.com/v1/orders/$request->id_pengiriman", [
-                "delivery_date" => $tanggalJemput,
-                "delivery_time" => $jamJemput
+        return redirect()->route('pengiriman.index')->with(['success' => 'Data berhasil diperbarui']);
 
-            ]);
+        // $tanggalJemput = \Carbon\Carbon::parse($request->waktu_jemput)->format("Y-m-d");
+        // $jamJemput = \Carbon\Carbon::parse($request->waktu_jemput)->format("H:i");
 
-        $result = json_decode($response->body(), true);
+        // $response = Http::withHeaders([
+        //     'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+        //     ])->post("https://api.biteship.com/v1/orders/$request->id_pengiriman", [
+        //         "delivery_date" => $tanggalJemput,
+        //         "delivery_time" => $jamJemput
 
-        if($result['success'] == false)
-        {
-            return redirect()->route('pengiriman.index')->with(['error' => 'Terjadi kesalahan : '.$result['error']]);
-        }
-        else if($result['success'] == true)
-        {
-            return redirect()->route('pengiriman.index')->with(['success' => 'Data pengiriman berhasil diubah']);
-        }
+        //     ]);
+
+        // $result = json_decode($response->body(), true);
+
+        // if($result['success'] == false)
+        // {
+        //     return redirect()->route('pengiriman.index')->with(['error' => 'Terjadi kesalahan : '.$result['error']]);
+        // }
+        // else if($result['success'] == true)
+        // {
+        //     return redirect()->route('pengiriman.index')->with(['success' => 'Data pengiriman berhasil diubah']);
+        // }
         
     }
 
@@ -281,29 +353,39 @@ class AdminPengirimanController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $id_pengiriman = $request->id_pengiriman;
+        $update = DB::table('pengiriman')
+                    ->where('id', $id)
+                    ->update([
+                        'nomor_resi' => null,
+                        'tanggal_diserahkan_ke_pengirim' => null,
+                        'status_pengiriman' => "Pesanan sedang disiapkan untuk diserahkan ke pengirim"
+                    ]);
 
-        $response = Http::withHeaders([
-            'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-            ])->delete("https://api.biteship.com/v1/orders/$id_pengiriman");
+        return redirect()->route('pengiriman.index')->with(['success' => 'Data berhasil direset']);
 
-        $result = json_decode($response->body(), true);
+        // $id_pengiriman = $request->id_pengiriman;
 
-        if($result['success'] == false)
-        {
-            return redirect()->route('pengiriman.index')->with(['error' => 'Terjadi kesalahan : '.$result['error']]);
-        }
-        else if($result['success'] == true)
-        {
-            $update = DB::table('pengiriman')
-                        ->where('id', '=', $id)
-                        ->update([
-                            'id_pengiriman' => NULL,
-                            'waktu_jemput' => NULL,
-                            'status_pengiriman' => NULL 
-                        ]);
+        // $response = Http::withHeaders([
+        //     'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+        //     ])->delete("https://api.biteship.com/v1/orders/$id_pengiriman");
 
-            return redirect()->route('pengiriman.index')->with(['success' => 'Data pengiriman berhasil dibatalkan']);
-        }
+        // $result = json_decode($response->body(), true);
+
+        // if($result['success'] == false)
+        // {
+        //     return redirect()->route('pengiriman.index')->with(['error' => 'Terjadi kesalahan : '.$result['error']]);
+        // }
+        // else if($result['success'] == true)
+        // {
+        //     $update = DB::table('pengiriman')
+        //                 ->where('id', '=', $id)
+        //                 ->update([
+        //                     'id_pengiriman' => NULL,
+        //                     'waktu_jemput' => NULL,
+        //                     'status_pengiriman' => NULL 
+        //                 ]);
+
+        //     return redirect()->route('pengiriman.index')->with(['success' => 'Data pengiriman berhasil dibatalkan']);
+        // }
     }
 }
