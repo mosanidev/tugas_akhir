@@ -34,7 +34,15 @@ class AdminPemesananController extends Controller
      */
     public function create()
     {
-        //
+        $supplier = DB::table('supplier')
+                    ->where('jenis', '=', 'Perusahaan')
+                    ->get();
+
+        $barang = DB::table('barang')
+                    ->where('barang_konsinyasi', '=', '0')
+                    ->get();
+
+        return view('admin.pemesanan.tambah', ['supplier' => $supplier, 'barang' => $barang]);
     }
 
     /**
@@ -45,7 +53,38 @@ class AdminPemesananController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $idPemesanan = DB::table('pemesanan')
+                            ->insertGetId([
+                                'nomor_nota' => $request->nomor_nota,
+                                'supplier_id' => $request->supplier_id,
+                                'tanggal' => $request->tanggal_pemesanan,
+                                'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
+                                'diskon' => $request->diskon,
+                                'ppn' => $request->ppn,
+                                'metode_pembayaran' => $request->metodePembayaran,
+                                'status_bayar' => $request->status,
+                                'status' => 'Belum diterima di gudang',
+                                'total' => $request->total,
+                                'users_id' => auth()->user()->id
+                            ]);
+
+        $dataBarang = json_decode($request->barang, true);
+
+        for ($i = 0; $i < count((array) $dataBarang); $i++)
+        {
+
+            $insertDetailPemesanan = DB::table('detail_pemesanan')
+                                            ->insert([
+                                                'pemesanan_id'          => $idPemesanan,
+                                                'barang_id'             => $dataBarang[$i]['barang_id'],
+                                                'kuantitas'             => $dataBarang[$i]['kuantitas'],
+                                                'harga_pesan'           => $dataBarang[$i]['harga_pesan'],
+                                                'subtotal'              => $dataBarang[$i]['subtotal']
+                                            ]);
+
+        }
+
+        return redirect()->route('pemesanan.index')->with(['success'=>'Data berhasil ditambah']);
     }
 
     /**

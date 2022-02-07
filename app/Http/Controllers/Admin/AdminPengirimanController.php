@@ -269,23 +269,25 @@ class AdminPengirimanController extends Controller
                         ->get();
 
             // contoh riwayat pengiriman
-            // $riwayat_pengiriman = Http::withHeaders([
-            //     'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-            //     ])->get("https://api.biteship.com/v1/trackings/JP9480199312/couriers/jnt")->body();
+            $riwayat_pengiriman = Http::withHeaders([
+                'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+                ])->get("https://api.biteship.com/v1/trackings/JP9480199312/couriers/jnt")->body();
 
-            // $riwayat_pengiriman = json_decode($riwayat_pengiriman);
+            $riwayat_pengiriman = json_decode($riwayat_pengiriman);
 
-            $riwayat_pengiriman = null;
+            dd($riwayat_pengiriman);
 
-            if($pengiriman[0]->nomor_resi != null)
-            {
-                // tracking via biteship melalui nomer resi
-                $riwayat_pengiriman = Http::withHeaders([
-                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-                    ])->get("https://api.biteship.com/v1/trackings/$pembelian[0]->nomor_resi/couriers/$pembelian[0]->kode_shipper")->body();
+            // $riwayat_pengiriman = null;
 
-                $riwayat_pengiriman = json_decode($riwayat_pengiriman);
-            }
+            // if($pengiriman[0]->nomor_resi != null)
+            // {
+            //     // tracking via biteship melalui nomer resi
+            //     $riwayat_pengiriman = Http::withHeaders([
+            //         'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+            //         ])->get("https://api.biteship.com/v1/trackings/$pembelian[0]->nomor_resi/couriers/$pembelian[0]->kode_shipper")->body();
+
+            //     $riwayat_pengiriman = json_decode($riwayat_pengiriman);
+            // }
 
             return view('admin.pengiriman.lihat', ['pengiriman' => $pengiriman, 'barang' => $barang, 'riwayat_pengiriman' => $riwayat_pengiriman]);
         }

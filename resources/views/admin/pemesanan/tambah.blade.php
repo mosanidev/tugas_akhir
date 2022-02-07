@@ -31,7 +31,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Perkiraan Diterima</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggalJatuhTempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
+                      <input type="text" class="form-control pull-right" name="tanggalPerkiraanTerima" autocomplete="off" id="datepickerTglPerkiraanTerima" required>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -79,6 +79,7 @@
                       <option disabled selected>Status</option>
                       <option value="Belum Lunas">Belum Lunas</option>
                       <option value="Sudah Lunas">Sudah Lunas</option>
+                      <option value="Lunas Sebagian">Lunas Sebagian</option>
                   </select> 
                 </div>
               </div>
@@ -97,7 +98,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangDibeli" id="btnTambah">Tambah</button>
+            <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangDipesan" id="btnTambah">Tambah</button>
 
             <div class="card shadow my-4">
                 <div class="card-header py-3">
@@ -110,7 +111,6 @@
                                 <tr>
                                   <th style="width: 10px">No</th>
                                   <th>Barang</th>
-                                  <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
@@ -128,8 +128,8 @@
         </form>
     </div>
     
-@include('admin.pembelian.modal.create')
-@include('admin.pembelian.modal.confirm_add')
+@include('admin.pemesanan.modal.create')
+@include('admin.pemesanan.modal.confirm_add')
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -144,7 +144,7 @@
             autoclose: true
         });
 
-        $('#datepickerTglJatuhTempo').datepicker({
+        $('#datepickerTglPerkiraanTerima').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true
         });
@@ -161,7 +161,7 @@
         });
 
         $('#barang').select2({
-            dropdownParent: $("#divTambahBarangDibeli"),
+            dropdownParent: $("#divTambahBarangDipesan"),
             theme: 'bootstrap4'
         });
 
@@ -203,23 +203,22 @@
             {
                 toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
             }
-            else if(barangDibeli.length == 0)
+            else if(barangDipesan.length == 0)
             {
-                toastr.error("Harap pilih barang yang dibeli terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap pilih barang yang dipesan terlebih dahulu", "Error", toastrOptions);
             }
             else 
             {
-                $('#modalKonfirmasiPembelian').modal('toggle');
-
+                $('#modalKonfirmasiPemesanan').modal('toggle');
             }
 
         });
 
         $('.btnIyaSubmit').on('click', function() {
 
-            $('#modalKonfirmasiPembelian').modal('toggle');
+            $('#modalKonfirmasiPemesanan').modal('toggle');
 
-            $('#data_barang').val(JSON.stringify(barangDibeli));
+            $('#data_barang').val(JSON.stringify(barangDipesan));
 
             $('#formTambah').submit();
 
@@ -231,7 +230,7 @@
     $('#btnTambah').on('click', function() {
 
         $("#barang option").eq(0).prop('selected', true).change();
-        $("#harga_beli").val("");
+        $("#harga_pesan").val("");
         $("#kuantitas").val("");
         $('#subtotal').val("");
         $('#tanggal_kadaluarsa').val("");
@@ -244,20 +243,19 @@
         let num = 0;
         let total = 0;
 
-        if(barangDibeli.length > 0)
+        if(barangDipesan.length > 0)
         {
-            for(let i = 0; i < barangDibeli.length; i++)
+            for(let i = 0; i < barangDipesan.length; i++)
             {
                 num += 1;
-                total += barangDibeli[i].subtotal;
+                total += barangDipesan[i].subtotal;
                 rowTable += `<tr>    
                                 <td>` + num +  `</td>
-                                <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
-                                <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
-                                <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
-                                <td>` + barangDibeli[i].kuantitas +  `</td>
-                                <td>` + convertAngkaToRupiah(barangDibeli[i].subtotal) +  `</td>
-                                <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDibeli(` + i + `)" id="btnHapus">Hapus</button> </td>
+                                <td>` + barangDipesan[i].barang_kode + " - " + barangDipesan[i].barang_nama + `</td>
+                                <td>` + convertAngkaToRupiah(barangDipesan[i].harga_pesan) +  `</td>
+                                <td>` + barangDipesan[i].kuantitas +  `</td>
+                                <td>` + convertAngkaToRupiah(barangDipesan[i].subtotal) +  `</td>
+                                <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDipesan(` + i + `)" id="btnHapus">Hapus</button> </td>
                             </tr>`;
             }
         }
@@ -281,9 +279,9 @@
 
     }
     
-    function hapusBarangDibeli(index)
+    function hapusBarangDipesan(index)
     {
-        barangDibeli.splice(index, 1);
+        barangDipesan.splice(index, 1);
 
         implementDataOnTable();
     }
@@ -308,7 +306,7 @@
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
         let totalAkhir = total-diskon-ppn;
-        $('#totalAkhir').val(totalAkhir);
+        $('#totalAkhir').val(convertAngkaToRupiah(totalAkhir_));
         
 
     });

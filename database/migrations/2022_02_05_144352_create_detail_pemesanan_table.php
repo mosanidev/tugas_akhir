@@ -20,7 +20,7 @@ class CreateDetailPemesananTable extends Migration
             $table->foreign('pemesanan_id')->references('id')->on('pemesanan')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade'); 
-            $table->datetime('harga_beli');
+            $table->double('harga_pesan');
             $table->integer('kuantitas');
             $table->double('subtotal');
         });

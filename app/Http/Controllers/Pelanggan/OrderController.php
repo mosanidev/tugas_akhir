@@ -697,7 +697,7 @@ class OrderController extends Controller
                                 'tanggal' => Carbon::now(),
                                 'pembayaran_id' => $idPembayaran,
                                 'metode_transaksi' => $request->metode_transaksi,
-                                'status' => 'Pesanan sudah dibayar',
+                                'status_jual' => 'Pesanan sudah dibayar',
                                 'created_at'=> Carbon::now(),
                                 'updated_at' => Carbon::now(),
                                 'total' => $request->total_pesanan

@@ -25,7 +25,7 @@
                                 <p>Status</p>
                             </div>
                             <div class="col-8">
-                                <p>{{ $penjualan[$i]->status_jual }}</p>
+                                <p><span class="badge badge-secondary">{{ $penjualan[$i]->status_jual }}</span></p>
                             </div>
                         </div>
                         <div class="row">

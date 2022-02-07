@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class AdminPenerimaanPesananController extends Controller
 {
@@ -14,7 +15,12 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function index()
     {
-        //
+        $pemesanan = DB::table('pemesanan')
+                        ->select('pemesanan.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+                        ->get();
+
+        return view('admin.penerimaan_pesanan.index', ['pemesanan' => $pemesanan]);
     }
 
     /**
@@ -22,9 +28,26 @@ class AdminPenerimaanPesananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        dd($request);
+    }
+
+    public function prosesTerima($id)
+    {
+        $pemesanan = DB::table('pemesanan')
+                        ->select('pemesanan.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+                        ->where('pemesanan.id', '=', $id)
+                        ->get();
+         
+        $detail_pemesanan = DB::table('detail_pemesanan')
+                            ->select('detail_pemesanan.*', 'barang.id', 'barang.kode', 'barang.nama')
+                            ->where('detail_pemesanan.pemesanan_id', '=', $id)
+                            ->join('barang', 'detail_pemesanan.barang_id', '=', 'barang.id')
+                            ->get();
+
+        return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
     }
 
     /**
