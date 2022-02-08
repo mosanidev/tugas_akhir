@@ -7,9 +7,12 @@
     <h3>Tambah Penerimaan Pesanan</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('pembelian.store') }}" id="formTambah">
+        <form method="POST" action="{{ route('penerimaan_pesanan.store') }}" id="formTambah">
             @csrf
-            <input type="hidden" id="data_barang" value="" name="barang"/>
+            
+            <input type="hidden" name="barang_diterima" id="dataBarangDiterima" value="">
+            <input type="hidden" name="barang_tidak_diterima" id="dataBarangTidakDiterima" value="">
+
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Nomor Nota Pemesanan</label>
               <div class="col-sm-8">
@@ -167,7 +170,21 @@
 
             $('#modalKonfirmasiPenerimaan').modal('toggle');
 
-            $('#data_barang').val(JSON.stringify(barangDibeli));
+            $('#dataBarangDiterima').val(JSON.stringify(barangDiterima));
+
+            barangTidakDiterima.forEach(function(item, index, arr){
+                if(barangTidakDiterima[index]['kuantitas'] == 0)
+                {
+                    barangTidakDiterima.splice(index, 1); 
+
+                    // if(barangTidakDiterima[index]['kuantitas'] == 0)
+                    // {
+                    //     barangTidakDiterima.splice(index, 1);
+                    // }
+                }
+            });
+
+            $('#dataBarangTidakDiterima').val(JSON.stringify(barangTidakDiterima));
 
             $('#formTambah').submit();
 
@@ -295,6 +312,7 @@
         });
 
         implementDataOnTableBarangTerima();
+
     }
     
 </script>

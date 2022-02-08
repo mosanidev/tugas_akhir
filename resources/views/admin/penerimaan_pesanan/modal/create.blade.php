@@ -9,9 +9,6 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action=""> 
-                @csrf
-                <input type="hidden" name="barang_dipesan" id="dataBarangDiterima" value="">
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Barang</p>
                     <div class="col-sm-8" id="divTambahBarangDiterima">
@@ -78,7 +75,6 @@
               <button type="button" id="btnTambahBarangDiterima" class="btn btn-primary">Tambah</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
-            </form>
         </div>
     </div>
 </div>
