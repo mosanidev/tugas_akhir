@@ -126,7 +126,7 @@
     </div>
 
 @include('admin.penerimaan_pesanan.modal.create')
-@include('admin.pembelian.modal.confirm_add')
+@include('admin.penerimaan_pesanan.modal.confirm_add')
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -148,136 +148,154 @@
 
         $('#btnSimpan').on('click', function() {
 
-            // if($('#inputNomorNota').val() == "")
-            // {
-            //     toastr.error("Harap isi nomor nota terlebih dahulu", "Error", toastrOptions);
-            // }
-            // else if($('#datepickerTglJatuhTempo').val() == "")
-            // {
-            //     toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Error", toastrOptions);
-            // }
-            // else if($('#selectSupplier')[0].selectedIndex == 0)
-            // {
-            //     toastr.error("Harap pilih supplier terlebih dahulu", "Error", toastrOptions);
-            // }
-            // else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
-            // {
-            //     toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
-            // }
-            // else if ($('#selectStatusBayar')[0].selectedIndex == 0)
-            // {
-            //     toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
-            // }
-            // else if(barangDibeli.length == 0)
-            // {
-            //     toastr.error("Harap pilih barang yang dibeli terlebih dahulu", "Error", toastrOptions);
-            // }
-            // else 
-            // {
-            //     $('#modalKonfirmasiPembelian').modal('toggle');
-
-            // }
+            if($('#datepickerTglTerima').val() == "")
+            {
+              toastr.error("Harap isi tanggal terima terlebih dahulu", "Error", toastrOptions);
+            }
+            else if(barangDiterima.length == 0)
+            {
+              toastr.error("Harap pilih barang yang diterima terlebih dahulu", "Error", toastrOptions);
+            }
+            else 
+            {
+              $('#modalKonfirmasiPenerimaan').modal('toggle');
+            }
 
         });
 
-        // $('.btnIyaSubmit').on('click', function() {
+        $('.btnIyaSubmit').on('click', function() {
 
-        //     $('#modalKonfirmasiPembelian').modal('toggle');
+            $('#modalKonfirmasiPenerimaan').modal('toggle');
 
-        //     $('#data_barang').val(JSON.stringify(barangDibeli));
+            $('#data_barang').val(JSON.stringify(barangDibeli));
 
-        //     $('#formTambah').submit();
+            $('#formTambah').submit();
 
-        //     $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
-        // });
+            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+        });
+
+        $('#btnTambah').on('click', function() {
+
+            $("#selectBarang option").eq(0).prop('selected', true).change();
+            $("#harga_pesan").val("");
+            $("#kuantitasPesan").val("");
+            $("#kuantitasTerima").val("");
+            $('#subtotal').val("");
+            $('#tanggal_kadaluarsa').val("");
+
+        });
 
     });
 
-    // $('#btnTambah').on('click', function() {
+    function implementDataOnTableBarangTerima()
+    {
+        let rowTable = "";
+        let num = 0;
+        let total = 0;
+        let tglKadaluarsa = "Tidak ada";
 
-    //     $("#barang option").eq(0).prop('selected', true).change();
-    //     $("#harga_beli").val("");
-    //     $("#kuantitas").val("");
-    //     $('#subtotal').val("");
-    //     $('#tanggal_kadaluarsa').val("");
+        if(barangDiterima.length > 0)
+        {
+          for(let i = 0; i < barangDiterima.length; i++)
+          {
+            if(barangDiterima[i].tanggal_kadaluarsa != "") 
+            {
+              tglKadaluarsa = barangDiterima[i].tanggal_kadaluarsa;
+            }
 
-    // });
+            total += barangDiterima[i].subtotal;
 
-    // function implementDataOnTable()
-    // {
-    //     let rowTable = "";
-    //     let num = 0;
-    //     let total = 0;
+            rowTable += `<tr>    
+                            <td>` + barangDiterima[i].barang_kode + " - " + barangDiterima[i].barang_nama + `</td>
+                            <td>` + tglKadaluarsa + `</td>
+                            <td>` + convertAngkaToRupiah(barangDiterima[i].harga_pesan) +  `</td>
+                            <td>` + barangDiterima[i].kuantitas_pesan +  `</td>
+                            <td>` + barangDiterima[i].kuantitas_terima +  `</td>
+                            <td>` + convertAngkaToRupiah(barangDiterima[i].subtotal) +  `</td>
+                            <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDiterima(` + i + `, `+ barangDiterima[i].barang_id + `, `+ barangDiterima[i].kuantitas_terima +`)" id="btnHapus">Hapus</button> </td>
+                        </tr>`;
+          }
 
-    //     if(barangDibeli.length > 0)
-    //     {
-    //         for(let i = 0; i < barangDibeli.length; i++)
-    //         {
-    //             num += 1;
-    //             total += barangDibeli[i].subtotal;
-    //             rowTable += `<tr>    
-    //                             <td>` + num +  `</td>
-    //                             <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
-    //                             <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
-    //                             <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
-    //                             <td>` + barangDibeli[i].kuantitas +  `</td>
-    //                             <td>` + convertAngkaToRupiah(barangDibeli[i].subtotal) +  `</td>
-    //                             <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDibeli(` + i + `)" id="btnHapus">Hapus</button> </td>
-    //                         </tr>`;
-    //         }
-    //     }
-    //     else 
-    //     {
-    //         rowTable += `<tr>
-    //                         <td colspan="7"><p class="text-center">Belum ada isi</p></td>
-    //                     </tr>`;
-    //     }
+          console.log(barangDiterima);
+        }
+        else 
+        {
+            rowTable += `<tr>
+                            <td colspan="7"><p class="text-center">Belum ada isi</p></td>
+                        </tr>`;
+        }
 
-    //     let diskon = parseInt($('#inputDiskon').val());
-    //     let ppn = parseInt($('#inputPPN').val());
-    //     let totalAkhir = total-diskon-ppn;
-    //     $('#totalAkhir').val(totalAkhir);
-    //     $('#total').val(total);
+        let diskon = parseInt(convertRupiahToAngka($('#inputDiskon').val()));
+        let ppn = parseInt(convertRupiahToAngka($('#inputPPN').val()));
+        let totalAkhir = total-diskon-ppn;
+        $('#totalAkhir').val(totalAkhir);
+        $('#total').val(total);
 
-    //     $('#totalRupiah').val(convertAngkaToRupiah(total));
-    //     $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
+        $('#totalRupiah').val(convertAngkaToRupiah(total));
+        $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
 
-    //     $('#contentTable').html(rowTable);
+        $('#contentTable').html(rowTable);
 
-    // }
-    
-    // function hapusBarangDibeli(index)
-    // {
-    //     barangDibeli.splice(index, 1);
+        implementOnTableBarangTidakDiterima();
 
-    //     implementDataOnTable();
-    // }
+    }
 
-    // $('#inputDiskon').on('change', function() {
+    function implementOnTableBarangTidakDiterima()
+    {
+        let rowTable = ``;
 
-    //     let total = parseInt($('#total').val());
+        if(barangTidakDiterima.length > 0)
+        {
+          for(let i = 0; i < barangTidakDiterima.length; i++)
+          {
+            if(barangTidakDiterima[i]['kuantitas'] != 0)
+            {
+              rowTable += `<tr>
+                              <td>` + barangTidakDiterima[i]['kode'] + " - " + barangTidakDiterima[i]['nama'] + `</td>
+                              <td>` + barangTidakDiterima[i]['kuantitas'] + `</td>
+                          </tr>`;
+            }
 
-    //     let diskon = parseInt($('#inputDiskon').val());
-    //     let ppn = parseInt($('#inputPPN').val());
-    //     let totalAkhir = total-diskon-ppn;
+            $('.contentConfirmAdd').html(`
+              <p>Masih ada barang yang belum diterima. Apakah anda yakin ingin konfirmasi terima barang ? Barang yang belum diterima akan tercatat di back order. Sedangkan sistem akan membuat nota beli berdasarkan barang yang diterima.</p>
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                      <tr>
+                          <th>Barang Belum Diterima</th>
+                          <th>Kuantitas Belum Diterima</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      ` + rowTable + `
+                  </tbody>
+              </table>
+            `);
+          }
+        }
+        else 
+        {
+            $('.contentConfirmAdd').html(`<p>Apakah anda yakin ingin konfirmasi terima barang ? sistem akan membuat nota beli berdasarkan barang yang diterima.</p>`);
+        }    
+    }
 
-    //     $('#totalAkhir').val(totalAkhir);
-    //     $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
+    function hapusBarangDiterima(index, barang_id, kuantitas_terima)
+    {
+        barangDiterima.splice(index, 1);
 
-    // });
+        barangTidakDiterima.forEach(function(item, index, arr){
+            if(barangTidakDiterima[index]['barang_id'] == barang_id)
+            {
+                barangTidakDiterima[index]['kuantitas'] += kuantitas_terima; 
 
-    // $('#inputPPN').on('change', function() {
+                // if(barangTidakDiterima[index]['kuantitas'] == 0)
+                // {
+                //     barangTidakDiterima.splice(index, 1);
+                // }
+            }
+        });
 
-    //     let total = parseInt($('#total').val());
-
-    //     let diskon = parseInt($('#inputDiskon').val());
-    //     let ppn = parseInt($('#inputPPN').val());
-    //     let totalAkhir = total-diskon-ppn;
-    //     $('#totalAkhir').val(totalAkhir);
-        
-
-    // });
-
+        implementDataOnTableBarangTerima();
+    }
     
 </script>
 @endsection

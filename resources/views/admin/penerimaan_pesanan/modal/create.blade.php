@@ -15,10 +15,10 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Barang</p>
                     <div class="col-sm-8" id="divTambahBarangDiterima">
-                      <select class="form-control select2 select2bs4" name="barang_id" id="barang" required>
+                      <select class="form-control select2 select2bs4" name="barang_id" id="selectBarang" required>
                           <option disabled selected>Barang</option>
                           @foreach($detail_pemesanan as $item)
-                              <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}">{{ $item->kode." - ".$item->nama }}</option>
+                              <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}" data-harga-pesan="{{ $item->harga_pesan }}" data-kuantitas-pesan="{{ $item->kuantitas }}">{{ $item->kode." - ".$item->nama }}</option>
                               {{-- data-harga-jual="{{ $item->harga_jual }}" --}}
                           @endforeach
                       </select> 
@@ -83,82 +83,166 @@
     </div>
 </div>
 
+<script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+
 <script type="text/javascript">
 
-    $('#harga_pesan').on('change', function() {
-
-        if($('#kuantitas_pesan').val() != "")
-        {
-            let hargaPesan = parseInt($('#harga_pesan').val());
-            let kuantitas = parseInt($('#kuantitas_terima').val());
-            
-            $('#subtotal').val(convertAngkaToRupiah(hargaPesan*kuantitas));
-        }
-
-    });
-
-    $('#checkTglKadaluarsaNull').on('change', function() {
-
-        if($("#checkTglKadaluarsaNull")[0].checked)
-        {
-            $('#tanggal_kadaluarsa').val("");
-            $('#tanggal_kadaluarsa').attr("readonly", true);
-        }
-        else 
-        {
-            $('#tanggal_kadaluarsa').attr("readonly", false);
-        }
-
-    });
-
-    $('#kuantitas_terima').on('change', function() {
-
-        if($('#harga_pesan').val() != "")
-        {
-            let hargaPesan = parseInt($('#harga_pesan').val());
-            let kuantitas = parseInt($('#kuantitas_terima').val());
-
-            $('#subtotal').val(convertAngkaToRupiah(hargaPesan*kuantitas));
-        }
-
-    });
-
     let barangDiterima = [];
+    let barangTidakDiterima = <?php echo $detail_pemesanan ?>;
 
-    $('#btnTambahBarangDiterima').on('click', function(){
+    $(document).ready(function() {
 
-        if(parseInt($('#harga_pesan').val()) > parseInt($('#barang :selected').attr("data-harga-jual")))
-        {
-            toastr.error("Mohon maaf harga pesan " + $('#barang :selected').attr("data-nama") + " melebihi harga jual barang yaitu " + convertAngkaToRupiah($('#barang :selected').attr("data-harga-jual")), "Error", toastrOptions);
-        }
-        else if(barangDiterima.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val() }).length > 0)
-        {
-            toastr.error("Mohon maaf barang dengan tanggal kadaluarsa yang sama sudah ada di tabel barang yang dipesan" , "Error", toastrOptions);
-        }
-        else if(barangDiterima.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val()}).length == 0)
-        {
-            // let tglKadaluarsa = $('#tanggal_kadaluarsa').val();
+        $('#tanggal_kadaluarsa').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
 
-            // if(tglKadaluarsa == "")
-            // {
-            //     tglKadaluarsa = "Tidak ada";
-            // }
+        $('#harga_pesan').on('change', function() {
 
-            barangDiterima.push({
-                "barang_id": $('#barang :selected').val(),
-                "barang_kode": $('#barang :selected').attr("data-kode"),
-                "barang_nama": $('#barang :selected').attr("data-nama"),
-                "harga_pesan": $('#harga_pesan').val(),
-                "kuantitas_pesan": $('#kuantitas_pesan').val(),
-                "kuantitas_terima": $('#kuantitas_terima').val(),
-                "subtotal": parseInt($('#harga_pesan').val())*parseInt($('#kuantitas_terima').val())
-            });
+            if($('#kuantitas_pesan').val() != "")
+            {
+                let hargaPesan = parseInt($('#harga_pesan').val());
+                let kuantitas = parseInt($('#kuantitas_terima').val());
+                
+                $('#subtotal').val(convertAngkaToRupiah(hargaPesan*kuantitas));
+            }
 
-            $('#modalTambahBarangDiterima').modal('toggle');
+        });
 
-            implementDataOnTable();
-        }
-        
+        $('#checkTglKadaluarsaNull').on('change', function() {
+
+            if($("#checkTglKadaluarsaNull")[0].checked)
+            {
+                $('#tanggal_kadaluarsa').val("");
+                $('#tanggal_kadaluarsa').attr("readonly", true);
+            }
+            else 
+            {
+                $('#tanggal_kadaluarsa').attr("readonly", false);
+            }
+
+        });
+
+        $('#kuantitas_terima').on('change', function() {
+
+            if($('#harga_pesan').val() != "")
+            {
+                let hargaPesan = parseInt($('#harga_pesan').val());
+                let kuantitas = parseInt($('#kuantitas_terima').val());
+
+                $('#subtotal').val(convertAngkaToRupiah(hargaPesan*kuantitas));
+            }
+
+        });
+
+        $('#btnTambahBarangDiterima').on('click', function(){
+
+            if(!($("#checkTglKadaluarsaNull")[0].checked) && $('#tanggal_kadaluarsa').val() == "")
+            {
+                toastr.error("Harap isi tanggal kadaluarsa barang", "Error", toastrOptions);
+            }
+            else if(parseInt($('#harga_pesan').val()) > parseInt($('#selectBarang :selected').attr("data-harga-jual")))
+            {
+                toastr.error("Mohon maaf harga pesan " + $('#selectBarang :selected').text() + " melebihi harga jual barang yaitu " + convertAngkaToRupiah($('#selectBarang :selected').attr("data-harga-jual")), "Error", toastrOptions);
+            }
+            else if(barangDiterima.filter(function(e) { return e.barang_id == $('#selectBarang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val() }).length > 0)
+            {
+                toastr.error("Mohon maaf barang " + $('#selectBarang :selected').text() + " dengan tanggal kadaluarsa yang sama sudah ada di tabel barang yang dipesan" , "Error", toastrOptions);
+            }
+            else if(barangDiterima.filter(function(e) { return e.barang_id == $('#selectBarang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val()}).length == 0)
+            {
+                let kuantitasTerima = parseInt($('#kuantitasTerima').val());
+                let kuantitasPesan = parseInt($('#kuantitasPesan').val());
+
+                const keteranganMaksimalBarangDiterima = barangDiterima.forEach(function(item, index, arr) {
+                    if(barangDiterima[index]['barang_id'] == $('#selectBarang :selected').val())
+                    {
+                        kuantitasTerima += parseInt(barangDiterima[index]['kuantitas_terima']); 
+                    }
+                });
+                
+                if(kuantitasTerima > kuantitasPesan)
+                {
+                    toastr.error("Mohon maaf kuantitas diterima barang " + $('#selectBarang :selected').text() + " melebihi kuantitas dipesan", "Error", toastrOptions);
+                }
+                else 
+                {
+                    let tglKadaluarsa = $('#tanggal_kadaluarsa').val();
+
+                    if(tglKadaluarsa == "")
+                    {
+                        tglKadaluarsa = "Tidak ada";
+                    }
+
+                    barangDiterima.push({
+                        "barang_id": $('#selectBarang :selected').val(),
+                        "barang_kode": $('#selectBarang :selected').attr("data-kode"),
+                        "barang_nama": $('#selectBarang :selected').attr("data-nama"),
+                        "harga_pesan": $('#harga_pesan').val(),
+                        "tanggal_kadaluarsa": $('#tanggal_kadaluarsa').val(),
+                        "kuantitas_pesan": $('#kuantitasPesan').val(),
+                        "kuantitas_terima": $('#kuantitasTerima').val(),
+                        "subtotal": parseInt($('#harga_pesan').val())*parseInt($('#kuantitasTerima').val())
+                    });
+
+                    barangTidakDiterima.forEach(function(item, index, arr){
+                        if(barangTidakDiterima[index]['barang_id'] == $('#selectBarang :selected').val())
+                        {
+                            barangTidakDiterima[index]['kuantitas'] -= $('#kuantitasTerima').val(); 
+
+                            // if(barangTidakDiterima[index]['kuantitas'] == 0)
+                            // {
+                            //     barangTidakDiterima.splice(index, 1);
+                            // }
+                        }
+                    });
+
+                    $('#modalTambahBarangDiterima').modal('toggle');
+
+                    implementDataOnTableBarangTerima();
+
+                }
+
+            }
+            
+        });
+
+        $('#selectBarang').on('change', function() {
+
+            let harga_jual = $('#selectBarang :selected').attr('data-harga-jual');
+            let harga_pesan = $('#selectBarang :selected').attr('data-harga-pesan');
+            let kuantitas_pesan = $('#selectBarang :selected').attr('data-kuantitas-pesan');
+
+            $('#harga_pesan').val(harga_pesan);
+            $('#kuantitasPesan').val(kuantitas_pesan);
+            $('#kuantitasTerima').attr('max', kuantitas_pesan);
+
+        });
+
+        $('#kuantitasTerima').on('change', function() {
+
+            let harga_pesan = convertRupiahToAngka($('#harga_pesan').val());
+            let kuantitasPesan = $('#kuantitasPesan').val();
+            let kuantitasTerima = $('#kuantitasTerima').val();
+
+            let subtotal = parseInt(harga_pesan) * parseInt(kuantitasTerima);
+
+            $('#subtotal').val(convertAngkaToRupiah(subtotal));
+
+        });
+
+        $('#harga_pesan ').on('change', function() {
+
+            let harga_pesan = convertRupiahToAngka($('#harga_pesan').val());
+            let kuantitasPesan = $('#kuantitasPesan').val();
+            let kuantitasTerima = $('#kuantitasTerima').val();
+
+            let subtotal = parseInt(harga_pesan) * parseInt(kuantitasTerima);
+
+            $('#subtotal').val(convertAngkaToRupiah(subtotal));
+
+        });
+
     });
-
+    
 </script>
