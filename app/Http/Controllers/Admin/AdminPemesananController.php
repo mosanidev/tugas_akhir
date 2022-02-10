@@ -63,6 +63,7 @@ class AdminPemesananController extends Controller
                                 'ppn' => $request->ppn,
                                 'metode_pembayaran' => $request->metodePembayaran,
                                 'status_bayar' => $request->status,
+                                'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
                                 'status' => 'Belum diterima di gudang',
                                 'total' => $request->total,
                                 'users_id' => auth()->user()->id

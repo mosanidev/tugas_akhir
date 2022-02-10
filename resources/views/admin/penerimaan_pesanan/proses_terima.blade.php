@@ -10,6 +10,7 @@
         <form method="POST" action="{{ route('penerimaan_pesanan.store') }}" id="formTambah">
             @csrf
             
+            <input type="hidden" name="pemesanan_id" value="{{ $pemesanan[0]->id }}">
             <input type="hidden" name="barang_diterima" id="dataBarangDiterima" value="">
             <input type="hidden" name="barang_tidak_diterima" id="dataBarangTidakDiterima" value="">
 
@@ -20,10 +21,10 @@
               </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Tanggal Buat Pemesanan</label>
+                <label class="col-sm-4 col-form-label">Tanggal Pemesanan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggalBuatPemesanan" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::parse($pemesanan[0]->tanggal)->format('Y-m-d') }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggal_pemesanan" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::parse($pemesanan[0]->tanggal)->format('Y-m-d') }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -34,7 +35,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Perkiraan Terima Pesanan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggalPerkiraanTerima" autocomplete="off" value="{{ \Carbon\Carbon::parse($pemesanan[0]->perkiraan_tanggal_terima)->format('Y-m-d') }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggal_perkiraan_terima" autocomplete="off" value="{{ \Carbon\Carbon::parse($pemesanan[0]->perkiraan_tanggal_terima)->format('Y-m-d') }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -53,27 +54,41 @@
                 </div>
               </div>
               <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Bayar</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" value="{{ $pemesanan[0]->tanggal_jatuh_tempo }}" readonly>
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
+                </div>
+              </div>
+              <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Supplier</label>
                 <div class="col-sm-8">
+                  <input type="hidden" value="{{ $pemesanan[0]->supplier_id }}" name="supplier_id" class="form-control" readonly>
                   <input type="text" value="{{ $pemesanan[0]->nama_supplier }}" class="form-control" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                 <div class="col-sm-8">
-                  <input type="text" value="{{ $pemesanan[0]->metode_pembayaran }}" class="form-control" readonly>
+                  <input type="text" value="{{ $pemesanan[0]->metode_pembayaran }}" name="metode_pembayaran" class="form-control" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Diskon Potongan Harga</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="diskon" value="{{ "Rp " . number_format($pemesanan[0]->diskon,0,',','.') }}" id="inputDiskon" readonly>
+                  <input type="hidden" class="form-control" name="diskon" value="{{ $pemesanan[0]->diskon }}" readonly>
+                  <input type="text" class="form-control" value="{{ "Rp " . number_format($pemesanan[0]->diskon,0,',','.') }}" id="inputDiskon" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">PPN</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="ppn" value="{{ "Rp " . number_format($pemesanan[0]->ppn,0,',','.') }}" id="inputPPN" readonly>
+                  <input type="hidden" class="form-control" name="ppn" value="{{ $pemesanan[0]->ppn }}">
+                  <input type="text" class="form-control" value="{{ "Rp " . number_format($pemesanan[0]->ppn,0,',','.') }}" id="inputPPN" readonly>
                 </div>
               </div>
               <div class="form-group row">
@@ -85,14 +100,14 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total</label>
                 <div class="col-sm-8">
-                    <input type="hidden" class="form-control d-inline ml-1" value="{{ "Rp " . number_format($pemesanan[0]->total,0,',','.') }}" min="500" id="total" name="total" readonly/>
+                    <input type="hidden" class="form-control d-inline ml-1" value="{{ $pemesanan[0]->total }}" min="500" id="total" name="total" readonly/>
                     <input type="text" class="form-control" id="totalRupiah" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total Akhir</label>
                 <div class="col-sm-8">
-                    <input type="hidden" class="form-control d-inline ml-1" value="{{ "Rp " . number_format($pemesanan[0]->total-$pemesanan[0]->diskon-$pemesanan[0]->ppn,0,',','.') }}" min="500" id="totalAkhir" name="total_akhir" readonly/>
+                    <input type="hidden" class="form-control d-inline ml-1" value="{{ $pemesanan[0]->total-$pemesanan[0]->diskon-$pemesanan[0]->ppn }}" min="500" id="totalAkhir" name="total_akhir" readonly/>
                     <input type="text" class="form-control" id="totalAkhirRupiah" readonly>
                 </div>
             </div>
@@ -144,6 +159,11 @@
             autoclose: true
         });
 
+        $('#datepickerTglJatuhTempo').datepicker({
+          format: 'yyyy-mm-dd',
+          autoclose: true
+        });
+
         $('.select2bs4').select2({
             dropdownParent: $("#divTambahBarangDiterima"),
             theme: 'bootstrap4'
@@ -175,12 +195,7 @@
             barangTidakDiterima.forEach(function(item, index, arr){
                 if(barangTidakDiterima[index]['kuantitas'] == 0)
                 {
-                    barangTidakDiterima.splice(index, 1); 
-
-                    // if(barangTidakDiterima[index]['kuantitas'] == 0)
-                    // {
-                    //     barangTidakDiterima.splice(index, 1);
-                    // }
+                  delete barangTidakDiterima[index]; 
                 }
             });
 
@@ -260,39 +275,44 @@
     function implementOnTableBarangTidakDiterima()
     {
         let rowTable = ``;
-
-        if(barangTidakDiterima.length > 0)
+        let kuantitasYangNol = 0;
+        
+        for(let i = 0; i < barangTidakDiterima.length; i++)
         {
-          for(let i = 0; i < barangTidakDiterima.length; i++)
+          if(barangTidakDiterima[i]['kuantitas'] != 0)
           {
-            if(barangTidakDiterima[i]['kuantitas'] != 0)
-            {
-              rowTable += `<tr>
-                              <td>` + barangTidakDiterima[i]['kode'] + " - " + barangTidakDiterima[i]['nama'] + `</td>
-                              <td>` + barangTidakDiterima[i]['kuantitas'] + `</td>
-                          </tr>`;
-            }
-
-            $('.contentConfirmAdd').html(`
-              <p>Masih ada barang yang belum diterima. Apakah anda yakin ingin konfirmasi terima barang ? Barang yang belum diterima akan tercatat di back order. Sedangkan sistem akan membuat nota beli berdasarkan barang yang diterima.</p>
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                      <tr>
-                          <th>Barang Belum Diterima</th>
-                          <th>Kuantitas Belum Diterima</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      ` + rowTable + `
-                  </tbody>
-              </table>
-            `);
+            rowTable += `<tr>
+                            <td>` + barangTidakDiterima[i]['kode'] + " - " + barangTidakDiterima[i]['nama'] + `</td>
+                            <td>` + barangTidakDiterima[i]['kuantitas'] + `</td>
+                        </tr>`;
           }
+          else 
+          {
+            kuantitasYangNol += 1;
+          }
+        }
+
+        if(kuantitasYangNol == barangTidakDiterima.length)
+        {
+          $('.contentConfirmAdd').html(`<p>Apakah anda yakin ingin konfirmasi terima barang ? sistem akan membuat nota beli berdasarkan barang yang diterima.</p>`);
         }
         else 
         {
-            $('.contentConfirmAdd').html(`<p>Apakah anda yakin ingin konfirmasi terima barang ? sistem akan membuat nota beli berdasarkan barang yang diterima.</p>`);
-        }    
+          $('.contentConfirmAdd').html(`
+            <p>Masih ada barang yang belum diterima. Apakah anda yakin ingin konfirmasi terima barang ? Barang yang belum diterima akan tercatat di back order. Sedangkan sistem akan membuat nota beli berdasarkan barang yang diterima.</p>
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Barang Belum Diterima</th>
+                        <th>Kuantitas Belum Diterima</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ` + rowTable + `
+                </tbody>
+            </table>
+          `);
+        }
     }
 
     function hapusBarangDiterima(index, barang_id, kuantitas_terima)

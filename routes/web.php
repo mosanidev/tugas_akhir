@@ -258,6 +258,8 @@ Route::group(['prefix' => 'admin'], function() {
         
         Route::get('/penerimaan_pesanan/proses_terima/{pemesanan}', [AdminPenerimaanPesananController::class, 'prosesTerima'])->name('penerimaan_pesanan.proses_terima');
 
+        Route::get('/penerimaan_pesanan/proses_terima_sebagian/{pemesanan}', [AdminPenerimaanPesananController::class, 'prosesTerimaSebagian'])->name('penerimaan_pesanan.proses_terima_sebagian');
+
         Route::resource('/back_order', AdminBackOrderController::class);
 
 

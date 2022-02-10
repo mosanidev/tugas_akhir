@@ -20,7 +20,8 @@ class CreateDetailBackOrderTable extends Migration
             $table->foreign('back_order_id')->references('id')->on('back_order')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade'); 
-            $table->integer('jumlah_belum_diterima');
+            $table->double('harga_pesan');
+            $table->integer('kuantitas');
             $table->double('subtotal');
         });
     }

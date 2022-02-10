@@ -17,10 +17,10 @@ class CreateBackOrderTable extends Migration
 
         Schema::create('back_order', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nomor_nota');
-            // $table->foreign('pemesanan_id')->references('id')->on('pemesanan')->onUpdate('cascade')->onDelete('cascade');
-            $table->date('tanggal');
-            $table->double('total');
+            $table->unsignedInteger('pemesanan_id');
+            $table->foreign('pemesanan_id')->references('id')->on('pemesanan')->onUpdate('cascade')->onDelete('cascade');
+            $table->date('tanggal');                 
+            $table->double('total');                
         });
     }
 

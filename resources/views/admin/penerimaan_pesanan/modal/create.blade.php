@@ -44,7 +44,7 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Harga Pesan</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" id="harga_pesan" class="form-control d-inline ml-1" style="width: 94.2%;" name="harga_pesan" step="100" min="500">
+                        Rp   <input type="number" id="harga_pesan" class="form-control d-inline ml-1" style="width: 94.2%;" name="harga_pesan" step="100" min="500" readonly>
                     </div>
                 </div>
 

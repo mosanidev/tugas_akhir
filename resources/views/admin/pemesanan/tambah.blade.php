@@ -27,6 +27,7 @@
                   </div>   
                 </div>
               </div>
+
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Perkiraan Diterima</label>
                 <div class="col-sm-8">
@@ -38,6 +39,19 @@
                   </div>   
                 </div>
               </div>
+
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Bayar</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
+                </div>
+              </div>
+
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Supplier</label>
                 <div class="col-sm-8">
@@ -49,6 +63,7 @@
                   </select> 
                 </div>
               </div>
+              
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                 <div class="col-sm-8">
@@ -145,6 +160,11 @@
         });
 
         $('#datepickerTglPerkiraanTerima').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+        $('#datepickerTglJatuhTempo').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true
         });

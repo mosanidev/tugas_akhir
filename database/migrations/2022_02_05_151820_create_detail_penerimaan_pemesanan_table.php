@@ -21,8 +21,8 @@ class CreateDetailPenerimaanPemesananTable extends Migration
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade');
             $table->datetime('tanggal_kadaluarsa'); 
-            $table->datetime('harga_beli');
-            $table->integer('kuantitas');
+            $table->double('harga_pesan');
+            $table->integer('jumlah_pesan');
             $table->integer('jumlah_terima');
             $table->double('subtotal');
         });

@@ -24,6 +24,7 @@ class CreatePemesananTable extends Migration
             $table->unsignedInteger('users_id')->nullable();
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->date('perkiraan_tanggal_terima');
+            $table->date('tanggal_jatuh_tempo');
             $table->double('diskon')->default(0);
             $table->double('ppn')->default(0);
             $table->enum('metode_pembayaran', ['Transfer Bank', 'Tunai']);

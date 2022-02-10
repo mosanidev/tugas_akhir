@@ -20,7 +20,7 @@ class CreatePenerimaanPemesananTable extends Migration
             $table->unsignedInteger('pemesanan_id');
             $table->foreign('pemesanan_id')->references('id')->on('pemesanan')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal');
-            $table->double('total');
+            $table->double('total')->nullable();
         });
     }
 

@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             PengirimanSeeder::class,
             MultiplePengirimanSeeder::class,
             PemesananSeeder::class,
+            DetailPemesananSeeder::class,
             PenjualanSeeder::class,
             DetailPenjualanSeeder::class
 

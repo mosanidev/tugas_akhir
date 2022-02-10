@@ -17,7 +17,7 @@ class CreatePembelianTable extends Migration
 
         Schema::create('pembelian', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nomor_nota', 100);
+            $table->string('nomor_nota', 100)->nullable();
             $table->unsignedInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('supplier')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal');
