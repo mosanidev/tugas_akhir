@@ -14,6 +14,9 @@
         <link rel="stylesheet" href="{{ asset('/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     @endif
 
+
+    
+
 @endpush
 
 @section('content')
@@ -25,6 +28,7 @@
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ url('alamat') }}">Alamat</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('order') }}">Transaksi</a>
                 <a class="btn btn-block btn-success btn-lg my-2 d-block" href="{{ route('returPenjualan.showForm') }}">Retur</a>
+                <a class="btn btn-block btn-success btn-lg my-2 d-block" href="{{ route('returPenjualan.showHistory') }}">Riwayat Retur</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('wishlist.index') }}">Wishlist</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('notifikasi.index') }}">Notifikasi</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('logout') }}">Keluar</a>
@@ -46,6 +50,10 @@
                 @elseif(isset($retur_penjualan))
 
                     @include('pelanggan.user_menu.retur_penjualan')
+
+                @elseif(isset($riwayat_retur))
+
+                    @include('pelanggan.user_menu.riwayat_retur_penjualan')
 
                 @elseif(isset($wishlist))
 

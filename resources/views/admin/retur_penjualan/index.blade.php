@@ -32,38 +32,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                          <td>K089098908078KJ</td>
-                          <td>Siti Zubaidah</td>
-                          <td>2022-01-31 16:12</td>
-                          <td>2022-02-01 16:12</td>
-                          <td>Menunggu pengajuan dicek admin</td>
-                          <td>
-                              <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
-                              <button class="btn btn-info w-100" data-toggle="modal" data-target="#modalUbahStatus">Ubah Status</button>
-                          </td>
-                        </tr>
-                        @if(isset($retur_penjualan))
-                          @if(count($retur_penjualan))
+                      @if(isset($retur_penjualan))
+                       @if(count($retur_penjualan))
+                          @foreach($retur_penjualan as $item)
                             <tr>
-                              <td>K089098908078KJ</td>
-                              <td>Siti Zubaidah</td>
-                              <td>2022-01-31 16:12</td>
-                              <td>2022-02-01 16:12</td>
-                              <td>Menunggu pengajuan dicek admin</td>
+                              <td>{{ $item->nomor_nota }}</td>
+                              <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
+                              <td>{{ \Carbon\Carbon::parse($item->tanggal_jual)->isoFormat('D MMMM Y') }}</td>
+                              <td>{{ \Carbon\Carbon::parse($item->tanggal_retur)->isoFormat('D MMMM Y') }}</td>
+                              <td>{{ $item->status }}</td>
                               <td>
-                                  <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
-                                  <button class="btn btn-info w-100" data-toggle="modal" data-target="#modalUbahStatus">Ubah Status</button>
-                              </td>
+                                <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
+                                <button class="btn btn-info w-100" data-toggle="modal" data-target="#modalUbahStatus" data-id="{{ $item->id }}" id="btnUbahStatus">Ubah Status</button>
+                            </td>
                             </tr>
-                          @endif
+                          @endforeach
                         @endif
+                      @endif
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+@include('admin.retur_penjualan.modal.ubah_status')
 
   <!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -78,6 +71,33 @@
   {
     toastr.error("{{ session('error') }}");
   }
+
+  $('#btnUbahStatus').on('click', function() {
+
+    let id = $(this).attr('data-id');
+
+    // $('#retur_penjualan_id').val(id);
+
+    $('#formUbahStatus').attr('action', '/admin/retur_penjualan/'+id);
+
+  });
+
+  $('#btnUbahStatusRetur').on('click', function() {
+
+    $('#modalUbahStatus').modal('toggle');
+    
+    $('#modalKonfirmasiUbahStatus').modal('toggle');
+
+  });
+
+  $('.btnIyaSubmit').on('click', function() {
+
+    $('#formUbahStatus').submit();
+
+    $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+
+  });
 
 </script>
 @endsection

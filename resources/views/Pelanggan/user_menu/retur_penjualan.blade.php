@@ -18,9 +18,9 @@
 
 <h5 class="px-3">Form Retur</h5>
 <div class="px-3 my-3">
-    <form method="POST" action="{{ route('returPenjualan.store') }}">
+    <form method="POST" action="{{ route('returPenjualan.store') }}" id="formAjukanRetur">
         @csrf
-        <input type="hidden" name="arrBarangDitukar" readonly>  
+        <input type="hidden" name="arrBarangDiretur" readonly>  
         <div class="row">
             <div class="col-4">
                 <label class="mt-1">Tanggal</label>
@@ -114,6 +114,27 @@
     
 </div>
 
+<div class="modal fade" id="modalKonfirmasi">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Konfirmasi Retur Penjualan</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <p class="text-justify">Apakah anda yakin ingin mengajukan retur ?</p>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="submit" class="btn btn-primary btnIyaSubmit">Iya</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+        </div>
+        </form>
+      </div>
+    </div>
+</div>
+
 @push('script_user_menu')
 
     <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
@@ -170,6 +191,17 @@
 
             });
 
+            $('.btnIyaSubmit').on('click', function() {
+
+                $('input[name=arrBarangDiretur]').val(JSON.stringify(arrTabel));
+
+                $('#formAjukanRetur').submit();
+
+                $('#modalKonfirmasi').modal('toggle');
+
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+            });
             
             $('#btnSimpan').on('click', function() {
 
@@ -187,9 +219,10 @@
                 }
                 else 
                 {
-                    $('input[name=arrBarangDitukar]').val(JSON.stringify(arrTabel));
-                    $(this).attr('type', 'submit');
-                    $(this).click();
+                    $('#modalKonfirmasi').modal('toggle');
+
+                    // $(this).attr('type', 'submit');
+                    // $(this).click();
                 }
 
             });
@@ -229,7 +262,11 @@
 
         // showActiveSession();
 
-        if ("{{ session('error') }}" != "")
+        if("{{ session('success') }}" != "")
+        {
+            toastr.success("{{ session('success') }}", "Success", toastrOptions);
+        }
+        else if ("{{ session('error') }}" != "")
         {
             toastr.error("{{ session('error') }}", "Error", toastrOptions);
         }

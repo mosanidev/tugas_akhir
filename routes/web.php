@@ -159,6 +159,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     // retur penjualan route
     Route::get('retur', [ReturPenjualanController::class, 'showForm'])->name('returPenjualan.showForm');
+    Route::get('riwayat_retur', [ReturPenjualanController::class, 'showHistory'])->name('returPenjualan.showHistory');
+
     Route::post('retur', [ReturPenjualanController::class, 'store'])->name('returPenjualan.store');
 
     Route::post('change_password', [UserController::class, 'changePassword'])->name('changePassword');

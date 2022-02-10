@@ -17,13 +17,13 @@
 
         <br>
 
-        @if($penjualan[0]->metode_pembayaran == "bank_transfer" || $penjualan[0]->metode_pembayaran == "credit_card")
+        @if($penjualan[0]->metode_pembayaran == "Transfer Bank" || $penjualan[0]->metode_pembayaran == "credit_card")
             <div class="row">
                 <div class="col-6">
                     <p>Metode Pembayaran</p>
                 </div>
                 <div class="col-6">
-                    @if($penjualan[0]->metode_pembayaran == "bank_transfer")
+                    @if($penjualan[0]->metode_pembayaran == "Transfer Bank")
                         <p>{{ "Transfer Bank ".strtoupper($penjualan[0]->bank) }}</p>
                     @elseif($penjualan[0]->metode_pembayaran == "credit_card")
                         <p>{{ "Kredit" }}</p>
@@ -78,8 +78,8 @@
                 </div>
             </div>
         @endif
-        <a href="{{ route('order') }}" class="btn btn-link float-left">Lihat Daftar Pesanan</a>
-        <a href="{{ route('home') }}" class="btn btn-link float-right">Kembali ke Beranda</a>
+        <a href="{{ route('order') }}" class="btn btn-link float-left"><strong>Lihat Daftar Pesanan</strong></a>
+        <a href="{{ route('home') }}" class="btn btn-link float-right"><strong>Kembali ke Beranda</strong></a>
     </div>
     
 </div>

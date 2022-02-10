@@ -37,5 +37,38 @@ class DetailPenjualanSeeder extends Seeder
             'alamat_pengiriman_id'      => 1
 
         ]);
+
+        DB::table('detail_penjualan')->insert([
+
+            'penjualan_id'              => 2,
+            'barang_id'                 => 22,
+            'kuantitas'                 => 5,
+            'subtotal'                  => 39500,
+            'pengiriman_id'             => 1,
+            'alamat_pengiriman_id'      => 1
+
+        ]);
+
+        DB::table('detail_penjualan')->insert([
+
+            'penjualan_id'              => 2,
+            'barang_id'                 => 24,
+            'kuantitas'                 => 5,
+            'subtotal'                  => 38500,
+            'pengiriman_id'             => 1,
+            'alamat_pengiriman_id'      => 1
+
+        ]);
+
+        DB::table('detail_penjualan')->insert([
+
+            'penjualan_id'              => 2,
+            'barang_id'                 => 18,
+            'kuantitas'                 => 10,
+            'subtotal'                  => 177000,
+            'pengiriman_id'             => 1,
+            'alamat_pengiriman_id'      => 1
+
+        ]);
     }
 }

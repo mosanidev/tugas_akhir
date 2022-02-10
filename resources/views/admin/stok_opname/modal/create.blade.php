@@ -96,32 +96,37 @@
         {
             if($('#selectBarangStokOpname :selected').val() == barangTglKadaluarsa[i].id)
             {
-                alert("cocok");
                 $('#selectBarangTglKadaluarsa').attr("disabled", false);
 
-                optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-D') + `</option>`;
+                optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-DD') + `</option>`;
+                keterangan = "Ada riwayat stok tercatat";
             }
-            else 
-            {
-                alert("ga cocok");
+            // else 
+            // {
+            //     optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
 
-                optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
-
-                $('#stokDiSistem').val("");
+            //     $('#stokDiSistem').val("");
                 
-                $('#selisihStok').val("");
+            //     $('#selisihStok').val("");
 
-                $('#keterangan').val("");
+            //     $('#keterangan').val("");
 
-                $('#selectBarangTglKadaluarsa').attr("disabled", true);
-
-                keterangan = "Tidak ada riwayat stok tercatat";
-            }
+            //     $('#selectBarangTglKadaluarsa').attr("disabled", true);
+                
+            // }
         }
 
-        if(keterangan != "")
+        if(keterangan != "Ada riwayat stok tercatat")
         {
-          toastr.error(keterangan, "Error", toastrOptions);
+          $('#stokDiSistem').val("");
+                
+          $('#selisihStok').val("");
+
+          $('#keterangan').val("");
+
+          $('#selectBarangTglKadaluarsa').attr("disabled", true);
+          
+          toastr.error("Tidak ada riwayat stok tercatat", "Error", toastrOptions);
         }
 
         $('#selectBarangTglKadaluarsa').html(optionTglKadaluarsa);

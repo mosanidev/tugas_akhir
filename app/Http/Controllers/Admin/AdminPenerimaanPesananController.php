@@ -52,9 +52,9 @@ class AdminPenerimaanPesananController extends Controller
 
     public function prosesTerimaSebagian($id)
     {
-        $pemesanan = DB::table('back_order')
+        $pemesanan = DB::table('pemesanan')
                         ->select('pemesanan.*', 'supplier.nama as nama_supplier')
-                        ->join('pemesanan', 'back_order.pemesanan_id', '=', 'pemesanan.id')
+                        ->where('pemesanan.id', '=', $id)
                         ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
                         ->get();
 
@@ -63,7 +63,8 @@ class AdminPenerimaanPesananController extends Controller
                                 ->where('back_order.pemesanan_id', '=', $id)
                                 ->join('barang', 'detail_back_order.barang_id', '=', 'barang.id')
                                 ->join('back_order', 'detail_back_order.back_order_id', '=', 'back_order.id')
-                                ->get();
+                                ->whereRaw('detail_back_order.back_order_id = (select max(`back_order_id`) from detail_back_order)')
+                                ->get(); 
 
         return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
 
@@ -129,6 +130,13 @@ class AdminPenerimaanPesananController extends Controller
                                             'harga_beli' => $barang_diterima[$i]['harga_pesan'],
                                             'subtotal' => $barang_diterima[$i]['subtotal']
                                         ]);
+
+            $insertBarang = DB::table('barang_has_kadaluarsa')
+                                ->insert([
+                                    'barang_id' => $barang_diterima[$i]['barang_id'],
+                                    'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
+                                    'jumlah_stok' => $barang_diterima[$i]['kuantitas_terima']
+                                ]);
         }
 
         $barang_tidak_diterima = json_decode($request->barang_tidak_diterima, true);
@@ -180,7 +188,7 @@ class AdminPenerimaanPesananController extends Controller
                                 'total' => $totalHargaBarangDiterima
                              ]);
     
-        return redirect()->route('penerimaan_pemesanan.index')->with(['success' => 'Data berhasil diproses']);
+        return redirect()->route('penerimaan_pesanan.index')->with(['success' => 'Data berhasil diproses']);
     }
 
     /**

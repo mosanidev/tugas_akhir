@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class AdminReturPenjualanController extends Controller
 {
@@ -14,7 +15,19 @@ class AdminReturPenjualanController extends Controller
      */
     public function index()
     {
-        return view('admin.retur_penjualan.index');
+        $retur_penjualan = DB::table('retur_penjualan')
+                            ->select('retur_penjualan.id',
+                                     'penjualan.nomor_nota', 
+                                     'users.nama_depan', 
+                                     'users.nama_belakang', 
+                                     'penjualan.tanggal as tanggal_jual',
+                                     'retur_penjualan.tanggal as tanggal_retur',
+                                     'retur_penjualan.status')
+                            ->join('penjualan', 'penjualan.id', '=', 'retur_penjualan.penjualan_id')
+                            ->join('users', 'retur_penjualan.users_id', '=', 'users.id')
+                            ->get();
+
+        return view('admin.retur_penjualan.index', ['retur_penjualan' => $retur_penjualan]);
     }
 
     /**
@@ -69,7 +82,7 @@ class AdminReturPenjualanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request);
     }
 
     /**

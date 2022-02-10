@@ -22,13 +22,29 @@ class PenjualanSeeder extends Seeder
                 'nomor_nota'                => '4BB72EFD5FED53E625E584',
                 'users_id'                  => 1,
                 'tanggal'                   => '2022-02-04 16:12:39',
-                'pembayaran_id'             => 2,
+                'pembayaran_id'             => 1,
                 'metode_transaksi'          => 'Dikirim ke alamat',
                 'status_jual'               => 'Pesanan sudah dibayar',
                 'jenis'                     => 'Online',
                 'total'                     => 65100,
                 'created_at'                => '2022-02-04 16:12:42',
                 'updated_at'                => '2022-02-04 16:13:09'
+            ]
+        );
+
+        DB::table('penjualan')->insert(
+            [   
+                'id'                        => 2,  
+                'nomor_nota'                => 'AD356FEF053248FC725463',
+                'users_id'                  => 1,
+                'tanggal'                   => '2022-02-11 00:20:37',
+                'pembayaran_id'             => 2,
+                'metode_transaksi'          => 'Dikirim ke alamat',
+                'status_jual'               => 'Pesanan sudah selesai',
+                'jenis'                     => 'Online',
+                'total'                     => 269000,
+                'created_at'                => '2022-02-11 00:20:41',
+                'updated_at'                => '2022-02-11 00:22:59'
             ]
         );
     }

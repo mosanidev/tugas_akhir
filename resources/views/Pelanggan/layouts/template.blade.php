@@ -15,15 +15,6 @@
     
     <title>Toko Kopkar Ubaya</title>
 
-    <style>
-
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
@@ -121,6 +112,7 @@
                                     <a class="dropdown-item" href="{{ url('alamat') }}">Alamat</a>
                                     <a class="dropdown-item" href="{{ route('order') }}">Transaksi</a>
                                     <a class="dropdown-item" href="{{ route('returPenjualan.showForm') }}">Retur</a>
+                                    <a class="dropdown-item" href="{{ route('returPenjualan.showHistory') }}">Riwayat Retur</a>
                                     <a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a>
 
                                     @if(isset($jumlah_notif))
