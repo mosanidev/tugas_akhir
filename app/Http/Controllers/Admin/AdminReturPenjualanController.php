@@ -82,7 +82,13 @@ class AdminReturPenjualanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
+        $updateStatus = DB::table('retur_penjualan')
+                        ->where('id', '=', $id)
+                        ->update([
+                            'status' => $request->status_retur
+                        ]);
+
+        return redirect()->route('retur_penjualan.index')->with(['success' => 'Data berhasil diubah']);
     }
 
     /**

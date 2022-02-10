@@ -57,6 +57,7 @@
 </div>
 
 @include('admin.retur_penjualan.modal.ubah_status')
+@include('admin.retur_penjualan.modal.confirm_ubah')
 
   <!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
