@@ -84,9 +84,9 @@
 
     $('#selectBarangStokOpname').on('change', function() {
 
-        // console.log($('#selectBarangStokOpname :selected').attr('data-stok'));
-
         let optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
+
+        let keterangan = "";
 
         $('#stokDiSistem').val("");
 
@@ -96,13 +96,16 @@
         {
             if($('#selectBarangStokOpname :selected').val() == barangTglKadaluarsa[i].id)
             {
+                alert("cocok");
                 $('#selectBarangTglKadaluarsa').attr("disabled", false);
 
                 optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-D') + `</option>`;
             }
             else 
             {
-                optionTglKadaluarsa = ``;
+                alert("ga cocok");
+
+                optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
 
                 $('#stokDiSistem').val("");
                 
@@ -112,8 +115,13 @@
 
                 $('#selectBarangTglKadaluarsa').attr("disabled", true);
 
-                toastr.error("Tidak ada riwayat stok tercatat", "Error", toastrOptions);
+                keterangan = "Tidak ada riwayat stok tercatat";
             }
+        }
+
+        if(keterangan != "")
+        {
+          toastr.error(keterangan, "Error", toastrOptions);
         }
 
         $('#selectBarangTglKadaluarsa').html(optionTglKadaluarsa);

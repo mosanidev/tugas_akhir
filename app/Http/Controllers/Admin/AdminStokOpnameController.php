@@ -29,11 +29,11 @@ class AdminStokOpnameController extends Controller
                     ->select('barang.id', 'barang.kode', 'barang.nama')
                     ->where('barang_konsinyasi', '=', 0)->get();
 
-        $barangTglKadaluarsa = DB::table('barang')
+        $barangTglKadaluarsa = DB::table('barang_has_kadaluarsa')
                     ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa as tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
-                    ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->join('barang', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa > SYSDATE()')
-                    ->where('barang_konsinyasi', '=', 0)->get();
+                    ->where('barang.barang_konsinyasi', '=', 0)->get();
 
         // dd($barang);
         // dd($barangTglKadaluarsa);
