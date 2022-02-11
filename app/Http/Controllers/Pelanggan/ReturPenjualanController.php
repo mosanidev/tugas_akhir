@@ -35,6 +35,25 @@ class ReturPenjualanController extends Controller
 
     }
 
+    public function simpanNomorRekeningRetur(Request $request)
+    {
+        $IDNoRekening = DB::table('rekening_retur')
+                                ->insertGetId([
+                                    'bank' => $request->bank,
+                                    'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
+                                    'nomor_rekening' => $request->nomor_rekening
+                                ]);
+
+        $updateReturPenjualan = DB::table('retur_penjualan')
+                                    ->where('id', '=', $request->retur_penjualan_id)
+                                    ->update([
+                                        'status' => 'Harap tunggu pengembalian dana dari admin',
+                                        'rekening_retur_id' => $IDNoRekening
+                                    ]);
+
+        return redirect()->route('returPenjualan.showHistory')->with(['success' => 'Nomor rekening berhasil disimpan']);
+    }
+
     public function store(Request $request)
     {
         $barang_diretur = json_decode($request->arrBarangDiretur);
@@ -73,6 +92,8 @@ class ReturPenjualanController extends Controller
 
         // jika jumlah barang yang di retur melebihi yang dibeli
 
+        $total = 0;
+
         $idReturPenjualan = DB::table('retur_penjualan')->insertGetId([
                                     'tanggal' => $tanggal,
                                     'users_id' => auth()->user()->id,
@@ -90,6 +111,8 @@ class ReturPenjualanController extends Controller
                             ->get();
 
             $hargaJual = $detailPenjualan[0]->subtotal / $detailPenjualan[0]->kuantitas;
+            
+            $total = $hargaJual*$barang_diretur[$i]->kuantitas;
 
             $insertDetailPenjualan = DB::table('detail_retur_penjualan')->insert([
                                         'retur_penjualan_id' => $idReturPenjualan,
@@ -99,6 +122,12 @@ class ReturPenjualanController extends Controller
                                         'alasan_retur' => $barang_diretur[$i]->alasan_retur,
                                     ]);
         }
+
+        $updateReturPenjualan = DB::table('retur_penjualan')
+                                    ->where('id', '=', $idReturPenjualan)
+                                    ->update([
+                                        'total' => $total
+                                    ]);
 
         return redirect()->back()->with(['success' => 'Pengajuan retur berhasil disimpan']);
         

@@ -160,6 +160,7 @@ Route::group(['middleware' => 'auth'], function () {
     // retur penjualan route
     Route::get('retur', [ReturPenjualanController::class, 'showForm'])->name('returPenjualan.showForm');
     Route::get('riwayat_retur', [ReturPenjualanController::class, 'showHistory'])->name('returPenjualan.showHistory');
+    Route::post('simpan_rekening', [ReturPenjualanController::class, 'simpanNomorRekeningRetur'])->name('returPenjualan.simpanNomorRekeningRetur');
 
     Route::post('retur', [ReturPenjualanController::class, 'store'])->name('returPenjualan.store');
 
@@ -286,6 +287,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/retur_pembelian', AdminReturPembelianController::class);
 
         Route::resource('/retur_penjualan', AdminReturPenjualanController::class);
+        Route::get('/retur_penjualan/tampilkan_nomor_rekening/{retur_penjualan_id}', [AdminReturPenjualanController::class, 'tampilkanNomorRekening'])->name('adminReturPenjualan.tampilkanNomorRekening');
+        Route::post('/retur_penjualan/lunasi/{retur_penjualan_id}', [AdminReturPenjualanController::class, 'lunasiRefund'])->name('adminReturPenjualan.lunasiRefund');
 
         Route::resource('/detail_retur_pembelian', AdminDetailReturPembelianController::class);
 
