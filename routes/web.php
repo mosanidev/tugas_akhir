@@ -54,6 +54,7 @@ use App\Http\Controllers\Admin\AdminAnggotaKopkarController;
 use App\Http\Controllers\Admin\AdminPemesananController;
 use App\Http\Controllers\Admin\AdminPenerimaanPesananController;
 use App\Http\Controllers\Admin\AdminBackOrderController;
+use App\Http\Controllers\Admin\AdminTransferBarangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -291,6 +292,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/retur_penjualan/lunasi/{retur_penjualan_id}', [AdminReturPenjualanController::class, 'lunasiRefund'])->name('adminReturPenjualan.lunasiRefund');
 
         Route::resource('/detail_retur_pembelian', AdminDetailReturPembelianController::class);
+
+        Route::resource('/transfer_barang', AdminTransferBarangController::class);
 
         Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);
