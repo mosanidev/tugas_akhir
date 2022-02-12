@@ -40,7 +40,7 @@ class ReturPenjualanController extends Controller
         $IDNoRekening = DB::table('rekening_retur')
                                 ->insertGetId([
                                     'bank' => $request->bank,
-                                    'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
+                                    'nama_pemilik_rekening' => strtoupper($request->nama_pemilik_rekening),
                                     'nomor_rekening' => $request->nomor_rekening
                                 ]);
 
@@ -102,6 +102,21 @@ class ReturPenjualanController extends Controller
                                     'link' => $linkFile
         ]);
 
+        $updatePenjualan = DB::table('penjualan')
+                            ->where('nomor_nota', '=', $nomorNota)
+                            ->update([
+                                'status_retur' => 'Ada Retur'
+                            ]);
+
+        $notifikasi = DB::table('notifikasi')
+                            ->insert([
+                                'users_id' => auth()->user()->id,
+                                'isi' => "Pengajuan retur berhasil dibuat berdasarkan penjualan dengan nomor nota #".strtoupper($nomorNota),
+                                'status' => 'Belum dilihat',
+                                'penjualan_id' => $selectPenjualan[0]->id,
+                                'created_at' => \Carbon\Carbon::now(),
+                                'updated_at' => \Carbon\Carbon::now(),
+                            ]);
 
         for($i = 0; $i < count($barang_diretur); $i++)
         {

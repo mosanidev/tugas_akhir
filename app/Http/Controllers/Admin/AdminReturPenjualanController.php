@@ -77,6 +77,17 @@ class AdminReturPenjualanController extends Controller
 
         }
 
+        $returPenjualan = DB::table('detail_retur_penjualan')
+                                ->where('retur_penjualan_id', '=', $id)
+                                ->get();
+
+        foreach($returPenjualan as $item)
+        {
+            $kembalikanBarangReturKeStok = DB::table('barang_has_kadaluarsa')
+                                        ->where('barang_id', '=', $item->barang_id)
+                                        ->increment('jumlah_stok', $item->kuantitas);
+        }
+
         return redirect()->back()->with(['success' => 'Pengembalian dana berhasil dicatat']);
 
     }
@@ -138,7 +149,22 @@ class AdminReturPenjualanController extends Controller
                             'status' => $request->status_retur
                         ]);
 
-        
+        if($request->status_retur == "Pengajuan retur ditolak admin")
+        {
+            $updatePenjualan = DB::table('penjualan')
+                                ->where('penjualan.id', '=',  $returPenjualan[0]->id)
+                                ->update([
+                                    'status_retur' => 'Tidak Ada Retur'
+                                ]);
+        }
+
+        $notifikasi = DB::table('notifikasi')
+                        ->where('penjualan_id', '=', $returPenjualan[0]->penjualan_id)
+                        ->update([
+                            'isi' => `Status pengajuan retur diubah menjadi "$request->status_retur"`,
+                            'status' => 'Belum dilihat',
+                            'updated_at' => \Carbon\Carbon::now()
+                        ]);
 
         return redirect()->route('retur_penjualan.index')->with(['success' => 'Data berhasil diubah']);
     }
