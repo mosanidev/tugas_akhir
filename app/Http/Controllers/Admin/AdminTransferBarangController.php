@@ -15,12 +15,27 @@ class AdminTransferBarangController extends Controller
      */
     public function index()
     {
+        $nomorTransfer = DB::table('transfer_barang')
+                            ->selectRaw('max(id) as nomor_transfer_barang')
+                            ->get();
+
+        $nomorTransfer = $nomorTransfer[0]->nomor_transfer_barang;
+
+        if($nomorTransfer == null)
+        {
+            $nomorTransfer = 1;
+        }
+        else 
+        {
+            $nomorTransfer += 1;
+        }
+
         $transferBarang = DB::table('transfer_barang')
                             ->select('transfer_barang.*', 'users.nama_depan', 'users.nama_belakang')
                             ->join('users', 'transfer_barang.users_id', '=', 'users.id')
                             ->get();
 
-        return view('admin.transfer_barang.index', ['transfer_barang' => $transferBarang]);
+        return view('admin.transfer_barang.index', ['transfer_barang' => $transferBarang, 'nomor_transfer_barang' => $nomorTransfer]);
     }
 
     /**
@@ -30,18 +45,18 @@ class AdminTransferBarangController extends Controller
      */
     public function create()
     {
-        $nomorTransfer = DB::table('transfer_barang')
-                            ->selectRaw('max(id) as nomor_transfer_barang')
-                            ->get();
+        $barang = DB::table('barang')
+                    ->select('barang.id', 'barang.kode', 'barang.nama')
+                    ->get();
 
-        $barang = DB::table('barang_has_kadaluarsa')
-                    ->select('barang.id', 'barang.kode', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok')
+        $barangHasKadaluarsa = DB::table('barang_has_kadaluarsa')
+                    ->select('barang.id', 'barang.kode', 'barang.nama', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok_di_gudang', 'barang_has_kadaluarsa.jumlah_stok_di_rak')
                     ->join('barang', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
                     ->get();
 
         $nomorTransfer = $nomorTransfer[0]->nomor_transfer_barang+1;
 
-        return view('admin.transfer_barang.tambah', ['barang' => $barang, 'nomor_transfer_barang' => $nomorTransfer]);
+        return view('admin.transfer_barang.tambah', ['barangHasKadaluarsa' => $barangHasKadaluarsa, 'barang' => $barang, 'nomor_transfer_barang' => $nomorTransfer]);
     }
 
     /**
@@ -52,7 +67,76 @@ class AdminTransferBarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $idTransfer = DB::table('transfer_barang')
+                    ->insertGetId([
+                        'id' => $request->transfer_barang_id,
+                        'tanggal' => $request->tanggal,
+                        'lokasi_asal' => $request->lokasi_asal,
+                        'lokasi_tujuan' => $request->lokasi_tujuan,
+                        'keterangan' => $request->keterangan,
+                        'users_id' => auth()->user()->id
+                    ]);
+
+        return redirect()->route('transfer_barang.storeTransferBarang', ['transfer_barang' => $idTransfer]);
+
+        
+    }
+
+    public function storeTransferBarang($id)
+    {
+        $transferBarang = DB::table('transfer_barang')
+                            ->where('id', $id)
+                            ->get();
+
+        $barang = DB::table('barang')
+                    ->select('barang.id', 'barang.kode', 'barang.nama')
+                    ->get();
+
+        $barangHasKadaluarsa = DB::table('barang_has_kadaluarsa')
+                                ->select('barang.id', 'barang.kode', 'barang.nama', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok_di_gudang', 'barang_has_kadaluarsa.jumlah_stok_di_rak')
+                                ->join('barang', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                                ->get();
+
+        return view('admin.transfer_barang.tambah', ['transfer_barang' => $transferBarang, 'barangHasKadaluarsa' => $barangHasKadaluarsa, 'barang' => $barang])->with(['success' => 'Data transfer barang berhasil ditambah. Silahkan lengkapi barang yang ditransfer']);
+    }
+
+    public function storeDetailTransferBarang(Request $request)
+    {
+        $detail_transfer_barang = json_decode($request->detail_transfer_barang, true);
+
+        foreach($detail_transfer_barang as $item)
+        {
+            $insertDetailTransfer = DB::table('detail_transfer_barang')
+                                        ->insert([
+                                            'transfer_barang_id' => $request->transfer_barang_id,
+                                            'barang_id' => $item['barang_id'],
+                                            'tanggal_kadaluarsa' => $item['barang_tanggal_kadaluarsa'],
+                                            'kuantitas' => $item['jumlah_dipindah']
+                                        ]);
+
+            if($request->lokasi_tujuan == "Gudang") 
+            {
+                $update = DB::table('barang_has_kadaluarsa')
+                        ->where('barang_id', '=', $item['barang_id'])
+                        ->where('tanggal_kadaluarsa', '=', $item['barang_tanggal_kadaluarsa'])
+                        ->update([
+                            'jumlah_stok_di_rak' => DB::raw("jumlah_stok_di_rak - $item[jumlah_dipindah]"),
+                            'jumlah_stok_di_gudang' => DB::raw("jumlah_stok_di_gudang + $item[jumlah_dipindah]"),
+                        ]);
+            }
+            else 
+            {
+                $update = DB::table('barang_has_kadaluarsa')
+                        ->where('barang_id', '=', $item['barang_id'])
+                        ->where('tanggal_kadaluarsa', '=', $item['barang_tanggal_kadaluarsa'])
+                        ->update([
+                            'jumlah_stok_di_rak' => DB::raw("jumlah_stok_di_rak + $item[jumlah_dipindah]"),
+                            'jumlah_stok_di_gudang' => DB::raw("jumlah_stok_di_gudang - $item[jumlah_dipindah]"),
+                        ]);
+            }
+        }
+
+        return redirect()->route('transfer_barang.index')->with(['success' => 'Data berhasil ditambah']);
     }
 
     /**
@@ -64,6 +148,41 @@ class AdminTransferBarangController extends Controller
     public function show($id)
     {
         //
+    }
+
+    public function tes()
+    {
+        // $detail_transfer_barang = json_decode($request->detail_transfer_barang, true);
+
+        // foreach($detail_transfer_barang as $item)
+        // {
+        //     $insertDetailTransfer = DB::table('detail_transfer_barang')
+        //                                 ->insert([
+        //                                     'transfer_barang_id' => $idTransfer,
+        //                                     'barang_id' => $item->barang_id,
+        //                                     'tanggal_kadaluarsa' => $item->tanggal_kadaluarsa,
+        //                                     'jumlah_dipindah' => $item->jumlah_dipindah
+        //                                 ]);
+
+        //     if($request->lokasi_tujuan == "Gudang") 
+        //     {
+        //         $update = DB::table('barang_has_kadaluarsa')
+        //                 ->where('barang_id', '=', $item->barang_id)
+        //                 ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
+        //                 ->decrement('jumlah_stok_di_rak', $item->jumlah_dipindah)
+        //                 ->increment('jumlah_stok_di_gudang', $item->jumlah_dipindah);
+        //     }
+        //     else 
+        //     {
+        //         $update = DB::table('barang_has_kadaluarsa')
+        //                 ->where('barang_id', '=', $item->barang_id)
+        //                 ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
+        //                 ->increment('jumlah_stok_di_rak', $item->jumlah_dipindah)
+        //                 ->decrement('jumlah_stok_di_gudang', $item->jumlah_dipindah);
+        //     }
+        // }
+
+        // return redirect()->route('transfer_barang.index')->with(['success' => 'Data berhasil ditambah']);
     }
 
     /**

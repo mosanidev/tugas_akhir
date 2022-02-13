@@ -21,7 +21,6 @@ class CreateDetailKonsinyasiTable extends Migration
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
             $table->datetime('tanggal_kadaluarsa');
-            // $table->foreign('tanggal_kadaluarsa')->references('tanggal_kadaluarsa')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
             $table->integer('jumlah_titip');
             $table->double('komisi');
             $table->double('hutang');

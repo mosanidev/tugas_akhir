@@ -636,7 +636,7 @@ class OrderController extends Controller
     public function next()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->where('cart.users_id', '=', auth()->user()->id)
@@ -797,7 +797,7 @@ class OrderController extends Controller
         }
 
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
@@ -828,7 +828,7 @@ class OrderController extends Controller
     public function multipleShipment()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok) as barang_stok"), 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'alamat_pengiriman.*')
+                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as barang_stok"), 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'alamat_pengiriman.*')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('alamat_pengiriman', 'cart.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
@@ -852,7 +852,7 @@ class OrderController extends Controller
     public function pickInStore()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')

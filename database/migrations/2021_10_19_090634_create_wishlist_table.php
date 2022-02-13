@@ -13,11 +13,12 @@ class CreateWishlistTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('wishlist');
+
         Schema::create('wishlist', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->on('barang')->references('id')->onUpdate('cascade')->onDelete('cascade');
-            // $table->double('harga_barang');
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
         });

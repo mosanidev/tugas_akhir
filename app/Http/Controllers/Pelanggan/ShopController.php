@@ -16,11 +16,11 @@ class ShopController extends Controller
         $data_kategori = DB::table('kategori_barang')->get();
 
         $data_barang = DB::table('barang')
-                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
+                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
-                        ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                        ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->where('nama', 'like', '%'.strtolower($request->key).'%')
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                         ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
@@ -103,9 +103,9 @@ class ShopController extends Controller
         $data_kategori = DB::table('kategori_barang')->get();
 
         $data_barang = DB::table('barang')
-                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
+                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                        ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                        ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
@@ -191,9 +191,9 @@ class ShopController extends Controller
         if($request->urutkan == "random")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                             ->inRandomOrder()
                             ->groupBy('barang.id')
@@ -202,9 +202,9 @@ class ShopController extends Controller
         else if($request->urutkan == "a-z")
         {
             $data_barang = DB::table('barang')
-                                ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                                ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
                                 ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                                ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                                ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                                 ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                                 ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
                                 ->where('barang.jenis_id', '=', $id)
@@ -215,9 +215,9 @@ class ShopController extends Controller
         else if($request->urutkan == "z-a")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
@@ -228,9 +228,9 @@ class ShopController extends Controller
         else if($request->urutkan == "maxharga")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
@@ -241,9 +241,9 @@ class ShopController extends Controller
         else if($request->urutkan == "minharga")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
@@ -282,8 +282,8 @@ class ShopController extends Controller
         $data_kategori = DB::table('kategori_barang')->get();
     
         $data_barang = DB::table('barang')
-                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                        ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                        ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->inRandomOrder()
@@ -318,8 +318,8 @@ class ShopController extends Controller
         $data_kategori = DB::table('barang')->select('barang.kategori_id', 'kategori_barang.kategori_barang')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->join('jenis_barang', 'jenis_barang.id', '=', 'barang.jenis_id')->where('barang.jenis_id', '=', $id)->distinct()->get();
         $data_jenis_dipilih = DB::table('jenis_barang')->where('id', '=', $id)->get();
         $data_barang = DB::table('barang')
-                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                        ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                        ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
@@ -351,8 +351,8 @@ class ShopController extends Controller
 
         $data_kategori = DB::table('kategori_barang')->get();
         $data_barang = DB::table('barang')
-                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'merek_barang.merek_barang as nama_merek', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
-                        ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                        ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'merek_barang.merek_barang as nama_merek', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
+                        ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')
@@ -396,8 +396,8 @@ class ShopController extends Controller
         if($request->urutkan == "random")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->inRandomOrder()
@@ -407,8 +407,8 @@ class ShopController extends Controller
         else if($request->urutkan == "a-z")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderBy('nama', 'asc')
@@ -418,8 +418,8 @@ class ShopController extends Controller
         else if($request->urutkan == "z-a")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderBy('nama', 'desc')
@@ -429,8 +429,8 @@ class ShopController extends Controller
         else if($request->urutkan == "maxharga")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) desc')
@@ -440,8 +440,8 @@ class ShopController extends Controller
         else if($request->urutkan == "minharga")
         {
             $data_barang = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
-                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')

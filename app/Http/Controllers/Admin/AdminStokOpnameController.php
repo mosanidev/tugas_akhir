@@ -30,7 +30,7 @@ class AdminStokOpnameController extends Controller
                     ->where('barang_konsinyasi', '=', 0)->get();
 
         $barangTglKadaluarsa = DB::table('barang_has_kadaluarsa')
-                    ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa as tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok as jumlah_stok')
+                    ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa as tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as jumlah_stok')
                     ->join('barang', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa > SYSDATE()')
                     ->where('barang.barang_konsinyasi', '=', 0)->get();

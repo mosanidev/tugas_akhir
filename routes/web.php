@@ -294,6 +294,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/detail_retur_pembelian', AdminDetailReturPembelianController::class);
 
         Route::resource('/transfer_barang', AdminTransferBarangController::class);
+        Route::get('/transfer_barang/add/{transfer_barang}', [AdminTransferBarangController::class, 'storeTransferBarang'])->name('transfer_barang.storeTransferBarang');
+        Route::post('/transfer_barang/add', [AdminTransferBarangController::class, 'storeDetailTransferBarang'])->name('transfer_barang.storeDetailTransferBarang');
 
         Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);

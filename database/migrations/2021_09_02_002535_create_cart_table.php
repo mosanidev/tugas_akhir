@@ -19,7 +19,6 @@ class CreateCartTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
-            // $table->foreign('barang_id')->on('barang')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('kuantitas')->default(1);
             $table->double('subtotal');
             $table->double('total')->default(0);

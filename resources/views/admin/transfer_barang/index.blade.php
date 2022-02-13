@@ -10,11 +10,13 @@
       </div>
   </div><!-- /.container-fluid -->
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
+
 <div class="container-fluid">
 
-  <a href="{{ route('transfer_barang.create') }}" class="btn btn-success ml-2 mb-3">Tambah</a>
+  {{-- <a href="{{ route('transfer_barang.create') }}" class="btn btn-success ml-2 mb-3">Tambah</a> --}}
   
+  <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahTransfer">Tambah</button>
+
   <div class="card shadow my-4">
       <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">Tabel Supplier</h6>
@@ -55,6 +57,10 @@
     </div>
   </div>
 
+  @include('admin.transfer_barang.modal.create_transfer_barang') 
+
+  <!-- bootstrap datepicker -->
+  <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
   <!-- Toastr -->
   <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
   {{-- <script  src=//code.jquery.com/jquery-3.5.1.slim.min.js integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin=anonymous></script> --}}
@@ -62,6 +68,12 @@
 
     $(document).ready(function(){
 
+        $('#datepickerTgl').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+        
 
     });
 

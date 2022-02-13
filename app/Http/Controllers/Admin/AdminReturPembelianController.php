@@ -118,7 +118,7 @@ class AdminReturPembelianController extends Controller
                                 ->get();
 
             $detail_pembelian = DB::table('detail_pembelian')
-                                    ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok')
+                                    ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok_di_gudang')
                                     ->where('detail_pembelian.pembelian_id', '=', $retur_pembelian[0]->pembelian_id)  
                                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_pembelian.tanggal_kadaluarsa')
                                     ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
@@ -145,7 +145,7 @@ class AdminReturPembelianController extends Controller
                                 ->get();
 
             $detail_pembelian = DB::table('detail_konsinyasi')
-                                    ->select('detail_konsinyasi.*', 'detail_konsinyasi.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok')
+                                    ->select('detail_konsinyasi.*', 'detail_konsinyasi.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok_di_gudang')
                                     ->where('detail_konsinyasi.konsinyasi_id', '=', $retur_pembelian[0]->konsinyasi_id)  
                                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_konsinyasi.barang_id')
                                     ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')

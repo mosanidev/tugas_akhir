@@ -23,8 +23,6 @@ class CreateReturPenjualanTable extends Migration
             $table->unsignedInteger('penjualan_id');
             $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('status');
-            // $table->enum('status', ['Menunggu pengajuan dicek admin', 'Pengajuan retur ditolak', 'Pengajuan retur diterima dan sedang di proses', 'Barang retur dikirim ke alamat anda', 'Proses retur selesai']);
-            // $table->string('nomor_resi')->nullable();
             $table->unsignedInteger('rekening_retur_id')->nullable();
             $table->foreign('rekening_retur_id')->references('id')->on('rekening_retur')->onUpdate('cascade')->onDelete('cascade');
             $table->string('link', 500);

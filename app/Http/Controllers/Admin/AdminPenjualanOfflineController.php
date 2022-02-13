@@ -38,9 +38,9 @@ class AdminPenjualanOfflineController extends Controller
 
         // mengambil tanggal kadaluarsa terlama 
         $barang = DB::table('barang')
-                    ->select('barang.*', DB::raw('max(barang_has_kadaluarsa.tanggal_kadaluarsa) as tanggal_kadaluarsa'), DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                    ->select('barang.*', DB::raw('max(barang_has_kadaluarsa.tanggal_kadaluarsa) as tanggal_kadaluarsa'), DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok'))
                     ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
-                    ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                    ->where('barang_has_kadaluarsa.jumlah_stok_di_rak', '>', 0)
                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
                     ->groupBy('barang_has_kadaluarsa.barang_id')
                     ->get();

@@ -18,8 +18,9 @@ class CreateTransferBarangTable extends Migration
         Schema::create('transfer_barang', function (Blueprint $table) {
             $table->increments('id');
             $table->date('tanggal');
-            $table->enum('lokasi_asal', ['Rak', 'Gudang darurat']);
-            $table->enum('lokasi_tujuan', ['Rak', 'Gudang darurat']);
+            $table->enum('lokasi_asal', ['Rak', 'Gudang']);
+            $table->enum('lokasi_tujuan', ['Rak', 'Gudang']);
+            $table->string('keterangan', 500);
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
