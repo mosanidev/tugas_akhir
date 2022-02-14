@@ -53,7 +53,12 @@ class AdminSupplierController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
         
-        $insert = DB::table('supplier')->insert(['nama' => $request->nama, 'jenis' => $request->jenis, 'alamat' => $request->alamat, 'nomor_telepon' => $request->nomor_telepon]);
+        $insert = DB::table('supplier')->insert([
+            'nama' => $request->nama, 
+            'jenis' => $request->jenis, 
+            'alamat' => $request->alamat, 
+            'nomor_telepon' => $request->nomor_telepon
+        ]);
 
         return redirect()->back()->with('success', 'Data berhasil ditambah');
     }
@@ -91,7 +96,13 @@ class AdminSupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $update = DB::table('supplier')->where('id', '=', $id)->update(['nama'=>$request->nama, 'alamat'=>$request->alamat, 'nomor_telepon'=>$request->nomor_telepon]);
+        dd($request);
+        $update = DB::table('supplier')->where('id', '=', $id)->update([
+                                            'nama'=>$request->nama, 
+                                            'alamat'=>$request->alamat, 
+                                            'nomor_telepon'=>$request->nomor_telepon,
+                                            'jenis' => $request->jenis
+                                        ]);
 
         return redirect()->back();
     }

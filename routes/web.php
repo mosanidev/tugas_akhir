@@ -266,13 +266,14 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::resource('/back_order', AdminBackOrderController::class);
 
-
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
 
         Route::get('/konsinyasi/lunasi/{konsinyasi}', [AdminKonsinyasiController::class, 'lunasi'])->name('konsinyasi.lunasi');
         Route::resource('/konsinyasi', AdminKonsinyasiController::class);
 
         Route::resource('/stok_opname', AdminStokOpnameController::class);
+        Route::get('/stok_opname/add/{stok_opname}', [AdminStokOpnameController::class, 'storeStokOpname'])->name('stok_opname.storeStokOpname');
+        Route::post('/stok_opname/add', [AdminStokOpnameController::class, 'storeDetailStokOpname'])->name('stok_opname.storeDetailStokOpname');
 
         Route::resource('/konsinyasi/barangkonsinyasi', AdminDetailKonsinyasiController::class);
 

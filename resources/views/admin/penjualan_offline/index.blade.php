@@ -62,6 +62,10 @@
   {
     toastr.success("{{ session('success') }}", "Success", toastrOptions);
   }
+  else if("{{ session('error') }}" != "")
+  {
+    toastr.error("{{ session('error') }}", "Error", toastrOptions);
+  }
 
 </script>
 @endsection

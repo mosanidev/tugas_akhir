@@ -85,7 +85,9 @@ class AdminTransferBarangController extends Controller
     public function storeTransferBarang($id)
     {
         $transferBarang = DB::table('transfer_barang')
-                            ->where('id', $id)
+                            ->select('transfer_barang.*', 'users.nama_depan', 'users.nama_belakang')
+                            ->where('transfer_barang.id', $id)
+                            ->join('users', 'transfer_barang.users_id', '=', 'users.id')
                             ->get();
 
         $barang = DB::table('barang')

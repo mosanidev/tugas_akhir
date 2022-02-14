@@ -21,6 +21,7 @@ class CreateStokOpnameTable extends Migration
             $table->date('tanggal');
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->enum('lokasi_stok', ['Rak', 'Gudang']);
         });
     }
 

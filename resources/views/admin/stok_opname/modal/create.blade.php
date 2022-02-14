@@ -80,7 +80,7 @@
 
     });
     
-    let barangTglKadaluarsa = <?php echo json_encode($barangTglKadaluarsa) ?>;
+    let barangTglKadaluarsa = <?php echo json_encode($barangHasKadaluarsa) ?>;
 
     $('#selectBarangStokOpname').on('change', function() {
 
@@ -97,6 +97,7 @@
             if($('#selectBarangStokOpname :selected').val() == barangTglKadaluarsa[i].id)
             {
                 $('#selectBarangTglKadaluarsa').attr("disabled", false);
+                $('#selectLokasiBarang').attr('disabled', false);
 
                 optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-DD') + `</option>`;
                 keterangan = "Ada riwayat stok tercatat";

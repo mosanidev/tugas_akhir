@@ -7,20 +7,20 @@
     <h3>Tambah Stok Opname</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('stok_opname.store') }}" id="formTambah">
+        <form method="POST" action="{{ route('stok_opname.storeDetailStokOpname') }}" id="formTambah">
             @csrf
             <input type="hidden" id="data_barang" value="" name="barang"/>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Nomor Nota</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" required>
+                  <input type="text" class="form-control" name="stok_opname_id" value="{{ $stok_opname[0]->id }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Tanggal Buat</label>
+                <label class="col-sm-4 col-form-label">Tanggal</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTgl" required>
+                      <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTgl" value="{{ $stok_opname[0]->tanggal }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -31,7 +31,15 @@
                 <label class="col-sm-4 col-form-label">Pembuat</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="nama_pembuat" autocomplete="off" value="{{ auth()->user()->id.' - '.auth()->user()->nama_depan.' '.auth()->user()->nama_belakang }}" readonly>
+                      <input type="text" class="form-control pull-right" name="nama_pembuat" autocomplete="off" value="{{ $stok_opname[0]->users_id.' - '.$stok_opname[0]->nama_depan.' '.$stok_opname[0]->nama_belakang }}" readonly>
+                  </div>   
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Lokasi Stok</label>
+                <div class="col-sm-8">
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="lokasi_stok" autocomplete="off" value="{{ $stok_opname[0]->lokasi_stok }}" readonly>
                   </div>   
                 </div>
               </div>
@@ -69,15 +77,16 @@
     </div>
 
 @include('admin.stok_opname.modal.create')
+@include('admin.stok_opname.modal.confirm_add')
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
 
-    $('#datepickerTgl').datepicker({
-      format: 'yyyy-mm-dd',
-      autoclose: true
-    });
+    // $('#datepickerTgl').datepicker({
+    //   format: 'yyyy-mm-dd',
+    //   autoclose: true
+    // });
 
     function implementOnTable()
     {
@@ -120,11 +129,19 @@
 
     $('#btnSimpan').on('click', function() {
 
-        $('#data_barang').val(JSON.stringify(arrStokOpname));
+        $('#modalKonfirmasiStokOpname').modal('toggle');
 
-        $('#btnSimpan').attr("type","submit");
+    });
 
-        $('#btnSimpan')[0].click();
+    $('.btnIyaSubmit').on('click', function() {
+
+      $('#data_barang').val(JSON.stringify(arrStokOpname));
+
+      $('#formTambah').submit();
+      
+      $('#modalKonfirmasiStokOpname').modal('toggle');
+
+      $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
     });
 

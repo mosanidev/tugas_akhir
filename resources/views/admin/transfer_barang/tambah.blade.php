@@ -48,6 +48,12 @@
                         </textarea>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Nama Pembuat</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="nama_pembuat" id="namaPembuat" value="{{ $transfer_barang[0]->nama_depan." ".$transfer_barang[0]->nama_belakang }}" readonly>
+                    </div>
+                </div>
 
                 <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarang">Tambah</button>
 

@@ -13,7 +13,9 @@
 
     <div class="container-fluid">
 
-        <a href="{{ route('stok_opname.create') }}" class="btn btn-success ml-2" >Tambah</a>
+        {{-- <a href="{{ route('stok_opname.create') }}" class="btn btn-success ml-2" >Tambah</a> --}}
+
+        <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahStokOpname">Tambah</button>
 
         <div class="card shadow my-4">
             <div class="card-header py-3">
@@ -39,5 +41,7 @@
             </div>
           </div>
     </div>
+
+    @include('admin.stok_opname.modal.create_stok_opname')
 
 @endsection

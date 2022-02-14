@@ -97,7 +97,7 @@
                             <option value="Tukar Barang">Tukar Barang</option>
                             <option value="Potong Dana Pembelian">Potong Dana Pembelian</option>
                         </select> 
-                        <input type="hidden" id="kebijakan_retur" name="kebijakan_retur" value=""> 
+                        <input type="text" id="kebijakan_retur" name="kebijakan_retur" value=""> 
                     </div>
                 </div>
                 <input type="hidden" id="jenis" name="jenis" value=""> 

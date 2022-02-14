@@ -57,7 +57,8 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Total</label>
                     <div class="col-sm-8">
-                        Rp <input type="number" class="form-control d-inline ml-1" style="width: 95.2%;" name="total" id="total" value="0" readonly>
+                        <input type="hidden" class="form-control d-inline ml-1" name="total" id="total" value="0" readonly>
+                        <input type="text" class="form-control d-inline ml-1" name="totalRupiah" id="totalRupiah" value="0" readonly>
                     </div>
                 </div>
 
@@ -74,6 +75,7 @@
                                     <tr>
                                         <th style="width: 10px">No</th>
                                         <th>Barang</th>
+                                        <th>Tanggal Kadaluarsa</th>
                                         <th>Harga Jual</th>
                                         <th>Diskon</th>
                                         <th>Kuantitas</th>
@@ -141,6 +143,11 @@
             theme: 'bootstrap4'
         });
 
+        $('#selectTglKadaluarsa').select2({
+            dropdownParent: $("#modalPilihTglKadaluarsa"),
+            theme: 'bootstrap4'
+        });
+
         $('#tambahBarangJualOffline').on('click', function() {
 
             $('#selectBarangJualOffline option').eq(0).prop('selected', true).change();
@@ -165,6 +172,7 @@
                     rowTable += `<tr>
                                     <td style="width: 10px">` + num + `</td>
                                     <td>` + arrBarangDijual[i].barang_kode + " - " + arrBarangDijual[i].barang_nama + `</td>
+                                    <td>` + arrBarangDijual[i].tanggal_kadaluarsa + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangDijual[i].harga_jual) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangDijual[i].diskon) + `</td>
                                     <td>` + arrBarangDijual[i].kuantitas + `</td>
@@ -184,8 +192,9 @@
                             </tr>`;
             }
             
-
             $('#contentTable').html(rowTable);
+
+            $('#totalRupiah').val(convertAngkaToRupiah(total));
             $('#total').val(total);
             
         }

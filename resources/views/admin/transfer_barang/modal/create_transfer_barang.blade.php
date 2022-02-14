@@ -56,6 +56,12 @@
                         </textarea>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Nama Pembuat</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" value="{{ auth()->user()->nama_depan." ".auth()->user()->nama_belakang }}" readonly>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" id="btnSimpan" class="btn btn-primary">Simpan</button>
                 </form>

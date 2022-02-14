@@ -25,8 +25,8 @@
                 </div>
                 <div class="form-group col-md-8">
                   <select class="form-control" name="jenis">
-                    <option value="perusahaan">Perusahaan</option>
-                    <option value="individu">Individu</option>
+                    <option value="Perusahaan">Perusahaan</option>
+                    <option value="Individu">Individu</option>
                   </select>
                 </div>
               </div>

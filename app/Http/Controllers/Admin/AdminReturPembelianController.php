@@ -72,6 +72,7 @@ class AdminReturPembelianController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         if($request->jenis == "Pembelian")
         {
             $id_retur_pembelian = DB::table('retur_pembelian')
@@ -124,7 +125,6 @@ class AdminReturPembelianController extends Controller
                                     ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
                                     ->groupBy('barang.id')
                                     ->get();
-
 
             if($retur_pembelian[0]->kebijakan_retur == "Tukar Barang")
             {
