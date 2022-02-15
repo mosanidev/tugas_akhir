@@ -8,20 +8,21 @@
         <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Tambah Periode Diskon</h1>
+                <h1>Ubah Periode Diskon</h1>
             </div>
         </div>
     </section>
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('periode_diskon.store') }}" novalidate>
+            <form method="POST" action="{{ route('periode_diskon.update', ['periode_diskon' => $periode_diskon[0]->id]) }}" novalidate>
                 @csrf
+                @method('PUT')
                 <input type="hidden" id="dataDiskonBarang" name="diskon_barang">
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Nama</p>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" name="nama" autocomplete="off" required>
+                        <input type="text" class="form-control" name="nama" value="{{ $periode_diskon[0]->nama }}" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -29,7 +30,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal_dimulai" autocomplete="off" id="datepickertglawal" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
+                                <input type="text" class="form-control pull-right" name="tanggal_dimulai" value="{{ $periode_diskon[0]->tanggal_dimulai }}" autocomplete="off" id="datepickertglawal" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -42,7 +43,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal_berakhir" autocomplete="off" id="datepickertglakhir" required>
+                                <input type="text" class="form-control pull-right" name="tanggal_berakhir" value="{{ $periode_diskon[0]->tanggal_berakhir }}" autocomplete="off" id="datepickertglakhir" required>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -53,7 +54,7 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Keterangan</p>
                     <div class="col-sm-8">
-                        <textarea class="form-control" name="keterangan" id="keterangan" cols="30" rows="3" required></textarea>
+                        <textarea class="form-control" name="keterangan" id="keterangan" cols="30" rows="3" required>{{ $periode_diskon[0]->keterangan }}</textarea>
                     </div>
                 </div>
 
@@ -89,7 +90,7 @@
     </div>
 
   @include('admin.periode_diskon.modal.create')
-  @include('admin.periode_diskon.modal.confirm_add')
+  @include('admin.periode_diskon.modal.confirm_ubah')
 
   <!-- bootstrap datepicker -->
   <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -107,7 +108,13 @@
     let arrBarang = [];
 
     $(document).ready(function(){
-        
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+
       $('#btnTambahBarangDiskon').on('click', function() {
         
             $('#harga_jual').html("");
@@ -117,6 +124,7 @@
             $.ajax({
                 url: "/admin/periode_diskon/barang_diskon",
                 type: 'GET',
+                data: { 'periode_diskon_id': "{{ $periode_diskon[0]->id }}" },
                 beforeSend: function(){
 
                     $('#modalCreateBarangDiskonBody #loader').show();
@@ -139,11 +147,23 @@
             });
       });
 
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-      });
+      let barangDiskon = <?php echo json_encode($barang_periode_diskon) ?>;
+
+      function loadBarangDiskon() 
+      {
+          barangDiskon.forEach(function(item, index, arr) {
+            arrBarang.push({
+                'barang_id': barangDiskon[index]['id'],
+                'barang_kode': barangDiskon[index]['kode'],
+                'barang_nama': barangDiskon[index]['nama'],
+                'barang_harga_asli': barangDiskon[index]['harga_jual'],
+                'barang_diskon': barangDiskon[index]['diskon_potongan_harga'],
+                'barang_harga_akhir': barangDiskon[index]['harga_jual']-barangDiskon[index]['diskon_potongan_harga']
+            });
+          });
+      }
+
+      loadBarangDiskon();
 
       $('#datepickertglawal').datepicker({
         format: 'yyyy-mm-dd',
@@ -189,7 +209,7 @@
         }
         else 
         {
-            $('#modalKonfirmasiTambahPeriodeDiskon').modal('toggle');
+            $('#modalKonfirmasiUbahPeriodeDiskon').modal('toggle');
         }
 
       });
@@ -211,6 +231,7 @@
     function implementDataOnTable() 
     {
         let rowTable = "";
+        let num = 1;
 
         if(arrBarang.length > 0)
         {
@@ -226,6 +247,8 @@
                                     <button type="button" class='btn btn-danger' onclick="hapusDiskonBarang(` + i + `)">Hapus</button>
                                 </td>
                             </tr>`;
+
+                num++;
             }
         }
         else 

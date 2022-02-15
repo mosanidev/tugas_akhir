@@ -109,7 +109,20 @@ class AdminBarangDiskonController extends Controller
 
     public function load(Request $request)
     {
-        $barang = DB::table('barang')->where('periode_diskon_id', '=', null)->get();
+        if(isset($request->periode_diskon_id))
+        {
+            $barang = DB::table('barang')
+                        ->where('periode_diskon_id', '=', null)
+                        ->orWhere('periode_diskon_id', '=', $request->periode_diskon_id)
+                        ->get();
+        }
+        else 
+        {
+            $barang = DB::table('barang')
+                        ->where('periode_diskon_id', '=', null)
+                        ->get();
+
+        }
 
         return response()->json(['barang' => $barang]);
     }

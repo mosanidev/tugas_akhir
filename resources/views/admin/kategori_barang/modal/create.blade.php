@@ -11,20 +11,16 @@
         <div class="modal-body">
           <form method="POST" action="{{ url('admin/barang/kategori') }}">
             @csrf
-            <div class="form-inline">
-              <div class="row">
-                <div class="col-4">
-                  <p for="exampleFormControlInput1">Kategori Barang</p>
-                </div>
-                <div class="col-8">
-                  <input type="text" class="form-control" name="kategori_barang" id="exampleFormControlInput1">
-                </div>
+            <div class="form-group row">
+              <p class="col-sm-4 col-form-label">Kategori Barang</p>
+              <div class="col-sm-8">
+                  <input type="text" class="form-control" name="kategori_barang" autocomplete="off" required>
               </div>
             </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Save changes</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
           </form>
         </div>
       </div>

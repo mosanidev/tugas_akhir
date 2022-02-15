@@ -38,19 +38,11 @@ class AdminJenisBarangController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        $insert = DB::table('jenis_barang')->insert([
+            'jenis_barang' => $request->jenis_barang
+        ]);
 
-            $insert = DB::table('jenis_barang')->insert([
-                'jenis_barang' => $request->jenis_barang
-            ]);
-
-            return redirect()->back();
-
-        }
-        catch(\Illuminate\Database\QueryException $ex){ 
-            dd($ex->getMessage()); 
-            // Note any method of class PDOException can be called on $ex.
-        }
+        return redirect()->back()->with(['success' => 'Data jenis berhasil bertambah']);
         
     }
 
@@ -90,7 +82,7 @@ class AdminJenisBarangController extends Controller
         $update = DB::table('jenis_barang')->where('id', $id)
                                 ->update(['jenis_barang' => $request->jenis_barang]);
 
-        return redirect()->back();
+        return redirect()->back()->with(['success' => 'Data jenis berhasil berubah']);
     }
 
     /**
@@ -101,25 +93,12 @@ class AdminJenisBarangController extends Controller
      */
     public function destroy($id)
     {
-        try {
+        $delete_jenis = DB::table('jenis_barang')->where('id', '=', $id)->delete();
 
-            $delete_jenis = DB::table('jenis_barang')->where('id', '=', $id)->delete();
+        $delete_barang = DB::table('barang')->where('jenis_id', '=', $id)->delete();
 
-            $delete_barang = DB::table('barang')->where('jenis_id', '=', $id)->delete();
-
-            return redirect()->back();
-            
-        }
-        catch(\Illuminate\Database\QueryException $ex){ 
-            dd($ex->getMessage()); 
-            // Note any method of class PDOException can be called on $ex.
-        }
+        return redirect()->back()->with(['success' => 'Data jenis berhasil dihapus']);
+       
     }
 
-    public function search(Request $request)
-    {   
-        $result = DB::table('jenis_barang')->select('*')->where('jenis_barang', 'like', '%'.$request->jenis.'%')->limit(5)->get();
-
-        return response()->json(['jenis'=>$result]);  
-    }
 }

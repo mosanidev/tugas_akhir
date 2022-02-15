@@ -75,7 +75,7 @@ class AdminPembelianController extends Controller
                                     ->insert([
                                         'barang_id' => $dataBarang[$i]['barang_id'],
                                         'tanggal_kadaluarsa' => $tglKadaluarsa,
-                                        'jumlah_stok' => $dataBarang[$i]['kuantitas']
+                                        'jumlah_stok_di_gudang' => $dataBarang[$i]['kuantitas']
                                     ]);
                  
             }
@@ -84,7 +84,7 @@ class AdminPembelianController extends Controller
                 $insertStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
                                     ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                    ->increment('jumlah_stok', $dataBarang[$i]['kuantitas']);  
+                                    ->increment('jumlah_stok_di_gudang', $dataBarang[$i]['kuantitas']);  
 
             }
 

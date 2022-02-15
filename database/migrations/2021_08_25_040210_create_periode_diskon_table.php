@@ -20,6 +20,7 @@ class CreatePeriodeDiskonTable extends Migration
             $table->string('nama', 55)->nullable();
             $table->date('tanggal_dimulai')->nullable();
             $table->date('tanggal_berakhir')->nullable();
+            $table->string('keterangan', 500)->nullable();
             // $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
         });
     }

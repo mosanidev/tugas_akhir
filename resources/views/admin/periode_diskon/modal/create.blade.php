@@ -43,6 +43,12 @@
                   
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <p class="col-sm-4 col-form-label">Harga Jual Akhir</p>
+                        <div class="col-sm-8">
+                            <input type="text" id="harga_jual_akhir" class="form-control d-inline ml-1" min="100" name="harga_jual_akhir" step="100" min="500" readonly>     
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" id="btnSimpanBarangDiskon" class="btn btn-primary">Simpan</button>
@@ -57,48 +63,6 @@
 <script type="text/javascript">
 
     let arrHargaBarang = [];
-
-    $('#btnTambahBarangDiskon').on('click', function() {
-        
-        $('#harga_jual').html("");
-        $('#potongan_harga').val("");
-        
-        $.ajax({
-            url: "barang_diskon",
-            type: 'GET',
-            beforeSend: function(){
-
-                $('#modalCreateBarangDiskonBody #loader').show();
-                $('.formTambahBarangDiskon').hide();
-
-            },
-            success:function(data) {
-
-                $('#loader').hide();
-                $('.formTambahBarangDiskon').show();
-
-                document.getElementById('selectTambahBarangDiskon').innerHTML = `<option disabled selected>Barang</option>`;
-
-                for(let i=0; i<data.barang.length;i++)
-                {
-                    document.getElementById('selectTambahBarangDiskon').innerHTML += `<option value="` + data.barang[i].id + `" data-kode="` + data.barang[i].kode + `" data-nama="` + data.barang[i].nama + `" data-harga="` + data.barang[i].harga_jual + `">` + data.barang[i].kode + " - " + data.barang[i].nama +`</option>`;
-                    arrHargaBarang.push(data.barang[i].harga_jual);
-                }
-            }
-        });
-    });
-
-    $('#selectTambahBarangDiskon').on('change', function() {
-
-        // kosongkan 
-        $('#harga_jual').html("");
-        $('#potongan_harga').val("");
-
-        // $('#harga_jual').html(arrHargaBarang[document.getElementById('selectBarangDiskon').selectedIndex-1]);
-        $('#harga_jual').html(convertAngkaToRupiah(arrHargaBarang[document.getElementById('selectTambahBarangDiskon').selectedIndex-1]));
-        $('#potongan_harga').attr("max", arrHargaBarang[document.getElementById('selectTambahBarangDiskon').selectedIndex-1]);
-
-    });
 
     $('#btnSimpanBarangDiskon').on('click', function() {
 
@@ -144,7 +108,7 @@
                     "barang_nama": $('#selectTambahBarangDiskon :selected').attr("data-nama"), 
                     "barang_harga_asli": $('#selectTambahBarangDiskon :selected').attr("data-harga"), 
                     "barang_diskon": $('#potongan_harga').val(), 
-                    "barang_harga_akhir": convertAngkaToRupiah(hargaJualAsli-diskon)
+                    "barang_harga_akhir": hargaJualAsli-diskon
                 }
             );
 
@@ -155,5 +119,39 @@
         }
 
     });
+
+    $('#potongan_harga').on('change', function() {
+
+        if($('#selectTambahBarangDiskon')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap pilih barang terlebih dahulu", "Gagal", toastrOptions);
+            $('#potongan_harga').val("");
+        }
+        else 
+        {
+            let potongan_harga = parseInt($('#potongan_harga').val());
+            let harga_jual = parseInt(convertRupiahToAngka($('#harga_jual').html()));
+
+            let hargaJualAkhir = harga_jual - potongan_harga;
+
+            $('#harga_jual_akhir').val(convertAngkaToRupiah(hargaJualAkhir));
+        }
+
+    });
+
+    $('#selectTambahBarangDiskon').on('change', function() {
+
+        // kosongkan 
+        $('#harga_jual').html("");
+        $('#potongan_harga').val("");
+        $('#harga_jual_akhir').val("");
+
+        // $('#harga_jual').html(arrHargaBarang[document.getElementById('selectBarangDiskon').selectedIndex-1]);
+        $('#harga_jual').html(convertAngkaToRupiah(arrHargaBarang[document.getElementById('selectTambahBarangDiskon').selectedIndex-1]));
+        $('#potongan_harga').attr("max", arrHargaBarang[document.getElementById('selectTambahBarangDiskon').selectedIndex-1]);
+
+    });
+
+    
 
 </script>

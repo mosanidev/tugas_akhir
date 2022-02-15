@@ -20,6 +20,7 @@ class AdminStokOpnameController extends Controller
                             ->get();
 
         $nomor_stok_opname = $nomorStokOpname[0]->nomor_stok_opname;
+
         if($nomor_stok_opname == null)
         {
             $nomor_stok_opname = 1;
@@ -29,7 +30,12 @@ class AdminStokOpnameController extends Controller
             $nomor_stok_opname += 1;
         }
 
-        return view('admin.stok_opname.index', ['nomor_stok_opname' => $nomor_stok_opname]);
+        $stok_opname = DB::table('stok_opname')
+                        ->select('stok_opname.id as nomor', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang', 'stok_opname.lokasi_stok')
+                        ->join('users', 'stok_opname.users_id', '=', 'users.id')
+                        ->get();
+
+        return view('admin.stok_opname.index', ['stok_opname' => $stok_opname, 'nomor_stok_opname' => $nomor_stok_opname]);
     }
 
     /**
@@ -148,7 +154,26 @@ class AdminStokOpnameController extends Controller
      */
     public function show($id)
     {
-        //
+        $stok_opname = DB::table('stok_opname')
+                        ->select('stok_opname.id as nomor', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang', 'stok_opname.lokasi_stok')
+                        ->join('users', 'stok_opname.users_id', '=', 'users.id')
+                        ->where('stok_opname.id', '=', $id)
+                        ->get();
+
+        $detail_stok_opname = DB::table('detail_stok_opname')
+                                ->select('detail_stok_opname.barang_id', 
+                                         'detail_stok_opname.tanggal_kadaluarsa', 
+                                         'detail_stok_opname.stok_di_sistem',
+                                         'detail_stok_opname.stok_di_toko',
+                                         'detail_stok_opname.jumlah_selisih',
+                                         'detail_stok_opname.keterangan',
+                                         'barang.kode',
+                                         'barang.nama')
+                                ->join('barang', 'detail_stok_opname.barang_id', 'barang.id')
+                                ->where('detail_stok_opname.stok_opname_id', '=', $id)
+                                ->get();
+
+        return view('admin.stok_opname.lihat', ['stok_opname' => $stok_opname, 'detail_stok_opname' => $detail_stok_opname]);
     }
 
     /**
@@ -157,9 +182,19 @@ class AdminStokOpnameController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //
+        if($request->ajax())
+        {
+            $stok_opname = DB::table('stok_opname')
+                        ->select('stok_opname.id as nomor', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang', 'stok_opname.lokasi_stok')
+                        ->join('users', 'stok_opname.users_id', '=', 'users.id')
+                        ->where('stok_opname.id', '=', $id)
+                        ->get();
+
+            return response()->json(['stok_opname' => $stok_opname]);
+        }
+        
     }
 
     /**

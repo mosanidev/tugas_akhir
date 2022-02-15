@@ -71,9 +71,9 @@
                     <div class="col-sm-9">
                         <select class="form-control" name="satuan" required>
                             <option disabled selected>Satuan Barang</option>
-                            <option value="PCS" @php if($item->id == old('satuan')) echo 'selected' @endphp>PCS</option>
-                            <option value="DUS" @php if($item->id == old('satuan')) echo 'selected' @endphp>DUS</option>
-                            <option value="PAK" @php if($item->id == old('satuan')) echo 'selected' @endphp>PAK</option>
+                            <option value="PCS" @php if("PCS" == old('satuan')) echo 'selected' @endphp>PCS</option>
+                            <option value="DUS" @php if("DUS" == old('satuan')) echo 'selected' @endphp>DUS</option>
+                            <option value="PAK" @php if("PAK" == old('satuan')) echo 'selected' @endphp>PAK</option>
                         </select>                 
                     </div>
                 </div>
@@ -88,7 +88,7 @@
 
                     <div class="col-sm-9">
                         <div class="form-check mt-2">
-                            <input type="checkbox" value="1" name="barang_konsinyasi" class="form-check-input optkonsinyasi" value="1">
+                            <input type="checkbox" name="barang_konsinyasi" class="form-check-input optkonsinyasi" value="1" @php if("1" == old('barang_konsinyasi')) echo 'checked' @endphp>
                             <label class="form-check-label">Centang jika barang adalah titipan (konsinyasi)</label>
                         </div> 
                     </div>
@@ -136,6 +136,8 @@
         </div>
     </div>
 
+    @include('admin.barang.modal.confirm_add')
+
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <!-- Toastr -->
@@ -156,8 +158,6 @@
     {{-- ckeditor --}}
     <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
-
     <script type="text/javascript">
 
         $(document).ready(function() {
@@ -177,6 +177,23 @@
                 }
 
             });
+
+            loadKonsinyasi();
+
+            function loadKonsinyasi()
+            {
+                if($('.optkonsinyasi').is(':checked'))
+                {
+                    $('#stok_minimum').val('0');     
+                    $('#stok_minimum').attr("readonly", true);
+                }
+                else 
+                {
+                    $('#stok_minimum').val('');
+                    $('#stok_minimum').attr("readonly", false);
+
+                }
+            }
             
             //Initialize Select2 Elements
             $('.select2').select2();

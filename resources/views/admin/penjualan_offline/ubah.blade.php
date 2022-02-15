@@ -180,7 +180,7 @@
             else 
             {
                 rowTable += `<tr>
-                                <td colspan="7"><p class="text-center">Belum ada isi</p></td>
+                                <td colspan="7"><p class="text-center">No data available in table</p></td>
                             </tr>`;
             }
             

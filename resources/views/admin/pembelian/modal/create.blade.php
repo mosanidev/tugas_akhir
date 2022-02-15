@@ -83,7 +83,7 @@
             let hargaBeli = parseInt($('#harga_beli').val());
             let kuantitas = parseInt($('#kuantitas').val());
             
-            $('#subtotal').val(hargaBeli*kuantitas);
+            $('#subtotal').val(convertAngkaToRupiah(hargaBeli*kuantitas));
         }
 
     });

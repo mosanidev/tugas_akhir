@@ -28,7 +28,10 @@ class AdminPeriodeDiskonController extends Controller
     public function create()
     {
         $periode_diskon = DB::table('periode_diskon')->get();
-        $barangDiskon = DB::table('barang')->limit(15)->get();
+
+        $barangDiskon = DB::table('barang')
+                            ->select('barang.id', 'barang.kode', 'barang.nama')
+                            ->get();
         
         return view('admin.periode_diskon.tambah', ['periode_diskon' => $periode_diskon, 'barangDiskon' => $barangDiskon]);
     }
@@ -45,7 +48,8 @@ class AdminPeriodeDiskonController extends Controller
                                 ->insertGetId([
                                     'nama' => $request->nama,
                                     'tanggal_dimulai' => $request->tanggal_dimulai,
-                                    'tanggal_berakhir' => $request->tanggal_berakhir
+                                    'tanggal_berakhir' => $request->tanggal_berakhir,
+                                    'keterangan' => $request->keterangan
                                 ]);
         
         $diskonBarang = json_decode($request->diskon_barang, true);
@@ -60,11 +64,7 @@ class AdminPeriodeDiskonController extends Controller
                             ]);
         }
 
-        return redirect()->route('periode_diskon.index')->with(['success' => 'Data berhasil ditambah']);
-
-        // $id = DB::table('periode_diskon')->insertGetId(['nama'=>$request->nama, 'tanggal_dimulai'=>$request->tanggal_dimulai, 'tanggal_berakhir'=>$request->tanggal_berakhir]);
-
-        // return redirect()->route('periode_diskon.show', ['periode_diskon'=>$id])->with(['status'=>'Berhasil tambah data, Silahkan tambah data barang diskon']);
+        return redirect()->route('periode_diskon.index')->with(['success' => 'Data periode diskon berhasil bertambah']);
 
     }
 
@@ -77,11 +77,9 @@ class AdminPeriodeDiskonController extends Controller
     public function show($id)
     {
         $periode_diskon = DB::table('periode_diskon')->where('id', '=', $id)->get();
-        $barang = DB::table('barang')->where('periode_diskon_id', '=', $id)->get();
-        $barang_diskon = DB::table('barang')->where('periode_diskon_id', '=', null)->get();
+        $barang_diskon = DB::table('barang')->where('periode_diskon_id', '=', $id)->get();
 
-
-        return view('admin.periode_diskon.detail', ['periode_diskon' => $periode_diskon, 'barang' => $barang, 'barang_diskon'=>$barang_diskon ]);
+        return view('admin.periode_diskon.lihat', ['periode_diskon' => $periode_diskon, 'barang_diskon'=>$barang_diskon ]);
     }
 
     /**
@@ -94,7 +92,12 @@ class AdminPeriodeDiskonController extends Controller
     {
         $periode_diskon = DB::table('periode_diskon')->where('id', '=', $id)->get();
 
-        return response()->json(['periode_diskon'=>$periode_diskon]);
+        $barang_periode_diskon = DB::table('barang')
+                                    ->where('periode_diskon_id', '=', $id)
+                                    ->where('diskon_potongan_harga', '>', 0)
+                                    ->get();
+
+        return view('admin.periode_diskon.ubah', ['periode_diskon' => $periode_diskon, 'barang_periode_diskon' => $barang_periode_diskon]);
     }
 
     /**
@@ -106,9 +109,33 @@ class AdminPeriodeDiskonController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $update = DB::table('periode_diskon')->where('id', '=', $id)->update(['nama'=>$request->nama, 'tanggal_dimulai'=>$request->tanggal_dimulai, 'tanggal_berakhir'=>$request->tanggal_berakhir, 'status' => $request->status]);
+        $updateToDefault = DB::table('barang')
+                            ->where('periode_diskon_id', '=', $id)
+                            ->update([
+                                'periode_diskon_id' => null,
+                                'diskon_potongan_harga' => 0
+                            ]);
 
-        return redirect()->back()->with(['status'=>'Berhasil ubah data']);
+        $update = DB::table('periode_diskon')
+                    ->where('id', '=', $id)
+                    ->update(['nama'=>$request->nama, 
+                              'tanggal_dimulai'=>$request->tanggal_dimulai, 
+                              'tanggal_berakhir'=>$request->tanggal_berakhir, 
+                              'keterangan' => $request->keterangan]);
+
+        $diskonBarang = json_decode($request->diskon_barang, true);
+
+        for($i = 0; $i < count((array) $diskonBarang); $i++)
+        {
+            $updateBarang = DB::table('barang')
+                            ->where('id', $diskonBarang[$i]['barang_id'])
+                            ->update([
+                                'periode_diskon_id' => $id,
+                                'diskon_potongan_harga' => $diskonBarang[$i]['barang_diskon']
+                            ]);
+        }
+
+        return redirect()->route('periode_diskon.index')->with(['success'=>'Data periode diskon berhasil berubah']);
     }
 
     /**
@@ -119,11 +146,16 @@ class AdminPeriodeDiskonController extends Controller
      */
     public function destroy($id)
     {
-        $ubah_barang = DB::table('barang')->where('periode_diskon_id', '=', $id)->update(['diskon_potongan_harga' => 0, 'periode_diskon_id' => null]);
+        $ubah_barang = DB::table('barang')
+                        ->where('periode_diskon_id', '=', $id)
+                        ->update(['diskon_potongan_harga' => 0, 
+                                  'periode_diskon_id' => null]);
 
-        $delete = DB::table('periode_diskon')->where('id','=',$id)->delete();
+        $delete = DB::table('periode_diskon')
+                    ->where('id','=',$id)
+                    ->delete();
 
-        return redirect()->back()->with(['status'=>'Berhasil hapus data']);
+        return redirect()->route('periode_diskon.index')->with(['success'=>'Data periode diskon berhasil dihapus']);
     }
 
 }

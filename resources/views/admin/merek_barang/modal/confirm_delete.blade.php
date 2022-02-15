@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalHapusBarangDiskon">
+<div class="modal fade" id="modal-hapus-merek">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -8,11 +8,10 @@
           </button>
         </div>
         <div class="modal-body">
-          <form class="d-inline" action="{{ route('barang_diskon.destroy', 'id') }}" id="form-hapus-barang-diskon" method="POST">
-            {{-- action="{{ route('supplier.destroy', 'id') }}" --}}
+          <form class="d-inline" action="{{ route('merek.destroy', 'id') }}" id="form-merek-kategori" method="POST">
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data barang diskon ini ? Jika anda menghapus data barang diskon ini harga barang akan kembali ke harga normal</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data merek "<p class="merekInginDihapus d-inline"></p>" ? Semua data barang dengan merek "<p class="merekInginDihapus d-inline"></p>" juga akan terhapus</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>
@@ -20,8 +19,5 @@
         </div>
         </form>
       </div>
-      <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-  </div>
-  <!-- /.modal -->
+</div>

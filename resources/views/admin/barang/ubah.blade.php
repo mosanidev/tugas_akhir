@@ -15,7 +15,7 @@
         <div class="p-3">
 
             <p class="d-none" id="id_barang">{{$id}}</p>
-            {{-- {{ route('barang.update', ['banner' => ]) }} --}}
+
             <form method="POST" action="{{ route('barang.update', ['barang'=>$id]) }}" id="form_ubah" enctype="multipart/form-data" novalidate>
                 @csrf
                 @method('PUT')
@@ -69,7 +69,7 @@
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Deskripsi</p>
                     <div class="col-sm-9">
-                        <textarea class="form-control" name="deskripsi" id="deskripsi"  rows="5" required>{{ $barang[0]->deskripsi }}</textarea>
+                        <textarea class="form-control" name="deskripsi" id="deskripsi"  rows="5" required>@php echo htmlspecialchars_decode(htmlspecialchars_decode($barang[0]->deskripsi)) @endphp</textarea>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -94,18 +94,11 @@
 
                     <div class="col-sm-9">
                         <div class="form-check mt-2">
-                            {{-- @if($barang[0]->barang_konsinyasi) --}}
                             <input type="checkbox" name="barang_konsinyasi" name="barang_konsinyasi" class="form-check-input optkonsinyasi" value="1" @if($barang[0]->barang_konsinyasi) checked @endif>
                             <label class="form-check-label">Centang jika barang adalah titipan (konsinyasi)</label>
                         </div> 
                     </div>
                 </div>
-                {{-- <div class="form-group row" id="div-pilihan">
-                    <p class="col-sm-3 col-form-label">Harga Beli</p>
-                    <div class="col-sm-9">
-                        Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 96.2%;" name="harga_beli" step="100" min="500" value="{{ $barang[0]->harga_beli }}" required>
-                    </div>
-                </div> --}}
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
@@ -118,19 +111,6 @@
                         <input type="number" class="form-control d-inline mr-1" name="berat" id="berat" min="0.1" style="width: 93.5%;" step="0.1" value="{{ $barang[0]->berat }}" required> gram
                     </div>
                 </div>
-                {{-- <div class="form-group row">
-                    <p class="col-sm-3 col-form-label">Tanggal Kadaluarsa</p>
-                    <div class="col-sm-9">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa" value="{{ $barang[0]->tanggal_kadaluarsa }}" autocomplete="off" id="datepicker">
-                                <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>              
-                    </div>
-                </div> --}}
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Foto</p>
                     <div class="col-sm-9">
@@ -159,14 +139,15 @@
                     </div>
                 </div>
 
-                {{-- style="margin: 0 17%;" --}}
                 <div class="mx-auto">
-                    <button type="submit" class="btn btn-info w-25" id="btn_simpan">Simpan</button>
+                    <button type="button" class="btn btn-info w-25" id="btn_simpan">Simpan</button>
                 </div>
             </form>
             
         </div>
     </div>
+
+    @include('admin.barang.modal.confirm_ubah')
 
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/adminlte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -180,16 +161,84 @@
           @endforeach
         </script>
     @endif
+
     <!-- Select2 -->
     <script src="{{ asset('/adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
 
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
     <!-- Moment  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    {{-- ckeditor --}}
+    <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 
     <script type="text/javascript">
 
         $(document).ready(function() {
+
+            $('#btn_simpan').on('click', function() {
+
+                if($('#jenis_id')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih jenis terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#kategori_id')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih kategori terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#merek_id')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih merek terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#kode').val() == "")
+                {
+                    toastr.error("Harap isi kode barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#nama').val() == "")
+                {
+                    toastr.error("Harap isi nama barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#deskripsi').text() == "")
+                {
+                    toastr.error("Harap isi deskripsi barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('select[name=satuan]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih satuan barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#harga_jual').val() == "")
+                {
+                    toastr.error("Harap isi harga jual barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#harga_jual').val() < $('#harga_jual').attr('min')  == "")
+                {
+                    toastr.error("Harap isi harga jual barang dengan nominal lebih atau sama dengan 500", "Gagal", toastrOptions);
+                }
+                else if($('#stok_minimum').val() == "")
+                {
+                    toastr.error("Harap isi stok minimum barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#berat').val() == "")
+                {
+                    toastr.error("Harap isi berat barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#berat').val() < $('#berat').attr('min'))
+                {
+                    toastr.error("Harap isi berat barang dengan berat lebih atau sama dengan 0.1 gram", "Gagal", toastrOptions);
+                }
+                else 
+                {
+                    $('#modal-konfirmasi-ubah').modal('toggle');
+                }
+
+            });
+
+            $('.btnIyaSubmit').on('click', function() {
+
+                $('#modal-konfirmasi-ubah').modal('toggle');
+
+                $('#form_ubah').submit();
+
+            });
 
             $('.optkonsinyasi').on('change', function() {
 
@@ -225,6 +274,10 @@
             //     defaultTime: '00:00 AM',
             //     format: 'Y-m-d H:i:00'
             // });
+
+            CKEDITOR.disableAutoInline = true;
+
+            CKEDITOR.replace('deskripsi');
 
         });
         

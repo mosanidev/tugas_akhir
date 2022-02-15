@@ -38,19 +38,11 @@ class AdminMerekBarangController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        $insert = DB::table('merek_barang')->insert([
+            'merek_barang' => $request->merek_barang
+        ]);
 
-            $insert = DB::table('merek_barang')->insert([
-                'merek_barang' => $request->merek_barang
-            ]);
-
-            return redirect()->back();
-
-        }
-        catch(\Illuminate\Database\QueryException $ex){ 
-            dd($ex->getMessage()); 
-            // Note any method of class PDOException can be called on $ex.
-        }
+        return redirect()->back()->with(['success' => 'Data merek berhasil ditambah']);
     }
 
     /**
@@ -89,7 +81,7 @@ class AdminMerekBarangController extends Controller
         $update = DB::table('merek_barang')->where('id', $id)
                                 ->update(['merek_barang' => $request->merek_barang]);
 
-        return redirect()->back();
+        return redirect()->back()->with(['success' => 'Data merek berhasil diubah']);
     }
 
     /**
@@ -100,25 +92,10 @@ class AdminMerekBarangController extends Controller
      */
     public function destroy($id)
     {
-        try {
+        $delete_merek = DB::table('merek_barang')->where('id', '=', $id)->delete();
 
-            $delete_merek = DB::table('merek_barang')->where('id', '=', $id)->delete();
+        $delete_barang = DB::table('barang')->where('merek_id', '=', $id)->delete();
 
-            $delete_barang = DB::table('barang')->where('merek_id', '=', $id)->delete();
-
-            return redirect()->back();
-            
-        }
-        catch(\Illuminate\Database\QueryException $ex){ 
-            dd($ex->getMessage()); 
-            // Note any method of class PDOException can be called on $ex.
-        }
-    }
-
-    public function search(Request $request)
-    {   
-        $result = DB::table('merek_barang')->select('*')->where('merek_barang', 'like', '%'.$request->merek.'%')->limit(5)->get();
-
-        return response()->json(['merek'=>$result]);  
+        return redirect()->back()->with(['success' => 'Data merek berhasil dihapus']);   
     }
 }

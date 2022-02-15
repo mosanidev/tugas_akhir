@@ -12,7 +12,7 @@
             {{-- action="{{ route('supplier.destroy', 'id') }}" --}}
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data jenis ? Semua data barang dengan jenis tersebut juga akan terhapus</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data jenis "<p class="jenisInginDihapus d-inline"></p>" ? Semua data barang dengan jenis "<p class="jenisInginDihapus d-inline"></p>" juga akan terhapus</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>

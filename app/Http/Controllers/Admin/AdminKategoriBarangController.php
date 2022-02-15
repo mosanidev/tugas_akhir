@@ -38,19 +38,12 @@ class AdminKategoriBarangController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        $insert = DB::table('kategori_barang')->insert([
+            'kategori_barang' => $request->kategori_barang
+        ]);
 
-            $insert = DB::table('kategori_barang')->insert([
-                'kategori_barang' => $request->kategori_barang
-            ]);
+        return redirect()->back()->with(['success' => 'Data kategori berhasil ditambah']);
 
-            return redirect()->back();
-
-        }
-        catch(\Illuminate\Database\QueryException $ex){ 
-            dd($ex->getMessage()); 
-            // Note any method of class PDOException can be called on $ex.
-        }
     }
 
     /**
@@ -89,7 +82,7 @@ class AdminKategoriBarangController extends Controller
         $update = DB::table('kategori_barang')->where('id', $id)
                                 ->update(['kategori_barang' => $request->kategori_barang]);
 
-        return redirect()->back();
+        return redirect()->back()->with(['success' => 'Data kategori berhasil diubah']);
     }
 
     /**
@@ -100,25 +93,12 @@ class AdminKategoriBarangController extends Controller
      */
     public function destroy($id)
     {
-        try {
+        $delete_kategori = DB::table('kategori_barang')->where('id', '=', $id)->delete();
 
-            $delete_kategori = DB::table('kategori_barang')->where('id', '=', $id)->delete();
+        $delete_barang = DB::table('barang')->where('kategori_id', '=', $id)->delete();
 
-            $delete_barang = DB::table('barang')->where('kategori_id', '=', $id)->delete();
-
-            return redirect()->back();
-            
-        }
-        catch(\Illuminate\Database\QueryException $ex){ 
-            dd($ex->getMessage()); 
-            // Note any method of class PDOException can be called on $ex.
-        }
+        return redirect()->back()->with(['success' => 'Data kategori berhasil dihapus']); 
+       
     }
 
-    public function search(Request $request)
-    {   
-        $result = DB::table('kategori_barang')->select('*')->where('kategori_barang', 'like', '%'.$request->kategori.'%')->limit(5)->get();
-
-        return response()->json(['kategori'=>$result]);  
-    }
 }

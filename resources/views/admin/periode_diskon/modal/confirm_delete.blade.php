@@ -8,11 +8,10 @@
           </button>
         </div>
         <div class="modal-body">
-          <form class="d-inline" action="{{ route('periode_diskon.destroy', 'id') }}" id="form-hapus-periode-diskon" method="POST">
-            {{-- action="{{ route('supplier.destroy', 'id') }}" --}}
+          <form class="d-inline" action="" id="form-hapus-periode-diskon" method="POST">
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data periode diskon ? Jika anda menghapus data periode diskon ini harga barang akan kembali ke harga normal</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data periode diskon "<p class="periodeDiskonInginDihapus d-inline"></p>" ? Jika anda menghapus data periode diskon "<p class="periodeDiskonInginDihapus d-inline"></p>" harga barang akan kembali ke harga normal</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>
@@ -20,8 +19,5 @@
         </div>
         </form>
       </div>
-      <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-  </div>
-  <!-- /.modal -->
+</div>

@@ -8,9 +8,9 @@
       <div class="col-sm-6">
         <h1>Kategori Barang</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
+
 <div class="container-fluid">
 
   <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahKategori">Tambah</button>
@@ -29,13 +29,6 @@
                         <th>Action</th>
                       </tr>
                   </thead>
-                  {{-- <tfoot>
-                      <tr>
-                        <th style="width: 10px">No</th>
-                        <th>Jenis Barang</th>
-                        <th>Action</th>
-                      </tr>
-                  </tfoot> --}}
                   <tbody>
                       @php $i = 1; @endphp
                       @foreach ($kategori_barang as $item)
@@ -44,9 +37,7 @@
                           <td>{{ $item->kategori_barang }}</td>
                           <td style="width: 20%">
                             <button class="btn btn-warning ml-2 btn-ubah" id="btn-ubah-{{$item->id}}" data-toggle="modal" data-target="#modalUbahKategori">Ubah</button>
-                            <button class="btn btn-danger ml-2 btn-hapus-kategori" data-id="{{$item->id}}" data-toggle="modal" data-target="#modal-hapus-kategori">Hapus</button>
-
-                            {{-- <form method="POST" class="d-inline" action="/admin/barang/kategori/ {{ $item->id }}">@csrf @method('delete') <input type="hidden" name="id" value="{{ $item->id }}"><button type="submit" class="btn btn-danger ml-2">Hapus</button></form> --}}
+                            <button class="btn btn-danger ml-2 btn-hapus-kategori" data-id="{{$item->id}}" data-kategori="{{ $item->kategori_barang }}" data-toggle="modal" data-target="#modal-hapus-kategori">Hapus</button>
                           </td>
                         </tr>
                       @endforeach
@@ -61,9 +52,20 @@
   @include('admin.kategori_barang.modal.create')
   @include('admin.kategori_barang.modal.edit')
 
+  <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+
   <script type="text/javascript">
 
   $(document).ready(function(){
+
+    if("{{ session('success') }}" != "")
+    {
+      toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+    }
+    else if ("{{ session('error') }}" != "")
+    {
+      toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
+    }
 
     $(".btn-ubah").on("click", function(event) {
       $.ajax({
@@ -74,7 +76,6 @@
         },
         success:function(data) {
 
-              console.log(data);
                 // tampung data kategori barang ke input
               $("#ubahKategoriBarangInput").val(data.kategori['kategori_barang']);
 
@@ -94,6 +95,9 @@
     $('.btn-hapus-kategori').on('click', function() {
 
         let id = $(this).attr('data-id');
+        let kategori = $(this).attr('data-kategori');
+
+        $(".kategoriInginDihapus").html(kategori);
         $('#form-hapus-kategori').attr("action", '/admin/barang/kategori/'+id);
 
     });

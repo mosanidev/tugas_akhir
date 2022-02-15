@@ -8,9 +8,9 @@
       <div class="col-sm-6">
         <h1>Jenis Barang</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
+
 <div class="container-fluid">
 
   <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahJenis">Tambah</button>
@@ -29,13 +29,6 @@
                         <th>Action</th>
                       </tr>
                   </thead>
-                  {{-- <tfoot>
-                      <tr>
-                        <th style="width: 10px">No</th>
-                        <th>Jenis Barang</th>
-                        <th>Action</th>
-                      </tr>
-                  </tfoot> --}}
                   <tbody>
                       @php $i = 1; @endphp
                       @foreach ($jenis_barang as $item)
@@ -44,7 +37,7 @@
                           <td>{{ $item->jenis_barang }}</td>
                           <td style="width: 20%">
                             <button class="btn btn-warning ml-2 btn-ubah" id="btn-ubah-{{$item->id}}" data-toggle="modal" data-target="#modalUbahJenis">Ubah</button>
-                            <button type="button" class="btn btn-danger ml-2 btn-hapus-jenis" data-id="{{$item->id}}" data-toggle="modal" data-target="#modal-hapus-jenis">Hapus</button>
+                            <button type="button" class="btn btn-danger ml-2 btn-hapus-jenis" data-id="{{$item->id}}" data-jenis="{{ $item->jenis_barang }}" data-toggle="modal" data-target="#modal-hapus-jenis">Hapus</button>
                           </td>
                         </tr>
                       @endforeach
@@ -59,9 +52,20 @@
   @include('admin.jenis_barang.modal.edit')
   @include('admin.jenis_barang.modal.confirm_delete')
 
+  <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+
   <script type="text/javascript">
 
     $(document).ready(function(){
+
+        if("{{ session('success') }}" != "")
+        {
+          toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+        }
+        else if ("{{ session('error') }}" != "")
+        {
+          toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
+        }
 
         $(".btn-ubah").on("click", function(event) {
 
@@ -87,7 +91,12 @@
         $('.btn-hapus-jenis').on('click', function() {
 
           let id = $(this).attr('data-id');
+
+          let jenis = $(this).attr('data-jenis');
+
           $('#form-hapus-jenis').attr("action", '/admin/barang/jenis/'+id);
+
+          $('.jenisInginDihapus').html(jenis);
 
         });
 

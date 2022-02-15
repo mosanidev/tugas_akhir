@@ -101,7 +101,7 @@
               </thead>
               <tbody id="tabelBarangReturBody">
                 <tr>
-                    <td colspan="6"><p class="text-center">Belum ada isi</p></td>
+                    <td colspan="6"><p class="text-center">No data available in table</p></td>
                 </tr>
               </tbody>
         </table>
@@ -237,7 +237,7 @@
             if(arr.length == 0)
             {
                 contentRow += `<tr>
-                                    <td colspan="6"><p class="text-center">Belum ada isi</p></td>
+                                    <td colspan="6"><p class="text-center">No data available in table</p></td>
                                 </tr>`;
             }
             else 

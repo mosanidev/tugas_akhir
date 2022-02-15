@@ -6,42 +6,44 @@
 
 @section('content')
 
-    <div class="bg-secondary">
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                @for($i = 0; $i<count($files); $i++)
-                    @if($i == 0)
-                        <li data-target="#carouselExampleIndicators" data-slide-to="{{$i}}" class="active"></li>
-                    @else 
-                        <li data-target="#carouselExampleIndicators" data-slide-to="{{$i}}"></li>
-                    @endif
-                @endfor
-            </ol>
-            <div class="carousel-inner">
-                @for($i = 0; $i<count($files); $i++)
+    @if(count($files) > 0)
+        <div class="bg-secondary">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    @for($i = 0; $i<count($files); $i++)
+                        @if($i == 0)
+                            <li data-target="#carouselExampleIndicators" data-slide-to="{{$i}}" class="active"></li>
+                        @else 
+                            <li data-target="#carouselExampleIndicators" data-slide-to="{{$i}}"></li>
+                        @endif
+                    @endfor
+                </ol>
+                <div class="carousel-inner">
+                    @for($i = 0; $i<count($files); $i++)
 
-                    @if($i == 0)
-                        <div class="carousel-item active">
-                            <img src="{{ asset($files[$i]) }}" style="object-fit: cover;" class="mx-auto d-block p-5" height="445" width="1240">
-                        </div>
-                    @else 
-                        <div class="carousel-item">
-                            <img src="{{ asset($files[$i]) }}" style="object-fit: cover;" class="mx-auto d-block p-5" height="445" width="1240">
-                        </div>
-                    @endif
+                        @if($i == 0)
+                            <div class="carousel-item active">
+                                <img src="{{ asset($files[$i]) }}" style="object-fit: cover;" class="mx-auto d-block p-5" height="445" width="1240">
+                            </div>
+                        @else 
+                            <div class="carousel-item">
+                                <img src="{{ asset($files[$i]) }}" style="object-fit: cover;" class="mx-auto d-block p-5" height="445" width="1240">
+                            </div>
+                        @endif
 
-                @endfor
+                    @endfor
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+                </a>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-            </a>
         </div>
-    </div>
+    @endif
 
     <div class="container">
         <div class="row p-5">

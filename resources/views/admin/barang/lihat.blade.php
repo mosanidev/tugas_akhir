@@ -2,6 +2,7 @@
 
 @section('content')
 
+    <a href="{{ route('barang.index') }}" class="btn btn-link"><- Kembali ke daftar barang</a>
 
     <div class="bg-light">
         <div class="row">
@@ -43,7 +44,7 @@
                         Deskripsi
                     </div>  
                     <div class="col-8">
-                        {{ $barang[0]->deskripsi }}
+                        @php echo htmlspecialchars_decode(htmlspecialchars_decode($barang[0]->deskripsi)) @endphp
                     </div>  
                     <div class="col-4">
                         Harga Jual

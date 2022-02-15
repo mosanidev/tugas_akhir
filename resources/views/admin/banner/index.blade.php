@@ -12,7 +12,7 @@
   </section>
 
   @if(count($arrBanner) < 3)
-    <button class="btn btn-success ml-2 mb-3" data-toggle="modal" data-target="#modalTambahBanner">Tambah</button>
+    <button class="btn btn-success ml-4 mb-3" data-toggle="modal" data-target="#modalTambahBanner">Tambah</button>
   @endif
 
   <div class="container-fluid">

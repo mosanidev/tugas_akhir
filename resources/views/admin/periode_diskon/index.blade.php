@@ -8,12 +8,10 @@
       <div class="col-sm-6">
         <h1>Periode Diskon</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
-<div class="container-fluid">
 
-  {{-- <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahPeriodeDiskon">Tambah</button> --}}
+<div class="container-fluid">
   
   <a href="{{ route('periode_diskon.create') }}" class="btn btn-success ml-2" >Tambah</a>
 
@@ -26,27 +24,24 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                       <tr>
-                        <th style="width: 10px">No</th>
                         <th>Nama</th>
                         <th>Tanggal Dimulai</th>
                         <th>Tanggal Berakhir</th>
-                        {{-- <th>Status</th> --}}
-                        <th>Aksi</th>
+                        <th style="width: 20%">Aksi</th>
                       </tr>
                   </thead>
                   <tbody>
-                      @php $i = 1; @endphp
                       @foreach ($periode_diskon as $item)
                         <tr>
-                          <td class="text-center">{{ $i++ }}</td>
                           <td>{{ $item->nama }}</td>
                           <td>{{ $item->tanggal_dimulai }}</td>
                           <td>{{ $item->tanggal_berakhir }}</td>
-                          {{-- <td>{{ $item->status }}</td> --}}
-                          <td style="width: 20%">
-                            <a href="{{ route('periode_diskon.show', ['periode_diskon' => $item->id]) }}" class="btn btn-info ml-2">Barang Diskon</a>
-                            <button class="btn btn-warning ml-2 btn-ubah" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalUbahPeriodeDiskon">Ubah</button>
-                            <button type="submit" class="btn btn-danger ml-2 btn-hapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPeriodeDiskon">Hapus</button>
+                          <td >
+
+                            <a href="{{ route('periode_diskon.show', ['periode_diskon' => $item->id]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
+                            <a href="{{ route('periode_diskon.edit', ['periode_diskon' => $item->id]) }}" class="btn btn-warning btn-ubah"><i class="fas fa-edit"></i></a>
+                            <button type="button" class="btn btn-danger btn-hapus" data-id="{{$item->id}}" data-periode-diskon="{{ $item->nama }}" data-toggle="modal" data-target="#modalHapusPeriodeDiskon"><i class="fas fa-trash"></i></button>
+                          
                           </td>
                         </tr>
                       @endforeach
@@ -56,6 +51,8 @@
       </div>
     </div>
   </div>
+
+  @include('admin.periode_diskon.modal.confirm_delete')
 
   <!-- bootstrap datepicker -->
   <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -154,12 +151,19 @@
 
       if("{{ session('success') }}" != "")
       {
-        toastr.success("{{ session('success') }}", "Success", toastrOptions);
+        toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+      }
+      else if("{{ session('error') }}" != "")
+      {
+        toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
       }
 
       $('.btn-hapus').on('click', function() {
 
         let id = $(this).attr('data-id');
+        let nama = $(this).attr('data-periode-diskon');
+
+        $('.periodeDiskonInginDihapus').html(nama);
         $('#form-hapus-periode-diskon').attr("action", '/admin/periode_diskon/'+id);
 
       });

@@ -58,7 +58,7 @@
                         <td>
                             <a href="{{ route('barang.show', ['barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             <a href="{{ route('barang.edit', ['barang' => $item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
-                            <button type="button" class="btn btn-danger btn-hapus-barang" data-id="{{$item->id}}" data-toggle="modal" data-target="#modal-hapus-barang"><i class="fas fa-trash"></i></button>
+                            <button type="button" class="btn btn-danger btn-hapus-barang" data-id="{{$item->id}}" data-barang="{{ $item->kode." - ".$item->nama }}" data-toggle="modal" data-target="#modal-hapus-barang"><i class="fas fa-trash"></i></button>
                         </td>
                       </tr>
                     @endforeach
@@ -88,17 +88,21 @@
       $('.btn-hapus-barang').on('click', function() {
 
         let id = $(this).attr('data-id');
+        let barang = $(this).attr('data-barang');
+
+        $('.barangInginDihapus').html(barang);
+
         $('#form-hapus-barang').attr("action", '/admin/barang/'+id);
 
       });
 
       if("{{ session('success') }}" != "")
       {
-        toastr.success("{{ session('success') }}", "Success", toastrOptions);
+        toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
       }
       else if("{{ session('error') }}" != "")
       {
-        toastr.success("{{ session('error') }}", "Error", toastrOptions);
+        toastr.success("{{ session('error') }}", "Gagal", toastrOptions);
       }
 
       let filterTipeBarang = $('.selectFilter').val();
