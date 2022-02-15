@@ -11,12 +11,46 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('/plugins/toastr/toastr.min.css') }}">
 
+    <style>
+
+        .ulStar {
+            list-style-type: none;
+        }
+
+        .liStar {
+            float: left;
+        }
+
+        .starRating {
+            font-size: 35px;
+        }
+
+        .hovered-stars {
+            color: orange;
+        }
+
+        .clicked-stars {
+            color: orange;
+        }
+
+    </style>
+
     @stack('css')
     
     <title>Toko Kopkar Ubaya</title>
 
 </head>
 <body>
+
+    <div class="row" style="background-color: #F0F0F0;">
+        <div class="col-10">
+        </div>
+        <div class="col-2">
+            <a href="{{ url('/tentang_kami') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Tentang Kami</a>
+            <a href="" class="btn btn-link text-dark text-right" style="font-size: 13px;">Testimoni</a>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
 
         <a class="navbar-brand" href="{{ route('home') }}"><i>Toko Kopkar Ubaya</i></a>
@@ -155,7 +189,7 @@
 
     @yield('content')
 
-    <footer class="page-footer font-small pt-5 border-top border-grey mt-5">
+    {{-- <footer class="page-footer font-small pt-5 border-top border-grey mt-5">
 
         <div class="container-fluid text-center text-md-left">
     
@@ -187,13 +221,14 @@
         <div class="footer-copyright text-center py-3">© 2022 Copyright:
             <a href="#" class="text-dark"> Kopkar Ubaya</a>
         </div>
-    </footer>
+    </footer> --}}
 
 
 </body>
 
     @include('pelanggan.modal.loader')
     @include('pelanggan.modal.custom_modal')
+    @include('pelanggan.modal.modal_testimoni')
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
@@ -227,6 +262,62 @@
                 // Cancel the default action, if needed
                 event.preventDefault();
             }
+        });
+
+        $('#modalTestimoni').modal('toggle');
+
+        $(".liStar").mouseover(function() {
+
+            $('.liStar').css('cursor', 'pointer');
+
+            let current = $(this);
+
+            $(".liStar").each(function(index) {
+
+                $(this).addClass('hovered-stars');
+
+                if(index == current.index())
+                {
+                    return false;
+                }
+            });
+        });
+
+        $('.liStar').mouseleave(function() {
+
+            $('.liStar').removeClass('hovered-stars');
+
+        });
+
+        $('.liStar').click(function() {
+
+            $('.liStar').removeClass('clicked-stars');
+            $('.hovered-stars').addClass('clicked-stars');
+
+            let skalaRating = $('.clicked-stars').length;
+
+            $('#skala_rating').val(skalaRating); 
+        });
+
+        $('#btnSimpanTesti').on('click', function() {
+
+            let skalaRating = $('#skala_rating').val();
+
+            if(skalaRating == "")
+            {
+                toastr.error("Harap berikan penilaian dengan mengisi bintang terlebih dahulu", "Error", toastrOptions);
+            }
+            else if($('textarea[name=testi]').text() == "")
+            {
+                toastr.error("Harap isi testimoni terlebih dahulu", "Error", toastrOptions);
+            }
+            else 
+            {
+                $('#formTambahTesti').submit();
+                $('#modalTestimoni').modal('toggle');
+                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+            }
+
         });
 
     </script>

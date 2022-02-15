@@ -145,7 +145,7 @@
           if(penjualan.status_jual == "Pesanan sudah dibayar")
           {
             $('#selectStatusPenjualan').html(`<option selected>` + penjualan.status_jual + `</option>
-                                            <option value="Pesanan selesai diambil">Pesanan selesai diambil</option>`);
+                                            <option value="Pesanan sudah selesai">Pesanan sudah selesai</option>`);
           }
         }
 

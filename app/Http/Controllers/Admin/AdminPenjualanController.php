@@ -16,13 +16,13 @@ class AdminPenjualanController extends Controller
     public function index()
     {
         $penjualan = DB::table('penjualan')
-                        ->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.status_jual as status_jual', 'pembayaran.status as status_bayar')
+                        ->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar as status_bayar')
                         ->where('penjualan.jenis', '=', 'Online')
                         ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->groupBy('penjualan.id')
-                        ->orderBy('penjualan.created_at', 'desc')
+                        ->orderBy('penjualan.tanggal', 'desc')
                         ->get();
 
         return view('admin.penjualan.index', ['penjualan'=>$penjualan]);
@@ -58,7 +58,7 @@ class AdminPenjualanController extends Controller
     public function show(Request $request, $id)
     {
         $penjualan = DB::table('penjualan')
-                        ->select('penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.id as penjualan_id', 'penjualan.status_jual as status_jual', 'pembayaran.status as status_bayar')
+                        ->select('penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.id as penjualan_id', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar as status_bayar')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->where('penjualan.id', '=', $id)
@@ -122,7 +122,7 @@ class AdminPenjualanController extends Controller
                                 'updated_at' => \Carbon\Carbon::now()
                             ]);
         }
-        else if($request->status_penjualan == "Pesanan selesai diambil")
+        else if($request->status_penjualan == "Pesanan sudah selesai")
         {
             $updateNotif = DB::table('notifikasi')
                             ->where('penjualan_id', '=', $id)
@@ -138,14 +138,14 @@ class AdminPenjualanController extends Controller
 
                 $dtBarang = DB::table('barang_has_kadaluarsa')
                                 ->where('barang_id', '=', $penjualan[$i]->barang_dijual)
-                                ->where('jumlah_stok','>',0)
+                                ->where('jumlah_stok_di_gudang','>',0)
                                 ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
                                 ->orderBy('tanggal_kadaluarsa','ASC')
                                 ->get();
 
                 for ($j=0;$j<count($dtBarang);$j++)
                 {
-                    $stok=$dtBarang[$j]->jumlah_stok*1;
+                    $stok=$dtBarang[$j]->jumlah_stok_di_gudang*1;
     
                     if ($qty>0)
                     {
@@ -153,20 +153,21 @@ class AdminPenjualanController extends Controller
                         {
                             $kurangiStok = DB::table('barang_has_kadaluarsa')
                                             ->where('id','=',$dtBarang[$j]->id)
-                                            ->update(['jumlah_stok' => 0]);
+                                            ->update(['jumlah_stok_di_gudang' => 0]);
                             $qty-=$stok;
                         }
                         else {
                             $stokBaru=$stok-$qty;
                             $kurangiStok = DB::table('barang_has_kadaluarsa')
                                                 ->where('id','=',$dtBarang[$j]->id)
-                                                ->update(['jumlah_stok' => $stokBaru]);
+                                                ->update(['jumlah_stok_di_gudang' => $stokBaru]);
                             $qty=0;
     
                         }
                     }
                 }
             }   
+
         }
 
         return redirect()->back()->with(['success' => 'Status penjualan berhasil diubah']);

@@ -21,6 +21,7 @@ use App\Http\Controllers\Pelanggan\OrderController;
 use App\Http\Controllers\Pelanggan\WishlistController;
 use App\Http\Controllers\Pelanggan\NotifikasiController;
 use App\Http\Controllers\Pelanggan\ReturPenjualanController;
+use App\Http\Controllers\Pelanggan\TestimoniController;
 use App\Http\Controllers\TesssController;
 
 // api
@@ -71,8 +72,13 @@ Route::get('/tescon', [TesssController::class, 'tescon'])->name('tescon');
 
 Route::group(['middleware' => 'ensure_user_is_not_admin'], function () {
 
-
     Route::get('/', [HomeController::class, 'showHome']);
+
+    Route::get('/tentang_kami', function() {
+
+        return view('tentang_kami');
+
+    });
 
     Route::get('home', [HomeController::class, 'showHome'])->name('home');
 
@@ -176,6 +182,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/digit_titik_alamat', [AlamatController::class, 'digitTitikAlamat'])->name("digitTitikAlamat");
 
     Route::resource('/alamat', AlamatController::class);
+
+    Route::resource('/testimoni', TestimoniController::class);
 
     Route::get('generate_kecamatan/{kecamatan}/double', [BiteShipAPIController::class, 'getDoubleArea']);
     Route::get('generate_kecamatan/{kecamatan}/single', [BiteShipAPIController::class, 'getSingleArea']);

@@ -186,8 +186,9 @@
                 theme: 'bootstrap4'
             });
 
-            CKEDITOR.replace('deskripsi');
+            CKEDITOR.disableAutoInline = true;
 
+            CKEDITOR.replace('deskripsi');
 
         });
 
