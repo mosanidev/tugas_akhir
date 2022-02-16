@@ -8,21 +8,21 @@
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('penjualan_offline.update', ['penjualan_offline'=>$penjualan_offline[0]->$id] ) }}" novalidate>
+            <form method="POST" action="{{ route('penjualanoffline.update', ['penjualanoffline'=>$penjualan_offline[0]->id] ) }}" novalidate>
                 @csrf
                 @method('PUT')
                 <input type="hidden" id="dataBarangDijual" name="detail_penjualan">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Nomor Nota</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" value="{{ $penjualan_offline[0]->$nomor_nota }}" required>
+                        <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" value="{{ $penjualan_offline[0]->nomor_nota }}" required>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Tanggal</label>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" value="{{ $penjualan_offline[0]->$tanggal }}" id="datepickerTgl" required>
+                            <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" value="{{ $penjualan_offline[0]->tanggal }}" id="datepickerTgl" required>
                             <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -73,7 +73,6 @@
                             <table class="table table-bordered" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th style="width: 10px">No</th>
                                         <th>Barang</th>
                                         <th>Harga Jual</th>
                                         <th>Diskon</th>
@@ -148,12 +147,16 @@
 
         });
 
+        function loadDetailPenjualan() 
+        {
+            
+        }
+
         implementDataOnTable();
 
         function implementDataOnTable()
         {
             let rowTable = "";
-            let num = 1;
             let total = 0;
 
             if(arrBarangDijual.length > 0)
@@ -163,7 +166,6 @@
                     total += parseInt(arrBarangDijual[i].subtotal);
 
                     rowTable += `<tr>
-                                    <td style="width: 10px">` + num + `</td>
                                     <td>` + arrBarangDijual[i].barang_kode + " - " + arrBarangDijual[i].barang_nama + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangDijual[i].harga_jual) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangDijual[i].diskon) + `</td>
@@ -173,8 +175,6 @@
                                         <button type="button" class='btn btn-danger' onclick="hapusBarangDijual(` + i + `)">Hapus</button>
                                     </td>
                                 </tr>`;
-
-                    num++;
                 }
             }
             else 

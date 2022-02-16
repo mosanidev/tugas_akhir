@@ -45,7 +45,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Kuantitas dipindah</label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" value="" id="kuantitasDipindah">
+                        <input type="number" class="form-control" value="" min="1" id="kuantitasDipindah">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -116,23 +116,58 @@
         }
     });
 
+    $('#selectBarang').on('click', function() {
+
+        $('#kuantitasDipindah').val("");
+
+    });
+
     $('#btnSimpan').on('click', function() {
 
         // if(arrBarangDipindah.filter(function(e) { if(e.barang_id return condition; })
 
-        arrBarangDipindah.push({
-          "barang_id": $('#selectBarang :selected').val(),
-          "barang_kode": $('#selectBarang :selected').attr("data-kode"),
-          "barang_nama": $('#selectBarang :selected').attr("data-nama"),
-          "barang_tanggal_kadaluarsa": $("#selectTglKadaluarsa :selected").val(),
-          "jumlah_di_gudang": $('#jumlahDiGudang').val(),
-          "jumlah_di_rak": $('#jumlahDiRak').val(),
-          "jumlah_dipindah": $('#kuantitasDipindah').val()
-        });
+        if($('#selectBarang')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap memilih barang terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#selectTglKadaluarsa')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap memilih tanggal kadaluarsa terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#kuantitasDipindah').val() == "")
+        {
+            toastr.error("Harap mengisi kuantitas dipindah terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#kuantitasDipindah').val()) < 1)
+        {
+            toastr.error("Kuantitas dipindah tidak boleh kurang dari 1", "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#kuantitasDipindah').val()) > parseInt($('#kuantitasDipindah').attr('max')))
+        {
+            toastr.error("Kuantitas dipindah melebihi yang tersedia", "Gagal", toastrOptions);
+        }
+        else if(arrBarangDipindah.filter(function(e) { return e.barang_kode == $('#selectBarang :selected').attr('data-kode') && e.barang_tanggal_kadaluarsa == $('#selectTglKadaluarsa :selected').val() }).length > 0)
+        {
+            toastr.error("Sudah ada barang yang sama di tabel", "Gagal", toastrOptions);
+        }
+        else 
+        {
+            arrBarangDipindah.push({
+                "barang_id": $('#selectBarang :selected').val(),
+                "barang_kode": $('#selectBarang :selected').attr("data-kode"),
+                "barang_nama": $('#selectBarang :selected').attr("data-nama"),
+                "barang_tanggal_kadaluarsa": $("#selectTglKadaluarsa :selected").val(),
+                "jumlah_di_gudang": $('#jumlahDiGudang').val(),
+                "jumlah_di_rak": $('#jumlahDiRak').val(),
+                "jumlah_dipindah": $('#kuantitasDipindah').val()
+            });
 
-        implementOnTable();
+            implementOnTable();
 
-        $('#modalTambahBarang').modal('toggle');
+            $('#modalTambahBarang').modal('toggle');
+        }
+
+        
 
     });
 

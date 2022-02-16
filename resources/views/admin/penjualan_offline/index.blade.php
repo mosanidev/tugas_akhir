@@ -8,7 +8,7 @@
       <div class="col-sm-6">
         <h1>Daftar Penjualan Offline</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 <div class="container-fluid">
 
@@ -23,7 +23,6 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal</th>
                           <th>Metode Pembayaran</th>
@@ -32,10 +31,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                      @php $num = 1; @endphp
                       @foreach($penjualan as $item)
                         <tr>
-                          <td style="width: 10px">{{ $num++ }}</td>
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
                           <td>{{ $item->metode_pembayaran }}</td>
@@ -43,6 +40,7 @@
                           <td>
                             <a href="{{ route('penjualanoffline.show', ['penjualanoffline'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a> 
                             <a href="{{ route('penjualanoffline.edit', ['penjualanoffline'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a> 
+                            <button class="btn btn-danger btnHapus" data-toggle="modal" data-target="#modalKonfirmasiHapusPenjualanOffline" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}"><i class="fas fa-trash"></i></button>
                           </td>
                         </tr>
                       @endforeach
@@ -52,6 +50,8 @@
         </div>
     </div>
 </div>
+
+@include('admin.penjualan_offline.modal.confirm_hapus')
 
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
@@ -65,6 +65,17 @@
   {
     toastr.error("{{ session('error') }}", "Error", toastrOptions);
   }
+
+  $('.btnHapus').on('click', function() {
+
+    let id = $(this).attr('data-id');
+    let nomorNota = $(this).attr('data-nomor-nota');
+
+    $('.penjualanInginDihapus').html(nomorNota);
+
+    $('#formHapus').attr('action', '/admin/penjualanoffline/'+id);
+
+  });
 
 </script>
 @endsection

@@ -307,6 +307,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/transfer_barang', AdminTransferBarangController::class);
         Route::get('/transfer_barang/add/{transfer_barang}', [AdminTransferBarangController::class, 'storeTransferBarang'])->name('transfer_barang.storeTransferBarang');
         Route::post('/transfer_barang/add', [AdminTransferBarangController::class, 'storeDetailTransferBarang'])->name('transfer_barang.storeDetailTransferBarang');
+        Route::get('/transfer_barang/edit/{transfer_barang}', [AdminTransferBarangController::class, 'editTransferBarang'])->name('transfer_barang.editTransferBarang');
+        Route::post('/transfer_barang/edit/{transfer_barang}', [AdminTransferBarangController::class, 'updateDetailTransferBarang'])->name('transfer_barang.editDetailTransferBarang');
 
         Route::post('/karyawan/{id}/changepassword', [AdminKaryawanController::class, 'changePassword']);
         Route::resource('/karyawan', AdminKaryawanController::class);

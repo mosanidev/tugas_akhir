@@ -152,6 +152,8 @@
 
             $('#selectBarangJualOffline option').eq(0).prop('selected', true).change();
             $('#kuantitasBarangJualOffline').val("");
+            $('#hargaBarangJualOffline').val("");
+            $('#diskonBarangJualOffline').val("");
 
         });
 

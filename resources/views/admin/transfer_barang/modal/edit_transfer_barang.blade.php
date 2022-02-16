@@ -12,6 +12,7 @@
                 <div id="ubahTransferBarang">
                     <form method="POST" action="" id="formUbah" novalidate>
                         @csrf
+                        @method("PUT")
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Nomor Transfer Barang</label>
                             <div class="col-sm-8">

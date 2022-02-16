@@ -54,15 +54,6 @@ class AdminPenjualanOfflineController extends Controller
 
         $anggotaKopkar = DB::table('users')->where('status_verifikasi_anggota', '=', 'Verified')->get();
 
-        $generateNomorNota = DB::table('penjualan')
-                                ->select(DB::raw('max(nomor_nota) as maxNomorNota'))
-                                ->where('jenis', '=', 'Offline')
-                                ->get();
-
-        // $generateNomorNota = isset($generateNomorNota[0]->maxNomorNota) ? $generateNomorNota[0]->maxNomorNota + 1 : 01;
-
-        // $generateNomorNota = 'NJ'.\Carbon\Carbon::now()->format('dmy').sprintf("%03s", $generateNomorNota);
-
         return view ('admin.penjualan_offline.tambah', ['barang' => $barang, 'barang_has_kadaluarsa' => $barang_has_kadaluarsa, 'anggotaKopkar' => $anggotaKopkar]);
     }
 
@@ -96,7 +87,9 @@ class AdminPenjualanOfflineController extends Controller
         $id_pembayaran = DB::table('pembayaran')
                             ->insertGetId([
                                 'metode_pembayaran' => $request->metodePembayaran,
-                                'batasan_waktu' => \Carbon\Carbon::now()
+                                'status_bayar' => 'Sudah lunas',
+                                'batasan_waktu' => \Carbon\Carbon::now(),
+                                'waktu_lunas' => \Carbon\Carbon::now()
                             ]);
 
         $id_penjualan = DB::table('penjualan')
@@ -107,7 +100,9 @@ class AdminPenjualanOfflineController extends Controller
                                 'users_id' => $pelanggan_kopkar,
                                 'jenis' => 'Offline',
                                 'metode_transaksi' => 'Ambil di toko',
-                                'status_jual' => 'Pesanan sudah dibayar'
+                                'status_jual' => 'Pesanan sudah dibayar',
+                                'created_at' => \Carbon\Carbon::now(),
+                                'updated_at' => \Carbon\Carbon::now()
                             ]);
 
         $detail_penjualan = json_decode($request->detail_penjualan, true);
@@ -116,36 +111,6 @@ class AdminPenjualanOfflineController extends Controller
         {
             //hitung total
             $total += $detail_penjualan[$i]['subtotal'];
-        
-            // $qty= $detail_penjualan[$i]["kuantitas"]*1;
-
-            // kurangi stok
-            // $dtBarang = DB::table('barang_has_kadaluarsa')
-            //                      ->where('barang_id', '=', $detail_penjualan[$i]['barang_id'])
-            //                      ->where('jumlah_stok','>',0)
-            //                      ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
-            //                      ->orderBy('tanggal_kadaluarsa','ASC')
-            //                      ->get();
-
-            // for ($j=0;$j<count($dtBarang);$j++)
-            // {
-            //     $stok=$dtBarang[$j]->jumlah_stok*1;
-
-            //     if ($qty>0)
-            //     {
-            //         if ($qty>$stok)
-            //         {
-            //             $kurangiStok = DB::table('barang_has_kadaluarsa')->where('id','=',$dtBarang[$j]->id)->update(['jumlah_stok' => 0]);
-            //             $qty-=$stok;
-            //         }
-            //         else {
-            //             $stokBaru=$stok-$qty;
-            //             $kurangiStok = DB::table('barang_has_kadaluarsa')->where('id','=',$dtBarang[$j]->id)->update(['jumlah_stok' => $stokBaru]);
-            //             $qty=0;
-
-            //         }
-            //     }
-            // }
 
             $cariBarang = DB::table('barang_has_kadaluarsa')
                             ->select('barang_id')
@@ -162,6 +127,7 @@ class AdminPenjualanOfflineController extends Controller
                                         ->insert([
                                             'penjualan_id' => $id_penjualan,
                                             'barang_id' => $cariBarang[0]->barang_id,
+                                            'tanggal_kadaluarsa' => $detail_penjualan[$i]['tanggal_kadaluarsa'],
                                             'kuantitas' => $detail_penjualan[$i]['kuantitas'],
                                             'subtotal' => $detail_penjualan[$i]['subtotal']
                                         ]);
@@ -170,7 +136,7 @@ class AdminPenjualanOfflineController extends Controller
 
         $update = DB::table('penjualan')->where('id','=',$id_penjualan)->update(['total' => $total]);
 
-        return redirect()->route('penjualanoffline.index')->with(['success' => 'Data berhasil ditambah']);
+        return redirect()->route('penjualanoffline.index')->with(['success' => 'Data penjualan berhasil ditambah']);
     }
 
     /**
@@ -181,7 +147,46 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function show($id)
     {
-        //
+        $penjualanOffline = DB::table('penjualan')
+                                ->select('penjualan.nomor_nota',
+                                         'penjualan.tanggal',
+                                         'penjualan.status_retur',
+                                         'penjualan.total',
+                                         'penjualan.users_id',
+                                         'pembayaran.metode_pembayaran')
+                                ->where('penjualan.id', '=', $id)
+                                ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                                ->get();
+
+        if($penjualanOffline[0]->users_id != null) 
+        {
+            $penjualanOffline = DB::table('penjualan')
+                                ->select('penjualan.nomor_nota',
+                                         'penjualan.tanggal',
+                                         'users.nama_depan',
+                                         'users.nama_belakang',
+                                         'penjualan.status_retur',
+                                         'penjualan.users_id',
+                                         'penjualan.total',
+                                         'pembayaran.metode_pembayaran')
+                                ->where('penjualan.id', '=', $id)
+                                ->join('users', 'penjualan.users_id', '=', 'users.id')
+                                ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                                ->get();
+        }                       
+        
+        $detailPenjualanOffline = DB::table('detail_penjualan')
+                                    ->select('barang.kode',
+                                             'barang.nama',
+                                             'barang.harga_jual',
+                                             'barang.diskon_potongan_harga', 
+                                             'detail_penjualan.*')
+                                    ->where('detail_penjualan.penjualan_id', '=', $id)
+                                    ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                                    ->get();
+
+        return view('admin.penjualan_offline.lihat', ['penjualan_offline' => $penjualanOffline, 'detail_penjualan_offline' => $detailPenjualanOffline]);
+
     }
 
     /**
@@ -192,7 +197,72 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function edit($id)
     {
-        dd($id);
+        $this->reset($id);
+
+        $penjualanOffline = DB::table('penjualan')
+                                ->select('penjualan.id',
+                                         'penjualan.nomor_nota',
+                                         'penjualan.tanggal',
+                                         'penjualan.status_retur',
+                                         'penjualan.total',
+                                         'penjualan.users_id',
+                                         'pembayaran.metode_pembayaran')
+                                ->where('penjualan.id', '=', $id)
+                                ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                                ->get();
+
+        if($penjualanOffline[0]->users_id != null) 
+        {
+            $penjualanOffline = DB::table('penjualan')
+                                ->select('penjualan.id',
+                                         'penjualan.nomor_nota',
+                                         'penjualan.tanggal',
+                                         'users.nama_depan',
+                                         'users.nama_belakang',
+                                         'users.nomor_anggota',
+                                         'penjualan.status_retur',
+                                         'penjualan.users_id',
+                                         'penjualan.total',
+                                         'pembayaran.metode_pembayaran')
+                                ->where('penjualan.id', '=', $id)
+                                ->join('users', 'penjualan.users_id', '=', 'users.id')
+                                ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                                ->get();
+        }     
+
+        $detailPenjualanOffline = DB::table('detail_penjualan')
+                                    ->select('barang.kode',
+                                             'barang.nama',
+                                             'barang.harga_jual',
+                                             'barang.diskon_potongan_harga', 
+                                             'detail_penjualan.*')
+                                    ->where('detail_penjualan.penjualan_id', '=', $id)
+                                    ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                                    ->get();
+
+        $anggotaKopkar = DB::table('users')
+                            ->where('jenis', 'Anggota_Kopkar')
+                            ->get();
+
+        $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+
+        $barang = DB::table('barang_has_kadaluarsa')
+                    ->select('barang_has_kadaluarsa.barang_id', 'barang.kode', 'barang.nama', 'barang.harga_jual', 'barang.diskon_potongan_harga')
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
+                    ->where('barang_has_kadaluarsa.jumlah_stok_di_rak', '>', 0)
+                    ->join('barang', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->groupBy('barang_has_kadaluarsa.barang_id')
+                    ->get();
+
+        // mengambil tanggal kadaluarsa terlama 
+        $barang_has_kadaluarsa = DB::table('barang')
+                                    ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok_di_rak as jumlah_stok')
+                                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
+                                    ->where('barang_has_kadaluarsa.jumlah_stok_di_rak', '>', 0)
+                                    ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                                    ->get();
+
+        return view('admin.penjualan_offline.ubah', ['penjualan_offline' => $penjualanOffline, 'detail_penjualan_offline' => $detailPenjualanOffline, 'anggotaKopkar' => $anggotaKopkar, 'barang' => $barang, 'barang_has_kadaluarsa' => $barang_has_kadaluarsa]);
     }
 
     /**
@@ -207,6 +277,21 @@ class AdminPenjualanOfflineController extends Controller
         //
     }
 
+    public function reset($id)
+    {
+        $detail_penjualan = DB::table('detail_penjualan')
+                                ->where('penjualan_id', '=', $id)
+                                ->get();
+
+        foreach($detail_penjualan as $item)
+        {
+            $barang_has_kadaluarsa = DB::table('barang_has_kadaluarsa')
+                                        ->where('barang_id', '=', $item->barang_id)
+                                        ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
+                                        ->increment('jumlah_stok_di_rak', $item->kuantitas);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -215,6 +300,16 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->reset($id);
+
+        $deleteDetailPenjualan = DB::table('detail_penjualan')
+                                    ->where('penjualan_id', '=', $id)
+                                    ->delete();
+
+        $delete = DB::table('penjualan')
+                    ->where('id', '=', $id)
+                    ->delete();
+
+        return redirect()->route('penjualanoffline.index')->with(['success' => 'Data pernjualan berhasil dihapus']);
     }
 }

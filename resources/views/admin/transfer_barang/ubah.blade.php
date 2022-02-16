@@ -4,11 +4,11 @@
 
     <a href="{{ route('transfer_barang.index') }}" class="btn btn-link"><- Kembali ke daftar transfer barang</a>
 
-    <h3 class="mt-3 mb-2 ml-3">Tambah data transfer barang</h3>
+    <h3 class="mt-3 mb-2 ml-3">Ubah data transfer barang</h3>
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('transfer_barang.storeDetailTransferBarang') }}" id="formTambah" novalidate>
+            <form method="POST" action="{{ route('transfer_barang.editDetailTransferBarang', ['transfer_barang' => $transfer_barang[0]->id]) }}" id="formUbah" novalidate>
                 @csrf
                 <input type="hidden" id="dataBarangDitransfer" name="detail_transfer_barang">
                 <div class="form-group row">
@@ -88,7 +88,7 @@
     <button type="button" id="btnSimpanFinal" class="btn btn-success w-50 btn-block mx-auto">Simpan</button>
 
     @include('admin.transfer_barang.modal.create') 
-    @include('admin.transfer_barang.modal.confirm_add') 
+    @include('admin.transfer_barang.modal.confirm_ubah') 
 
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -104,7 +104,6 @@
         //     format: 'yyyy-mm-dd',
         //     autoclose: true
         // });
-
         $('#btnTambahBarangDipindah').on('click', function() {
 
             $('#selectBarang').val("Pilih barang").change();
@@ -112,7 +111,7 @@
             $('#jumlahDiGudang').val("");
             $('#jumlahDiRak').val("");
             $('#kuantitasDipindah').val("");
-            
+
         });
 
         implementOnTable();
@@ -164,18 +163,19 @@
             }
             else 
             {
-                $('#modalKonfirmasiTransferBarang').modal('toggle');
+                $('.transferBarangInginDiubah').html($('input[name=transfer_barang_id]').val());
+                $('#modalKonfirmasiUbahTransferBarang').modal('toggle');
             }
 
         });
         
-        $('.btnIyaSubmit').on('click', function() {
+        $('.btnIyaUbah').on('click', function() {
 
-            $('#modalKonfirmasiTransferBarang').modal('toggle');
+            $('#modalKonfirmasiUbahTransferBarang').modal('toggle');
 
             $('#dataBarangDitransfer').val(JSON.stringify(arrBarangDipindah));
 
-            $('#formTambah').submit();
+            $('#formUbah').submit();
 
             $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 

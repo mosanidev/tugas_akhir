@@ -8,7 +8,7 @@
       <div class="col-sm-6">
         <h1>Transfer Barang</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 
 <div class="container-fluid">
@@ -46,7 +46,7 @@
                         <td>
                             <a href="{{ route('transfer_barang.show', ['transfer_barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             <button type="button" class="btn btn-warning btnUbah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahTransfer"><i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger btn-hapus-transfer" data-id="{{$item->id}}" data-toggle="modal" data-target="#modal-hapus-transfer"><i class="fas fa-trash"></i></button>
+                            <button type="button" class="btn btn-danger btn-hapus-transfer" data-id="{{$item->id}}" data-lokasi-tujuan="{{ $item->lokasi_tujuan }}" data-toggle="modal" data-target="#modalKonfirmasiHapusTransferBarang"><i class="fas fa-trash"></i></button>
                         </td>
                       </tr>
                     @endforeach
@@ -60,6 +60,7 @@
   @include('admin.transfer_barang.modal.create_transfer_barang')
   @include('admin.transfer_barang.modal.edit_transfer_barang')
   @include('admin.transfer_barang.modal.confirm_ubah') 
+  @include('admin.transfer_barang.modal.confirm_hapus') 
 
   <!-- bootstrap datepicker -->
   <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -70,7 +71,21 @@
 
     $(document).ready(function(){
 
+        if("{{ session('success') }}" != "")
+        {
+          toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+        }
+        else if("{{ session('error') }}" != "")
+        {
+          toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
+        }
+
         $('#datepickerTgl').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+        $('#tanggalUbah').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true
         });
@@ -93,7 +108,7 @@
 
                   const transfer_barang = data.transfer_barang;
 
-                  $('#formUbah').attr('action', '/admin/transfer_barang/'+transfer_barang[0].nomor);
+                  $('#formUbah').attr('action', '/admin/transfer_barang/'+transfer_barang[0].id);
                   $('#nomorUbah').val(String(transfer_barang[0].id).padStart(4, '0'));
                   $('#tanggalUbah').val(transfer_barang[0].tanggal);
                   $('#pembuatUbah').val(transfer_barang[0].nama_depan + " " + transfer_barang[0].nama_belakang);
@@ -109,8 +124,32 @@
 
           $('#modalKonfirmasiUbahTransferBarang').modal('toggle');
 
+          $('#formUbah').submit();
+
+          $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
         });
         
+        $('.btn-hapus-transfer').on('click', function() {
+
+          let id = $(this).attr('data-id');
+          let lokasi_tujuan = $(this).attr('data-lokasi-tujuan');
+
+          $('.transferBarangInginDihapus').html(id);
+          $('#formHapus').attr('action', '/admin/transfer_barang/'+id);
+          $('#lokasiTujuanDihapus').val(lokasi_tujuan);
+
+        });
+
+        $('.btnIyaHapus').on('click', function() {
+
+          $('#modalKonfirmasiHapusTransferBarang').modal('toggle');
+
+          $('#formHapus').submit();
+
+          $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+        });
 
     });
 
