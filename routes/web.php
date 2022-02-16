@@ -282,6 +282,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/stok_opname', AdminStokOpnameController::class);
         Route::get('/stok_opname/add/{stok_opname}', [AdminStokOpnameController::class, 'storeStokOpname'])->name('stok_opname.storeStokOpname');
         Route::post('/stok_opname/add', [AdminStokOpnameController::class, 'storeDetailStokOpname'])->name('stok_opname.storeDetailStokOpname');
+        Route::get('/stok_opname/edit/{stok_opname}', [AdminStokOpnameController::class, 'editStokOpname'])->name('stok_opname.editStokOpname');
+        Route::post('/stok_opname/edit/{stok_opname}', [AdminStokOpnameController::class, 'updateDetailStokOpname'])->name('stok_opname.editDetailStokOpname');
 
         Route::resource('/konsinyasi/barangkonsinyasi', AdminDetailKonsinyasiController::class);
 

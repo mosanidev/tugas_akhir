@@ -132,8 +132,7 @@
 
         },
         success: function(data) {
-          
-          console.log(data);  
+            
           closeLoader($('#modalUbahStatusPenjualan .modal-body'), $('#contentUbahStatusPenjualan'));
 
           const penjualan = data.penjualan[0];

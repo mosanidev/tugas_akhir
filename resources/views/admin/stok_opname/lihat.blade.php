@@ -74,7 +74,11 @@
                           <td>{{ $item->tanggal_kadaluarsa }}</td>
                           <td>{{ $item->stok_di_sistem }}</td>
                           <td>{{ $item->stok_di_toko }}</td>
-                          <td>{{ $item->jumlah_selisih }}</td>
+                          @if($item->jumlah_selisih > 0)
+                            <td>{{ "+".$item->jumlah_selisih }}</td>
+                          @else 
+                            <td>{{ $item->jumlah_selisih }}</td>
+                          @endif
                           <td>{{ $item->keterangan }}</td>
                         </tr>
                       @endforeach

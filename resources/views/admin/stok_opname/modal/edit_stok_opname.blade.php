@@ -9,50 +9,53 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="" id="formUbah">
-                @csrf
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Nomor Stok Opname</label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control" name="nomor" id="nomorUbah" readonly>
-                    </div>
-                </div>
-                <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Tanggal Mulai</label>
-                <div class="col-sm-8">
-                    <div class="input-group">
-                        <input type="text" class="form-control pull-right" name="tanggal" id="tanggalUbah" autocomplete="off" id="datepickerTgl" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              <div id="ubahStokOpname">
+                <form method="POST" action="" id="formUbah">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Nomor Stok Opname</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" name="nomor" id="nomorUbah" readonly>
                         </div>
-                    </div>   
-                </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Pembuat</label>
+                    </div>
+                    <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Tanggal Mulai</label>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" class="form-control pull-right" name="pembuat" id="pembuatUbah" autocomplete="off" value="{{ auth()->user()->id.' - '.auth()->user()->nama_depan.' '.auth()->user()->nama_belakang }}" readonly>
+                            <input type="text" class="form-control pull-right" name="tanggal" id="tanggalUbah" autocomplete="off" id="datepickerTgl" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
                         </div>   
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Lokasi Stok</label>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <select class="form-control" name="lokasi_stok" id="selectUbahLokasiStok">
-                                <option value="Pilih Lokasi Barang" selected disabled>Pilih Lokasi Barang</option>
-                                <option value="Rak">Rak</option>
-                                <option value="Gudang">Gudang</option>
-                              </select>
-                        </div>   
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="btnUbahStokOpname" class="btn btn-primary">Simpan</button>
-                </form>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Pembuat</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control pull-right" name="pembuat" id="pembuatUbah" autocomplete="off" value="{{ auth()->user()->id.' - '.auth()->user()->nama_depan.' '.auth()->user()->nama_belakang }}" readonly>
+                            </div>   
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Lokasi Stok</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <select class="form-control" name="lokasi_stok" id="selectUbahLokasiStok">
+                                    <option value="Pilih Lokasi Barang" selected disabled>Pilih Lokasi Barang</option>
+                                    <option value="Rak">Rak</option>
+                                    <option value="Gudang">Gudang</option>
+                                  </select>
+                            </div>   
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnUbahStokOpname" class="btn btn-primary">Simpan</button>
+                    </form>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    </div>
+              </div>
             </div>
         </div>
     </div>
@@ -63,7 +66,7 @@
 
 <script type="text/javascript">
 
-    $('#datepickerTgl').datepicker({
+    $('#tanggalUbah').datepicker({
         format: 'yyyy-mm-dd',
         autoclose: true
     });
@@ -81,6 +84,8 @@
         else 
         {
             $('.stokOpnameInginDiubah').html($(this).attr('data-nomor'));
+            
+
             $('#modalUbahStokOpname').modal('toggle');
             $('#modalKonfirmasiUbahStokOpname').modal('toggle');
         }

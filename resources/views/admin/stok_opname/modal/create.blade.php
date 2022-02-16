@@ -78,106 +78,138 @@
             theme: 'bootstrap4'
         });
 
-    });
-    
-    let barangTglKadaluarsa = <?php echo json_encode($barangHasKadaluarsa) ?>;
+        let barangTglKadaluarsa = <?php echo json_encode($barangHasKadaluarsa) ?>;
 
-    $('#selectBarangStokOpname').on('change', function() {
+        $('#selectBarangStokOpname').on('change', function() {
 
-        let optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
+            let optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
 
-        let keterangan = "";
+            let keterangan = "";
 
-        $('#stokDiSistem').val("");
+            $('#stokDiSistem').val("");
 
-        $('#stokDiToko').val("");
+            $('#stokDiToko').val("");
 
-        for(let i = 0; i < barangTglKadaluarsa.length; i++)
-        {
-            if($('#selectBarangStokOpname :selected').val() == barangTglKadaluarsa[i].id)
+            for(let i = 0; i < barangTglKadaluarsa.length; i++)
             {
-                $('#selectBarangTglKadaluarsa').attr("disabled", false);
-                $('#selectLokasiBarang').attr('disabled', false);
+                if($('#selectBarangStokOpname :selected').val() == barangTglKadaluarsa[i].id)
+                {
+                    $('#selectBarangTglKadaluarsa').attr("disabled", false);
+                    $('#selectLokasiBarang').attr('disabled', false);
 
-                optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-DD') + `</option>`;
-                keterangan = "Ada riwayat stok tercatat";
+                    optionTglKadaluarsa += `<option value="` + barangTglKadaluarsa[i].tanggal_kadaluarsa  + `" data-stok="` + barangTglKadaluarsa[i].jumlah_stok + `">` + moment(barangTglKadaluarsa[i].tanggal_kadaluarsa).format('Y-MM-DD') + `</option>`;
+                    keterangan = "Ada riwayat stok tercatat";
+                }
             }
-            // else 
-            // {
-            //     optionTglKadaluarsa = `<option selected disabled>Pilih Tanggal Kadaluarsa</option>`;
 
-            //     $('#stokDiSistem').val("");
-                
-            //     $('#selisihStok').val("");
+            if(keterangan != "Ada riwayat stok tercatat" && $('#selectBarangStokOpname')[0].selectedIndex != 0)
+            {
+              $('#stokDiSistem').val("");
+                    
+              $('#selisihStok').val("");
 
-            //     $('#keterangan').val("");
+              $('#keterangan').val("");
 
-            //     $('#selectBarangTglKadaluarsa').attr("disabled", true);
-                
-            // }
-        }
+              $('#selectBarangTglKadaluarsa').attr("disabled", true);
+              
+              toastr.error("Tidak ada riwayat stok tercatat", "Gagal", toastrOptions);
+            }
 
-        if(keterangan != "Ada riwayat stok tercatat")
-        {
-          $('#stokDiSistem').val("");
-                
-          $('#selisihStok').val("");
+            $('#selectBarangTglKadaluarsa').html(optionTglKadaluarsa);
 
-          $('#keterangan').val("");
-
-          $('#selectBarangTglKadaluarsa').attr("disabled", true);
-          
-          toastr.error("Tidak ada riwayat stok tercatat", "Error", toastrOptions);
-        }
-
-        $('#selectBarangTglKadaluarsa').html(optionTglKadaluarsa);
-
-    });
-
-    $('#selectBarangTglKadaluarsa').on('change', function(){
-
-      $('#stokDiSistem').val($('#selectBarangTglKadaluarsa :selected').attr('data-stok'));
-
-    });
-
-    $('#stokDiToko').on('change', function() {
-
-      let stokDiSistem = parseInt($('#stokDiSistem').val());
-
-      let stokDiToko = parseInt($('#stokDiToko').val());
-
-      let selisih = (stokDiSistem-stokDiToko)*-1;
-
-      if(selisih > 0)
-      {
-        selisih = "+"+selisih;
-
-      }
-      
-      $('#selisihStok').val(selisih);
-
-    });
-
-    $('#btnSimpanStokOpname').on('click', function() {
-
-        arrStokOpname.push({
-          "barang_id": $('#selectBarangStokOpname :selected').val(),
-          "barang_kode": $('#selectBarangStokOpname :selected').attr("data-kode"),
-          "barang_nama": $('#selectBarangStokOpname :selected').attr("data-nama"),
-          "barang_tanggal_kadaluarsa": $('#selectBarangTglKadaluarsa').val(),
-          "stok_di_sistem": $('#stokDiSistem').val(),
-          "stok_di_toko": $('#stokDiToko').val(),
-          "selisih": $('#selisihStok').val(),
-          "keterangan": $('#keterangan').val()
         });
 
-        implementOnTable();
+        $('#selectBarangTglKadaluarsa').on('change', function(){
 
-        $('#modalTambahBarangStokOpname').modal('toggle');
+          $('#stokDiSistem').val($('#selectBarangTglKadaluarsa :selected').attr('data-stok'));
+
+        });
+
+        $('#stokDiToko').on('change', function() {
+
+          let stokDiSistem = parseInt($('#stokDiSistem').val());
+
+          let stokDiToko = parseInt($('#stokDiToko').val());
+
+          let selisih = (stokDiSistem-stokDiToko)*-1;
+
+          if(selisih > 0)
+          {
+            selisih = "+"+selisih;
+
+          }
+          
+          if($('#stokDiSistem').val() != "")
+          {
+            $('#selisihStok').val(selisih);
+          }
+
+        });
+
+        $('#btnSimpanStokOpname').on('click', function() {
+
+          if($('#selectBarangStokOpname')[0].selectedIndex == 0)
+          {
+            toastr.error("Harap pilih barang terlebih dahulu", "Gagal", toastrOptions);
+          }
+          else if($('#selectBarangTglKadaluarsa')[0].selectedIndex == 0)
+          {
+            toastr.error("Harap pilih tanggal kadaluarsa barang terlebih dahulu", "Gagal", toastrOptions);
+          }
+          else if($('#stokDiSistem').val() == "")
+          {
+            toastr.error("Harap pilih barang yang memiliki riwayat stok terlebih dahulu", "Gagal", toastrOptions);
+          }
+          else if($('#stokDiToko').val() == "")
+          {
+            toastr.error("Harap isi stok di toko dahulu", "Gagal", toastrOptions);
+          }
+          else if($('#keterangan').val() == "")
+          {
+            toastr.error("Harap isi keterangan terlebih dahulu", "Gagal", toastrOptions);
+          }
+          else if(arrStokOpname.filter(function(e) { return e.barang_kode == $('#selectBarangStokOpname :selected').attr('data-kode') && e.barang_tanggal_kadaluarsa == $('#selectBarangTglKadaluarsa :selected').val() }).length > 0)
+          {
+            toastr.error("Sudah ada barang yang sama di tabel", "Gagal", toastrOptions);
+          }
+          else 
+          {
+            arrStokOpname.push({
+              "barang_id": $('#selectBarangStokOpname :selected').val(),
+              "barang_kode": $('#selectBarangStokOpname :selected').attr("data-kode"),
+              "barang_nama": $('#selectBarangStokOpname :selected').attr("data-nama"),
+              "barang_tanggal_kadaluarsa": $('#selectBarangTglKadaluarsa').val(),
+              "stok_di_sistem": $('#stokDiSistem').val(),
+              "stok_di_toko": $('#stokDiToko').val(),
+              "selisih": $('#selisihStok').val(),
+              "keterangan": $('#keterangan').val()
+            });
+
+            implementOnTable();
+
+            $('#modalTambahBarangStokOpname').modal('toggle');
+          }
+
+        });
+
+        $('#selectBarangStokOpname').on('change', function() {
+          
+          $('#stokDiToko').val("");
+          $('#keterangan').val("");
+          $('#selisihStok').val("");
+
+        });
+
+        $('#selectBarangTglKadaluarsa').on('change', function() {
+          
+          $('#stokDiToko').val("");
+          $('#keterangan').val("");
+          $('#selisihStok').val("");
+
+        });
 
     });
-
-
+    
 </script>
 
 

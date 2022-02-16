@@ -4,16 +4,16 @@
     
     <a href="{{ route('stok_opname.index') }}" class="btn btn-link"><- Kembali ke daftar stok opname</a>
 
-    <h3>Tambah Stok Opname</h3>
+    <h3>Ubah Stok Opname</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('stok_opname.storeDetailStokOpname') }}" id="formTambah">
+        <form method="POST" action="{{ route('stok_opname.editDetailStokOpname', ['stok_opname' => $stok_opname[0]->id]) }}" id="formUbah">
             @csrf
             <input type="hidden" id="data_barang" value="" name="barang"/>
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Nomor Nota</label>
+                <label class="col-sm-4 col-form-label">Nomor</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="stok_opname_id" value="{{ $stok_opname[0]->id }}" readonly>
+                  <input type="text" class="form-control" name="stok_opname_id" value="{{ sprintf("%04d", $stok_opname[0]->id) }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
@@ -82,21 +82,23 @@
 
 <script type="text/javascript">
 
-    // $('#datepickerTgl').datepicker({
-    //   format: 'yyyy-mm-dd',
-    //   autoclose: true
-    // });
+    let detail_stok_opname = <?php echo json_encode($detail_stok_opname); ?>;
 
     $('#btnTambah').on('click', function() {
 
-      $('#selectBarangStokOpname').val("Pilih barang").change();
-      $('#selectBarangTglKadaluarsa').val("Pilih Tanggal Kadaluarsa").change();
-      $('#stokDiSistem').val("");
-      $('#stokDiToko').val("");
-      $('#selisihStok').val("");
-      $('#keterangan').val("");
+        $('#selectBarangStokOpname').val("Pilih barang").change();
+        $('#selectBarangTglKadaluarsa').val("Pilih Tanggal Kadaluarsa").change();
+        $('#stokDiSistem').val("");
+        $('#stokDiToko').val("");
+        $('#selisihStok').val("");
+        $('#keterangan').val("");
 
     });
+
+    if(detail_stok_opname != null)
+    {
+        loadStokOpname();
+    }
 
     function implementOnTable()
     {
@@ -104,24 +106,24 @@
 
         if(arrStokOpname.length > 0)
         {
-          for(let i = 0; i < arrStokOpname.length; i++)
-          {
+        for(let i = 0; i < arrStokOpname.length; i++)
+        {
             rowTable += `<tr>
-                          <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
-                          <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
-                          <td>` + arrStokOpname[i].stok_di_sistem + `</td>
-                          <td>` + arrStokOpname[i].stok_di_toko + `</td>
-                          <td>` + arrStokOpname[i].selisih + `</td>
-                          <td>` + arrStokOpname[i].keterangan + `</td>
-                          <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
+                        <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
+                        <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
+                        <td>` + arrStokOpname[i].stok_di_sistem + `</td>
+                        <td>` + arrStokOpname[i].stok_di_toko + `</td>
+                        <td>` + arrStokOpname[i].selisih + `</td>
+                        <td>` + arrStokOpname[i].keterangan + `</td>
+                        <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
                         </tr>`;
-          }
+        }
         }
         else 
         {
-          rowTable = `<tr>
+        rowTable = `<tr>
                         <td class="text-center" colspan="8">No data available in table</td>
-                      </td>`;
+                    </td>`;
         }
         
         $('#contentTable').html(rowTable);
@@ -129,9 +131,9 @@
 
     function hapusBarangStokOpname(i)
     {
-      arrStokOpname.splice(i, 1);
+        arrStokOpname.splice(i, 1);
 
-      implementOnTable();
+        implementOnTable();
     }
 
     $('#btnSimpan').on('click', function() {
@@ -140,12 +142,41 @@
 
     });
 
+    function loadStokOpname()
+    {
+        detail_stok_opname.forEach(function(item, index, arr) {
+
+            let jumlah_selisih = null;
+            if(detail_stok_opname[index]['jumlah_selisih'] > 0)
+            {
+                jumlah_selisih = "+" + detail_stok_opname[index]['jumlah_selisih'];
+            }
+            else 
+            {
+                jumlah_selisih = detail_stok_opname[index]['jumlah_selisih'];
+            }
+            
+            arrStokOpname.push({
+                'barang_id': detail_stok_opname[index]['barang_id'],
+                'barang_kode': detail_stok_opname[index]['kode'],
+                'barang_nama': detail_stok_opname[index]['nama'],
+                'barang_tanggal_kadaluarsa': detail_stok_opname[index]['tanggal_kadaluarsa'],
+                'stok_di_sistem': detail_stok_opname[index]['stok_di_sistem'],
+                'stok_di_toko': detail_stok_opname[index]['stok_di_toko'],
+                'selisih': jumlah_selisih,
+                'keterangan': detail_stok_opname[index]['keterangan']
+            });
+        });
+
+        implementOnTable();
+    }
+
     $('.btnIyaSubmit').on('click', function() {
 
       $('#data_barang').val(JSON.stringify(arrStokOpname));
 
-      $('#formTambah').submit();
-      
+      $('#formUbah').submit();
+    
       $('#modalKonfirmasiStokOpname').modal('toggle');
 
       $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');

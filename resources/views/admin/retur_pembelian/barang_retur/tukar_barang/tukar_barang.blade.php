@@ -133,7 +133,7 @@
         else 
         {
             rowTable = `<tr>
-                            <td class="text-center" colspan="10">Belum ada data</td>
+                            <td class="text-center" colspan="10">No data available in table</td>
                         </tr>`;
         }
         

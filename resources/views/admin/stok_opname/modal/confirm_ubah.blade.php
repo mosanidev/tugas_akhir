@@ -8,7 +8,7 @@
           </button>
         </div>
         <div class="modal-body">
-            <p class="text-justify d-inline">Apakah anda yakin data yang anda ingin mengubah stok opname dengan nomor "<p class="stokOpnameInginDiubah d-inline"></p>" ? Pembuat akan berganti menjadi nama akun anda. Anda akan memulai kembail proses stok opname.</p>
+            <p class="text-justify d-inline">Apakah anda yakin data yang anda ingin mengubah stok opname dengan nomor "<p class="stokOpnameInginDiubah d-inline"></p>" ? Anda akan dianggap sebagai pembuat Stok Opname dan perlu memulai kembali proses stok opname dari awal.</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-primary btnIyaUbah">Iya</button>
