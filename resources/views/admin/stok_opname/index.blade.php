@@ -28,7 +28,7 @@
                             <tr>
                               <th style="width: 20%;">Nomor Stok Opname</th>
                               <th>Tanggal</th>
-                              <th>Pembuat</th>
+                              {{-- <th>Pembuat</th> --}}
                               <th>Lokasi Stok</th>
                               <th>Aksi</th>
                             </tr>
@@ -38,7 +38,7 @@
                              <tr>
                                  <td>{{ sprintf("%04d", $item->nomor) }}</td>
                                  <td>{{ $item->tanggal }}</td>
-                                 <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
+                                 {{-- <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td> --}}
                                  <td>{{ $item->lokasi_stok }}</td>
                                  <td>
                                     <a href="{{ route('stok_opname.show', ['stok_opname' => $item->nomor]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>

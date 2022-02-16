@@ -76,7 +76,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
+<script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+
 <script type="text/javascript">
+
+    $(document).ready(function() {
+
+        CKEDITOR.disableAutoInline = true;
+
+    });
 
     $('#btnSimpan').on('click', function() {
 

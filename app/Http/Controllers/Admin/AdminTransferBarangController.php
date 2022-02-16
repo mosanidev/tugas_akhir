@@ -149,7 +149,22 @@ class AdminTransferBarangController extends Controller
      */
     public function show($id)
     {
-        //
+        $transferBarang = DB::table('transfer_barang')
+                            ->where('id', $id)
+                            ->get();
+
+        $detailTransferBarang = DB::table('detail_transfer_barang')
+                                    ->select('detail_transfer_barang.transfer_barang_id',
+                                             'barang.kode',
+                                             'barang.nama',
+                                             'detail_transfer_barang.tanggal_kadaluarsa',
+                                             'detail_transfer_barang.kuantitas')
+                                    ->where('detail_transfer_barang.transfer_barang_id', $id)
+                                    ->join('barang', 'detail_transfer_barang.barang_id', '=', 'barang.id')
+                                    // ->join('barang_has_kadaluarsa', 'detail_transfer_barang.tanggal_kadaluarsa', '=', 'barang_has_kadaluarsa.tanggal_kadaluarsa')
+                                    ->get();
+
+        return view('admin.transfer_barang.lihat', ['transfer_barang' => $transferBarang, 'detail_transfer_barang' => $detailTransferBarang]);
     }
 
     public function tes()
@@ -195,7 +210,13 @@ class AdminTransferBarangController extends Controller
      */
     public function edit($id)
     {
-        //
+        $transferBarang = DB::table('transfer_barang')
+                            ->select('transfer_barang.*', 'users.nama_depan', 'users.nama_belakang')
+                            ->where('transfer_barang.id', '=', $id)
+                            ->join('users', 'transfer_barang.users_id', '=', 'users.id')
+                            ->get();
+
+        return response()->json(['transfer_barang' => $transferBarang]);
     }
 
     /**

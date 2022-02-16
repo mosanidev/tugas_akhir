@@ -27,14 +27,14 @@
                   </div>   
                 </div>
               </div>
-              <div class="form-group row">
+              {{-- <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Pembuat</label>
                 <div class="col-sm-8">
                   <div class="input-group">
                       <input type="text" class="form-control pull-right" name="nama_pembuat" autocomplete="off" value="{{ $stok_opname[0]->users_id.' - '.$stok_opname[0]->nama_depan.' '.$stok_opname[0]->nama_belakang }}" readonly>
                   </div>   
                 </div>
-              </div>
+              </div> --}}
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Lokasi Stok</label>
                 <div class="col-sm-8">

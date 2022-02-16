@@ -136,8 +136,6 @@
         </div>
     </div>
 
-    @include('admin.barang.modal.confirm_add')
-
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <!-- Toastr -->

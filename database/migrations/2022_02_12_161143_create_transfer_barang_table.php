@@ -20,7 +20,7 @@ class CreateTransferBarangTable extends Migration
             $table->date('tanggal');
             $table->enum('lokasi_asal', ['Rak', 'Gudang']);
             $table->enum('lokasi_tujuan', ['Rak', 'Gudang']);
-            $table->string('keterangan', 500);
+            $table->string('keterangan', 500)->nullable();
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });

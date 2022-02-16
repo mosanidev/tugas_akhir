@@ -44,7 +44,7 @@
                     <label class="col-sm-4 col-form-label">Keterangan</label>
                     <div class="col-sm-8">
                         <textarea class="form-control" rows="3" readonly>
-                            <p>{{$transfer_barang[0]->keterangan }}</p>
+                            {{$transfer_barang[0]->keterangan }}
                         </textarea>
                     </div>
                 </div>

@@ -10,23 +10,48 @@
       </div>
   </div>
   <hr>
-  <p class="mt-2 ml-2">Filter : </p> 
+  <p class="mt-2 ml-2">Filter : </p>
+  
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Jenis</p> 
+    </div>
+    <div class="col-9">
+        <select class="form-control w-50 selectFilter" id="selectFilterJenis">
+          <option selected>Semua</option>
+          @foreach($jenis_barang as $item)
+            <option>{{ $item->nama_jenis }}</option>
+          @endforeach
+        </select>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-3">
       <p class="mt-2 ml-2">Masa durasi kadaluarsa</p> 
     </div>
     <div class="col-9">
-        <select class="form-control w-50 selectFilter">
+        <select class="form-control w-50 selectFilter" id="selectFilterKadaluarsa">
           <option selected>Semua</option>
             <option>Kemarin</option>
-            <option>Hari Ini</option>
-            <option>Besok</option>
             <option>7 Hari Terakhir</option>
-            <option>30 Hari Terakhir</option>
             <option>3 Bulan Terakhir</option>
             <option>6 Bulan Terakhir</option>
             <option>1 Tahun Terakhir</option>
             <option>> 1 Tahun terakhir</option>
+        </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Status jumlah stok</p> 
+    </div>
+    <div class="col-9">
+        <select class="form-control w-50 selectFilter" id="selectFilterStatusJumlahStok">
+          <option selected>Semua</option>
+            <option>Diatas stok minimum</option>
+            <option>Dibawah stok minimum</option>
         </select>
     </div>
   </div>
@@ -91,6 +116,9 @@
 
   <!-- Toastr -->
   <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
+  
+  <!-- Moment  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
   <script type="text/javascript">
 
@@ -125,21 +153,25 @@
               {
                 rowContent += `<tr>    
                                   <td>` + data.detail[i].tanggal_kadaluarsa + `</td>
-                                  <td>` + data.detail[i].jumlah_stok + `</td>
+                                  <td>` + data.detail[i].jumlah_stok_di_gudang + `</td>
+                                  <td>` + data.detail[i].jumlah_stok_di_rak + `</td>
                               <tr>`;
               }
 
               $('#modalBodyDetailStok').html(`<table class="table table-bordered" width="100%" cellspacing="0">
-                                                <thead>
-                                                    <tr>
-                                                      <th style="width: 8%"><p class="text-small">Tanggal Kadaluarsa</p></th>
-                                                      <th style="width: 8%"><p class="text-small">Jumlah Stok</p></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    ` + rowContent + `
-                                                </tbody>
-                                            </table>`);
+                                                  <thead>
+                                                      <tr>
+                                                        <th style="width: 8%"><p class="text-small">Tanggal Kadaluarsa</p></th>
+                                                        <th style="width: 8%"><p class="text-small">Jumlah Stok di Gudang</p></th>
+                                                        <th style="width: 8%"><p class="text-small">Jumlah Stok di Rak</p></th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                      ` + rowContent + `
+                                                  </tbody>
+                                              </table>
+                                              <br>`);
+
             }
             else 
             {
@@ -149,7 +181,14 @@
 
       });
 
-      let filterMasaDurasiKadaluarsa = $('.selectFilter').val();
+      let filterJenisBarang = $('#selectFilterJenis').val();
+      let filterMasaKadaluarsa = $('#selectFilterKadaluarsa').val();
+      let filterStatusJumlahStok = $('#selectFilterStatusJumlahStok').val();
+
+      // $("#dataTable").dataTable().fnDestroy(); //destroy the old data table
+      // var table = $('#dataTable').DataTable({
+      //   "bDestroy": true
+      // });
 
       var table = $('#dataTable').DataTable({});
 
@@ -161,14 +200,23 @@
 
       $.fn.dataTable.ext.search.push(
           function( settings, data, dataIndex ) {
-            
-            filterMasaDurasiKadaluarsa = $('.selectFilter').val();
 
-            let tipeBarang = data[1];
+            alert("HAAAAAAAAAAAAAAA");  
+            filterJenisBarang = $('#selectFilterJenis').val();
+            filterMasaKadaluarsa =  $('#selectFilterKadaluarsa').val();
+            filterStatusJumlahStok = $('#selectFilterStatusJumlahStok').val();
 
-            var showTipeBarang = false;
+            let jenisBarang = data[1];
             
-            if (filterMasaDurasiKadaluarsa == "Semua") {
+            console.log(jenisBarang);
+
+            let showJenisBarang = false;
+            
+            // if (filterMasaDurasiKadaluarsa == "Semua") {
+            //   $.fn.dataTable.ext.search.length == 0; 
+            // }
+
+            if (filterJenisBarang == "Semua" || filterMasaKadaluarsa.val == "Semua" || filterStatusJumlahStok == "Selamanya") {
               $.fn.dataTable.ext.search.length == 0; 
             }
 
@@ -177,11 +225,11 @@
             var YESTERDAY = REFERENCE.clone().subtract(1, 'days').startOf('day');
             var A_WEEK_OLD = REFERENCE.clone().subtract(7, 'days').startOf('day');
 
-            if (filterTipeBarang == "Semua" || filterTipeBarang == tipeBarang) {
-              showTipeBarang = true;
+            if (filterTipeBarang == "Semua" || filterJenisBarang == jenisBarang) {
+              showJenisBarang = true;
             }
 
-            return showTipeBarang;
+            return showJenisBarang;
       });
 
 

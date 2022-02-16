@@ -38,15 +38,15 @@
                     @php $num = 1; @endphp
                     @foreach($transfer_barang as $item)
                       <tr>
-                        <td style="width: 10px">{{ $item->id }}</td>
+                        <td style="width: 10px">{{ sprintf("%04d", $item->id) }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format("Y-m-d"); }}</td>
                         <td>{{ $item->lokasi_asal }}</td>
                         <td>{{ $item->lokasi_tujuan }}</td>
                         <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                         <td>
-
-                            {{-- <button type="button" class="btn btn-warning ml-2 d-inline btn-ubah" id="btn-ubah-{{ $item->id }}" data-toggle="modal" data-target="#modalUbahSupplier">Ubah</button>
-                            <button type="button" class='btn btn-danger ml-2 d-inline delete-supplier' data-id="{{ $item->id }}" data-toggle="modal" data-target="#modal-hapus-supplier">Hapus</button> --}}
+                            <a href="{{ route('transfer_barang.show', ['transfer_barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                            <button type="button" class="btn btn-warning btnUbah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahTransfer"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger btn-hapus-transfer" data-id="{{$item->id}}" data-toggle="modal" data-target="#modal-hapus-transfer"><i class="fas fa-trash"></i></button>
                         </td>
                       </tr>
                     @endforeach
@@ -57,7 +57,9 @@
     </div>
   </div>
 
-  @include('admin.transfer_barang.modal.create_transfer_barang') 
+  @include('admin.transfer_barang.modal.create_transfer_barang')
+  @include('admin.transfer_barang.modal.edit_transfer_barang')
+  @include('admin.transfer_barang.modal.confirm_ubah') 
 
   <!-- bootstrap datepicker -->
   <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -73,6 +75,41 @@
             autoclose: true
         });
 
+        $('.btnUbah').on('click', function() {
+
+          const id = $(this).attr('data-id');
+
+          $.ajax({
+              type: 'GET',
+              url: '/admin/transfer_barang/'+id+'/edit',
+              beforeSend: function() {
+
+                  showLoader($('#modalUbahTransferBarang .modal-body'), $('#ubahTransferBarang'));
+
+              },
+              success: function(data) 
+              {
+                  closeLoader($('#modalUbahTransferBarang .modal-body'), $('#ubahTransferBarang'));
+
+                  const transfer_barang = data.transfer_barang;
+
+                  $('#formUbah').attr('action', '/admin/transfer_barang/'+transfer_barang[0].nomor);
+                  $('#nomorUbah').val(String(transfer_barang[0].id).padStart(4, '0'));
+                  $('#tanggalUbah').val(transfer_barang[0].tanggal);
+                  $('#pembuatUbah').val(transfer_barang[0].nama_depan + " " + transfer_barang[0].nama_belakang);
+                  $('#lokasiAsalUbah').val(transfer_barang[0].lokasi_asal);
+                  $('#lokasiTujuanUbah').val(transfer_barang[0].lokasi_tujuan);
+                  $('#keteranganUbah').html(transfer_barang[0].keterangan);
+              }
+          });
+
+        });
+
+        $('.btnIyaUbah').on('click', function() {
+
+          $('#modalKonfirmasiUbahTransferBarang').modal('toggle');
+
+        });
         
 
     });

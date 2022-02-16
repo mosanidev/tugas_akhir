@@ -102,6 +102,10 @@
       autoclose: true
     });
 
+    $('#dataTable').datepicker({
+      dom: 'Bfrtip'
+    });
+
   });
     
 </script>

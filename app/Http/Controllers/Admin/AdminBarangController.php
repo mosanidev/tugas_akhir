@@ -219,7 +219,7 @@ class AdminBarangController extends Controller
                         ->get();
 
         $stokBarang = DB::table('barang')
-                        ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                        ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' - ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang)+sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok'))
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
@@ -228,13 +228,17 @@ class AdminBarangController extends Controller
                         ->orderBy('nama')
                         ->get();
 
-        return view('admin.barang.stok.index', ['barang' => $barang, 'stokBarang' => $stokBarang]);
+        $jenis_barang = DB::table('jenis_barang')
+                            ->select('jenis_barang.jenis_barang as nama_jenis')
+                            ->get();
+
+        return view('admin.barang.stok.index', ['barang' => $barang, 'stokBarang' => $stokBarang, 'jenis_barang' => $jenis_barang]);
     }
 
     public function viewDetailStokBarang($id)
     {
         $detailStokBarang = DB::table('barang_has_kadaluarsa')
-                                ->select('tanggal_kadaluarsa', 'jumlah_stok')
+                                ->select('tanggal_kadaluarsa', 'jumlah_stok_di_gudang', 'jumlah_stok_di_rak')
                                 ->where('barang_id', '=', $id)
                                 ->get();
 
