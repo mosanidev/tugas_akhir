@@ -206,7 +206,8 @@ class AdminPenjualanOfflineController extends Controller
                                          'penjualan.status_retur',
                                          'penjualan.total',
                                          'penjualan.users_id',
-                                         'pembayaran.metode_pembayaran')
+                                         'pembayaran.metode_pembayaran',
+                                         'penjualan.pembayaran_id')
                                 ->where('penjualan.id', '=', $id)
                                 ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                                 ->get();
@@ -274,7 +275,78 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $cek_kode = DB::table('penjualan')->select('nomor_nota')->whereNotIn('id', [$id])->get();
+
+        $cari = false;
+
+        for($i=0; $i<count($cek_kode); $i++)
+        {
+            if(strtolower($request->nomor_nota) == strtolower($cek_kode[$i]->nomor_nota))
+            {
+                $cari = true;
+            }
+        }
+  
+        if($cari){
+            return redirect()->back()->withErrors(['msg' => 'Nomor nota yang sama sudah ada'])->withInput($request->all);
+        }
+
+        $updatePembayaran = DB::table('pembayaran')
+                                ->where('id', $request->pembayaran_id)
+                                ->update([
+                                    'metode_pembayaran' => $request->metode_pembayaran
+                                ]);
+
+        $pelanggan_kopkar = isset($request->pelanggan_kopkar) ? $request->pelanggan_kopkar : null;
+
+        $updatePenjualan = DB::table('penjualan')
+                                ->where('id', $id)
+                                ->update([
+                                    'tanggal' => $request->tanggal,
+                                    'users_id' => $pelanggan_kopkar,
+                                    'updated_at'=> \Carbon\Carbon::now()
+                                ]);
+
+        $deleteDetailPenjualan = DB::table('detail_penjualan')
+                                    ->where('penjualan_id', '=', $id)
+                                    ->delete();
+
+        $total = 0;
+
+        $detail_penjualan = json_decode($request->detail_penjualan, true);
+        
+        dd($detail_penjualan);
+        
+        for($i = 0; $i < count((array) $detail_penjualan); $i++)
+        {
+            //hitung total
+            $total += $detail_penjualan[$i]['subtotal'];
+
+            $cariBarang = DB::table('barang_has_kadaluarsa')
+                            ->select('barang_id')
+                            ->where('barang_id', '=', $detail_penjualan[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $detail_penjualan[$i]['tanggal_kadaluarsa'])
+                            ->get();
+
+            $kurangiStok = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $detail_penjualan[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $detail_penjualan[$i]['tanggal_kadaluarsa'])
+                            ->decrement('jumlah_stok_di_rak', $detail_penjualan[$i]['kuantitas']);
+
+            $insert_detail_penjualan = DB::table('detail_penjualan')
+                                        ->insert([
+                                            'penjualan_id' => $id_penjualan,
+                                            'barang_id' => $cariBarang[0]->barang_id,
+                                            'tanggal_kadaluarsa' => $detail_penjualan[$i]['tanggal_kadaluarsa'],
+                                            'kuantitas' => $detail_penjualan[$i]['kuantitas'],
+                                            'subtotal' => $detail_penjualan[$i]['subtotal']
+                                        ]);
+            
+        }
+
+        $update = DB::table('penjualan')->where('id','=',$id_penjualan)->update(['total' => $total]);
+
+        return redirect()->route('penjualanoffline.index')->with(['success' => 'Data penjualan berhasil diubah']);
     }
 
     public function reset($id)

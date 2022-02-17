@@ -109,13 +109,13 @@
         for(let i = 0; i < arrStokOpname.length; i++)
         {
             rowTable += `<tr>
-                        <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
-                        <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
-                        <td>` + arrStokOpname[i].stok_di_sistem + `</td>
-                        <td>` + arrStokOpname[i].stok_di_toko + `</td>
-                        <td>` + arrStokOpname[i].selisih + `</td>
-                        <td>` + arrStokOpname[i].keterangan + `</td>
-                        <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
+                            <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
+                            <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
+                            <td>` + arrStokOpname[i].stok_di_sistem + `</td>
+                            <td>` + arrStokOpname[i].stok_di_toko + `</td>
+                            <td>` + arrStokOpname[i].selisih + `</td>
+                            <td>` + arrStokOpname[i].keterangan + `</td>
+                            <td> <button class="btn btn-danger" onclick="hapusBarangStokOpname(`+i+`)">Hapus</button> </td>
                         </tr>`;
         }
         }

@@ -167,15 +167,15 @@
 
         if($('#selectBarangJualOffline')[0].selectedIndex == 0)
         {
-          toastr.error("Harap pilih barang terlebih dahulu", "Error", toastrOptions);
+          toastr.error("Harap pilih barang terlebih dahulu", "Gagal", toastrOptions);
         }
         else if ($('#kuantitasBarangJualOffline').val() == "")
         {
-          toastr.error("Harap isi kuantitas terlebih dahulu", "Error", toastrOptions);
+          toastr.error("Harap isi kuantitas terlebih dahulu", "Gagal", toastrOptions);
         }
         else if (arrBarangDijual.filter(function(e) { return e.barang_id == $('#selectBarangJualOffline :selected').val() }).length > 0)
         {
-          toastr.error("Barang yang anda pilih sudah ada di dalam tabel", "Error", toastrOptions)
+          toastr.error("Barang yang anda pilih sudah ada di dalam tabel", "Gagal", toastrOptions)
         }
         else if(parseInt($("#kuantitasBarangJualOffline").val()) > parseInt($("#kuantitasBarangJualOffline").attr("max")))
         {
@@ -187,7 +187,11 @@
 
           $('#subtotalBarangJualOffline').val(jumlahStok * (hargaJual - diskon));
 
-          toastr.error("Kuantitas barang melebihi maksimum stok", "Error", toastrOptions)
+          toastr.error("Kuantitas barang melebihi maksimum stok", "Gagal", toastrOptions)
+        }
+        else if(arrBarangDijual.filter(function(e) { return e.barang_id == $('#selectBarangJualOffline :selected').val() && e.tanggal_kadaluarsa == $('#selectTglKadaluarsa').val()}).length > 0)
+        {
+          toastr.error("Sudah ada barang yang sama di tabel", "Gagal", toastrOptions)
         }
         else
         {

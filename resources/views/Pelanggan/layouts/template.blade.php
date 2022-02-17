@@ -47,7 +47,7 @@
         </div>
         <div class="col-2">
             <a href="{{ url('/tentang_kami') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Tentang Kami</a>
-            <a href="" class="btn btn-link text-dark text-right" style="font-size: 13px;">Testimoni</a>
+            <a href="{{ route('testimoni.index') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Testimoni</a>
         </div>
     </div>
 
@@ -228,7 +228,6 @@
 
     @include('pelanggan.modal.loader')
     @include('pelanggan.modal.custom_modal')
-    @include('pelanggan.modal.modal_testimoni')
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
@@ -263,8 +262,6 @@
                 event.preventDefault();
             }
         });
-
-        $('#modalTestimoni').modal('toggle');
 
         $(".liStar").mouseover(function() {
 

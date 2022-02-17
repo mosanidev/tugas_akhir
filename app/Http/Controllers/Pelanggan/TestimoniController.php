@@ -16,7 +16,14 @@ class TestimoniController extends Controller
      */
     public function index()
     {
-        //
+        $testimoni = DB::table('testimoni')
+                        ->select('users.nama_depan', 'users.nama_belakang', 'testimoni.skala_rating', 'testimoni.isi', 'users.foto')
+                        ->join('users', 'testimoni.users_id', '=', 'users.id')
+                        ->inRandomOrder()
+                        ->limit(5)
+                        ->get();
+
+        return view('testimoni', ['testimoni' => $testimoni]);
     }
 
     /**

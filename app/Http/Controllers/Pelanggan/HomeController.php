@@ -48,15 +48,33 @@ class HomeController extends Controller
 
         if (Auth::check())
         {
+            $showModalTestimoni = DB::table('testimoni')
+                                ->join('users', 'testimoni.users_id', '=', 'users.id')
+                                ->join('penjualan', 'users.id', '=', 'penjualan.users_id')
+                                ->where('testimoni.users_id', '=', auth()->user()->id)
+                                ->where('penjualan.status_jual', '=', 'Pesanan sudah selesai')
+                                ->get();
+
+            if(count($showModalTestimoni) > 0)
+            {
+                $showModalTestimoni = true;
+            }
+            else 
+            {
+                $showModalTestimoni = false;
+            }
+
             $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
             $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
             $data_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
 
-            return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);
+            return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat, 'show_modal_testimoni' => $showModalTestimoni]);
         }
         else 
         {
-            return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files]);
+            $showModalTestimoni = false;
+
+            return view('pelanggan.home', ['barang_konsinyasi' => $barang_konsinyasi, 'semua_kategori' => $kategori, 'barang_promo' => $barang_promo, 'total_cart' => $data_cart, 'files' => $files, 'show_modal_testimoni' => $showModalTestimoni]);
         }
     }
 }

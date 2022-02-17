@@ -135,7 +135,7 @@ class AdminPenerimaanPesananController extends Controller
                                 ->insert([
                                     'barang_id' => $barang_diterima[$i]['barang_id'],
                                     'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
-                                    'jumlah_stok' => $barang_diterima[$i]['kuantitas_terima']
+                                    'jumlah_stok_di_gudang' => $barang_diterima[$i]['kuantitas_terima']
                                 ]);
         }
 

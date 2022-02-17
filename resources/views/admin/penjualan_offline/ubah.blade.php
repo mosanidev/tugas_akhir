@@ -8,7 +8,7 @@
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('penjualanoffline.update', ['penjualanoffline'=>$penjualan_offline[0]->id] ) }}" novalidate>
+            <form method="POST" action="{{ route('penjualanoffline.update', ['penjualanoffline'=>$penjualan_offline[0]->id] ) }}" id="formUbah" novalidate>
                 @csrf
                 @method('PUT')
                 <input type="hidden" id="dataBarangDijual" name="detail_penjualan">
@@ -46,6 +46,7 @@
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
+                    <input type="hidden" value="{{ $penjualan_offline[0]->pembayaran_id }}" name="pembayaran_id">
                     <div class="col-sm-8">
                         <select class="form-control" name="metodePembayaran" id="selectMetodePembayaran" required>
                             <option disabled selected>Metode Pembayaran</option>
@@ -58,7 +59,9 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Total</label>
                     <div class="col-sm-8">
-                        Rp <input type="number" class="form-control d-inline ml-1" style="width: 95.2%;" name="total" id="total" value="0" readonly>
+                        <input type="hidden" class="form-control d-inline" name="total" id="total" value="0" readonly>
+                        <input type="text" class="form-control" id="totalRupiah" value="0" readonly>
+                        {{-- Rp <input type="number" class="form-control d-inline ml-1" style="width: 95.2%;" name="total" id="total" value="0" readonly> --}}
                     </div>
                 </div>
 
@@ -89,13 +92,14 @@
                     </div>
                 </div>
 
-                <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto">Simpan</button>
+                <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto" data-target="#modalKonfirmasiUbahPenjualanOffline" data-toggle="modal">Simpan</button>
 
             </form>
         </div>
     </div>
 
     @include('admin.penjualan_offline.modal.create')
+    @include('admin.penjualan_offline.modal.confirm_ubah')
 
     <!-- bootstrap datepicker -->
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -147,9 +151,28 @@
 
         });
 
+        let detailPenjualan = <?php echo json_encode($detail_penjualan_offline); ?>
+
+        if(detailPenjualan != null)
+        {
+            loadDetailPenjualan();
+        }
+
         function loadDetailPenjualan() 
         {
-            
+            detailPenjualan.forEach(function(item, index, array) {
+
+                arrBarangDijual.push({
+                   "barang_kode": detailPenjualan[index].kode,
+                   "barang_nama": detailPenjualan[index].nama,
+                   "harga_jual": detailPenjualan[index].harga_jual,
+                   "diskon": detailPenjualan[index].diskon_potongan_harga,
+                   "kuantitas": detailPenjualan[index].kuantitas,
+                   "subtotal": detailPenjualan[index].subtotal
+                });
+
+            });
+
         }
 
         implementDataOnTable();
@@ -187,6 +210,7 @@
 
             $('#contentTable').html(rowTable);
             $('#total').val(total);
+            $('#totalRupiah').val(convertAngkaToRupiah(total));
             
         }
 
@@ -217,12 +241,17 @@
             }
             else 
             {
-                $('#dataBarangDijual').val(JSON.stringify(arrBarangDijual));
-                $('#btnSimpan').attr("type", "submit");
-                $('#btnSimpan')[0].click();
-
-                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+                $('#modalKonfirmasiUbahPenjualanOffline').modal('toggle');
             }
+
+        });
+
+        $('.btnIyaUbah').on('click', function() {
+
+            $('#modalKonfirmasiUbahPenjualanOffline').modal('toggle');
+            $('#dataBarangDijual').val(JSON.stringify(arrBarangDijual));
+            $('#formUbah').submit();
+            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
         });
     

@@ -61,7 +61,7 @@
             <div class="mb-4">
                 <input type="password" class="form-control" name="password" placeholder="Masukkan password" required>
             </div>
-            <button type="submit" class="btn btn-block btn-success w-25 mx-auto">Submit</button>
+            <button type="submit" class="btn btn-block btn-success w-25 mx-auto">Masuk</button>
         </form>
 
         <p class="mt-4 text-center">Belum punya akun? silahkan buat dulu <a href="{{ route('pelanggan.register') }}">disini</a></p>

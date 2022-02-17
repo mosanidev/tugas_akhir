@@ -317,6 +317,8 @@
         </div> 
     </div>
 
+    @include('pelanggan.modal.modal_testimoni')
+
 @endsection
 
 @push('script')
@@ -330,6 +332,11 @@
         });
 
         $(document).ready(function() {
+
+            if("{{ $show_modal_testimoni }}")
+            {
+                $('#modalTestimoni').modal('toggle');
+            }
 
             $(".add_to_cart").click(function(event) {
 
