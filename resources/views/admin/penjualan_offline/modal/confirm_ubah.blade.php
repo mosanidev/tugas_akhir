@@ -7,8 +7,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body"> 
+          <form action="" id="formUbah" method="GET">
             <p class="text-justify d-inline">Apakah anda yakin data ingin mengubah data penjualan?</p>
+          </form>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-primary btnIyaUbah">Iya</button>

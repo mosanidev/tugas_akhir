@@ -77,10 +77,9 @@
                         data: {_token : $('meta[name="csrf-token"]').attr('content'), _method : 'DELETE', checkedWishlist: checkedWishlist},
                         success: function(data) {
 
-                            // toastr.success("{{ session('success') }}")
-                            toastr.success(data.status);
+                            toastr.success(data.success, "Sukses", toastrOptions);
 
-                            if(data.status == "Dihapus semua boss")
+                            if(data.success == "Dihapus semua boss")
                             {
                                 location.reload();
                             }
@@ -90,22 +89,10 @@
                 }
                 else
                 {
-                    toastr.error("Harap centang barang yang ingin dihapus", "Error", toastrOptions);
+                    toastr.error("Harap centang barang yang ingin dihapus", "Gagal", toastrOptions);
                 }
 
             });
-
-            // $('#btnBeliDitandai').on('click', function() {
-
-            //     let checkedWishlist = $("#check_wishlist:checked").map(function(){
-            //         return $(this).val();
-            //     }).get();
-
-            //     console.log(checkedWishlist);
-
-            // });
-
-
         });
 
 

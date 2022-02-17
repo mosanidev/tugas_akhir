@@ -72,7 +72,7 @@ class AdminKonsinyasiController extends Controller
                                             ->insert([
                                                 'barang_id' => $barangKonsinyasi[$i]['barang_id'],
                                                 'tanggal_kadaluarsa' => $tglKadaluarsa,
-                                                'jumlah_stok' => $barangKonsinyasi[$i]['jumlah_titip']
+                                                'jumlah_stok_di_gudang' => $barangKonsinyasi[$i]['jumlah_titip']
                                             ]);
                  
             }
@@ -81,7 +81,7 @@ class AdminKonsinyasiController extends Controller
                 $tambahStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
                                                 ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
                                                 ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                                ->increment('jumlah_stok', $barangKonsinyasi[$i]['jumlah_titip']);  
+                                                ->increment('jumlah_stok_di_gudang', $barangKonsinyasi[$i]['jumlah_titip']);  
 
             }
 

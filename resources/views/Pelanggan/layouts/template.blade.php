@@ -42,15 +42,11 @@
 </head>
 <body>
 
-    <div class="row" style="background-color: #F0F0F0;">
-        <div class="col-10">
-        </div>
-        <div class="col-2">
-            <a href="{{ url('/tentang_kami') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Tentang Kami</a>
-            <a href="{{ route('testimoni.index') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Testimoni</a>
-        </div>
-    </div>
-
+    <nav class="text-right" style="background-color: #F0F0F0;">
+        <a href="{{ url('/tentang_kami') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Tentang Kami</a>
+        <a href="{{ route('testimoni.index') }}" class="btn btn-link text-dark text-right" style="font-size: 13px;">Testimoni</a>
+    </nav>
+    
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
 
         <a class="navbar-brand" href="{{ route('home') }}"><i>Toko Kopkar Ubaya</i></a>
@@ -189,40 +185,13 @@
 
     @yield('content')
 
-    {{-- <footer class="page-footer font-small pt-5 border-top border-grey mt-5">
-
-        <div class="container-fluid text-center text-md-left">
-    
-        <div class="row">
-    
-            <div class="col-md-6 mt-md-0 mt-3">
-    
-                <h5 class="text-uppercase">Lokasi Toko Kopkar UBAYA</h5>
-                <p> Lapangan Parkir Universitas Surabaya  <br>
-                    Jl. Raya Kalirungkut, Surabaya, Jawa Timur, Indonesia</p>
-
-                <h5 class="text-uppercase">Jam Operasional Toko Kopkar UBAYA</h5>
-                <p> Jam 08:00 - 16:00 WIB <br>
-    
+    <footer class="sticky-footer bg-white py-4">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span class="text-secondary">Copyright &copy; Your Website 2021</span>
             </div>
-    
-            <hr class="clearfix w-100 d-md-none pb-3">
-    
-            <div class="col-md-6 mt-md-0 mt-3">
-    
-                <h5 class="text-uppercase">Kontak</h5>
-                <p class="d-inline">Untuk komplain dan saran silahkan hubungi kami via Whatsapp di <a href="https://wa.me/6281252921016" target="_blank" class="d-inline">081252921016</a> </p>
-        
-            </div>
-            
         </div>
-        </div>
-    
-        <div class="footer-copyright text-center py-3">© 2022 Copyright:
-            <a href="#" class="text-dark"> Kopkar Ubaya</a>
-        </div>
-    </footer> --}}
-
+    </footer>
 
 </body>
 

@@ -39,7 +39,8 @@
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>
                             <a href="{{ route('penjualanoffline.show', ['penjualanoffline'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a> 
-                            <a href="{{ route('penjualanoffline.edit', ['penjualanoffline'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a> 
+                            {{-- <a href="{{ route('penjualanoffline.edit', ['penjualanoffline'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>  --}}
+                            <button class="btn btn-warning btnUbah" data-toggle="modal" data-target="#modalKonfirmasiUbahPenjualanOffline" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-danger btnHapus" data-toggle="modal" data-target="#modalKonfirmasiHapusPenjualanOffline" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}"><i class="fas fa-trash"></i></button>
                           </td>
                         </tr>
@@ -49,9 +50,11 @@
             </div>
         </div>
     </div>
+
 </div>
 
 @include('admin.penjualan_offline.modal.confirm_hapus')
+@include('admin.penjualan_offline.modal.confirm_ubah')
 
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
@@ -74,6 +77,21 @@
     $('.penjualanInginDihapus').html(nomorNota);
 
     $('#formHapus').attr('action', '/admin/penjualanoffline/'+id);
+
+  });
+
+  $('.btnUbah').on('click', function() {
+
+    let id = $(this).attr('data-id');
+
+    $('#formUbah').attr('action', '/admin/penjualanoffline/'+id+'/edit');
+
+
+  });
+
+  $('.btnIyaUbah').on('click', function() {
+
+    $('#formUbah').submit();
 
   });
 

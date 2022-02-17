@@ -2,6 +2,22 @@
 
 @push('css')
 
+<style>
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+</style>
+
 @endpush
 
 @section('content')
@@ -28,7 +44,7 @@
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Satuan</p><p class="d-inline">{{ $barang[0]->satuan }}</p><br>
                             <p class="d-inline-block mr-5" style="width: 7%; height:15px;">Berat</p><p class="d-inline">{{ $barang[0]->berat }} gram</p><br>
                             <p class="mb-2">Deskripsi</p>
-                            <div class="bg-light p-2 mb-3 rounded" style="overflow-y: auto; height: 700px;">
+                            <div class="bg-light p-2 mb-3 rounded" style="overflow-y: auto; height: 400px;">
                                 <p class="text-justify">@php echo htmlspecialchars_decode(htmlspecialchars_decode($barang[0]->deskripsi)) @endphp</p>
                             </div>
  
@@ -245,9 +261,14 @@
 
         $(document).ready(function() {
 
-            if("{{session('status')}}" != "")
+            if("{{session('success')}}" != "")
             {
-                toastr.success("{{session('status')}}", "Success", toastrOptions);
+                toastr.success("{{session('success')}}", "Sukses", toastrOptions);
+
+            }
+            else if("{{ session('error') }}" != "")
+            {
+                toastr.error("{{session('error')}}", "Gagal", toastrOptions);
 
             }
 

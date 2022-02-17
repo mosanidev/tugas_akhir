@@ -69,12 +69,6 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Status Pembayaran</label>
-                <div class="col-sm-10">
-                  <p class="mt-2">{{ $penjualan[0]->status }}</p>
-                </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Total</label>
                 <div class="col-sm-10">
                   <p class="mt-2">{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>

@@ -48,7 +48,7 @@
                     <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                     <input type="hidden" value="{{ $penjualan_offline[0]->pembayaran_id }}" name="pembayaran_id">
                     <div class="col-sm-8">
-                        <select class="form-control" name="metodePembayaran" id="selectMetodePembayaran" required>
+                        <select class="form-control" name="metode_pembayaran" id="selectMetodePembayaran" required>
                             <option disabled selected>Metode Pembayaran</option>
                             <option value="Tunai" @if("Tunai" == $penjualan_offline[0]->metode_pembayaran) selected @endif>Tunai</option>
                             <option value="Debet Bank" @if("Debet Bank" == $penjualan_offline[0]->metode_pembayaran) selected @endif>Transfer Bank</option>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto" data-target="#modalKonfirmasiUbahPenjualanOffline" data-toggle="modal">Simpan</button>
+                <button type="button" id="btnSimpan" class="btn btn-success w-50 btn-block mx-auto">Simpan</button>
 
             </form>
         </div>

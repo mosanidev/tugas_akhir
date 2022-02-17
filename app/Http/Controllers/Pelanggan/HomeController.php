@@ -36,8 +36,11 @@ class HomeController extends Controller
                             ->where('periode_diskon.tanggal_berakhir', '>=', $curDate)
                             ->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                            ->inRandomOrder()->limit(8)->get(); // yang penjualannya paling banyak harusnya
-
+                            ->inRandomOrder()
+                            ->limit(8)
+                            ->groupBy('barang.id')
+                            ->get(); // yang penjualannya paling banyak harusnya
+            
         $kategori = DB::table('kategori_barang')->get();
 
         $data_cart = array();
@@ -55,7 +58,8 @@ class HomeController extends Controller
                                 ->where('penjualan.status_jual', '=', 'Pesanan sudah selesai')
                                 ->get();
 
-            if(count($showModalTestimoni) > 0)
+            
+            if(count($showModalTestimoni) == 0)
             {
                 $showModalTestimoni = true;
             }

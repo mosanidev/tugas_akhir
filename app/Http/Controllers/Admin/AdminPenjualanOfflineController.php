@@ -315,8 +315,6 @@ class AdminPenjualanOfflineController extends Controller
 
         $detail_penjualan = json_decode($request->detail_penjualan, true);
         
-        dd($detail_penjualan);
-        
         for($i = 0; $i < count((array) $detail_penjualan); $i++)
         {
             //hitung total
@@ -335,7 +333,7 @@ class AdminPenjualanOfflineController extends Controller
 
             $insert_detail_penjualan = DB::table('detail_penjualan')
                                         ->insert([
-                                            'penjualan_id' => $id_penjualan,
+                                            'penjualan_id' => $id,
                                             'barang_id' => $cariBarang[0]->barang_id,
                                             'tanggal_kadaluarsa' => $detail_penjualan[$i]['tanggal_kadaluarsa'],
                                             'kuantitas' => $detail_penjualan[$i]['kuantitas'],
@@ -344,7 +342,7 @@ class AdminPenjualanOfflineController extends Controller
             
         }
 
-        $update = DB::table('penjualan')->where('id','=',$id_penjualan)->update(['total' => $total]);
+        $update = DB::table('penjualan')->where('id','=',$id)->update(['total' => $total]);
 
         return redirect()->route('penjualanoffline.index')->with(['success' => 'Data penjualan berhasil diubah']);
     }
