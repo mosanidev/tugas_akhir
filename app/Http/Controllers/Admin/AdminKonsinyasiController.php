@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use Validator;
 
 class AdminKonsinyasiController extends Controller
 {
@@ -16,7 +17,9 @@ class AdminKonsinyasiController extends Controller
     public function index()
     {
         $konsinyasi = DB::table('konsinyasi')->select('konsinyasi.*', 'supplier.nama as nama_supplier')->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')->get();
-        $supplier = DB::table('supplier')->get();
+        $supplier = DB::table('supplier')
+                    ->where('jenis', '=', 'Individu')
+                    ->get();
 
         return view('admin.konsinyasi.index', ['konsinyasi' => $konsinyasi, 'supplier' => $supplier]);
     }
@@ -45,63 +48,56 @@ class AdminKonsinyasiController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
-        $konsinyasi_id = DB::table('konsinyasi')->insertGetId([
-                                                    'nomor_nota' => $request->nomor_nota, 
-                                                    'tanggal_titip' => $request->tanggal_titip, 
-                                                    'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo, 
-                                                    'supplier_id' => $request->supplier_id, 
-                                                    'metode_pembayaran' => $request->metode_pembayaran, 
-                                                    'status_bayar' => $request->status_bayar]);
+    { 
+        $barang = DB::table('barang')
+                    ->where('supplier_id', '=', $request->supplier_id)
+                    ->get();
 
-        $barangKonsinyasi = json_decode($request->barangKonsinyasi, true);
-        
-        for($i = 0; $i < count((array) $barangKonsinyasi); $i++)
+        $konsinyasiYgMirip = DB::table('konsinyasi')
+                        ->where('supplier_id', '=', $request->supplier_id)
+                        ->where('tanggal_titip', '>=', $request->tanggal_titip)
+                        ->where('tanggal_jatuh_tempo', '<=', $request->tanggal_jatuh_tempo)
+                        ->get();
+
+        if(count($barang) == 0)
         {
-            $tglKadaluarsa = $barangKonsinyasi[$i]['tanggal_kadaluarsa'] != "Tidak ada" ? $barangKonsinyasi[$i]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
+            return redirect()->back()->with(['error' => 'Gagal simpan konsinyasi. Tidak ada riwayat barang dari penitip']);
+        }
+        else if(count($konsinyasiYgMirip) > 0)
+        {
+            return redirect()->back()->with(['error' => 'Gagal simpan konsinyasi. Terdapat konsinyasi yang memiliki tanggal penitipan dan jatuh tempo']);
+        }
 
-            $selectBarang = DB::table('barang_has_kadaluarsa')
-                            ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
-                            ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                            ->get();
+        $konsinyasi = DB::table('konsinyasi')
+                        ->insertGetId([
+                            'nomor_nota' => $request->nomor_nota,
+                            'tanggal_titip' => $request->tanggal_titip,
+                            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                            'supplier_id' => $request->supplier_id,
+                            'metode_pembayaran' => $request->metode_pembayaran,
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
+                        ]);
 
-            if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
-            {
-
-                $tambahBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
-                                            ->insert([
-                                                'barang_id' => $barangKonsinyasi[$i]['barang_id'],
-                                                'tanggal_kadaluarsa' => $tglKadaluarsa,
-                                                'jumlah_stok_di_gudang' => $barangKonsinyasi[$i]['jumlah_titip']
-                                            ]);
-                 
-            }
-            else // jika ada barang yang sama maka tambah kuantitas
-            {
-                $tambahStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
-                                                ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
-                                                ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                                ->increment('jumlah_stok_di_gudang', $barangKonsinyasi[$i]['jumlah_titip']);  
-
-            }
-
-            $insertDetailKonsinyasi = DB::table('detail_konsinyasi')
-                                        ->insert([
-                                            'konsinyasi_id' => $konsinyasi_id,
-                                            'barang_id' => $barangKonsinyasi[$i]['barang_id'],
-                                            'jumlah_titip' => $barangKonsinyasi[$i]['jumlah_titip'],
-                                            'tanggal_kadaluarsa' => $tglKadaluarsa,
-                                            'komisi' => $barangKonsinyasi[$i]['komisi'],
-                                            // 'subtotal_komisi' => $barangKonsinyasi[$i]['subtotal_komisi'],
-                                            'hutang' => $barangKonsinyasi[$i]['hutang'],
-                                            // 'subtotal_hutang' => $barangKonsinyasi[$i]['subtotal_hutang']
-                                        ]);
-
-            
-         }
-
-        return redirect()->route('konsinyasi.index')->with(['success' => 'Data berhasil ditambah']);
+        return redirect()->route('konsinyasi.add.barang', ['konsinyasi' => $konsinyasi]);
     
+    }
+
+    public function addBarangKonsinyasi(Request $request, $id)
+    {
+        $konsinyasi = DB::table('konsinyasi')
+                         ->select('konsinyasi.*', 'supplier.nama as nama_supplier')
+                         ->where('konsinyasi.id', $id)
+                         ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
+                         ->get();
+
+        $barang_konsinyasi = DB::table('barang')
+                                ->where('barang_konsinyasi', '=', 1)
+                                ->where('supplier_id', '=', $konsinyasi[0]->supplier_id)
+                                ->get();
+
+        return view('admin.konsinyasi.tambah', ['barang_konsinyasi' => $barang_konsinyasi, 'konsinyasi' => $konsinyasi]);
+
     }
 
     /**
@@ -117,8 +113,9 @@ class AdminKonsinyasiController extends Controller
                         ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
                         ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
                         ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
-                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_konsinyasi.tanggal_kadaluarsa')
                         ->where('konsinyasi.id', '=', $id)
+                        ->groupBy('barang.id')
                         ->get();
 
         $detailKonsinyasi = array();
@@ -210,7 +207,7 @@ class AdminKonsinyasiController extends Controller
                     }
 
                     $object->sisa = $object->jumlah_titip-$object->terjual-$object->retur;
-                    $object->jumlah_stok = $konsinyasi[$i]->jumlah_stok;
+                    // $object->jumlah_stok = $konsinyasi[$i]->jumlah_stok;
                     $object->subtotal_komisi = $object->komisi*$object->sisa;
                     $object->subtotal_hutang = $object->hutang*$object->terjual;
                     
@@ -320,6 +317,58 @@ class AdminKonsinyasiController extends Controller
                     ]);
 
         return redirect()->back()->with(['success', 'Data berhasil diubah']);
+    }
+
+    public function storeBarangKonsinyasi(Request $request)
+    {
+        $barangKonsinyasi = json_decode($request->barangKonsinyasi, true);
+
+        for($i = 0; $i < count((array) $barangKonsinyasi); $i++)
+        {      
+            $tglKadaluarsa = $barangKonsinyasi[$i]['tanggal_kadaluarsa'] != "Tidak ada" ? $barangKonsinyasi[$i]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
+
+            $selectBarang = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
+                            ->get();
+
+            if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
+            {
+
+                $tambahBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+                                            ->insert([
+                                                'barang_id' => $barangKonsinyasi[$i]['barang_id'],
+                                                'tanggal_kadaluarsa' => $tglKadaluarsa,
+                                                'jumlah_stok_di_gudang' => $barangKonsinyasi[$i]['jumlah_titip']
+                                            ]);
+                 
+            }
+            else // jika ada barang yang sama maka tambah kuantitas
+            {
+                $tambahStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+                                                ->where('barang_id', '=', $barangKonsinyasi[$i]['barang_id'])
+                                                ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
+                                                ->increment('jumlah_stok_di_gudang', $barangKonsinyasi[$i]['jumlah_titip']);  
+
+            }
+
+            $insertDetailKonsinyasi = DB::table('detail_konsinyasi')
+                                        ->insert([
+                                            'konsinyasi_id' => $request->konsinyasi_id,
+                                            'barang_id' => $barangKonsinyasi[$i]['barang_id'],
+                                            'jumlah_titip' => $barangKonsinyasi[$i]['jumlah_titip'],
+                                            'tanggal_kadaluarsa' => $tglKadaluarsa,
+                                            'komisi' => $barangKonsinyasi[$i]['komisi'],
+                                            'subtotal_komisi' => $barangKonsinyasi[$i]['komisi']*$barangKonsinyasi[$i]['jumlah_titip'],
+                                            'hutang' => $barangKonsinyasi[$i]['hutang'],
+                                            'subtotal_hutang' => $barangKonsinyasi[$i]['hutang']*$barangKonsinyasi[$i]['jumlah_titip']
+                                        ]);
+
+            
+         }
+
+        return redirect()->route('konsinyasi.index')->with(['success' => 'Data konsinyasi berhasil ditambah']);
+
     }
 
     /**

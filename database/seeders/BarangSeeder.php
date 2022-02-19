@@ -34,7 +34,8 @@ Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terba
                 'berat'                     => 350,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 1,
-                'merek_id'                  => 1
+                'merek_id'                  => 1,
+                'supplier_id'               => 3
             ]
         );
 
@@ -55,7 +56,8 @@ Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terba
                 'berat'                     => 20,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 1,
-                'merek_id'                  => 1
+                'merek_id'                  => 1,
+                'supplier_id'               => 3
             ]
         );
 

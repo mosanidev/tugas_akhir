@@ -44,7 +44,7 @@ class DetailPenjualanSeeder extends Seeder
             'barang_id'                 => 22,
             'kuantitas'                 => 5,
             'subtotal'                  => 39500,
-            'pengiriman_id'             => 1,
+            'pengiriman_id'             => 2,
             'alamat_pengiriman_id'      => 1
 
         ]);
@@ -55,7 +55,7 @@ class DetailPenjualanSeeder extends Seeder
             'barang_id'                 => 24,
             'kuantitas'                 => 5,
             'subtotal'                  => 38500,
-            'pengiriman_id'             => 1,
+            'pengiriman_id'             => 2,
             'alamat_pengiriman_id'      => 1
 
         ]);
@@ -66,7 +66,7 @@ class DetailPenjualanSeeder extends Seeder
             'barang_id'                 => 18,
             'kuantitas'                 => 10,
             'subtotal'                  => 177000,
-            'pengiriman_id'             => 1,
+            'pengiriman_id'             => 2,
             'alamat_pengiriman_id'      => 1
 
         ]);

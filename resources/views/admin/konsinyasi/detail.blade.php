@@ -70,11 +70,12 @@
                             <tr>
                               <th style="width: 10px">No</th>
                               <th>Barang</th>
+                              <th>Tanggal Kadaluarsa</th>
                               <th>Jumlah Titip</th>
                               <th>Terjual</th>
                               <th>Retur</th>
                               <th>Sisa</th>
-                              <th>Stok Saat Ini</th>
+                              {{-- <th>Stok Saat Ini</th> --}}
                               <th>Yang harus dibayar</th>
                             </tr>
                         </thead>
@@ -86,11 +87,12 @@
                                 <tr>
                                   <td>{{ $num++ }}</td>
                                   <td class="barangKonsinyasiDiTabel">{{ $item->barang_nama }}</td>
+                                  <td>{{ $item->barang_tanggal_kadaluarsa }}</td>
                                   <td>{{ $item->jumlah_titip }}</td>
                                   <td>{{ $item->terjual }}</td>
                                   <td>{{ $item->retur }}</td>
                                   <td>{{ $item->sisa }}</td>
-                                  <td>{{ $item->jumlah_stok }}</td>
+                                  {{-- <td>{{ $item->jumlah_stok }}</td> --}}
                                   <td class="subtotalHutang">{{ "Rp " . number_format($item->subtotal_hutang,0,',','.') }}</td>
                                 </tr>
                             @endforeach

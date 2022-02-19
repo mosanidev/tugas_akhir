@@ -40,6 +40,14 @@
                     <div class="col-8">
                         {{ $barang[0]->kode }}
                     </div> 
+                    @if($barang[0]->supplier_id != null)
+                        <div class="col-4">
+                            Penitip
+                        </div>  
+                        <div class="col-8">
+                            {{ $barang[0]->nama_penitip }}
+                        </div> 
+                    @endif
                     <div class="col-4">
                         Deskripsi
                     </div>  

@@ -157,13 +157,21 @@ class AdminTransferBarangController extends Controller
 
             if($request->lokasi_tujuan == "Gudang") 
             {
+                // $update = DB::table('barang_has_kadaluarsa')
+                //         ->where('barang_id', '=', $item['barang_id'])
+                //         ->where('tanggal_kadaluarsa', '=', $item['barang_tanggal_kadaluarsa'])
+                //         ->update([
+                //             'jumlah_stok_di_rak' => DB::raw("jumlah_stok_di_rak - cast($item[jumlah_dipindah] AS SIGNED)"),
+                //             'jumlah_stok_di_gudang' => DB::raw("jumlah_stok_di_gudang + cast($item[jumlah_dipindah] AS SIGNED)"),
+                //         ]);
+
                 $update = DB::table('barang_has_kadaluarsa')
-                        ->where('barang_id', '=', $item['barang_id'])
-                        ->where('tanggal_kadaluarsa', '=', $item['barang_tanggal_kadaluarsa'])
-                        ->update([
-                            'jumlah_stok_di_rak' => DB::raw("jumlah_stok_di_rak - cast($item[jumlah_dipindah] AS SIGNED)"),
-                            'jumlah_stok_di_gudang' => DB::raw("jumlah_stok_di_gudang + cast($item[jumlah_dipindah] AS SIGNED)"),
-                        ]);
+                            ->where('barang_id', '=', $item['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $item['barang_tanggal_kadaluarsa'])
+                            ->update([
+                                'jumlah_stok_di_rak' => "jumlah_stok_di_rak",
+                                'jumlah_stok_di_gudang' => "jumlah_stok_di_gudang"
+                            ]);
             }
             else 
             {
@@ -171,8 +179,8 @@ class AdminTransferBarangController extends Controller
                         ->where('barang_id', '=', $item['barang_id'])
                         ->where('tanggal_kadaluarsa', '=', $item['barang_tanggal_kadaluarsa'])
                         ->update([
-                            'jumlah_stok_di_rak' => DB::raw("jumlah_stok_di_rak + cast($item[jumlah_dipindah] AS SIGNED)"),
-                            'jumlah_stok_di_gudang' => DB::raw("jumlah_stok_di_gudang - cast($item[jumlah_dipindah] AS SIGNED)"),
+                            'jumlah_stok_di_rak' => "jumlah_stok_di_rak",
+                            'jumlah_stok_di_gudang' => "jumlah_stok_di_gudang"
                         ]);
             }
         }
@@ -285,13 +293,20 @@ class AdminTransferBarangController extends Controller
 
     public function editTransferBarang(Request $request, $id)
     {
-        $this->reset($id, $request->lokasi_tujuan);
+        // $this->reset($id, $request->lokasi_tujuan);
 
         $transferBarang = DB::table('transfer_barang')
                             ->select('transfer_barang.*', 'users.nama_depan', 'users.nama_belakang')
                             ->where('transfer_barang.id', $id)
                             ->join('users', 'transfer_barang.users_id', '=', 'users.id')
                             ->get();
+
+        $detailTransferBarang = DB::Table('detail_transfer_barang')
+                                    ->select('detail_transfer_barang.barang_id', 'barang.kode', 'barang.nama', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok_di_rak', 'barang_has_kadaluarsa.jumlah_stok_di_gudang', 'detail_transfer_barang.kuantitas')
+                                    ->where('detail_transfer_barang.transfer_barang_id', $id)
+                                    ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_transfer_barang.barang_id')
+                                    ->join('barang', 'barang.id', '=', 'detail_transfer_barang.barang_id')
+                                    ->get();
 
         $barang = DB::table('barang')
                     ->select('barang.id', 'barang.kode', 'barang.nama')
@@ -302,7 +317,7 @@ class AdminTransferBarangController extends Controller
                                 ->join('barang', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
                                 ->get();
 
-        return view('admin.transfer_barang.ubah', ['transfer_barang' => $transferBarang, 'barangHasKadaluarsa' => $barangHasKadaluarsa, 'barang' => $barang])->with(['success' => 'Data transfer barang berhasil diubah. Silahkan lengkapi barang yang ditransfer']);
+        return view('admin.transfer_barang.ubah', ['transfer_barang' => $transferBarang, 'barangHasKadaluarsa' => $barangHasKadaluarsa, 'barang' => $barang, 'detail_transfer_barang' => $detailTransferBarang])->with(['success' => 'Data transfer barang berhasil diubah. Silahkan lengkapi barang yang ditransfer']);
         
     }
 

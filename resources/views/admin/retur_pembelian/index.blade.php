@@ -25,10 +25,8 @@
                         <tr>
                           <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
-                          <th>Nama Supplier</th>
                           <th>Tanggal Retur</th>
                           <th>Kebijakan Retur</th>
-                          <th>Pembuat</th>
                           <th>Aksi</th>
                         </tr>
                     </thead>
@@ -40,16 +38,12 @@
                             <tr>
                               <td style="width: 10px">{{ $num++ }}</td>
                               <td>{{ $item->nomor_nota }}</td>
-                              <td>{{ $item->nama_supplier }}</td>
                               <td>{{ $item->tanggal }}</td>
                               <td>{{ $item->kebijakan_retur }}</td>
-                              <td>{{ $item->nama_pembuat }}</td>
                               <td>
-                                <div class="row">
-                                    <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
-                                    <a href="#ubah" class='btn btn-warning w-100 mb-2'>Ubah</a>
-                                    <button type="button" class="btn btn-danger mb-2 btnHapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPembelian">Hapus</button> 
-                                </div>
+                                <a href="{{ route('retur_pembelian.show', ['retur_pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                                <a href="{{ route('retur_pembelian.edit', ['retur_pembelian' => $item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
+                                <button type="button" class="btn btn-danger btnHapus" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalHapusPembelian"><i class="fas fa-trash"></i></button>
                               </td>
                             </tr>
                           @endforeach 

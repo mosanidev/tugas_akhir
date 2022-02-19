@@ -4,7 +4,7 @@
 
     <a href="{{ route('transfer_barang.index') }}" class="btn btn-link"><- Kembali ke daftar transfer barang</a>
 
-    <h3 class="mt-3 mb-2 ml-3">Ubah data transfer barang</h3>
+    <h3 class="mt-3 mb-2 ml-3 judul">Ubah data transfer barang</h3>
 
     <div class="container-fluid">
         <div class="p-3">
@@ -113,6 +113,24 @@
             $('#kuantitasDipindah').val("");
 
         });
+
+        let detail_transfer_barang = <?php echo json_encode($detail_transfer_barang); ?>
+
+        loadBarangDipindah();
+        function loadBarangDipindah()
+        {
+            detail_transfer_barang.forEach(function(item, index,array){
+                arrBarangDipindah.push({
+                    "barang_id": detail_transfer_barang[index]['barang_id'],
+                    "barang_kode": detail_transfer_barang[index]['kode'],
+                    "barang_nama": detail_transfer_barang[index]['nama'],
+                    "barang_tanggal_kadaluarsa": detail_transfer_barang[index]['tanggal_kadaluarsa'],
+                    "jumlah_di_gudang": detail_transfer_barang[index]['jumlah_stok_di_gudang'],
+                    "jumlah_di_rak": detail_transfer_barang[index]['jumlah_stok_di_rak'],
+                    "jumlah_dipindah": detail_transfer_barang[index]['kuantitas']
+                })
+            });
+        }
 
         implementOnTable();
 

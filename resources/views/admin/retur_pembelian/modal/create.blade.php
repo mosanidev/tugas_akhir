@@ -93,11 +93,11 @@
                     <p class="col-sm-4 col-form-label">Kebijakan Retur</p>
                     <div class="col-sm-8">
                         <select class="form-control" id="selectKebijakanRetur" required>
-                            <option disabled selected>Pilih Kebijakan Retur</option>
-                            <option value="Tukar Barang">Tukar Barang</option>
-                            <option value="Potong Dana Pembelian">Potong Dana Pembelian</option>
+                            <option disabled selected>Pilih kebijakan retur</option>
+                            <option value="Tukar Barang">Tukar barang</option>
+                            <option value="Potong Dana Pembelian">Potong dana pembelian</option>
                         </select> 
-                        <input type="text" id="kebijakan_retur" name="kebijakan_retur" value=""> 
+                        <input type="hidden" id="kebijakan_retur" name="kebijakan_retur" value=""> 
                     </div>
                 </div>
                 <input type="hidden" id="jenis" name="jenis" value=""> 

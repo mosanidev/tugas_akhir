@@ -96,7 +96,6 @@ class AdminSupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
         $update = DB::table('supplier')->where('id', '=', $id)->update([
                                             'nama'=>$request->nama, 
                                             'alamat'=>$request->alamat, 
@@ -104,7 +103,7 @@ class AdminSupplierController extends Controller
                                             'jenis' => $request->jenis
                                         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with(['success' => 'Data supplier berhasil diubah']);
     }
 
     /**

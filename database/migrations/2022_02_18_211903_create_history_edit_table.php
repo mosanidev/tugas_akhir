@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTransferBarangTable extends Migration
+class CreateHistoryEditTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreateTransferBarangTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('transfer_barang');
+        Schema::dropIfExists('history_edit');
 
-        Schema::create('transfer_barang', function (Blueprint $table) {
+        Schema::create('history_edit', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('tanggal');
-            $table->enum('lokasi_asal', ['Rak', 'Gudang', 'Gudang retur']);
-            $table->enum('lokasi_tujuan', ['Rak', 'Gudang', 'Gudang retur']);
-            $table->string('keterangan', 500)->nullable();
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->datetime('tanggal');
+            $table->unsignedInteger('edit_id');
+            $table->string('keterangan', 100);
         });
     }
 
@@ -33,6 +32,6 @@ class CreateTransferBarangTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transfer_barang');
+        Schema::dropIfExists('history_edit');
     }
 }

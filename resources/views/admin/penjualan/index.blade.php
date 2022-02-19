@@ -52,8 +52,7 @@
             <option>Menunggu pesanan dibayarkan</option>
             <option>Pesanan sudah dibayar</option>
             <option>Pembayaran pesanan melebihi batas waktu yang ditentukan</option>
-            <option>Pesanan siap diambil di toko</option>
-            <option>Pesanan selesai diambil</option>
+            <option>Pesanan sudah selesai</option>
           </select>
       </div>
     </div>

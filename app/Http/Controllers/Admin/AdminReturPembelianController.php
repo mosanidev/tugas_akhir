@@ -30,14 +30,18 @@ class AdminReturPembelianController extends Controller
                         ->unionAll($konsinyasi)
                         ->get();
 
+        // $retur_pembelian = DB::table('retur_pembelian')
+        //                     ->select('retur_pembelian.*', 'supplier.nama as nama_supplier', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
+        //                     ->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
+        //                     ->join('konsinyasi', 'retur_pembelian.konsinyasi_id', '=', 'konsinyasi.id')
+        //                     ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
+        //                     ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+        //                     // ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
+        //                     ->get();
 
         $retur_pembelian = DB::table('retur_pembelian')
-                            ->select('pembelian.nomor_nota as nomor_nota_pembelian', 'konsinyasi.nomor_nota as nomor_nota_konsinyasi', 'retur_pembelian.*', 'supplier.nama as nama_supplier', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
-                            ->join('pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
-                            ->join('konsinyasi', 'retur_pembelian.konsinyasi_id', '=', 'konsinyasi.id')
+                            ->select('retur_pembelian.*')
                             ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
-                            ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
-                            // ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
                             ->get();
 
         return view('admin.retur_pembelian.index', ['pembelian' => $pembelian, 'retur_pembelian'=>$retur_pembelian]);

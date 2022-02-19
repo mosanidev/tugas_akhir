@@ -90,9 +90,9 @@
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status Bayar</label>
                 <div class="col-sm-8">
-                  <select class="form-control" name="status" id="selectStatusBayar" required>
-                      <option disabled selected>Status</option>
-                      <option value="Belum Lunas">Belum Lunas</option>
+                  <select class="form-control" name="status" id="selectStatusBayar" readonly>
+                      {{-- <option disabled selected>Status</option> --}}
+                      <option value="Belum Lunas" selected>Belum Lunas</option>
                       <option value="Sudah Lunas">Sudah Lunas</option>
                       <option value="Lunas Sebagian">Lunas Sebagian</option>
                   </select> 

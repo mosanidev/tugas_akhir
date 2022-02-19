@@ -99,6 +99,7 @@ class ReturPenjualanController extends Controller
                                     'users_id' => auth()->user()->id,
                                     'penjualan_id' => $selectPenjualan[0]->id,
                                     'status' => 'Menunggu pengajuan dicek admin',
+                                    'jenis_retur' => $request->jenis_retur,
                                     'link' => $linkFile
         ]);
 

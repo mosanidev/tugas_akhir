@@ -2,6 +2,7 @@
     <h5 class="mb-3"><strong>Transaksi</strong></h5>
     <div id="container-alamat">
         <div class="content-alamat">
+
             @if (count($penjualan) == 0)
                 <h5 class="my-3">Maaf anda belum memiliki riwayat transaksi</h5>
             @else
@@ -65,7 +66,7 @@
                                 </p>
                             </div>
                         </div>
-                        <button class="btn btn-block btn-link text-success mx-auto border border-black btnLihatDetailOrder"  data-dismiss="modal" data-toggle="modal" data-target="#modalDetailOrder" data-id="{{$penjualan[$i]->id}}"><strong>Lihat Detail</strong></button>
+                        <button class="btn btn-block btn-link text-success mx-auto border border-black btnLihatDetailOrder" data-dismiss="modal" data-toggle="modal" data-target="#modalDetailOrder" data-id="{{$penjualan[$i]->id }}"><strong>Lihat Detail</strong></button>
                         </div>
 
                     </div>
@@ -91,7 +92,9 @@
             $('.btnLihatDetailOrder').on('click', function(event) {
 
                 let estimasiTiba = null;
-                let id = event.target.getAttribute('data-id');
+
+                let id = $(this).attr('data-id');
+
                 let index = null;
 
                 $.ajax({
@@ -235,8 +238,8 @@
                                                         Status
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>` + data.transaksi[0].status_jual + `</p><br>
-                                                        <p>Harap menunggu pesanan sedang diproses untuk dikirimkan</p>
+                                                        <p>` + data.transaksi[0].status_jual + `</p>\n
+                                                        <p>Harap menunggu pesanan untuk dikirimkan</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">

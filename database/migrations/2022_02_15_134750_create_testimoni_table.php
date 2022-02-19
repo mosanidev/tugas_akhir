@@ -17,7 +17,7 @@ class CreateTestimoniTable extends Migration
 
         Schema::create('testimoni', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('skala_rating');
+            $table->unsignedInteger('skala_rating')->unique();
             $table->string('isi', 500);
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');

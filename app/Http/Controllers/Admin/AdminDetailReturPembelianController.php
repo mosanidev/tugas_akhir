@@ -61,7 +61,7 @@ class AdminDetailReturPembelianController extends Controller
             $updateStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $barangRetur[$i]['barang_id'])
                                     ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                    ->decrement('jumlah_stok',  $barangRetur[$i]['jumlah_retur']);
+                                    ->decrement('jumlah_stok_di_gudang',  $barangRetur[$i]['jumlah_retur']);
         }
 
         $updatePembelian = DB::table('pembelian')
@@ -96,13 +96,13 @@ class AdminDetailReturPembelianController extends Controller
             $kurangiStokBarangAsal = DB::table('barang_has_kadaluarsa')
                                         ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
                                         ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
-                                        ->decrement('jumlah_stok',  $tukarBarang[$i]['kuantitas_barang_ganti']);
+                                        ->decrement('jumlah_stok_di_gudang',  $tukarBarang[$i]['kuantitas_barang_ganti']);
 
             $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
                                     ->insert([
                                         'barang_id' => $tukarBarang[$i]['barang_ganti_id'],
                                         'tanggal_kadaluarsa' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
-                                        'jumlah_stok' => $tukarBarang[$i]['kuantitas_barang_ganti']
+                                        'jumlah_stok_di_gudang' => $tukarBarang[$i]['kuantitas_barang_ganti']
                                     ]);
                                     
         }

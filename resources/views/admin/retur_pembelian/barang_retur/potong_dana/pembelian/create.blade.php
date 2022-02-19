@@ -16,7 +16,7 @@
                             <select class="form-control" id="selectBarangRetur" name="id_barang_retur" required>
                                 <option disabled selected>Pilih Barang Retur</option>
                                 @foreach($detail_pembelian as $item)
-                                    <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-tanggal-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-harga-beli="{{ $item->harga_beli }}" data-jumlah-beli="{{ $item->kuantitas }}" data-satuan="{{ $item->satuan }}" data-jumlah-stok="{{ $item->jumlah_stok }}">{{ $item->kode." - ".$item->nama }}</option>
+                                    <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-tanggal-kadaluarsa="{{ $item->tanggal_kadaluarsa }}" data-harga-beli="{{ $item->harga_beli }}" data-jumlah-beli="{{ $item->kuantitas }}" data-satuan="{{ $item->satuan }}" data-jumlah-stok="{{ $item->jumlah_stok_di_gudang }}">{{ $item->kode." - ".$item->nama }}</option>
                                 @endforeach
                             </select> 
                         </div>

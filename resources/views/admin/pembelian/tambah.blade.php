@@ -172,7 +172,7 @@
 
             if(tglJatuhTempo != "")
             {
-                if(tglJatuhTempo <= tglBuat)
+                if(tglJatuhTempo < tglBuat)
                 {
                     $('#datepickerTglJatuhTempo').val("");
                     toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);

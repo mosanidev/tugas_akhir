@@ -275,7 +275,7 @@ class ShopController extends Controller
 
     public function showRandom()
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
+        // $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
 
         $data_jenis = DB::table('jenis_barang')->get();
 
@@ -284,7 +284,7 @@ class ShopController extends Controller
         $data_barang = DB::table('barang')
                         ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->inRandomOrder()
                         ->groupBy('barang.id')

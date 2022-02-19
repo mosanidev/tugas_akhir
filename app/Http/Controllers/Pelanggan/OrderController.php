@@ -106,7 +106,11 @@ class OrderController extends Controller
                 $status = "Pesanan dibatalkan";
             }
             
-            $cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->get();
+            $cart = DB::table('cart')
+                        ->select('cart.*', 'barang.harga_jual', 'barang.diskon_potongan_harga')
+                        ->where('users_id', '=', auth()->user()->id)
+                        ->join('barang', 'barang.id', '=', 'cart.barang_id')
+                        ->get();
 
             $id_pembayaran = null;
 
@@ -132,12 +136,49 @@ class OrderController extends Controller
             $total = 0;
             for($i = 0; $i < count($cart); $i++)
             {
-                $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
-                    'penjualan_id' => $id_penjualan,
-                    'barang_id' => $cart[$i]->barang_id,
-                    'kuantitas' => $cart[$i]->kuantitas,
-                    'subtotal' => $cart[$i]->subtotal
-                ]);
+                $qty= $cart[$i]->kuantitas*1;
+
+                $dtBarang = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $cart[$i]->barang_id)
+                                            ->where('jumlah_stok_di_gudang','>',0)
+                                            ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
+                                            ->orderBy('tanggal_kadaluarsa','ASC')
+                                            ->get();
+
+                $tglKadaluarsaBrg = "";
+
+                for ($j=0;$j<count($dtBarang);$j++)
+                {
+                    if ($qty>0)
+                    {                        
+                        if ($qty>$dtBarang[$j]->jumlah_stok_di_gudang)
+                        {
+                            $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
+                            
+                            $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                                'penjualan_id' => $id_penjualan,
+                                'barang_id' => $cart[$i]->barang_id,
+                                'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
+                                'kuantitas' => $dtBarang[$j]->jumlah_stok_di_gudang,
+                                'subtotal' => ($cart[$i]->harga_jual-$cart[$i]->diskon_potongan_harga)*$dtBarang[$j]->jumlah_stok_di_gudang
+                            ]);
+
+                            $qty = $qty-$dtBarang[$j]->jumlah_stok_di_gudang;
+                        }
+                        else 
+                        {
+                            $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
+
+                            $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                                'penjualan_id' => $id_penjualan,
+                                'barang_id' => $cart[$i]->barang_id,
+                                'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
+                                'kuantitas' => $qty,
+                                'subtotal' => ($cart[$i]->harga_jual-$cart[$i]->diskon_potongan_harga)*$qty
+                            ]);
+                        }
+                    }
+                }
 
                 $total = $cart[$i]->total;
             }
@@ -905,11 +946,12 @@ class OrderController extends Controller
                             ->get();
 
             $barang = DB::table('detail_penjualan')
-                            ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*')
+                            ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', DB::raw('sum(detail_penjualan.kuantitas) as kuantitas'), DB::raw('sum(detail_penjualan.subtotal) as subtotal'))
                             ->where('detail_penjualan.penjualan_id', '=', $id)
                             ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
                             ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
                             ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                            ->groupBy('barang.id')
                             ->get();
 
             // $barang = DB::table('detail_penjualan')
@@ -925,9 +967,10 @@ class OrderController extends Controller
         else if ($transaksi[0]->metode_transaksi == "Ambil di toko")
         {
             $barang = DB::table('detail_penjualan')
-                            ->select('detail_penjualan.*', 'barang.*')
+                            ->select('detail_penjualan.*', 'barang.*', DB::raw('sum(detail_penjualan.kuantitas) as kuantitas'), DB::raw('sum(detail_penjualan.subtotal) as subtotal'))
                             ->where('detail_penjualan.penjualan_id', '=', $id)
                             ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                            ->groupBy('barang.id')
                             ->get();
 
         }
@@ -943,11 +986,12 @@ class OrderController extends Controller
                             ->get();
 
             $barang = DB::table('detail_penjualan')
-                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*')
+                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', DB::raw('sum(detail_penjualan.kuantitas) as kuantitas'), DB::raw('sum(detail_penjualan.subtotal) as subtotal'))
                         ->where('detail_penjualan.penjualan_id', '=', $id)
                         ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
                         ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
                         ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
+                        ->groupBy('barang.id')
                         ->get();
         }
 

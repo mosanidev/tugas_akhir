@@ -96,7 +96,17 @@ class AdminPemesananController extends Controller
      */
     public function show($id)
     {
-        //
+        $pemesanan = DB::table('pemesanan')
+                        ->select('pemesanan.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+                        ->get();
+
+        $detail_pemesanan = DB::table('detail_pemesanan')
+                            ->select('detail_pemesanan.*', 'barang.kode', 'barang.nama')
+                            ->join('barang', 'detail_pemesanan.barang_id', '=', 'barang.id')
+                            ->get();
+
+        return view('admin.pemesanan.lihat', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
     }
 
     /**

@@ -95,10 +95,11 @@ class BarangController extends Controller
                         ->join('kategori_barang', 'barang.kategori_id','=','kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id','=','merek_barang.id')
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->where('nama', 'like', '%'.strtolower($request->key).'%')
                         ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
+                        ->groupBy('barang.id')
                         ->paginate(15);
 
         $data_merek = null;

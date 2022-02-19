@@ -22,6 +22,7 @@ class CreateBarangHasKadaluarsaTable extends Migration
             $table->datetime('tanggal_kadaluarsa');
             $table->unsignedInteger('jumlah_stok_di_gudang');
             $table->unsignedInteger('jumlah_stok_di_rak');
+            $table->unsignedInteger('jumlah_stok_di_gudang_retur');
         });
     }
 

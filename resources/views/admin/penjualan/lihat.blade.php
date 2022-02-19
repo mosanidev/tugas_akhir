@@ -60,7 +60,7 @@
                 </div>
             </div>
             <hr>
-            <h5>Pengiriman</h5>
+            {{-- <h5>Pengiriman</h5>
             <br>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Metode Transaksi</label>
@@ -73,7 +73,7 @@
                 <div class="col-sm-10">
                   <p class="mt-2">{{ "Rp " . number_format($penjualan[0]->total,0,',','.') }}</p>
                 </div>
-            </div>
+            </div> --}}
             <div class="card shadow my-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Tabel Barang </h6>
@@ -83,8 +83,8 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th style="width: 10px">No</th>
                                     <th>Barang</th>
+                                    <th>Tanggal Kadaluarsa</th>
                                     <th>Harga Jual</th>
                                     <th>Potongan Harga</th>
                                     <th>Kuantitas</th>
@@ -95,8 +95,8 @@
                                 @php $num = 1; @endphp
                                 @for($i=0; $i < count($detail_penjualan); $i++)
                                     <tr>
-                                        <td>{{ $num++ }}</td>
-                                        <td>{{ $detail_penjualan[$i]->nama }}</td>
+                                        <td>{{ $detail_penjualan[$i]->kode." - ".$detail_penjualan[$i]->nama }}</td>
+                                        <td>{{ $detail_penjualan[$i]->tanggal_kadaluarsa }}</td>
                                         <td>{{ "Rp " . number_format($detail_penjualan[$i]->harga_jual,0,',','.')  }}</td>
                                         <td>{{ "Rp " . number_format($detail_penjualan[$i]->diskon_potongan_harga,0,',','.')  }}</td>
                                         <td>{{ $detail_penjualan[$i]->kuantitas }}</td>

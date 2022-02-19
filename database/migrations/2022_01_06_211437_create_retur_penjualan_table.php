@@ -23,6 +23,7 @@ class CreateReturPenjualanTable extends Migration
             $table->unsignedInteger('penjualan_id');
             $table->foreign('penjualan_id')->references('id')->on('penjualan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('status');
+            $table->enum('jenis', ['Pengembalian dana', 'Tukar barang']);
             $table->unsignedInteger('rekening_retur_id')->nullable();
             $table->foreign('rekening_retur_id')->references('id')->on('rekening_retur')->onUpdate('cascade')->onDelete('cascade');
             $table->string('link', 500);

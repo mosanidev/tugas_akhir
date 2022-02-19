@@ -275,7 +275,7 @@ class AdminPengirimanController extends Controller
 
             $riwayat_pengiriman = json_decode($riwayat_pengiriman);
 
-            dd($riwayat_pengiriman);
+            // dd($riwayat_pengiriman);
 
             // $riwayat_pengiriman = null;
 

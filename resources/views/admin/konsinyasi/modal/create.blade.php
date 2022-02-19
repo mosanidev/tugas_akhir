@@ -48,15 +48,15 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Jumlah Titip</label>
-                  <div class="col-sm-8">
-                    <input type="number" class="form-control" name="jumlah_titip" min="1" id="inputJumlahTitip" required>
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Hutang</label>
                   <div class="col-sm-8">
                     <input type="text" class="form-control" min="500" id="hutang" readonly>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Jumlah Titip</label>
+                  <div class="col-sm-8">
+                    <input type="number" class="form-control" name="jumlah_titip" min="1" id="inputJumlahTitip" required>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -108,31 +108,31 @@
     
     });
 
-    $('#inputJumlahTitip').on('change', function() {
+    // $('#inputJumlahTitip').on('change', function() {
 
-      let komisi = $('#inputKomisi').val();
+    //   let komisi = $('#inputKomisi').val();
 
-      if(komisi != '')
-      {
-          let hargaJualAkhir = convertRupiahToAngka($('#hargaJualAkhir').val()); 
-          let jumlahTitip = $('#inputJumlahTitip').val();
-          let hutang = parseInt(hargaJualAkhir)-parseInt(komisi);
-          $('#hutang').val(convertAngkaToRupiah(hutang));   
-      }
+    //   if(komisi != '')
+    //   {
+    //       let hargaJualAkhir = convertRupiahToAngka($('#hargaJualAkhir').val()); 
+    //       let jumlahTitip = $('#inputJumlahTitip').val();
+    //       let hutang = parseInt(hargaJualAkhir)-parseInt(komisi);
+    //       $('#hutang').val(convertAngkaToRupiah(hutang));   
+    //   }
 
-    });
+    // });
 
     $('#inputKomisi').on('change', function() {
 
-      let jumlahTitip = $('#inputJumlahTitip').val();
+      // let jumlahTitip = $('#inputJumlahTitip').val();
 
-      if(jumlahTitip != '')
-      {
+      // if(jumlahTitip != '')
+      // {
           let hargaJualAkhir = convertRupiahToAngka($('#hargaJualAkhir').val()); 
           let komisi = $('#inputKomisi').val();
           let hutang = parseInt(hargaJualAkhir)-parseInt(komisi);
           $('#hutang').val(convertAngkaToRupiah(hutang));
-      }  
+      // }  
 
     });
 

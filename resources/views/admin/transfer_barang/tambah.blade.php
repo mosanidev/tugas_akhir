@@ -4,7 +4,7 @@
 
     <a href="{{ route('transfer_barang.index') }}" class="btn btn-link"><- Kembali ke daftar transfer barang</a>
 
-    <h3 class="mt-3 mb-2 ml-3">Tambah data transfer barang</h3>
+    <h3 class="mt-3 mb-2 ml-3 judul">Tambah data transfer barang</h3>
 
     <div class="container-fluid">
         <div class="p-3">

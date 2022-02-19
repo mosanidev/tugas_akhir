@@ -146,21 +146,38 @@
         {
             toastr.error("Kuantitas dipindah melebihi yang tersedia", "Gagal", toastrOptions);
         }
-        else if(arrBarangDipindah.filter(function(e) { return e.barang_kode == $('#selectBarang :selected').attr('data-kode') && e.barang_tanggal_kadaluarsa == $('#selectTglKadaluarsa :selected').val() }).length > 0)
-        {
-            toastr.error("Sudah ada barang yang sama di tabel", "Gagal", toastrOptions);
-        }
+        // else if(arrBarangDipindah.filter(function(e) { return e.barang_kode == $('#selectBarang :selected').attr('data-kode') && e.barang_tanggal_kadaluarsa == $('#selectTglKadaluarsa :selected').val() }).length > 0 && $('.judul').html().split(" ")[0] == "Tambah")
+        // {
+        //     toastr.error("Sudah ada barang yang sama di tabel", "Gagal", toastrOptions);
+        // }
         else 
         {
-            arrBarangDipindah.push({
-                "barang_id": $('#selectBarang :selected').val(),
-                "barang_kode": $('#selectBarang :selected').attr("data-kode"),
-                "barang_nama": $('#selectBarang :selected').attr("data-nama"),
-                "barang_tanggal_kadaluarsa": $("#selectTglKadaluarsa :selected").val(),
-                "jumlah_di_gudang": $('#jumlahDiGudang').val(),
-                "jumlah_di_rak": $('#jumlahDiRak').val(),
-                "jumlah_dipindah": $('#kuantitasDipindah').val()
-            });
+            if($('#lokasiAsal').val() == "Gudang" && $('#lokasiTujuan').val() == "Rak")
+            {
+                arrBarangDipindah.push({
+                    "barang_id": $('#selectBarang :selected').val(),
+                    "barang_kode": $('#selectBarang :selected').attr("data-kode"),
+                    "barang_nama": $('#selectBarang :selected').attr("data-nama"),
+                    "barang_tanggal_kadaluarsa": $("#selectTglKadaluarsa :selected").val(),
+                    "jumlah_di_gudang": parseInt($('#jumlahDiGudang').val()) - parseInt($('#kuantitasDipindah').val()),
+                    "jumlah_di_rak": parseInt($('#jumlahDiRak').val()) + parseInt($('#kuantitasDipindah').val()),
+                    "jumlah_dipindah": $('#kuantitasDipindah').val()
+                });
+
+            }
+            else if($('#lokasiAsal').val() == "Rak" && $('#lokasiTujuan').val() == "Gudang")
+            {
+                arrBarangDipindah.push({
+                    "barang_id": $('#selectBarang :selected').val(),
+                    "barang_kode": $('#selectBarang :selected').attr("data-kode"),
+                    "barang_nama": $('#selectBarang :selected').attr("data-nama"),
+                    "barang_tanggal_kadaluarsa": $("#selectTglKadaluarsa :selected").val(),
+                    "jumlah_di_gudang": parseInt($('#jumlahDiGudang').val()) - parseInt($('#kuantitasDipindah').val()),
+                    "jumlah_di_rak": parseInt($('#jumlahDiRak').val()) + parseInt($('#kuantitasDipindah').val()),
+                    "jumlah_dipindah": $('#kuantitasDipindah').val()
+                });
+
+            }
 
             implementOnTable();
 

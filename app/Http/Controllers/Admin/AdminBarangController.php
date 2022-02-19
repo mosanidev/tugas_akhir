@@ -39,7 +39,11 @@ class AdminBarangController extends Controller
         $kategori = DB::table('kategori_barang')->get();
         $merek = DB::table('merek_barang')->get();
 
-        return view('admin.barang.tambah', ['jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek]);
+        $supplier = DB::table('supplier')
+                        ->where('jenis', '=', 'Individu')
+                        ->get();
+
+        return view('admin.barang.tambah', ['jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek, 'supplier' => $supplier]);
     }
 
     /**
@@ -73,6 +77,7 @@ class AdminBarangController extends Controller
 
         ];
 
+        $penitip = isset($request->penitip) ? $request->penitip : null;
         $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
         $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
 
@@ -88,11 +93,11 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi, 'supplier_id' => $penitip]);
         }
         else 
         {
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi, 'supplier_id' => $penitip]);
         }
         
         // kembali ke daftar barang
@@ -114,6 +119,18 @@ class AdminBarangController extends Controller
                     ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
                     ->where('barang.id', '=', $id)
                     ->get();
+
+        if($barang[0]->supplier_id != null)
+        {
+            $barang = DB::table('barang')
+                        ->select('barang.*', 'jenis_barang.jenis_barang as jenis', 'kategori_barang.kategori_barang as kategori', 'merek_barang.merek_barang as merek', 'supplier.nama as nama_penitip')
+                        ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                        ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                        ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->join('supplier', 'barang.supplier_id', '=', 'supplier.id')
+                        ->where('barang.id', '=', $id)
+                        ->get();
+        }
 
         return view('admin.barang.lihat', ['barang'=>$barang]);
     }

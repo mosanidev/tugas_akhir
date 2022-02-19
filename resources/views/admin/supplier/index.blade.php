@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Supplier</h1>
+        <h1>Pemasok</h1>
       </div>
   </div><!-- /.container-fluid -->
 </section>
@@ -17,7 +17,7 @@
   
   <div class="card shadow my-4">
       <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">Tabel Supplier</h6>
+          <h6 class="m-0 font-weight-bold text-primary">Tabel Pemasok</h6>
       </div>
       <div class="card-body">
           <div class="table-responsive">
@@ -32,13 +32,6 @@
                       <th>Aksi</th>
                     </tr>
                   </thead>
-                  {{-- <tfoot>
-                      <tr>
-                        <th style="width: 10px">No</th>
-                        <th>Jenis Barang</th>
-                        <th>Action</th>
-                      </tr>
-                  </tfoot> --}}
                   <tbody>
                     @php $num = 1; @endphp
                     @foreach($supplier as $item)
@@ -48,7 +41,10 @@
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->nomor_telepon }}</td>
                         <td>{{ $item->jenis }}</td>
-                        <td><button type="button" class="btn btn-warning ml-2 d-inline btn-ubah" id="btn-ubah-{{ $item->id }}" data-toggle="modal" data-target="#modalUbahSupplier">Ubah</button><button type="button" class='btn btn-danger ml-2 d-inline delete-supplier' data-id="{{ $item->id }}" data-toggle="modal" data-target="#modal-hapus-supplier">Hapus</button></td>
+                        <td>
+                          <button type="button" class="btn btn-warning ml-2 d-inline btn-ubah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahSupplier"><i class="fas fa-edit"></i></button>
+                          <button type="button" class='btn btn-danger ml-2 d-inline delete-supplier' data-id="{{ $item->id }}"  data-toggle="modal" data-target="#modal-hapus-supplier"><i class="fas fa-trash"></i></button>
+                        </td>
                       </tr>
                     @endforeach
                   </tbody>
@@ -70,8 +66,11 @@
     $(document).ready(function(){
 
       $(".btn-ubah").on("click", function(event) {
+
+        const id = $(this).attr('data-id');
+
         $.ajax({
-            url: "/admin/supplier/"+event.target.id.split("-")[2]+"/edit",
+            url: "/admin/supplier/"+id+"/edit",
             type: 'GET',
             beforeSend: function() {
                 $("#ubahNamaSupplierInput").val("");
@@ -84,6 +83,7 @@
               $("#ubahNamaSupplierInput").val(data.supplier['nama']);
               $("#ubahNoTelpSupplierInput").val(data.supplier['nomor_telepon']);
               $("#ubahAlamatSupplierInput").html(data.supplier['alamat']);
+              $('#ubahJenisSupplierInput').val(data.supplier['jenis']);
 
               // tambahkan action menuju url update
               $("#formUbahSupplier").attr('action', '/admin/supplier/'+data.supplier['id']);
@@ -106,11 +106,11 @@
 
         if("{{ session('success') }}" != "")
         {
-          toastr.success("{{ session('success') }}")
+          toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
         }
         else if("{{ session('error') }}" != "")
         {
-          toastr.error("{{ session('error') }}")
+          toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
 
         }
 

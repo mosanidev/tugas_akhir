@@ -110,7 +110,14 @@
                     },
                     success:function(data) {
 
-                        toastr.success(data.status, "Success", toastrOptions);
+                        if(data.status == "Maaf jumlah barang yang ditambahkan melebihi jumlah stok")
+                        {
+                            toastr.error(data.status, "Gagal", toastrOptions);
+                        }
+                        else 
+                        {
+                            toastr.success(data.status, "Sukses", toastrOptions);
+                        }
 
                         let total_cart = $("#total_cart")[0].innerText;
 

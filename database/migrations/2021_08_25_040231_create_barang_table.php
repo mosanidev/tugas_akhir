@@ -36,6 +36,8 @@ class CreateBarangTable extends Migration
             $table->foreign('kategori_id')->on('kategori_barang')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('merek_id');
             $table->foreign('merek_id')->on('merek_barang')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger('supplier_id')->nullable();
+            $table->foreign('supplier_id')->on('supplier')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('batasan_stok_minimum')->default(3);
             // $table->double('komisi')->default(0);
             // $table->smallInteger('opsi_otomatis_update_kadaluarsa')->default(0);

@@ -14,7 +14,7 @@
 
     {{-- <a href="{{ route('pemesanan.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
 
-    <div class="my-4">
+    {{-- <div class="my-4">
       <p>Filter : </p>
 
       <div class="row">
@@ -30,7 +30,8 @@
         </div>
       </div>
 
-    </div>
+    </div> --}}
+
     <div class="card shadow my-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tabel Penerimaan Pesanan</h6>

@@ -13,7 +13,7 @@
 
     <div class="container-fluid">
         <div class="p-3">
-            <form method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data" novalidate>
+            <form method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data" id="formTambah" novalidate>
                 @csrf
                 <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Jenis</p>
@@ -93,6 +93,17 @@
                         </div> 
                     </div>
                 </div>
+                <div class="form-group row d-none divPenitip">
+                    <p class="col-sm-3 col-form-label">Penitip (konsinyi)</p>
+                    <div class="col-sm-9">
+                        <select class="form-control" name="penitip" required>
+                            <option disabled selected>Pilih penitip</option>
+                            @foreach($supplier as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>
+                            @endforeach
+                        </select>                 
+                    </div>
+                </div>
                 <div class="form-group row" id="div-stok-minimum">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
@@ -129,7 +140,7 @@
                     </div>
                 </div>
                 <div class="mx-auto">
-                    <button type="submit" class="btn btn-info w-25">Simpan</button>
+                    <button type="button" class="btn btn-info w-25 btnTambah">Simpan</button>
                 </div>
             </form>
             
@@ -166,12 +177,15 @@
                 {
                     $('#stok_minimum').val('0');     
                     $('#stok_minimum').attr("readonly", true);
+
+                    $(".divPenitip").toggleClass('d-none');
                 }
                 else 
                 {
                     $('#stok_minimum').val('');
                     $('#stok_minimum').attr("readonly", false);
 
+                    $(".divPenitip").toggleClass('d-none');
                 }
 
             });
@@ -184,6 +198,9 @@
                 {
                     $('#stok_minimum').val('0');     
                     $('#stok_minimum').attr("readonly", true);
+
+                    $(".divPenitip").toggleClass('d-none');
+
                 }
                 else 
                 {
@@ -196,6 +213,10 @@
             //Initialize Select2 Elements
             $('.select2').select2();
 
+            $('select[name=penitip]').select2({
+                theme: 'bootstrap4'
+            });
+
             //Initialize Select2 Elements
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
@@ -204,6 +225,59 @@
             CKEDITOR.disableAutoInline = true;
 
             CKEDITOR.replace('deskripsi');
+
+            $('.btnTambah').on('click', function() {
+
+                if($('select[name=jenis_id]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih jenis barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('select[name=kategori_id]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih kategori barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('select[name=merek_id]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih merek barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('select[name=merek_id]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih merek barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('input[name=kode]').val() == "")
+                {
+                    toastr.error("Harap isi kode barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if(CKEDITOR.instances.deskripsi.getData() == "")
+                {
+                    toastr.error("Harap isi deskripsi barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('select[name=satuan]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih satuan barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('#harga_jual').val() == "")
+                {
+                    toastr.error("Harap isi harga jual barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($("input[name=barang_konsinyasi]").prop('checked') == true && $('select[name=penitip]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih penitip barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($("input[name=barang_konsinyasi]").prop('checked') == false && $('#stok_minimum').val() == "")
+                {
+                    toastr.error("Harap isi stok minimum barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('input[name=berat]').val() == "")
+                {
+                    toastr.error("Harap isi berat barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else 
+                {
+                    $('#formTambah').submit();
+                }
+
+            });
 
         });
 

@@ -32,7 +32,7 @@
         <br>
         <div class="row">
             <div class="col-4">
-                <label class="mt-1">Nomor Nota</label>
+                <label class="mt-1">Nomor Nota Jual yang ingin diretur</label>
             </div>
             <div class="col-8">
                 <input type="text" name="nomor_nota" class="form form-control w-100">                
@@ -79,6 +79,23 @@
                 <textarea name="alasan_retur" class="form form-control" rows="3"></textarea>
             </div>
         </div>
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <label class="mt-1">Jenis retur</label>
+            </div>
+            <div class="col-8">
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="checkJenisRetur" name="jenis_retur" value="Pengembalian dana">
+                    <label class="form-check-label" for="checkJenisRetur">Pengembalian dana</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="checkJenisRetur" name="jenis_retur" value="Tukar barang">
+                    <label class="form-check-label" for="checkJenisRetur">Tukar barang</label>
+                </div>
+            </div>
+        </div>
+        <br>
         <br>
         <div class="row">
             <div class="col-4">

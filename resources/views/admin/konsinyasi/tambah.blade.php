@@ -7,23 +7,21 @@
     <h3>Tambah Konsinyasi</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('konsinyasi.store') }}" id="formTambah">
+        <form method="POST" action="{{ route('konsinyasi.store.barang') }}" id="formTambah">
             @csrf
+            <input type="hidden" name="konsinyasi_id" value="{{ $konsinyasi[0]->id }}">
             <input type="hidden" id="dataBarangKonsinyasi" value="" name="barangKonsinyasi"/>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Nomor Nota</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" required>
+                  <p>{{ $konsinyasi[0]->nomor_nota }}</p>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Titip</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_titip" autocomplete="off" id="datepickerTglTitip" required>
-                      <div class="input-group-append">
-                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
+                      <p>{{ $konsinyasi[0]->tanggal_titip }}</p>
                   </div>   
                 </div>
               </div>
@@ -31,38 +29,26 @@
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
-                      <div class="input-group-append">
-                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
+                      <p>{{ $konsinyasi[0]->tanggal_jatuh_tempo }}</p>
                   </div>   
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Supplier</label>
                 <div class="col-sm-8" id="divTampungSelectSupplier">
-                  <select class="form-control" name="supplier_id" id="selectSupplier" required>
-                      <option disabled selected>Pilih Supplier</option>
-                      @foreach($supplier as $item)
-                          <option value="{{ $item->id }}">{{$item->nama}}</option>
-                      @endforeach
-                  </select> 
+                  <p>{{ $konsinyasi[0]->nama_supplier }}</p>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                 <div class="col-sm-8">
-                  <select class="form-control" name="metode_pembayaran" id="selectMetodePembayaran" required>
-                      <option disabled selected>Metode Pembayaran</option>
-                      <option value="Transfer Bank">Transfer Bank</option>
-                      <option value="Tunai">Tunai</option>
-                  </select> 
+                  <p>{{ $konsinyasi[0]->metode_pembayaran }}</p>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="status_bayar" value="Belum Lunas" readonly>
+                  <p>{{ $konsinyasi[0]->status_bayar }}</p>
                 </div>
               </div>
               {{-- <div class="form-group row">
@@ -113,6 +99,8 @@
     </div>
 
     @include('admin.konsinyasi.modal.create')
+
+    <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
     <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -194,6 +182,15 @@
             
         }
 
+        if("{{ session('success') }}")
+        {
+          toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+        }
+        else if("{{ session('error') }}")
+        {
+          toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
+        }
+
         function hapusBarangKonsinyasi(i)
         {
             arrBarangKonsinyasi.splice(i, 1);
@@ -203,14 +200,21 @@
 
         $('#btnSimpan').on('click', function(){
 
-          $('#dataBarangKonsinyasi').val(JSON.stringify(arrBarangKonsinyasi));
+          if(arrBarangKonsinyasi.length == 0)
+          {
+            toastr.error("Harap mengisikan barang terlebih dahulu", "Gagal", toastrOptions);
+          }
+          else 
+          {
+            $('#dataBarangKonsinyasi').val(JSON.stringify(arrBarangKonsinyasi));
 
-          $('#btnSimpan').attr('type', 'submit');
+            $('#btnSimpan').attr('type', 'submit');
 
-          $('#btnSimpan')[0].click();
+            $('#btnSimpan')[0].click();
 
-          $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
-
+            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+          }
+          
 
         });
 

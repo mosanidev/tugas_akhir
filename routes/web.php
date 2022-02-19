@@ -276,8 +276,10 @@ Route::group(['prefix' => 'admin'], function() {
 
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
 
-        Route::get('/konsinyasi/lunasi/{konsinyasi}', [AdminKonsinyasiController::class, 'lunasi'])->name('konsinyasi.lunasi');
         Route::resource('/konsinyasi', AdminKonsinyasiController::class);
+        Route::get('/konsinyasi/lunasi/{konsinyasi}', [AdminKonsinyasiController::class, 'lunasi'])->name('konsinyasi.lunasi');
+        Route::get('/konsinyasi/barang/add/{konsinyasi}', [AdminKonsinyasiController::class, 'addBarangKonsinyasi'])->name('konsinyasi.add.barang');
+        Route::post('/konsinyasi/barang/store', [AdminKonsinyasiController::class, 'storeBarangKonsinyasi'])->name('konsinyasi.store.barang');
 
         Route::resource('/stok_opname', AdminStokOpnameController::class);
         Route::get('/stok_opname/add/{stok_opname}', [AdminStokOpnameController::class, 'storeStokOpname'])->name('stok_opname.storeStokOpname');
