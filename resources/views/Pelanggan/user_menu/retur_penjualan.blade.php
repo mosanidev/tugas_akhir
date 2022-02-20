@@ -50,7 +50,7 @@
         <br>
         <div class="row">
             <div class="col-4">
-                <label class="mt-1">Barang</label>
+                <label class="mt-1">Barang yang dikembalikan</label>
             </div>
             <div class="col-8 parentSelect2">
                 <select class="form-control select2bs4" name="barang">
@@ -73,28 +73,28 @@
         <br>
         <div class="row">
             <div class="col-4">
-                <label class="mt-1">Alasan penukaran</label>
+                <label class="mt-1">Alasan pengembalian</label>
             </div>
             <div class="col-8">
                 <textarea name="alasan_retur" class="form form-control" rows="3"></textarea>
             </div>
         </div>
-        <br>
-        <div class="row">
+        <input type="hidden" name="jenis_retur" value="Pengembalian dana">
+        {{-- <div class="row">
             <div class="col-4">
                 <label class="mt-1">Jenis retur</label>
             </div>
             <div class="col-8">
                 <div class="form-check">
-                    <input type="radio" class="form-check-input" id="checkJenisRetur" name="jenis_retur" value="Pengembalian dana">
+                    <input type="radio" class="form-check-input" id="checkJenisRetur" name="jenis_retur" value="Pengembalian dana" checked>
                     <label class="form-check-label" for="checkJenisRetur">Pengembalian dana</label>
                 </div>
                 <div class="form-check">
-                    <input type="radio" class="form-check-input" id="checkJenisRetur" name="jenis_retur" value="Tukar barang">
-                    <label class="form-check-label" for="checkJenisRetur">Tukar barang</label>
+                    <input type="radio" class="form-check-input" id="checkJenisRetur" name="jenis_retur" value="Penukaran dengan produk yang sama">
+                    <label class="form-check-label" for="checkJenisRetur">Penukaran dengan produk yang sama</label>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <br>
         <br>
         <div class="row">
@@ -281,11 +281,11 @@
 
         if("{{ session('success') }}" != "")
         {
-            toastr.success("{{ session('success') }}", "Success", toastrOptions);
+            toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
         }
         else if ("{{ session('error') }}" != "")
         {
-            toastr.error("{{ session('error') }}", "Error", toastrOptions);
+            toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
         }
 
         function hapus(i)

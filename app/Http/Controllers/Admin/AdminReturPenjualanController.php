@@ -22,6 +22,7 @@ class AdminReturPenjualanController extends Controller
                                      'users.nama_belakang', 
                                      'penjualan.tanggal as tanggal_jual',
                                      'retur_penjualan.tanggal as tanggal_retur',
+                                     'retur_penjualan.jenis_retur',
                                      'retur_penjualan.status')
                             ->join('penjualan', 'penjualan.id', '=', 'retur_penjualan.penjualan_id')
                             ->join('users', 'retur_penjualan.users_id', '=', 'users.id')

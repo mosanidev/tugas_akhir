@@ -35,6 +35,7 @@
                             <option disabled selected>Pilih Lokasi Asal</option>
                             <option value="Rak">Rak</option>
                             <option value="Gudang">Gudang</option>
+                            <option value="Gudang retur">Gudang retur</option>
                         </select> 
                     </div>
                 </div>
@@ -45,6 +46,7 @@
                             <option disabled selected>Pilih Lokasi Tujuan</option>
                             <option value="Rak">Rak</option>
                             <option value="Gudang">Gudang</option>
+                            <option value="Gudang retur">Gudang retur</option>
                         </select> 
                     </div>
                 </div>

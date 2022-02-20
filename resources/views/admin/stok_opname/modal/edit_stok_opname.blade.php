@@ -84,7 +84,6 @@
         else 
         {
             $('.stokOpnameInginDiubah').html($(this).attr('data-nomor'));
-            
 
             $('#modalUbahStokOpname').modal('toggle');
             $('#modalKonfirmasiUbahStokOpname').modal('toggle');

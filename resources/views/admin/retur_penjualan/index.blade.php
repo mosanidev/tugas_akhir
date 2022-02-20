@@ -24,6 +24,7 @@
                     <thead>
                         <tr>
                           <th>Nomor Nota Penjualan</th>
+                          <th>Jenis Retur</th>
                           <th>Pelanggan</th>
                           <th>Tanggal Jual</th>
                           <th>Tanggal Retur</th>
@@ -37,6 +38,7 @@
                           @foreach($retur_penjualan as $item)
                             <tr>
                               <td>{{ $item->nomor_nota }}</td>
+                              <td>{{ $item->jenis_retur }}</td>
                               <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                               <td>{{ \Carbon\Carbon::parse($item->tanggal_jual)->isoFormat('D MMMM Y') }}</td>
                               <td>{{ \Carbon\Carbon::parse($item->tanggal_retur)->isoFormat('D MMMM Y') }}</td>
@@ -46,7 +48,7 @@
                                 @if($item->status == "Harap tunggu pengembalian dana dari admin")
                                   <button class="btn btn-info w-100 btnLunasiRefund" data-toggle="modal" data-target="#modalLunasiRefund" data-id="{{ $item->id }}" data-status="{{ $item->status }}">Kembalikan dana</button>
                                 @elseif($item->status != "Pengembalian dana telah dilakukan") 
-                                  <button class="btn btn-info w-100 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatus" data-id="{{ $item->id }}" data-status="{{ $item->status }}">Ubah Status</button>
+                                  <button class="btn btn-info w-100 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatus" data-id="{{ $item->id }}" data-jenis-retur="{{ $item->jenis_retur }}" data-status="{{ $item->status }}">Ubah Status</button>
                                 @endif
                               </td>
                             </tr>
@@ -72,19 +74,40 @@
 
   if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('success') }}", "Success", toastrOptions);
+    toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
   }
   else if("{{ session('error') }}" != "")
   {
-    toastr.error("{{ session('error') }}", "Error", toastrOptions);
+    toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
   $('.btnUbahStatus').on('click', function() {
 
     let id = $(this).attr('data-id');
     let status = $(this).attr('data-status');
-
+    let jenisRetur = $(this).attr('data-jenis-retur');
     // $('#retur_penjualan_id').val(id);
+
+    if(jenisRetur == "Pengembalian dana")
+    {
+      $('.contentUbahStatus').html(`<select class="form-control select2 select2bs4" name="status_retur" id="selectStatusRetur" required>
+                                        <option value="Menunggu pengajuan dicek admin">Menunggu pengajuan dicek admin</option>
+                                        <option value="Pengajuan retur diterima admin">{{ "Pengajuan retur diterima admin" }}</option>
+                                        <option value="Pengajuan retur ditolak admin">{{ "Pengajuan retur ditolak admin" }}</option>
+                                        <option value="Barang retur telah diterima admin">{{ "Barang retur telah diterima admin" }}</option>
+                                        <option value="Harap tunggu pengembalian dana dari admin">{{ "Harap tunggu pengembalian dana dari admin" }}</option>
+                                    </select>`);
+    }
+    else 
+    {
+      $('.contentUbahStatus').html(`<select class="form-control select2 select2bs4" name="status_retur" id="selectStatusRetur" required>
+                                        <option value="Menunggu pengajuan dicek admin">Menunggu pengajuan dicek admin</option>
+                                        <option value="Pengajuan retur diterima admin">{{ "Pengajuan retur diterima admin" }}</option>
+                                        <option value="Pengajuan retur ditolak admin">{{ "Pengajuan retur ditolak admin" }}</option>
+                                        <option value="Barang retur telah diterima admin">{{ "Barang retur telah diterima admin" }}</option>
+                                        <option value="Harap tunggu produk pengganti sampai ke lokasi tujuan">{{ "Harap tunggu produk pengganti sampai ke lokasi tujuan" }}</option>
+                                    </select>`);
+    }
 
     $('#statusReturSebelumnya').val(status);
 

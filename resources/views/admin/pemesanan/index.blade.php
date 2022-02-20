@@ -56,7 +56,7 @@
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ "Rp " . number_format($item->total-$item->diskon-$item->ppn ,0,',','.') }}</td>
+                          <td>{{ "Rp " . number_format(($item->total_belum_dibayar+$item->total_sudah_dibayar)-$item->diskon-$item->ppn ,0,',','.') }}</td>
                           <td>{{ $item->status }}</td>
                           <td>
 

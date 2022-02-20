@@ -53,7 +53,9 @@ class AdminPemesananController extends Controller
      */
     public function store(Request $request)
     {
-        $idPemesanan = DB::table('pemesanan')
+        if($request->status_bayar == "Belum lunas")
+        {
+            $idPemesanan = DB::table('pemesanan')
                             ->insertGetId([
                                 'nomor_nota' => $request->nomor_nota,
                                 'supplier_id' => $request->supplier_id,
@@ -62,12 +64,52 @@ class AdminPemesananController extends Controller
                                 'diskon' => $request->diskon,
                                 'ppn' => $request->ppn,
                                 'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status,
+                                'status_bayar' => $request->status_bayar,
                                 'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
                                 'status' => 'Belum diterima di gudang',
-                                'total' => $request->total,
+                                'total_belum_dibayar' => $request->total,
+                                'total_sudah_dibayar' => 0,
                                 'users_id' => auth()->user()->id
                             ]);
+        }
+        else if ($request->status_bayar == "Sudah lunas")
+        {
+            $idPemesanan = DB::table('pemesanan')
+                                ->insertGetId([
+                                    'nomor_nota' => $request->nomor_nota,
+                                    'supplier_id' => $request->supplier_id,
+                                    'tanggal' => $request->tanggal_pemesanan,
+                                    'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
+                                    'diskon' => $request->diskon,
+                                    'ppn' => $request->ppn,
+                                    'metode_pembayaran' => $request->metodePembayaran,
+                                    'status_bayar' => $request->status_bayar,
+                                    'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                                    'status' => 'Belum diterima di gudang',
+                                    'total_belum_dibayar' => 0,
+                                    'total_sudah_dibayar' => $request->total_belum_dibayar,
+                                    'users_id' => auth()->user()->id
+                                ]);
+        }
+        else if ($request->status_bayar == "Lunas sebagian")
+        {
+            $idPemesanan = DB::table('pemesanan')
+                            ->insertGetId([
+                                'nomor_nota' => $request->nomor_nota,
+                                'supplier_id' => $request->supplier_id,
+                                'tanggal' => $request->tanggal_pemesanan,
+                                'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
+                                'diskon' => $request->diskon,
+                                'ppn' => $request->ppn,
+                                'metode_pembayaran' => $request->metodePembayaran,
+                                'status_bayar' => $request->status_bayar,
+                                'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                                'status' => 'Belum diterima di gudang',
+                                'total_belum_dibayar' => $request->total_belum_dibayar,
+                                'total_sudah_dibayar' => $request->total_sudah_dibayar,
+                                'users_id' => auth()->user()->id
+                            ]);
+        }
 
         $dataBarang = json_decode($request->barang, true);
 
@@ -80,6 +122,7 @@ class AdminPemesananController extends Controller
                                                 'barang_id'             => $dataBarang[$i]['barang_id'],
                                                 'kuantitas'             => $dataBarang[$i]['kuantitas'],
                                                 'harga_pesan'           => $dataBarang[$i]['harga_pesan'],
+                                                'diskon_potongan_harga' => $dataBarang[$i]['diskon_potongan_harga'],
                                                 'subtotal'              => $dataBarang[$i]['subtotal']
                                             ]);
 
@@ -99,11 +142,13 @@ class AdminPemesananController extends Controller
         $pemesanan = DB::table('pemesanan')
                         ->select('pemesanan.*', 'supplier.nama as nama_supplier')
                         ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+                        ->where('pemesanan.id', '=', $id)
                         ->get();
 
         $detail_pemesanan = DB::table('detail_pemesanan')
                             ->select('detail_pemesanan.*', 'barang.kode', 'barang.nama')
                             ->join('barang', 'detail_pemesanan.barang_id', '=', 'barang.id')
+                            ->where('detail_pemesanan.pemesanan_id', '=', $id)
                             ->get();
 
         return view('admin.pemesanan.lihat', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);

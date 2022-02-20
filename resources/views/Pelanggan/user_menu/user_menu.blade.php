@@ -51,7 +51,7 @@
 
                     @include('pelanggan.user_menu.retur_penjualan')
 
-                @elseif(isset($riwayat_retur))
+                @elseif(isset($riwayat_retur) && isset($alamat_tujuan_retur))
 
                     @include('pelanggan.user_menu.riwayat_retur_penjualan')
 

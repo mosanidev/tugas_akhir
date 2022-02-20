@@ -72,28 +72,36 @@
                   {{-- <input type="number" class="form-control d-inline mr-1" name="ppn" id="inputPPN" value="0" min="0" step="1" style="width: 96.2%;" required> % --}}
                 </div>
               </div>
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Status Bayar</label>
-                <div class="col-sm-8">
-                  <select class="form-control" name="status" id="selectStatusBayar" required>
-                      <option disabled selected>Status</option>
-                      <option value="Belum Lunas">Belum Lunas</option>
-                      <option value="Sudah Lunas">Sudah Lunas</option>
-                  </select> 
-                </div>
-              </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total</label>
                 <div class="col-sm-8">
-                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="total" name="total" readonly/>
+                    <input type="hidden" value="0" id="totalAwal">
+                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="total" name="total_belum_dibayar" readonly/>
                     <input type="text" class="form-control" id="totalRupiah" readonly>
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir</label>
+                <label class="col-sm-4 col-form-label">Total (dikurangi diskon + PPN)</label>
                 <div class="col-sm-8">
                     <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
                     <input type="text" class="form-control" id="totalAkhirRupiah" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Status Bayar</label>
+                <div class="col-sm-8">
+                  <select class="form-control" name="status_bayar" id="selectStatusBayar">
+                      <option disabled selected>Pilih status</option>
+                      <option value="Belum lunas">Belum lunas</option>
+                      <option value="Sudah lunas">Sudah lunas</option>
+                      <option value="Lunas sebagian">Lunas sebagian</option>
+                  </select> 
+                </div>
+              </div>
+            <div class="form-group row d-none divTotalSudahDibayar">
+                <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
+                <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" id="totalSudahDibayar" name="total_sudah_dibayar" value="0" min="0" step="100" style="width: 95.8%;" required>
                 </div>
             </div>
 
@@ -112,6 +120,7 @@
                                   <th>Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
+                                  <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
                                   <th>Aksi</th>
@@ -238,6 +247,53 @@
 
     });
 
+    $('#selectStatusBayar').on('change', function() {
+
+        const statusBayar = $(this).val();
+
+        if(statusBayar == "Lunas sebagian")
+        {
+            $(".divTotalSudahDibayar").toggleClass('d-none');
+        }
+        else if(statusBayar != "Lunas sebagian")
+        {
+            if(!$(".divTotalSudahDibayar").hasClass("d-none"))
+            {
+                $(".divTotalSudahDibayar").toggleClass('d-none');
+            }
+        }
+
+    });
+
+    $('#totalSudahDibayar').on('change', function() {
+
+        let totalSudahDibayar = parseInt($('#totalSudahDibayar').val());
+        let total = parseInt($('#total').val());
+        let diskon = $('#inputDiskon').val();
+        let ppn = $('#inputDiskon').val();
+        let totalAwal = parseInt($('#totalAwal').val());
+
+        // if(totalBelumDibayarRupiah == "Rp 0" && totalAkhirRupiah == "Rp 0")
+        // {
+        //     toastr.error("Harap memilih barang yang dipesan terlebih dahulu", "Gagal", toastrOptions);
+        //     $('#totalSudahDibayar').val("");
+        // }
+        // else 
+        // {
+            let hasil1 = totalAwal - totalSudahDibayar;
+            let hasil2 = (totalAwal-diskon-ppn) - totalSudahDibayar;
+            
+            $('#totalBelumDibayar').val(hasil1);
+            $('#totalAkhir').val(hasil2);
+
+            let totalBelumDibayarRupiah = convertAngkaToRupiah(hasil1);
+            let totalAkhirRupiah = convertAngkaToRupiah(hasil2);
+
+            $('#totalBelumDibayarRupiah').val(totalBelumDibayarRupiah);
+            $('#totalAkhirRupiah').val(totalAkhirRupiah)
+        // }
+    });
+
     function implementDataOnTable()
     {
         let rowTable = "";
@@ -255,6 +311,7 @@
                                 <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
                                 <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
+                                <td>` + convertAngkaToRupiah(barangDibeli[i].diskon_potongan_harga) +  `</td>
                                 <td>` + barangDibeli[i].kuantitas +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].subtotal) +  `</td>
                                 <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDibeli(` + i + `)" id="btnHapus">Hapus</button> </td>
@@ -273,6 +330,7 @@
         let totalAkhir = total-diskon-ppn;
         $('#totalAkhir').val(totalAkhir);
         $('#total').val(total);
+        $('#totalAwal').val(total);
 
         $('#totalRupiah').val(convertAngkaToRupiah(total));
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
@@ -308,7 +366,9 @@
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
         let totalAkhir = total-diskon-ppn;
+
         $('#totalAkhir').val(totalAkhir);
+        $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
         
 
     });

@@ -18,12 +18,30 @@ class ReturPenjualanController extends Controller
         return view('pelanggan.user_menu.user_menu', ['barang' => $barang, 'retur_penjualan' => true, 'semua_kategori' => $kategori, 'total_cart' => $total_cart]);
     }
 
-    public function showHistory()
+    public function showHistory(Request $request)
     {
         $kategori = DB::table('kategori_barang')->get();
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
         $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
         $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
+
+        $alamat_dipilih =  DB::table('alamat_pengiriman')
+                            ->where('alamat_utama', '=', 1)
+                            ->where('users_id', '=', auth()->user()->id)->get();
+
+        if($request->alamat_id != null)
+        {
+            $alamat_dipilih = DB::table('alamat_pengiriman')
+                                ->select('*')
+                                ->where('id','=',$request->alamat_id)
+                                ->where('users_id', '=', auth()->user()->id)
+                                ->get();
+        }
+
+        $alamat = DB::table('alamat_pengiriman')
+                    ->select('*')
+                    ->where('users_id', '=', auth()->user()->id)
+                    ->get();
 
         $riwayat_retur = DB::table('retur_penjualan')
                             ->select('retur_penjualan.*', 'penjualan.nomor_nota')
@@ -31,8 +49,35 @@ class ReturPenjualanController extends Controller
                             ->join('penjualan', 'penjualan.id', '=', 'retur_penjualan.penjualan_id')
                             ->get();
 
-        return view('pelanggan.user_menu.user_menu', ['riwayat_retur' => $riwayat_retur, 'semua_kategori' => $kategori, 'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);
+        return view('pelanggan.user_menu.user_menu', ['riwayat_retur' => $riwayat_retur, 'semua_kategori' => $kategori, 'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat, 'alamat_tujuan_retur' => $alamat, 'alamat_tujuan_retur_dipilih' => $alamat_dipilih]);
 
+    }
+
+    
+    public function pickAlamat(Request $request)
+    {
+        $kategori = DB::table('kategori_barang')->get();
+        $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
+        $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
+        $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
+
+        $alamat_dipilih =  DB::table('alamat_pengiriman')->where('alamat_utama', '=', 1)->where('users_id', '=', auth()->user()->id)->get();
+
+        if($request->alamat_id != null)
+        {
+            $alamat_dipilih = DB::table('alamat_pengiriman')->select('*')->where('id','=',$request->alamat_id)->where('users_id', '=', auth()->user()->id)->get();
+        }
+
+        $alamat = DB::table('alamat_pengiriman')->select('*')->where('users_id', '=', auth()->user()->id)->get();
+
+        $riwayat_retur = DB::table('retur_penjualan')
+                            ->select('retur_penjualan.*', 'penjualan.nomor_nota')
+                            ->where('retur_penjualan.users_id', '=', auth()->user()->id)
+                            ->join('penjualan', 'penjualan.id', '=', 'retur_penjualan.penjualan_id')
+                            ->get();
+
+        return view('pelanggan.user_menu.user_menu', ['riwayat_retur' => $riwayat_retur, 'semua_kategori' => $kategori, 'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat, 'alamat_tujuan_retur' => $alamat, 'alamat_tujuan_retur_dipilih' => $alamat_dipilih]);
+        
     }
 
     public function simpanNomorRekeningRetur(Request $request)
@@ -52,6 +97,11 @@ class ReturPenjualanController extends Controller
                                     ]);
 
         return redirect()->route('returPenjualan.showHistory')->with(['success' => 'Nomor rekening berhasil disimpan']);
+    }
+
+    public function simpanAlamatTujuanRetur(Request $request)
+    {
+        dd($request);
     }
 
     public function store(Request $request)
@@ -106,7 +156,7 @@ class ReturPenjualanController extends Controller
         $updatePenjualan = DB::table('penjualan')
                             ->where('nomor_nota', '=', $nomorNota)
                             ->update([
-                                'status_retur' => 'Ada Retur'
+                                'status_retur' => 'Ada retur'
                             ]);
 
         $notifikasi = DB::table('notifikasi')
@@ -132,8 +182,8 @@ class ReturPenjualanController extends Controller
 
             $insertDetailPenjualan = DB::table('detail_retur_penjualan')->insert([
                                         'retur_penjualan_id' => $idReturPenjualan,
-                                        'barang_id' => $barang_diretur[$i]->barang_id,
-                                        'kuantitas' => $barang_diretur[$i]->kuantitas,
+                                        'barang_retur' => $barang_diretur[$i]->barang_id,
+                                        'kuantitas_barang_retur' => $barang_diretur[$i]->kuantitas,
                                         'subtotal' => $hargaJual*$barang_diretur[$i]->kuantitas,
                                         'alasan_retur' => $barang_diretur[$i]->alasan_retur,
                                     ]);

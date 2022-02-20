@@ -21,6 +21,7 @@ class CreateDetailPemesananTable extends Migration
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade'); 
             $table->double('harga_pesan');
+            $table->double('diskon_potongan_harga');
             $table->integer('kuantitas');
             $table->double('subtotal');
         });

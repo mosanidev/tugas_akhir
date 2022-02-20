@@ -26,10 +26,10 @@ class PemesananSeeder extends Seeder
             'tanggal_jatuh_tempo' => '2022-02-22',
             'diskon' => 0,
             'ppn' => 0,
-            'metode_pembayaran' => 'Transfer Bank',
-            'status_bayar' => 'Belum Lunas',
+            'metode_pembayaran' => 'Transfer bank',
+            'status_bayar' => 'Belum lunas',
             'status' => 'Belum diterima di gudang',
-            'total' => 10500
+            'total_belum_dibayar' => 10500
         ]);
     }
 }

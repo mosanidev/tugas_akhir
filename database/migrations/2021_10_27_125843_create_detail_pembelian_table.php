@@ -23,6 +23,7 @@ class CreateDetailPembelianTable extends Migration
             $table->datetime('tanggal_kadaluarsa');
             $table->integer('kuantitas');
             $table->double('harga_beli');
+            $table->double('diskon_potongan_harga');
             $table->double('subtotal');
         });
     }

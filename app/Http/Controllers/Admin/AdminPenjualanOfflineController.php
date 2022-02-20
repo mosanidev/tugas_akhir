@@ -197,7 +197,7 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function edit($id)
     {
-        $this->reset($id);
+        // $this->reset($id);
 
         $penjualanOffline = DB::table('penjualan')
                                 ->select('penjualan.id',

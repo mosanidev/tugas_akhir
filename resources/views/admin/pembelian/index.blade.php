@@ -24,8 +24,9 @@
         <div class="col-9">
             <select class="form-control w-50 selectFilter">
               <option selected>Semua</option>
-              <option>Belum Lunas</option>
-              <option>Sudah Lunas</option>
+              <option>Belum lunas</option>
+              <option>Sudah lunas</option>
+              <option>Lunas sebagian</option>
             </select>
         </div>
       </div>
@@ -57,17 +58,17 @@
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ "Rp " . number_format($item->total-$item->diskon-$item->ppn ,0,',','.') }}</td>
+                          <td>{{ "Rp " . number_format(($item->total_sudah_dibayar+$item->total_belum_dibayar)-$item->diskon-$item->ppn,0,',','.') }}</td>
                           <td>
                             {{ $item->status_bayar }}
                           </td>
                           <td>
                             <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             
-                            @if($item->status_retur == "Tidak Ada Retur")
+                            @if($item->status_retur == "Tidak ada retur")
                               <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
                               <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian"><i class="fas fa-trash"></i></button>
-                            @elseif ($item->status_retur == "Ada Retur")
+                            @elseif ($item->status_retur == "Ada retur")
                               <button class='btn btn-warning btnInfo' data-aksi="ubah" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-edit"></i></button>
                               <button class='btn btn-danger btnInfo' data-aksi="hapus" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-trash"></i></button>
                             @endif
@@ -209,11 +210,11 @@
 
   if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('success') }}", "Success", toastrOptions);
+    toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
   }
   else if ("{{ session('error') }}" != "")
   {
-    toastr.error("{{ session('error') }}", "Error", toastrOptions);
+    toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
   $(document).ready(function() {

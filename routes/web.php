@@ -167,7 +167,10 @@ Route::group(['middleware' => 'auth'], function () {
     // retur penjualan route
     Route::get('retur', [ReturPenjualanController::class, 'showForm'])->name('returPenjualan.showForm');
     Route::get('riwayat_retur', [ReturPenjualanController::class, 'showHistory'])->name('returPenjualan.showHistory');
+    Route::get('riwayat_retur/pickalamat', [ReturPenjualanController::class, 'pickAlamat'])->name('adminReturPenjualan.pickAlamat');
+
     Route::post('simpan_rekening', [ReturPenjualanController::class, 'simpanNomorRekeningRetur'])->name('returPenjualan.simpanNomorRekeningRetur');
+    Route::post('simpan_alamat', [ReturPenjualanController::class, 'simpanAlamatTujuanRetur'])->name('returPenjualan.simpanAlamatTujuanRetur');
 
     Route::post('retur', [ReturPenjualanController::class, 'store'])->name('returPenjualan.store');
 

@@ -14,14 +14,8 @@
                 <input type="hidden" id="statusReturSebelumnya">
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Status Retur</p>
-                    <div class="col-sm-8">
-                      <select class="form-control select2 select2bs4" name="status_retur" id="selectStatusRetur" required>
-                          <option value="Menunggu pengajuan dicek admin">Menunggu pengajuan dicek admin</option>
-                          <option value="Pengajuan retur diterima admin">{{ "Pengajuan retur diterima admin" }}</option>
-                          <option value="Pengajuan retur ditolak admin">{{ "Pengajuan retur ditolak admin" }}</option>
-                          <option value="Barang retur telah diterima admin">{{ "Barang retur telah diterima admin" }}</option>
-                          <option value="Harap tunggu pengembalian dana dari admin">{{ "Harap tunggu pengembalian dana dari admin" }}</option>
-                      </select> 
+                    <div class="col-sm-8 contentUbahStatus">
+                       {{--  --}}
                     </div>
                 </div>
               </form>

@@ -27,10 +27,11 @@ class CreatePemesananTable extends Migration
             $table->date('tanggal_jatuh_tempo');
             $table->double('diskon')->default(0);
             $table->double('ppn')->default(0);
-            $table->enum('metode_pembayaran', ['Transfer Bank', 'Tunai']);
-            $table->enum('status_bayar', ['Belum Lunas', 'Sudah Lunas', 'Lunas Sebagian']);
+            $table->enum('metode_pembayaran', ['Transfer bank', 'Tunai']);
+            $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas', 'Lunas sebagian']);
             $table->string('status');
-            $table->double('total');
+            $table->double('total_belum_dibayar');
+            $table->double('total_sudah_dibayar');
         });
     }
 

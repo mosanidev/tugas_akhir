@@ -49,6 +49,14 @@
                         Rp   <input type="number" id="harga_beli" class="form-control d-inline ml-1" style="width: 94.2%;" name="harga_beli" step="100" min="500">
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Diskon Potongan Harga</p>
+                    <div class="col-sm-8">
+                        Rp   <input type="number" id="diskon_potongan_harga" class="form-control d-inline ml-1" style="width: 94.2%;" value="0" name="diskon_potongan_harga" step="100" min="0">
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Kuantitas</p>
                     <div class="col-sm-8">
@@ -81,10 +89,22 @@
         if($('#kuantitas').val() != "")
         {
             let hargaBeli = parseInt($('#harga_beli').val());
+            let diskon = parseInt($('#diskon_potongan_harga').val());
             let kuantitas = parseInt($('#kuantitas').val());
-            
-            $('#subtotal').val(convertAngkaToRupiah(hargaBeli*kuantitas));
+
+            $('#subtotal').val(convertAngkaToRupiah((hargaBeli-diskon)*kuantitas));
         }
+
+    });
+
+    $('#diskon_potongan_harga').on('change', function() {
+
+        let hargaBeli = parseInt($('#harga_beli').val());
+        let diskon = parseInt($('#diskon_potongan_harga').val());
+        let kuantitas = parseInt($('#kuantitas').val());
+
+        $('#subtotal').val(convertAngkaToRupiah((hargaBeli-diskon)*kuantitas));
+
 
     });
 
@@ -107,9 +127,10 @@
         if($('#harga_beli').val() != "")
         {
             let hargaBeli = parseInt($('#harga_beli').val());
+            let diskon = parseInt($('#diskon_potongan_harga').val());
             let kuantitas = parseInt($('#kuantitas').val());
 
-            $('#subtotal').val(convertAngkaToRupiah(hargaBeli*kuantitas));
+            $('#subtotal').val(convertAngkaToRupiah((hargaBeli-diskon)*kuantitas));
         }
 
     });
@@ -141,8 +162,9 @@
                 "barang_nama": $('#barang :selected').attr("data-nama"),
                 "tanggal_kadaluarsa": tglKadaluarsa,
                 "harga_beli": $('#harga_beli').val(),
+                "diskon_potongan_harga": $('#diskon_potongan_harga').val(),
                 "kuantitas": $('#kuantitas').val(),
-                "subtotal": parseInt($('#harga_beli').val())*parseInt($('#kuantitas').val())
+                "subtotal": (parseInt($('#harga_beli').val())-parseInt($('#diskon_potongan_harga').val()))*parseInt($('#kuantitas').val())
             });
 
             $('#modalTambahBarangDibeli').modal('toggle');

@@ -84,7 +84,11 @@ class AdminPenerimaanPesananController extends Controller
                                             'tanggal' => $request->tanggal_terima
                                         ]);
 
-        $pembelian_id = DB::table('pembelian')
+        
+
+        if($request->status_bayar == "Belum lunas")
+        {
+            $pembelian_id = DB::table('pembelian')
                             ->insertGetId([
                                 'supplier_id' => $request->supplier_id,
                                 'tanggal' => $request->tanggal_terima,
@@ -94,9 +98,49 @@ class AdminPenerimaanPesananController extends Controller
                                 'ppn' => $request->ppn,
                                 'metode_pembayaran' => $request->metode_pembayaran,
                                 'status_bayar' => $request->status_bayar,
-                                'status_retur' => 'Tidak Ada Retur',
-                                'total' => $request->total
+                                'status_retur' => 'Tidak ada retur',
+                                'total_belum_dibayar' => $request->total,
+                                'total_sudah_dibayar' => 0,
                             ]);
+            
+        }
+        else if ($request->status_bayar == "Sudah lunas")
+        {
+
+            $pembelian_id = DB::table('pembelian')
+                                ->insertGetId([
+                                    'supplier_id' => $request->supplier_id,
+                                    'tanggal' => $request->tanggal_terima,
+                                    'users_id' => auth()->user()->id,
+                                    'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                                    'diskon' => $request->diskon,
+                                    'ppn' => $request->ppn,
+                                    'metode_pembayaran' => $request->metode_pembayaran,
+                                    'status_bayar' => $request->status_bayar,
+                                    'status_retur' => 'Tidak ada retur',
+                                    'total_belum_dibayar' => 0,
+                                    'total_sudah_dibayar' => $request->total,
+                                    'total_sudah_dibayar' => 0,
+                                ]);
+        }
+        else if ($request->status_bayar == "Lunas sebagian")
+        {
+
+            $pembelian_id = DB::table('pembelian')
+                            ->insertGetId([
+                                'supplier_id' => $request->supplier_id,
+                                'tanggal' => $request->tanggal_terima,
+                                'users_id' => auth()->user()->id,
+                                'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                                'diskon' => $request->diskon,
+                                'ppn' => $request->ppn,
+                                'metode_pembayaran' => $request->metode_pembayaran,
+                                'status_bayar' => $request->status_bayar,
+                                'status_retur' => 'Tidak ada retur',
+                                'total_belum_dibayar' => $request->total_belum_dibayar,
+                                'total_sudah_dibayar' => $request->total_sudah_dibayar,
+                            ]);
+        }
                                         
         $barang_diterima = json_decode($request->barang_diterima, true);
 
@@ -127,6 +171,7 @@ class AdminPenerimaanPesananController extends Controller
                                             'barang_id' => $barang_diterima[$i]['barang_id'],
                                             'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
                                             'kuantitas' => $barang_diterima[$i]['kuantitas_terima'],
+                                            'diskon_potongan_harga' => $barang_diterima[$i]['diskon_potongan_harga'],
                                             'harga_beli' => $barang_diterima[$i]['harga_pesan'],
                                             'subtotal' => $barang_diterima[$i]['subtotal']
                                         ]);

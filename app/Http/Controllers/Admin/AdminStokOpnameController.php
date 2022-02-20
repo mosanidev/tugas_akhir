@@ -162,6 +162,13 @@ class AdminStokOpnameController extends Controller
      */
     public function show($id)
     {
+        $history_edit = DB::table('history_edit')
+                            ->select('history_edit.*', 'users.nama_depan', 'users.nama_belakang')
+                            ->where('edit_id', '=', $id)
+                            ->where('keterangan', '=', 'stok_opname')
+                            ->join('users', 'users.id', '=', 'history_edit.users_id')
+                            ->get();
+
         $stok_opname = DB::table('stok_opname')
                         ->select('stok_opname.id as nomor', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang', 'stok_opname.lokasi_stok')
                         ->join('users', 'stok_opname.users_id', '=', 'users.id')
@@ -181,7 +188,7 @@ class AdminStokOpnameController extends Controller
                                 ->where('detail_stok_opname.stok_opname_id', '=', $id)
                                 ->get();
 
-        return view('admin.stok_opname.lihat', ['stok_opname' => $stok_opname, 'detail_stok_opname' => $detail_stok_opname]);
+        return view('admin.stok_opname.lihat', ['stok_opname' => $stok_opname, 'detail_stok_opname' => $detail_stok_opname, 'history_edit' => $history_edit]);
     }
 
     /**
@@ -290,6 +297,8 @@ class AdminStokOpnameController extends Controller
 
     public function updateDetailStokOpname(Request $request, $id)
     {
+        $this->reset($id, $request->lokasi_stok);
+
         $dataBarang = json_decode($request->barang, true);
 
         for($i = 0; $i < count((array) $dataBarang); $i++)
@@ -321,12 +330,20 @@ class AdminStokOpnameController extends Controller
             }
         }
 
+        $history_edit = DB::table('history_edit')
+                            ->insert([
+                                'users_id' => auth()->user()->id,
+                                'tanggal' => \Carbon\Carbon::now(),
+                                'edit_id' => $id,
+                                'keterangan' => 'stok_opname'
+                            ]);
+
         return redirect()->route('stok_opname.index')->with(['success' => 'Data stok opname berhasil diubah']);
     }
 
     public function editStokOpname(Request $request, $id)
     {
-        $this->reset($id, $request->lokasi_stok);
+        // $this->reset($id, $request->lokasi_stok);
 
         $stokOpname = DB::table('stok_opname')
                             ->select('stok_opname.*', 'users.nama_depan', 'users.nama_belakang')
@@ -358,42 +375,40 @@ class AdminStokOpnameController extends Controller
             if($stokOpname[0]->lokasi_stok == "Gudang")
             {
                 $detail_stok_opname = DB::table('detail_stok_opname')
-                                        ->select('detail_stok_opname.barang_id',
-                                                'barang.kode',
-                                                'barang.nama',
+                                        ->select('detail_stok_opname.barang_id', 
+                                                'detail_stok_opname.tanggal_kadaluarsa', 
                                                 'detail_stok_opname.stok_di_sistem',
-                                                'barang_has_kadaluarsa.jumlah_stok_di_gudang as stok_di_toko',
+                                                'detail_stok_opname.stok_di_toko',
                                                 'detail_stok_opname.jumlah_selisih',
-                                                'detail_stok_opname.tanggal_kadaluarsa',
-                                                'detail_stok_opname.keterangan')
-                                        ->where('stok_opname_id', '=', $id)
-                                        ->join('barang', 'barang.id', '=', 'detail_stok_opname.barang_id')
-                                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_stok_opname.tanggal_kadaluarsa')
+                                                'detail_stok_opname.keterangan',
+                                                'barang.kode',
+                                                'barang.nama')
+                                        ->join('barang', 'detail_stok_opname.barang_id', 'barang.id')
+                                        ->where('detail_stok_opname.stok_opname_id', '=', $id)
                                         ->get();
-
             }
             else 
             {
                 $detail_stok_opname = DB::table('detail_stok_opname')
-                                        ->select('detail_stok_opname.barang_id',
-                                                'barang.kode',
-                                                'barang.nama',
+                                        ->select('detail_stok_opname.barang_id', 
+                                                'detail_stok_opname.tanggal_kadaluarsa', 
                                                 'detail_stok_opname.stok_di_sistem',
-                                                'barang_has_kadaluarsa.jumlah_stok_di_rak as stok_di_toko',
+                                                'detail_stok_opname.stok_di_toko',
                                                 'detail_stok_opname.jumlah_selisih',
-                                                'detail_stok_opname.tanggal_kadaluarsa',
-                                                'detail_stok_opname.keterangan')
-                                        ->where('stok_opname_id', '=', $id)
-                                        ->join('barang', 'barang.id', '=', 'detail_stok_opname.barang_id')
-                                        ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_stok_opname.tanggal_kadaluarsa')
+                                                'detail_stok_opname.keterangan',
+                                                'barang.kode',
+                                                'barang.nama')
+                                        ->join('barang', 'detail_stok_opname.barang_id', 'barang.id')
+                                        ->where('detail_stok_opname.stok_opname_id', '=', $id)
                                         ->get();
+
             }
-            
 
             return view('admin.stok_opname.ubah', ['stok_opname' => $stokOpname, 'barangHasKadaluarsa' => $barangHasKadaluarsa, 'barang' => $barang, 'detail_stok_opname' => $detail_stok_opname])->with(['success' => 'Data transfer barang berhasil diubah. Silahkan lengkapi barang yang ingin dilakukan proses stok opname']);
         }
         else if($request->keterangan == "Lokasi stok tidak sama")
         {
+            $this->reset($id, $request->lokasi_stok);
             return view('admin.stok_opname.ubah', ['stok_opname' => $stokOpname, 'barangHasKadaluarsa' => $barangHasKadaluarsa, 'barang' => $barang, 'detail_stok_opname' => null])->with(['success' => 'Data transfer barang berhasil diubah. Silahkan lengkapi barang yang ingin dilakukan proses stok opname']);
         }
         
@@ -412,6 +427,10 @@ class AdminStokOpnameController extends Controller
         $hapus = DB::table('stok_opname')
                     ->where('id', '=', $id)
                     ->delete();
+
+        $deleteHistoryEdit = DB::table('history_edit')
+                                ->where('edit_id', '=', $id)
+                                ->delete();
 
         return redirect()->route('stok_opname.index')->with(['success' => 'Data stok opname berhasil dihapus']);
 

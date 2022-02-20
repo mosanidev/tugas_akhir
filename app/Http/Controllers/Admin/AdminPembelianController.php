@@ -16,7 +16,11 @@ class AdminPembelianController extends Controller
      */
     public function index()
     {
-        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->get();
+        $pembelian = DB::table('pembelian')
+                        ->select('pembelian.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                        ->get();
+                        
         $supplier = DB::table('supplier')->get();
 
         return view('admin.pembelian.index', ['pembelian'=>$pembelian, 'supplier'=>$supplier]);
@@ -43,7 +47,9 @@ class AdminPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        $idPembelian = DB::table('pembelian')
+        if($request->status_bayar == "Belum lunas")
+        {
+            $idPembelian = DB::table('pembelian')
                             ->insertGetId([
                                 'nomor_nota' => $request->nomor_nota,
                                 'supplier_id' => $request->supplier_id,
@@ -52,10 +58,62 @@ class AdminPembelianController extends Controller
                                 'diskon' => $request->diskon,
                                 'ppn' => $request->ppn,
                                 'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status,
-                                'total' => $request->total,
+                                'status_bayar' => $request->status_bayar,
+                                'total_belum_dibayar' => $request->total,
                                 'users_id' => auth()->user()->id
                             ]);
+        }
+        else if ($request->status_bayar == "Sudah lunas")
+        {
+            // $idPemesanan = DB::table('pemesanan')
+            //                     ->insertGetId([
+            //                         'nomor_nota' => $request->nomor_nota,
+            //                         'supplier_id' => $request->supplier_id,
+            //                         'tanggal' => $request->tanggal_pemesanan,
+            //                         'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
+            //                         'diskon' => $request->diskon,
+            //                         'ppn' => $request->ppn,
+            //                         'metode_pembayaran' => $request->metodePembayaran,
+            //                         'status_bayar' => $request->status_bayar,
+            //                         'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+            //                         'status' => 'Belum diterima di gudang',
+            //                         'total_belum_dibayar' => 0,
+            //                         'total_sudah_dibayar' => $request->total_belum_dibayar,
+            //                         'users_id' => auth()->user()->id
+            //                     ]);
+
+            $idPembelian = DB::table('pembelian')
+                            ->insertGetId([
+                                'nomor_nota' => $request->nomor_nota,
+                                'supplier_id' => $request->supplier_id,
+                                'tanggal' => $request->tanggalBuat,
+                                'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
+                                'diskon' => $request->diskon,
+                                'ppn' => $request->ppn,
+                                'metode_pembayaran' => $request->metodePembayaran,
+                                'status_bayar' => $request->status_bayar,
+                                'total_belum_dibayar' => 0,
+                                'total_sudah_dibayar' => $request->total_belum_dibayar,
+                                'users_id' => auth()->user()->id
+                            ]);
+        }
+        else if ($request->status_bayar == "Lunas sebagian")
+        {
+            $idPembelian = DB::table('pembelian')
+                            ->insertGetId([
+                                'nomor_nota' => $request->nomor_nota,
+                                'supplier_id' => $request->supplier_id,
+                                'tanggal' => $request->tanggalBuat,
+                                'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
+                                'diskon' => $request->diskon,
+                                'ppn' => $request->ppn,
+                                'metode_pembayaran' => $request->metodePembayaran,
+                                'status_bayar' => $request->status_bayar,
+                                'total_belum_dibayar' => $request->total_belum_dibayar,
+                                'total_sudah_dibayar' => $request->total_sudah_dibayar,
+                                'users_id' => auth()->user()->id
+                            ]);
+        }
 
         $dataBarang = json_decode($request->barang, true);
 
@@ -95,6 +153,7 @@ class AdminPembelianController extends Controller
                                                 'kuantitas'             => $dataBarang[$i]['kuantitas'],
                                                 'tanggal_kadaluarsa'    => $tglKadaluarsa,
                                                 'harga_beli'            => $dataBarang[$i]['harga_beli'],
+                                                'diskon_potongan_harga' => $dataBarang[$i]['diskon_potongan_harga'],
                                                 'subtotal'              => $dataBarang[$i]['subtotal']
                                             ]);
 

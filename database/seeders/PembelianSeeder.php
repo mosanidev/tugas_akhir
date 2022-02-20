@@ -25,10 +25,9 @@ class PembelianSeeder extends Seeder
                 'tanggal_jatuh_tempo'       => '2022-01-28',
                 'diskon'                    => 0,
                 'ppn'                       => '0',
-                'metode_pembayaran'         => 'Transfer Bank',
-                'status_bayar'              => 'Belum Lunas',
-                // 'status'                    => 'Draft',
-                'total'                     => 10000
+                'metode_pembayaran'         => 'Transfer bank',
+                'status_bayar'              => 'Belum lunas',
+                'total_belum_dibayar'       => 10000
             ]
         );
 
@@ -42,9 +41,8 @@ class PembelianSeeder extends Seeder
                 'diskon'                    => 0,
                 'ppn'                       => '0',
                 'metode_pembayaran'         => 'Tunai',
-                'status_bayar'              => 'Belum Lunas',
-                // 'status'                    => 'Draft',
-                'total'                     => 2215900
+                'status_bayar'              => 'Belum lunas',
+                'total_belum_dibayar'       => 2215900
             ]
         );
         
