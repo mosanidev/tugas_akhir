@@ -105,12 +105,20 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir</label>
+                <label class="col-sm-4 col-form-label">Total (dikurangi diskon + PPN))</label>
                 <div class="col-sm-8">
                     <input type="hidden" class="form-control d-inline ml-1" value="{{ $pemesanan[0]->total-$pemesanan[0]->diskon-$pemesanan[0]->ppn }}" min="500" id="totalAkhir" name="total_akhir" readonly/>
                     <input type="text" class="form-control" id="totalAkhirRupiah" readonly>
                 </div>
             </div>
+        </div>
+            {{-- <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Sisa belum dibayar</label>
+              <div class="col-sm-8">
+                  <input type="hidden" class="form-control d-inline ml-1" value="{{ $pemesanan[0]->total_belum_dibayar-$pemesanan[0]->total_sudah_dibayar }}" min="500" id="totalAkhir" name="total_akhir" readonly/>
+                  <input type="text" class="form-control" id="totalAkhirRupiah" readonly>
+              </div>
+          </div> --}}
 
             <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangDiterima" id="btnTambah">Tambah</button>
 

@@ -30,8 +30,7 @@ class CreatePemesananTable extends Migration
             $table->enum('metode_pembayaran', ['Transfer bank', 'Tunai']);
             $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas', 'Lunas sebagian']);
             $table->string('status');
-            $table->double('total_belum_dibayar');
-            $table->double('total_sudah_dibayar');
+            $table->double('total');
         });
     }
 

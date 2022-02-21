@@ -28,7 +28,7 @@
                             <tr>
                               <th style="width: 20%;">Nomor Stok Opname</th>
                               <th>Tanggal</th>
-                              {{-- <th>Pembuat</th> --}}
+                              <th>Pembuat</th>
                               <th>Lokasi Stok</th>
                               <th>Aksi</th>
                             </tr>
@@ -38,12 +38,12 @@
                              <tr>
                                  <td>{{ sprintf("%04d", $item->nomor) }}</td>
                                  <td>{{ $item->tanggal }}</td>
-                                 {{-- <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td> --}}
+                                 <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                                  <td>{{ $item->lokasi_stok }}</td>
                                  <td>
                                     <a href="{{ route('stok_opname.show', ['stok_opname' => $item->nomor]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
-                                    <button type="button" class="btn btn-warning btn-ubah" data-id="{{$item->nomor}}" data-toggle="modal" data-target="#modalUbahStokOpname"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="btn btn-danger btn-hapus" data-id="{{$item->nomor}}" data-lokasi-stok="{{$item->lokasi_stok}}" data-toggle="modal" data-target="#modalKonfirmasiHapusStokOpname"><i class="fas fa-trash"></i></button>
+                                    {{-- <button type="button" class="btn btn-warning btn-ubah" data-id="{{$item->nomor}}" data-toggle="modal" data-target="#modalUbahStokOpname"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn btn-danger btn-hapus" data-id="{{$item->nomor}}" data-lokasi-stok="{{$item->lokasi_stok}}" data-toggle="modal" data-target="#modalKonfirmasiHapusStokOpname"><i class="fas fa-trash"></i></button> --}}
                                  </td>
                              </tr>
                             @endforeach

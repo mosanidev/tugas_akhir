@@ -62,18 +62,55 @@
                   <p>{{ $pembelian[0]->status_retur }}</p>   
                 </div>
               </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total</label>
-                <div class="col-sm-8">
-                  <p>{{ "Rp " . number_format($pembelian[0]->total,0,',','.') }}</p>   
+
+
+            @if($pembelian[0]->status_bayar == "Lunas sebagian")
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Total</label>
+                    <div class="col-sm-8">
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar+$pembelian[0]->total_sudah_dibayar,0,',','.') }}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir</label>
-                <div class="col-sm-8">
-                  <p>{{ "Rp " . number_format($pembelian[0]->total-$pembelian[0]->diskon-$pembelian[0]->ppn,0,',','.') }}</p>  
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Total (dikurangi diskon & ppn)</label>
+                    <div class="col-sm-8">
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar-$pembelian[0]->diskon-$pembelian[0]->ppn+$pembelian[0]->total_sudah_dibayar,0,',','.') }}</p>
+                    </div>
                 </div>
-            </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
+                    <div class="col-sm-8">
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_sudah_dibayar,0,',','.') }}</p>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Sisa belum dibayar</label>
+                    <div class="col-sm-8">
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar-$pembelian[0]->diskon-$pembelian[0]->ppn,0,',','.') }}</p>
+                    </div>
+                </div>
+
+            @else 
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Total</label>
+                    <div class="col-sm-8">
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar,0,',','.') }}</p>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Total (dikurangi diskon & ppn)</label>
+                    <div class="col-sm-8">
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar-$pembelian[0]->diskon-$pembelian[0]->ppn,0,',','.') }}</p>
+                    </div>
+                </div>
+
+            @endif
 
             <div class="card shadow my-4">
                 <div class="card-header py-3">

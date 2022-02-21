@@ -29,7 +29,7 @@ class PemesananSeeder extends Seeder
             'metode_pembayaran' => 'Transfer bank',
             'status_bayar' => 'Belum lunas',
             'status' => 'Belum diterima di gudang',
-            'total_belum_dibayar' => 10500
+            'total' => 10500
         ]);
     }
 }

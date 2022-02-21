@@ -115,6 +115,7 @@ class AdminReturPembelianController extends Controller
     {
         if($request->jenis == "Pembelian")
         {   
+
             $retur_pembelian = DB::table('retur_pembelian')
                                 ->select('retur_pembelian.*', 'pembelian.nomor_nota as nomor_nota_pembelian', 'pembelian.tanggal as tanggal_buat_nota_beli', 'pembelian.tanggal_jatuh_tempo as tanggal_jatuh_tempo_beli', 'pembelian.status_bayar as status_pembelian', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) AS nama_pembuat"))
                                 ->where('retur_pembelian.id', '=', $id)

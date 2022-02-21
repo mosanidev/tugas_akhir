@@ -89,9 +89,8 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total</label>
                 <div class="col-sm-8">
-                    <input type="hidden" value="0" id="totalBelumDibayarAwal">
-                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" name="total_belum_dibayar" id="totalBelumDibayar" readonly/>
-                    <input type="text" class="form-control" id="totalBelumDibayarRupiah" value="Rp 0" readonly>
+                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" name="total" id="total" readonly/>
+                    <input type="text" class="form-control" id="totalRupiah" value="Rp 0" readonly>
                 </div>
             </div>
             <div class="form-group row">
@@ -102,6 +101,24 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Uang muka</label>
+                <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" name="uang_muka" id="uangMuka" value="0" min="0" step="100" style="width: 95.8%;" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total terbayar</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="totalTerbayar" name="total_terbayar" value="Rp 0" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Sisa belum terbayar</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="sisaBelumTerbayar" name="sisa_belum_terbayar" value="Rp 0" readonly>
+                </div>
+            </div>
+            {{-- <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status Bayar</label>
                 <div class="col-sm-8">
                   <select class="form-control" name="status_bayar" id="selectStatusBayar">
@@ -111,13 +128,7 @@
                       <option value="Lunas sebagian">Lunas sebagian</option>
                   </select> 
                 </div>
-              </div>
-            <div class="form-group row d-none divTotalSudahDibayar">
-                <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
-                <div class="col-sm-8">
-                    Rp <input type="number" class="form-control d-inline ml-1" id="totalSudahDibayar" name="total_sudah_dibayar" value="0" min="0" step="100" style="width: 95.8%;" required>
-                </div>
-            </div>
+            </div> --}}
 
             <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangDipesan" id="btnTambah">Tambah</button>
 
@@ -226,21 +237,21 @@
             {
                 toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
             }
-            else if ($('#selectStatusBayar')[0].selectedIndex == 0)
-            {
-                toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
-            }
+            // else if ($('#selectStatusBayar')[0].selectedIndex == 0)
+            // {
+            //     toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
+            // }
             else if(barangDipesan.length == 0)
             {
                 toastr.error("Harap pilih barang yang dipesan terlebih dahulu", "Error", toastrOptions);
             }
-            else if($('#selectStatusBayar').val() == "Lunas sebagian" && parseInt($('#totalSudahDibayar').val()) <= 0)
+            else if(parseInt($('#total').val()) < 0)
             {
-                toastr.error("Total yang sudah dibayar tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
+                toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
             }
-            else if(parseInt($('#totalAkhir').val()) <= 0)
+            else if(parseInt($('#totalAkhir').val()) < 0)
             {
-                toastr.error("Total yang belum dibayar tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
+                toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
             }
             else 
             {
@@ -249,17 +260,17 @@
 
         });
 
-        $('.btnIyaSubmit').on('click', function() {
+    });
 
-            $('#modalKonfirmasiPemesanan').modal('toggle');
+    $('.btnIyaSubmit').on('click', function() {
 
-            $('#data_barang').val(JSON.stringify(barangDipesan));
+        $('#modalKonfirmasiPemesanan').modal('toggle');
 
-            $('#formTambah').submit();
+        $('#data_barang').val(JSON.stringify(barangDipesan));
 
-            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
-        });
+        $('#formTambah').submit();
 
+        $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
     });
 
     $('#btnTambah').on('click', function() {
@@ -309,12 +320,9 @@
         let totalAkhir = total-diskon-ppn;
 
         $('#totalAkhir').val(totalAkhir);
-        $('#totalBelumDibayar').val(total);
-        $('#totalBelumDibayarAwal').val(total);
+        $('#total').val(total);
 
-        $('#totalSudahDibayar').attr('max', totalAkhir);
-
-        $('#totalBelumDibayarRupiah').val(convertAngkaToRupiah(total));
+        $('#totalRupiah').val(convertAngkaToRupiah(total));
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
 
         $('#contentTable').html(rowTable);
@@ -330,10 +338,11 @@
 
     $('#inputDiskon').on('change', function() {
 
-        let total = parseInt($('#totalBelumDibayar').val());
+        let total = parseInt($('#total').val());
 
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
+        
         let totalAkhir = total-diskon-ppn;
 
         $('#totalAkhir').val(totalAkhir);
@@ -343,7 +352,7 @@
 
     $('#inputPPN').on('change', function() {
 
-        let total = parseInt($('#totalBelumDibayar').val());
+        let total = parseInt($('#total').val());
 
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());

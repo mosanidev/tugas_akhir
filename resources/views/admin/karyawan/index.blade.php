@@ -216,7 +216,14 @@
         return hasil;
       }
 
-      showActiveSession();
+      if("{{ session('success') }}")
+      {
+        toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+      }
+      else if("{{ session('error') }}")
+      {
+        toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
+      }
 
       function checkInputOnFormEdit()
       {

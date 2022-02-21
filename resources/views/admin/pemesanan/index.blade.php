@@ -56,7 +56,7 @@
                           <td>{{ $item->nomor_nota }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ "Rp " . number_format(($item->total_belum_dibayar+$item->total_sudah_dibayar)-$item->diskon-$item->ppn ,0,',','.') }}</td>
+                          <td>{{ "Rp " . number_format($item->total-$item->diskon-$item->ppn ,0,',','.') }}</td>
                           <td>{{ $item->status }}</td>
                           <td>
 
@@ -77,7 +77,7 @@
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
-@include('admin.pembelian.modal.confirm_delete')
+@include('admin.pemesanan.modal.confirm_delete')
 @include('admin.pembelian.modal.info')
 
 @if(session('errors'))
@@ -144,6 +144,17 @@
       $('#datepickerTglJatuhTempoUbah').val("");
       toastr.error("Harap tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
     }
+
+  });
+
+  $('.btnHapus').on('click', function() {
+
+    let nomorNota = $(this).attr('data-nomor-nota');
+    let id = $(this).attr('data-id');
+
+    $('.nomorNotaHapus').html(nomorNota);
+
+    $('#formHapus').attr('action', '/admin/pemesanan/'+id);
 
   });
 
@@ -260,9 +271,21 @@
 
       $('.nomorNotaPembelian').html(nomorNota);
 
-      $('#formHapus').attr("action", "/admin/pembelian/"+id);
+      $('#formHapus').attr("action", "/admin/pemesanan/"+id);
 
     });
+
+    $(".btnIyaHapus").on('click', function() {
+
+      $('#formHapus').submit();
+
+      $('#modalKonfirmasiHapusPemesanan').modal('toggle');
+
+      $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+    });
+
+
 
     $('.btnInfo').on('click', function(){
 

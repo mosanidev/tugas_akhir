@@ -932,6 +932,8 @@ class OrderController extends Controller
     {
         $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
 
+        $riwayat_pengiriman = null;
+
         $pengiriman = null;
 
         if($transaksi[0]->metode_transaksi == "Dikirim ke alamat")
@@ -954,14 +956,18 @@ class OrderController extends Controller
                             ->groupBy('barang.id')
                             ->get();
 
-            // $barang = DB::table('detail_penjualan')
-            //             ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', 'shipper.nama as nama_shipper')
-            //             ->where('detail_penjualan.penjualan_id', '=', $id)
-            //             ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
-            //             ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
-            //             ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
-            //             ->join('shipper', 'pengiriman.kode_shipper','=','shipper.kode_shipper')
-            //             ->get();
+            if($pengiriman[0]->nomor_resi != null)
+            {
+                $cek_riwayat_pengiriman = Http::withHeaders([
+                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+                    ])->get("https://api.biteship.com/v1/trackings/$pengiriman[0]->nomor_resi/couriers/$pengiriman[0]->kode_shipper")->body();
+
+                if($cek_riwayat_pengiriman->success == true)
+                {
+                    // tracking via biteship melalui nomer resi
+                    $riwayat_pengiriman = json_decode($riwayat_pengiriman);
+                } 
+            }
 
         }
         else if ($transaksi[0]->metode_transaksi == "Ambil di toko")
@@ -993,9 +999,33 @@ class OrderController extends Controller
                         ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
                         ->groupBy('barang.id')
                         ->get();
+
+            $riwayat_pengiriman = [];
+
+            foreach($pengiriman as $item)
+            {
+                if($item->nomor_resi != null)
+                {
+                    $cek_riwayat_pengiriman = Http::withHeaders([
+                        'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+                        ])->get("https://api.biteship.com/v1/trackings/$item->nomor_resi/couriers/$item->kode_shipper")->body();
+    
+                    if($cek_riwayat_pengiriman->success == true)
+                    {
+                        // tracking via biteship melalui nomer resi
+                        $hasil_riwayat_pengiriman = Http::withHeaders([
+                            'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+                            ])->get("https://api.biteship.com/v1/trackings/$pembelian[0]->nomor_resi/couriers/$pembelian[0]->kode_shipper")->body();
+
+                        array_push($riwayat_pengiriman, json_decode($hasil_riwayat_pengiriman));
+                    }
+                }
+            }
+
+            
         }
 
-        return response()->json(['transaksi'=>$transaksi, 'pengiriman' => $pengiriman, 'barang'=>$barang]);
+        return response()->json(['transaksi'=>$transaksi, 'pengiriman' => $pengiriman, 'barang'=>$barang, 'riwayat_pengiriman'=> $riwayat_pengiriman]);
 
 
     }

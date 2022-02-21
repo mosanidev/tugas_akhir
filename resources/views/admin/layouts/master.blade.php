@@ -112,7 +112,7 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item d-none">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePenjualan"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
@@ -126,6 +126,13 @@
 
                     </div>
                 </div>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('penjualan.index') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Penjualan Online</span></a>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
@@ -187,8 +194,8 @@
                 <div id="collapseUtilitiesAnggota" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{{ route('anggota.show') }}">Daftar Anggota Kopkar</a>
                         <a class="collapse-item" href="{{ route('anggota.pembelian') }}">Pembelian</a>
-                        {{-- <a class="collapse-item" href="{{ route('anggota.hutang') }}">Hutang</a> --}}
                     </div>
                 </div>
             </li>
@@ -210,7 +217,6 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -228,15 +234,14 @@
 
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profil
                                 </a>
-                            
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
                             </div>
                         </li>
 

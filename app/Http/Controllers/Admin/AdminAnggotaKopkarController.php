@@ -65,4 +65,13 @@ class AdminAnggotaKopkarController extends Controller
 
         return view('admin.anggota_kopkar.hutang', ['anggota' => $daftarAnggota, 'anggotaBeli' => $anggotaBeli]);
     }
+
+    public function show()
+    {
+        $daftarAnggota = DB::table('users')
+                            ->where('jenis', '=', 'Anggota_Kopkar')
+                            ->get();
+
+        return view('admin.anggota_kopkar.show', ['anggota' => $daftarAnggota]);
+    }
 }

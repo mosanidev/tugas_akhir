@@ -53,64 +53,22 @@ class AdminPemesananController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->status_bayar == "Belum lunas")
-        {
-            $idPemesanan = DB::table('pemesanan')
-                            ->insertGetId([
-                                'nomor_nota' => $request->nomor_nota,
-                                'supplier_id' => $request->supplier_id,
-                                'tanggal' => $request->tanggal_pemesanan,
-                                'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
-                                'diskon' => $request->diskon,
-                                'ppn' => $request->ppn,
-                                'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status_bayar,
-                                'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-                                'status' => 'Belum diterima di gudang',
-                                'total_belum_dibayar' => $request->total,
-                                'total_sudah_dibayar' => 0,
-                                'users_id' => auth()->user()->id
-                            ]);
-        }
-        else if ($request->status_bayar == "Sudah lunas")
-        {
-            $idPemesanan = DB::table('pemesanan')
-                                ->insertGetId([
-                                    'nomor_nota' => $request->nomor_nota,
-                                    'supplier_id' => $request->supplier_id,
-                                    'tanggal' => $request->tanggal_pemesanan,
-                                    'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
-                                    'diskon' => $request->diskon,
-                                    'ppn' => $request->ppn,
-                                    'metode_pembayaran' => $request->metodePembayaran,
-                                    'status_bayar' => $request->status_bayar,
-                                    'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-                                    'status' => 'Belum diterima di gudang',
-                                    'total_belum_dibayar' => 0,
-                                    'total_sudah_dibayar' => $request->total_belum_dibayar,
-                                    'users_id' => auth()->user()->id
-                                ]);
-        }
-        else if ($request->status_bayar == "Lunas sebagian")
-        {
-            $idPemesanan = DB::table('pemesanan')
-                            ->insertGetId([
-                                'nomor_nota' => $request->nomor_nota,
-                                'supplier_id' => $request->supplier_id,
-                                'tanggal' => $request->tanggal_pemesanan,
-                                'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
-                                'diskon' => $request->diskon,
-                                'ppn' => $request->ppn,
-                                'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status_bayar,
-                                'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-                                'status' => 'Belum diterima di gudang',
-                                'total_belum_dibayar' => $request->total_belum_dibayar,
-                                'total_sudah_dibayar' => $request->total_sudah_dibayar,
-                                'users_id' => auth()->user()->id
-                            ]);
-        }
-
+        $idPemesanan = DB::table('pemesanan')
+                        ->insertGetId([
+                            'nomor_nota' => $request->nomor_nota,
+                            'supplier_id' => $request->supplier_id,
+                            'tanggal' => $request->tanggal_pemesanan,
+                            'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
+                            'diskon' => $request->diskon,
+                            'ppn' => $request->ppn,
+                            'metode_pembayaran' => $request->metodePembayaran,
+                            'status_bayar' => 'Belum lunas',
+                            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                            'status' => 'Belum diterima di gudang',
+                            'total' => $request->total,
+                            'users_id' => auth()->user()->id
+                        ]);
+        
         $dataBarang = json_decode($request->barang, true);
 
         for ($i = 0; $i < count((array) $dataBarang); $i++)
@@ -185,6 +143,10 @@ class AdminPemesananController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $destroy = DB::table('pemesanan')
+                    ->where('id', '=', $id)
+                    ->delete();
+
+        return redirect()->route('pemesanan.index')->with(['success' => 'Data pemesanan berhasil dihapus']);
     }
 }

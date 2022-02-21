@@ -34,7 +34,7 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Diskon Potongan Harga</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" id="diskon_potongan_harga" class="form-control d-inline ml-1" style="width: 94.2%;" value="0" name="diskon_potongan_harga" step="100" min="100">
+                        Rp   <input type="number" id="diskon_potongan_harga" class="form-control d-inline ml-1" style="width: 94.2%;" value="0" name="diskon_potongan_harga" step="100" min="0">
                     </div>
                 </div>
 
@@ -56,7 +56,6 @@
                     <p class="col-sm-4 col-form-label">Subtotal</p>
                     <div class="col-sm-8">
                         <input type="text" id="subtotal" class="form-control d-inline ml-1" name="subtotal" min="1" required readonly>
-
                         {{-- Rp   <input type="number" name="subtotal" class="form-control d-inline ml-1" id="subtotal" style="width: 94.2%;" val="" readonly> --}}
                     </div>
                 </div>
@@ -100,9 +99,13 @@
 
     $('#kuantitas').on('change', function() {
 
-        if($('#harga_pesan').val() != "")
+        let hargaPesan = parseInt($('#harga_pesan').val());
+        let diskon = parseInt($('#diskon_potongan_harga').val());
+        let kuantitas = parseInt($('#kuantitas').val());
+        let hargaPesanAkhir = parseInt(convertRupiahToAngka($('#harga_pesan_akhir').val()));
+
+        if(hargaPesan != "" || diskon != "" || kuantitas != "")
         {
-            let harga_pesan_akhir = parseInt(convertRupiahToAngka($('#harga_pesan_akhir').val()));
             let kuantitas = parseInt($('#kuantitas').val());
 
             $('#subtotal').val(convertAngkaToRupiah(harga_pesan_akhir*kuantitas));
@@ -116,9 +119,11 @@
         let diskon = parseInt($('#diskon_potongan_harga').val());
         let kuantitas = parseInt($('#kuantitas').val());
 
-        $('#harga_pesan_akhir').val(convertAngkaToRupiah(hargaPesan-diskon));
-        
-        $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
+        if(hargaPesan != "" || diskon != "" || kuantitas != "")
+        {
+            $('#harga_pesan_akhir').val(convertAngkaToRupiah(hargaPesan-diskon));
+            $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
+        }
 
     });
 
@@ -128,17 +133,23 @@
         let diskon = parseInt($('#diskon_potongan_harga').val());
         let kuantitas = parseInt($('#kuantitas').val());
 
-        $('#harga_pesan_akhir').val(convertAngkaToRupiah(hargaPesan-diskon));
+        if(hargaPesan != "" || diskon != "" || kuantitas != "")
+        {
+            $('#harga_pesan_akhir').val(convertAngkaToRupiah(hargaPesan-diskon));
 
-        $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
-
+            $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
+        }
     });
 
     let barangDipesan = [];
 
     $('#btnTambahBarangDipesan').on('click', function(){
 
-        if(parseInt($('#harga_pesan').val()) > parseInt($('#barang :selected').attr("data-harga-jual")))
+        if($('#barang')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap pilih barang terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#harga_pesan').val()) > parseInt($('#barang :selected').attr("data-harga-jual")))
         {
             toastr.error("Harga pesan " + $('#barang :selected').attr("data-nama") + " harus melebihi harga jual barang yaitu " + convertAngkaToRupiah($('#barang :selected').attr("data-harga-jual")), "Gagal", toastrOptions);
         }
@@ -152,7 +163,11 @@
         }
         else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val() }).length > 0)
         {
-            toastr.error("Mohon maaf barang dengan tanggal kadaluarsa yang sama sudah ada di tabel barang yang dipesan" , "Gagal", toastrOptions);
+            toastr.error("Barang dengan tanggal kadaluarsa yang sama sudah ada di tabel barang yang dipesan" , "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#harga_pesan').val()) - parseInt($('#diskon_potongan_harga').val()) <= 0)
+        {
+            toastr.error("Harga pesan tidak boleh kurang dari 0" , "Gagal", toastrOptions);
         }
         else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val()}).length == 0)
         {

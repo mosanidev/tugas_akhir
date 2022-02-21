@@ -116,6 +116,8 @@
                     },
                     success:function(data) {
 
+                        console.log(data);
+
                         closeLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
 
                         $('#nomorNota').html("Nomor Nota #" + data.transaksi[0].nomor_nota);

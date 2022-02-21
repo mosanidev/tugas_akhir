@@ -325,6 +325,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/anggota/pembelian', [AdminAnggotaKopkarController::class, 'indexPembelian'])->name('anggota.pembelian');
         Route::get('/anggota/pembelian/filter', [AdminAnggotaKopkarController::class, 'filterPembelian'])->name('anggota.pembelian.filter');
 
+        Route::get('/anggota/show', [AdminAnggotaKopkarController::class, 'show'])->name('anggota.show');
+
         Route::get('/anggota/hutang', [AdminAnggotaKopkarController::class, 'indexHutang'])->name('anggota.hutang');
         Route::get('/anggota/hutang/filter', [AdminAnggotaKopkarController::class, 'filterHutang'])->name('anggota.hutang.filter');
 

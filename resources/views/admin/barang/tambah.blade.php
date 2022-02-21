@@ -171,6 +171,15 @@
 
         $(document).ready(function() {
 
+            if("{{ session('error') }}")
+            {
+                toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
+            }
+            else if("{{ session('success') }}")
+            {
+                toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+            }
+
             $('.optkonsinyasi').on('change', function() {
 
                 if($('.optkonsinyasi:checked').val() == 1)

@@ -45,8 +45,8 @@
                         <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                         <td>
                             <a href="{{ route('transfer_barang.show', ['transfer_barang'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
-                            <button type="button" class="btn btn-warning btnUbah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahTransfer"><i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger btn-hapus-transfer" data-id="{{$item->id}}" data-lokasi-tujuan="{{ $item->lokasi_tujuan }}" data-toggle="modal" data-target="#modalKonfirmasiHapusTransferBarang"><i class="fas fa-trash"></i></button>
+                            {{-- <button type="button" class="btn btn-warning btnUbah" data-id="{{ $item->id }}" data-toggle="modal" data-target="#modalUbahTransfer"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn btn-danger btn-hapus-transfer" data-id="{{$item->id}}" data-lokasi-tujuan="{{ $item->lokasi_tujuan }}" data-toggle="modal" data-target="#modalKonfirmasiHapusTransferBarang"><i class="fas fa-trash"></i></button> --}}
                         </td>
                       </tr>
                     @endforeach
