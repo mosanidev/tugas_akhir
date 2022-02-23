@@ -11,39 +11,13 @@
           <div class="modal-body">
             <form method="POST" action="{{ route('retur_pembelian.store') }}"> 
                 @csrf 
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Nomor Nota Retur</p>
-                    <div class="col-sm-8">
-                        <input type="text" name="nomor_nota_retur" id="nomor_nota_retur" class="form-control" required>
-                      </select> 
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Tanggal Retur</p>
-                    <div class="col-sm-8">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglRetur" required>
-                                <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Pembuat</p>
-                    <div class="col-sm-8">
-                        <input type="text" name="pembuat" id="pembuat" value="{{ auth()->user()->id." - ".auth()->user()->nama_depan." ".auth()->user()->nama_belakang }}" class="form-control" readonly>
-                    </div>
-                </div>
                 <div class="form-group row" id="divTampungSelectNotaBeli">
                     <p class="col-sm-4 col-form-label">Nomor Nota</p>
                     <div class="col-sm-8">
                         <select class="form-control" id="selectNotaBeli" name="id_pembelian" required>
                             <option disabled selected>Pilih Nomor Nota Pembelian</option>
                             @foreach($pembelian as $item)
-                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status_bayar }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota }}</option>
+                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status_bayar }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota_dari_supplier }}</option>
                             @endforeach
                         </select>    
                     </div>
@@ -74,6 +48,32 @@
                         </div>
                     </div>
                 </div> 
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Nomor Nota Retur</p>
+                    <div class="col-sm-8">
+                        <input type="text" name="nomor_nota_retur" id="nomor_nota_retur" class="form-control" required>
+                      </select> 
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Tanggal Retur</p>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglRetur" required>
+                                <div class="input-group-append">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Pembuat</p>
+                    <div class="col-sm-8">
+                        <input type="text" name="pembuat" id="pembuat" value="{{ auth()->user()->id." - ".auth()->user()->nama_depan." ".auth()->user()->nama_belakang }}" class="form-control" readonly>
+                    </div>
+                </div>
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Status Pembelian</p>
                     <div class="col-sm-8">

@@ -11,9 +11,15 @@
             @csrf
             <input type="hidden" id="data_barang" value="" name="barang"/>
             <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Nomor Nota</label>
+                <label class="col-sm-4 col-form-label">Nomor Pembelian</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="id" value="{{ $nomor_nota }}" readonly>
+                </div>
+              </div>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Nomor Nota dari Pemasok</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" required>
+                <input type="text" class="form-control" name="nomor_nota_dari_supplier" id="inputNomorNota" required>
               </div>
             </div>
             <div class="form-group row">
@@ -60,6 +66,14 @@
                 </div>
               </div>
               <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total</label>
+                <div class="col-sm-8">
+                    {{-- <input type="hidden" value="0" id="totalAwal"> --}}
+                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="total" name="total" readonly/>
+                    <input type="text" class="form-control" value="Rp 0" id="totalRupiah" readonly>
+                </div>
+            </div>
+              <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Diskon Potongan Harga</label>
                 <div class="col-sm-8">
                   Rp <input type="number" class="form-control d-inline ml-1" name="diskon" value="0" id="inputDiskon" min="0" step="100" style="width: 95.8%;" required>
@@ -72,36 +86,37 @@
                   {{-- <input type="number" class="form-control d-inline mr-1" name="ppn" id="inputPPN" value="0" min="0" step="1" style="width: 96.2%;" required> % --}}
                 </div>
               </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total</label>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Ongkos Kirim</label>
                 <div class="col-sm-8">
-                    <input type="hidden" value="0" id="totalAwal">
-                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="total" name="total_belum_dibayar" readonly/>
-                    <input type="text" class="form-control" id="totalRupiah" readonly>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total (dikurangi diskon + PPN)</label>
-                <div class="col-sm-8">
-                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
-                    <input type="text" class="form-control" id="totalAkhirRupiah" readonly>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Status Bayar</label>
-                <div class="col-sm-8">
-                  <select class="form-control" name="status_bayar" id="selectStatusBayar">
-                      <option disabled selected>Pilih status</option>
-                      <option value="Belum lunas">Belum lunas</option>
-                      <option value="Sudah lunas">Sudah lunas</option>
-                      <option value="Lunas sebagian">Lunas sebagian</option>
-                  </select> 
+                  Rp <input type="number" class="form-control d-inline ml-1" name="ongkos_kirim" id="inputOngkosKirim" value="0" min="0" step="100" style="width: 95.8%;" required>
                 </div>
               </div>
-            <div class="form-group row d-none divTotalSudahDibayar">
-                <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total + Ongkos Kirim - (Diskon Potongan Harga + PPN)) </label>
                 <div class="col-sm-8">
-                    Rp <input type="number" class="form-control d-inline ml-1" id="totalSudahDibayar" name="total_sudah_dibayar" value="0" min="0" step="100" style="width: 95.8%;" required>
+                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
+                    <input type="text" class="form-control" id="totalAkhirRupiah" value="Rp 0" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Uang muka</label>
+                <div class="col-sm-8">
+                    Rp <input type="number" class="form-control d-inline ml-1" name="uang_muka" id="uangMuka" value="0" min="0" step="100" style="width: 95.8%;" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total terbayar</label>
+                <div class="col-sm-8">
+                    <input type="hidden" class="form-control" id="totalTerbayar" name="total_terbayar" value="0" readonly>
+                    <input type="text" class="form-control" id="totalTerbayarRupiah" value="Rp 0" readonly>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
+                <div class="col-sm-8">
+                    <input type="hidden" class="form-control" id="sisaBelumBayar" name="sisa_belum_bayar" value="0" readonly>
+                    <input type="text" class="form-control" id="sisaBelumBayarRupiah" value="Rp 0" readonly>
                 </div>
             </div>
 
@@ -184,7 +199,7 @@
                 if(tglJatuhTempo < tglBuat)
                 {
                     $('#datepickerTglJatuhTempo').val("");
-                    toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+                    toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Gagal", toastrOptions);
                 }
             }
 
@@ -194,27 +209,35 @@
 
             if($('#inputNomorNota').val() == "")
             {
-                toastr.error("Harap isi nomor nota terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap isi nomor nota dari pemasok terlebih dahulu", "Gagal", toastrOptions);
             }
             else if($('#datepickerTglJatuhTempo').val() == "")
             {
-                toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Gagal", toastrOptions);
             }
             else if($('#selectSupplier')[0].selectedIndex == 0)
             {
-                toastr.error("Harap pilih supplier terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap pilih supplier terlebih dahulu", "Gagal", toastrOptions);
             }
             else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
             {
-                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
-            }
-            else if ($('#selectStatusBayar')[0].selectedIndex == 0)
-            {
-                toastr.error("Harap pilih status terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Gagal", toastrOptions);
             }
             else if(barangDibeli.length == 0)
             {
-                toastr.error("Harap pilih barang yang dibeli terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap pilih barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
+            }
+            else if(parseInt($('#total').val()) <= 0)
+            {
+                toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
+            }
+            else if(parseInt($('#totalAkhir').val()) <= 0)
+            {
+                toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
+            }
+            else if(parseInt($('#uangMuka').val()) >= parseInt($('#totalAkhir').val()) )
+            {
+                toastr.error("Uang muka tidak boleh melebihi atau sama dengan total pemesanan", "Error", toastrOptions);
             }
             else 
             {
@@ -325,15 +348,20 @@
                         </tr>`;
         }
 
-        let diskon = parseInt($('#inputDiskon').val());
-        let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = total-diskon-ppn;
-        $('#totalAkhir').val(totalAkhir);
-        $('#total').val(total);
-        $('#totalAwal').val(total);
+        // let diskon = parseInt($('#inputDiskon').val());
+        // let ppn = parseInt($('#inputPPN').val());
+        // let totalAkhir = total-diskon-ppn;
+        // $('#totalAkhir').val(totalAkhir);
+        // $('#total').val(total);
+        // $('#totalAwal').val(total);
 
+        // $('#totalRupiah').val(convertAngkaToRupiah(total));
+        // $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
+
+        $('#total').val(total);
         $('#totalRupiah').val(convertAngkaToRupiah(total));
-        $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
+
+        calculate();
 
         $('#contentTable').html(rowTable);
 
@@ -346,30 +374,92 @@
         implementDataOnTable();
     }
 
-    $('#inputDiskon').on('change', function() {
-
+    function calculate()
+    {
         let total = parseInt($('#total').val());
-
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = total-diskon-ppn;
+        let ongkosKirim = parseInt($('#inputOngkosKirim').val());
+        let uangMuka = parseInt($('#uangMuka').val());
 
+        let totalAkhir = (total + ongkosKirim) - (diskon + ppn);
+
+        $('#sisaBelumBayar').val(totalAkhir);
+        $('#sisaBelumBayarRupiah').val(convertAngkaToRupiah(totalAkhir));
         $('#totalAkhir').val(totalAkhir);
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
+
+        if(uangMuka == 0)
+        {
+            $('#totalTerbayar').val(0);  
+            $('#totalTerbayarRupiah').val(convertAngkaToRupiah(0));
+        }
+        else 
+        {
+            let totalTerbayar =  uangMuka;
+            let sisaBelumBayar = totalAkhir - uangMuka;
+
+            $('#sisaBelumBayar').val(sisaBelumBayar);
+            $('#totalTerbayar').val(totalTerbayar);
+            $('#sisaBelumBayarRupiah').val(convertAngkaToRupiah(sisaBelumBayar));  
+            $('#totalTerbayarRupiah').val(convertAngkaToRupiah(totalTerbayar));
+        }
+
+    }
+
+    $('#uangMuka').on('change', function() {
+
+        if(barangDibeli.length == 0)
+        {
+            toastr.error("Harap menambahkan barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
+            $('#uangMuka').val(0);
+        }
+        else 
+        {
+            calculate();
+        }
+
+    });
+
+    $('#inputDiskon').on('change', function() {
+
+        if(barangDibeli.length == 0)
+        {
+            toastr.error("Harap menambahkan barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
+            $('#inputDiskon').val(0);
+        }
+        else
+        {
+            calculate();
+        }
 
     });
 
     $('#inputPPN').on('change', function() {
 
-        let total = parseInt($('#total').val());
+        if(barangDibeli.length == 0)
+        {
+            toastr.error("Harap menambahkan barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
+            $('#inputPPN').val(0);
+        }
+        else
+        {
+            calculate();
+        }
 
-        let diskon = parseInt($('#inputDiskon').val());
-        let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = total-diskon-ppn;
+    });
 
-        $('#totalAkhir').val(totalAkhir);
-        $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
-        
+    $('#inputOngkosKirim').on('change', function() {
+
+        if(barangDibeli.length == 0)
+        {
+            toastr.error("Harap menambahkan barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
+            $('#inputOngkosKirim').val(0);
+        }
+        else 
+        {
+            calculate();
+        }
 
     });
 

@@ -33,10 +33,21 @@ class AdminPembelianController extends Controller
      */
     public function create()
     {
+        $cariNomorNota = DB::table('pembelian')
+                            ->select(DB::raw('max(pembelian.id) as nomor_nota'))
+                            ->get();
+
+        $nomorNota = $cariNomorNota[0]->nomor_nota;
+
+        if($nomorNota == null)
+        {
+            $nomorNota = 1;
+        }
+
         $supplier = DB::table('supplier')->where('jenis', '=', 'Perusahaan')->get();
         $barang = DB::table('barang')->where('barang_konsinyasi', '=', 0)->get();
 
-        return view('admin.pembelian.tambah', ['supplier'=>$supplier, 'barang'=>$barang]);
+        return view('admin.pembelian.tambah', ['supplier'=>$supplier, 'barang'=>$barang, 'nomor_nota' => $nomorNota]);
     }
 
     /**
@@ -47,73 +58,26 @@ class AdminPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->status_bayar == "Belum lunas")
-        {
-            $idPembelian = DB::table('pembelian')
-                            ->insertGetId([
-                                'nomor_nota' => $request->nomor_nota,
-                                'supplier_id' => $request->supplier_id,
-                                'tanggal' => $request->tanggalBuat,
-                                'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
-                                'diskon' => $request->diskon,
-                                'ppn' => $request->ppn,
-                                'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status_bayar,
-                                'total_belum_dibayar' => $request->total,
-                                'users_id' => auth()->user()->id
-                            ]);
-        }
-        else if ($request->status_bayar == "Sudah lunas")
-        {
-            // $idPemesanan = DB::table('pemesanan')
-            //                     ->insertGetId([
-            //                         'nomor_nota' => $request->nomor_nota,
-            //                         'supplier_id' => $request->supplier_id,
-            //                         'tanggal' => $request->tanggal_pemesanan,
-            //                         'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
-            //                         'diskon' => $request->diskon,
-            //                         'ppn' => $request->ppn,
-            //                         'metode_pembayaran' => $request->metodePembayaran,
-            //                         'status_bayar' => $request->status_bayar,
-            //                         'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-            //                         'status' => 'Belum diterima di gudang',
-            //                         'total_belum_dibayar' => 0,
-            //                         'total_sudah_dibayar' => $request->total_belum_dibayar,
-            //                         'users_id' => auth()->user()->id
-            //                     ]);
+        $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
 
-            $idPembelian = DB::table('pembelian')
-                            ->insertGetId([
-                                'nomor_nota' => $request->nomor_nota,
-                                'supplier_id' => $request->supplier_id,
-                                'tanggal' => $request->tanggalBuat,
-                                'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
-                                'diskon' => $request->diskon,
-                                'ppn' => $request->ppn,
-                                'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status_bayar,
-                                'total_belum_dibayar' => 0,
-                                'total_sudah_dibayar' => $request->total_belum_dibayar,
-                                'users_id' => auth()->user()->id
-                            ]);
-        }
-        else if ($request->status_bayar == "Lunas sebagian")
-        {
-            $idPembelian = DB::table('pembelian')
-                            ->insertGetId([
-                                'nomor_nota' => $request->nomor_nota,
-                                'supplier_id' => $request->supplier_id,
-                                'tanggal' => $request->tanggalBuat,
-                                'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
-                                'diskon' => $request->diskon,
-                                'ppn' => $request->ppn,
-                                'metode_pembayaran' => $request->metodePembayaran,
-                                'status_bayar' => $request->status_bayar,
-                                'total_belum_dibayar' => $request->total_belum_dibayar,
-                                'total_sudah_dibayar' => $request->total_sudah_dibayar,
-                                'users_id' => auth()->user()->id
-                            ]);
-        }
+        $idPembelian = DB::table('pembelian')
+                        ->insertGetId([
+                            'id' => $request->id,
+                            'nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier,
+                            'supplier_id' => $request->supplier_id,
+                            'tanggal' => $request->tanggalBuat,
+                            'diskon' => $request->diskon,
+                            'ppn' => $request->ppn,
+                            'ongkos_kirim' => $request->ongkos_kirim,
+                            'metode_pembayaran' => $request->metodePembayaran,
+                            'status_bayar' => $status_bayar,
+                            'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
+                            'sisa_belum_bayar' => $request->sisa_belum_bayar,
+                            'total' => $request->total,
+                            'uang_muka' => $request->uang_muka,
+                            'total_terbayar' => $request->total_terbayar,
+                            'users_id' => auth()->user()->id
+                        ]);
 
         $dataBarang = json_decode($request->barang, true);
 

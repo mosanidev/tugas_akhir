@@ -23,7 +23,7 @@ class AdminReturPembelianController extends Controller
 
         // select pembelian yang datanya tidak ada di retur pembelian
         $pembelian = DB::table('pembelian')
-                        ->select('pembelian.id', 'pembelian.nomor_nota', 'pembelian.tanggal', 'pembelian.status_bayar', 'pembelian.tanggal_jatuh_tempo', 'pembelian.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
+                        ->select('pembelian.id', 'pembelian.nomor_nota_dari_supplier', 'pembelian.tanggal', 'pembelian.status_bayar', 'pembelian.tanggal_jatuh_tempo', 'pembelian.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
                         ->leftJoin('retur_pembelian', 'retur_pembelian.pembelian_id', '=', 'pembelian.id')
                         ->join('supplier', 'supplier.id', '=', 'pembelian.supplier_id')
                         ->where('retur_pembelian.pembelian_id', '=', null)
@@ -117,7 +117,7 @@ class AdminReturPembelianController extends Controller
         {   
 
             $retur_pembelian = DB::table('retur_pembelian')
-                                ->select('retur_pembelian.*', 'pembelian.nomor_nota as nomor_nota_pembelian', 'pembelian.tanggal as tanggal_buat_nota_beli', 'pembelian.tanggal_jatuh_tempo as tanggal_jatuh_tempo_beli', 'pembelian.status_bayar as status_pembelian', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) AS nama_pembuat"))
+                                ->select('retur_pembelian.*', 'pembelian.nomor_nota_dari_supplier as nomor_nota_pembelian', 'pembelian.tanggal as tanggal_buat_nota_beli', 'pembelian.tanggal_jatuh_tempo as tanggal_jatuh_tempo_beli', 'pembelian.status_bayar as status_pembelian', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) AS nama_pembuat"))
                                 ->where('retur_pembelian.id', '=', $id)
                                 ->join('pembelian', 'pembelian.id', '=', 'retur_pembelian.pembelian_id')
                                 ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
@@ -142,6 +142,7 @@ class AdminReturPembelianController extends Controller
         }
         else // Konsinyasi
         {
+
             $retur_pembelian = DB::table('retur_pembelian')
                                 ->select('retur_pembelian.*', 'konsinyasi.nomor_nota as nomor_nota_pembelian', 'konsinyasi.tanggal_titip as tanggal_buat_nota_beli', 'konsinyasi.tanggal_jatuh_tempo as tanggal_jatuh_tempo_beli', 'konsinyasi.status_bayar as status_pembelian', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) AS nama_pembuat"))
                                 ->where('retur_pembelian.id', '=', $id)

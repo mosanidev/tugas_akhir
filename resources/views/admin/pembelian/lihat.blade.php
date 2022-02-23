@@ -7,11 +7,17 @@
     <h3>Data Pembelian</h3>
 
     <div class="px-2 py-3">
-            <input type="hidden" id="data_barang" value="" name="barang"/>
+            {{-- <input type="hidden" id="data_barang" value="" name="barang"/> --}}
             <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Nomor Nota</label>
+              <label class="col-sm-4 col-form-label">Nomor Pembelian</label>
               <div class="col-sm-8">
-                <p>{{ $pembelian[0]->nomor_nota }}</p>
+                <p>{{ $pembelian[0]->id }}</p>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Nomor Nota dari Pemasok</label>
+              <div class="col-sm-8">
+                <p>{{ $pembelian[0]->nomor_nota_dari_supplier }}</p>
               </div>
             </div>
             <div class="form-group row">
@@ -63,50 +69,35 @@
                 </div>
               </div>
 
+              <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total</label>
+                <div class="col-sm-8">
+                    <p>{{ "Rp " . number_format($pembelian[0]->total,0,',','.') }}</p>
+                </div>
+            </div>
 
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total + Ongkos Kirim - (Diskon Potongan Harga + PPN))  </label>
+                <div class="col-sm-8">
+                    <p>{{ "Rp " . number_format(($pembelian[0]->total+$pembelian[0]->ongkos_kirim)-($pembelian[0]->diskon+$pembelian[0]->ppn),0,',','.') }}</p>
+                </div>
+            </div>
+
+            
             @if($pembelian[0]->status_bayar == "Lunas sebagian")
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar+$pembelian[0]->total_sudah_dibayar,0,',','.') }}</p>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total (dikurangi diskon & ppn)</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar-$pembelian[0]->diskon-$pembelian[0]->ppn+$pembelian[0]->total_sudah_dibayar,0,',','.') }}</p>
-                    </div>
-                </div>
 
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
                     <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_sudah_dibayar,0,',','.') }}</p>
+                        <p>{{ "Rp " . number_format($pembelian[0]->total_terbayar,0,',','.') }}</p>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Sisa belum dibayar</label>
+                    <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
                     <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar-$pembelian[0]->diskon-$pembelian[0]->ppn,0,',','.') }}</p>
-                    </div>
-                </div>
-
-            @else 
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar,0,',','.') }}</p>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total (dikurangi diskon & ppn)</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_belum_dibayar-$pembelian[0]->diskon-$pembelian[0]->ppn,0,',','.') }}</p>
+                        <p>{{ "Rp " . number_format($pembelian[0]->sisa_belum_bayar,0,',','.') }}</p>
                     </div>
                 </div>
 
@@ -132,7 +123,11 @@
                                 @foreach($detail_pembelian as $item)
                                   <tr>
                                     <td>{{ $item->kode." - ".$item->nama }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('D MMMM Y') }}</td>
+                                    @if($item->tanggal_kadaluarsa == "9999-12-12 00:00:00")
+                                      {{ "Tidak ada" }}
+                                    @else 
+                                      <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('D MMMM Y') }}</td>
+                                    @endif
                                     <td>{{ "Rp " . number_format($item->harga_beli,0,',','.') }}</td>
                                     <td>{{ $item->kuantitas }}</td>
                                     <td>{{ "Rp " . number_format($item->subtotal,0,',','.') }}</td>

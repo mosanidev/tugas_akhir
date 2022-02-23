@@ -91,6 +91,7 @@
 
                 @if($riwayat_pengiriman != null)
                   @foreach($riwayat_pengiriman->history as $item)
+                  <i class="fa-solid fa-circle"></i>
                     <div class="row">
                       <div class="col-3">
                         <p class="mt-2">{{ \Carbon\Carbon::parse($item->updated_at)->isoFormat('D MMMM Y HH:mm') }}</p><br>

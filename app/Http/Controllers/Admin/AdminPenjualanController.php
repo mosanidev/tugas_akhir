@@ -62,7 +62,8 @@ class AdminPenjualanController extends Controller
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->where('penjualan.id', '=', $id)
-                        ->groupBy('penjualan.id')->get();
+                        ->groupBy('penjualan.id')
+                        ->get();
 
         $detail_penjualan = DB::table('detail_penjualan')
                                 ->select('detail_penjualan.*', 'barang.*')

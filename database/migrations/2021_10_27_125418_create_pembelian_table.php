@@ -17,7 +17,7 @@ class CreatePembelianTable extends Migration
 
         Schema::create('pembelian', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nomor_nota', 100)->nullable();
+            $table->string('nomor_nota_dari_supplier', 100)->nullable();
             $table->unsignedInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('supplier')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal');
@@ -30,6 +30,10 @@ class CreatePembelianTable extends Migration
             $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas', 'Lunas sebagian']);
             $table->enum('status_retur', ['Tidak ada retur', 'Ada retur'])->default('Tidak ada retur');
             $table->double('total');
+            $table->double('uang_muka')->default(0);
+            $table->double('ongkos_kirim')->default(0);
+            $table->double('total_terbayar')->default(0);
+            $table->double('sisa_belum_bayar')->default(0);
 
         });
     }

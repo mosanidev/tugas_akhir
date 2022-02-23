@@ -104,11 +104,11 @@
         let kuantitas = parseInt($('#kuantitas').val());
         let hargaPesanAkhir = parseInt(convertRupiahToAngka($('#harga_pesan_akhir').val()));
 
-        if(hargaPesan != "" || diskon != "" || kuantitas != "")
+        if(hargaPesanAkhir != "")
         {
             let kuantitas = parseInt($('#kuantitas').val());
 
-            $('#subtotal').val(convertAngkaToRupiah(harga_pesan_akhir*kuantitas));
+            $('#subtotal').val(convertAngkaToRupiah(hargaPesanAkhir*kuantitas));
         }
 
     });

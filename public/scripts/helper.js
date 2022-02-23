@@ -15,8 +15,8 @@ let toastrOptions = {
     "showMethod": "slideDown",
     "hideMethod": "slideUp",
     "closeMethod": "slideUp",
-    "positionClass": "toast-top-center"
-    // "preventDuplicates": "true"
+    "positionClass": "toast-top-center",
+    "preventDuplicates": "true"
 };
 
 function showActiveSession()

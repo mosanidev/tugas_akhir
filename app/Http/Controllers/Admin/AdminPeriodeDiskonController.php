@@ -46,7 +46,6 @@ class AdminPeriodeDiskonController extends Controller
     {
         $idPeriodeDiskon = DB::table('periode_diskon')
                                 ->insertGetId([
-                                    'nama' => $request->nama,
                                     'tanggal_dimulai' => $request->tanggal_dimulai,
                                     'tanggal_berakhir' => $request->tanggal_berakhir,
                                     'keterangan' => $request->keterangan
@@ -90,7 +89,8 @@ class AdminPeriodeDiskonController extends Controller
      */
     public function edit($id)
     {
-        $periode_diskon = DB::table('periode_diskon')->where('id', '=', $id)->get();
+        $periode_diskon = DB::table('periode_diskon')
+                            ->where('id', '=', $id)->get();
 
         $barang_periode_diskon = DB::table('barang')
                                     ->where('periode_diskon_id', '=', $id)
@@ -118,8 +118,7 @@ class AdminPeriodeDiskonController extends Controller
 
         $update = DB::table('periode_diskon')
                     ->where('id', '=', $id)
-                    ->update(['nama'=>$request->nama, 
-                              'tanggal_dimulai'=>$request->tanggal_dimulai, 
+                    ->update(['tanggal_dimulai'=>$request->tanggal_dimulai, 
                               'tanggal_berakhir'=>$request->tanggal_berakhir, 
                               'keterangan' => $request->keterangan]);
 
@@ -135,7 +134,7 @@ class AdminPeriodeDiskonController extends Controller
                             ]);
         }
 
-        return redirect()->route('periode_diskon.index')->with(['success'=>'Data periode diskon berhasil berubah']);
+        return redirect()->route('periode_diskon.index')->with(['success'=>'Data periode diskon berhasil diubah']);
     }
 
     /**

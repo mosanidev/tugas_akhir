@@ -475,6 +475,26 @@
                                                         </div>
                                                     </div>`);
 
+                            if(data.riwayat_pengiriman != null)
+                            {
+                                let rowKirim = 0;
+                                for(let o = 0; o < data.riwayat_pengiriman.history.length; o++)
+                                {
+                                    rowKirim += `<i class="fa-solid fa-circle"></i>
+                                                        <div class="row">
+                                                        <div class="col-3">
+                                                            <p class="mt-2">` + data.riwayat_pengiriman.history[o].updated_at + `</p><br>
+                                                        </div>
+                                                        <div class="col-9">` +
+                                                            `<p class="mt-2">` +  data.riwayat_pengiriman.history[o].status + ` ` + data.riwayat_pengiriman.history[o].note + `</p><br> ` +
+                                                            `</div>
+                                                        </div>`;
+                                }
+
+                                $('.rowKirim').append(rowKirim);
+                            }
+                            
+
                             // let estimasiTiba = null;
                             if(data.pengiriman[0].nama_shipper == 'Gojek' || data.pengiriman[0].nama_shipper == 'Grab')
                             {
@@ -487,7 +507,7 @@
 
                             for(let i=0; i < data.barang.length; i++)
                             {
-                                $('.rowContent').append(`<div class="row">
+                                $('.rowContentBrg').append(`<div class="row">
                                                             <div class="col-4 ml-2">
                                                                     <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                             </div>
@@ -502,7 +522,7 @@
 
                             }
 
-                            $('.rowContent').append(`<h5>Pengiriman</h5>
+                            $('.rowContentBrg').append(`<h5>Pengiriman</h5>
                                                     <div class="row">
                                                         <div class="col-12">
                                                             ` + data.pengiriman[0].jenis_pengiriman + ` ` + data.pengiriman[0].nama_shipper + `

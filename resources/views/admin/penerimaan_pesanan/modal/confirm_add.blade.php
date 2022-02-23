@@ -12,7 +12,9 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-primary btnIyaSubmit">Iya</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+          {{-- <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button> --}}
         </div>
+      </div>
     </div>
 </div>

@@ -24,7 +24,6 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                       <tr>
-                        <th>Nama</th>
                         <th>Tanggal Dimulai</th>
                         <th>Tanggal Berakhir</th>
                         <th style="width: 20%">Aksi</th>
@@ -33,14 +32,13 @@
                   <tbody>
                       @foreach ($periode_diskon as $item)
                         <tr>
-                          <td>{{ $item->nama }}</td>
                           <td>{{ $item->tanggal_dimulai }}</td>
                           <td>{{ $item->tanggal_berakhir }}</td>
                           <td >
 
                             <a href="{{ route('periode_diskon.show', ['periode_diskon' => $item->id]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
                             <a href="{{ route('periode_diskon.edit', ['periode_diskon' => $item->id]) }}" class="btn btn-warning btn-ubah"><i class="fas fa-edit"></i></a>
-                            <button type="button" class="btn btn-danger btn-hapus" data-id="{{$item->id}}" data-periode-diskon="{{ $item->nama }}" data-toggle="modal" data-target="#modalHapusPeriodeDiskon"><i class="fas fa-trash"></i></button>
+                            <button type="button" class="btn btn-danger btn-hapus" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusPeriodeDiskon"><i class="fas fa-trash"></i></button>
                           
                           </td>
                         </tr>

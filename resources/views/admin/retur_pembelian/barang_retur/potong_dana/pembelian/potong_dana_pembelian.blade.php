@@ -59,7 +59,7 @@
             <label class="col-sm-4 col-form-label">Total Harga Retur</label>
             <div class="col-sm-8">
                 <input type="hidden" name="total" id="totalReturAngka" value="">
-                <p class="mt-2" id="totalReturRupiah">Rp 0</p>
+                <p class="mt-2" id="totalReturRupiah">{{ "Rp " . number_format($retur_pembelian[0]->total,0,',','.') }}</p>
             </div>
         </div>
 
@@ -88,7 +88,7 @@
                             </tr>
                         </thead>
                         <tbody id="contentTable">
-                            
+                            {{ dd($detail_pembelian) }}
                         </tbody>
                     </table>
                 </div>

@@ -62,11 +62,9 @@
 
                             @if($item->status == "Belum diterima di gudang")
                               <a href="{{ route('penerimaan_pesanan.proses_terima', ['pemesanan' => $item->id]) }}" class='btn btn-info'>Proses Terima Pesanan</a>
-                            @elseif($item->status == "Telah diterima sebagian")
-                              <a href="{{ route('penerimaan_pesanan.proses_terima_sebagian', ['pemesanan' => $item->id]) }}" class='btn btn-info'>Proses Terima Sebagian Pesanan</a>
-                             @endif
-                            {{-- <a href="{{ route('pemesanan.edit', ['pemesanan'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
-                            <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPemesanan"><i class="fas fa-trash"></i></button> --}}
+                            @else 
+                              <a href="{{ route('penerimaan_pesanan.show', ['penerimaan_pesanan'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                            @endif
                             
                           </td>
                         </tr>

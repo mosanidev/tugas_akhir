@@ -11,7 +11,7 @@
           <form class="d-inline" action="" id="form-hapus-periode-diskon" method="POST">
             @csrf
             @method('DELETE')
-            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data periode diskon "<p class="periodeDiskonInginDihapus d-inline"></p>" ? Jika anda menghapus data periode diskon "<p class="periodeDiskonInginDihapus d-inline"></p>" harga barang akan kembali ke harga normal</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data periode diskon ? Jika anda menghapus data periode diskon "<p class="periodeDiskonInginDihapus d-inline"></p>" harga barang akan kembali ke harga normal</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>

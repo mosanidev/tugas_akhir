@@ -275,11 +275,28 @@ class AdminPengirimanController extends Controller
                 $cek_riwayat_pengiriman = Http::withHeaders([
                     'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
                     ])->get("https://api.biteship.com/v1/trackings/$pengiriman[0]->nomor_resi/couriers/$pengiriman[0]->kode_shipper")->body();
+                    
+                $cek_riwayat_pengiriman = json_decode($cek_riwayat_pengiriman);
 
                 if($cek_riwayat_pengiriman->success == true)
                 {
                     // tracking via biteship melalui nomer resi
-                    $riwayat_pengiriman = json_decode($riwayat_pengiriman);
+                    $riwayat_pengiriman = $cek_riwayat_pengiriman;
+                } 
+            }
+            else 
+            {
+                $cek_riwayat_pengiriman = Http::withHeaders([
+                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
+                    ])->get("https://api.biteship.com/v1/trackings/JP9480199312/couriers/jnt")->body();
+                
+                $cek_riwayat_pengiriman = json_decode($cek_riwayat_pengiriman);
+                
+                if($cek_riwayat_pengiriman->success == true)
+                {
+                    // tracking via biteship melalui nomer resi
+                    $riwayat_pengiriman = $cek_riwayat_pengiriman;
+                    // dd($riwayat_pengiriman);
                 } 
             }
 
@@ -307,6 +324,21 @@ class AdminPengirimanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if($request->keterangan == "proses_kirim_baru")
+        {
+            $detail_penjualan = DB::table('detail_penjualan')
+                                    ->where('pengiriman_id', '=', $id)
+                                    ->get();
+
+            foreach($detail_penjualan as $item)
+            {
+                $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                ->where('barang_id', '=', $item->barang_id)
+                                ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
+                                ->decrement('jumlah_stok_di_gudang', $item->kuantitas);
+            }
+        }
+
         $update = DB::table('pengiriman')
                     ->where('id', $id)
                     ->update([

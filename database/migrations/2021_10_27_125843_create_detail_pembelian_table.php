@@ -19,7 +19,7 @@ class CreateDetailPembelianTable extends Migration
             $table->unsignedInteger('pembelian_id');
             $table->foreign('pembelian_id')->references('id')->on('pembelian')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('barang_id');
-            $table->foreign('barang_id')->references('barang_id')->on('barang_has_kadaluarsa')->onUpdate('cascade')->onDelete('cascade'); 
+            $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade'); 
             $table->datetime('tanggal_kadaluarsa');
             $table->integer('kuantitas');
             $table->double('harga_beli');

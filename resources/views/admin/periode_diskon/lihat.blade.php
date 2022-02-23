@@ -17,14 +17,6 @@
   <div class="container">
       <div class="row">
         <div class="col-2">
-            <p>Nama</p>
-        </div>
-        <div class="col-10">
-            <p class="text-left">{{$periode_diskon[0]->nama}}</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-2">
             <p>Tanggal Dimulai</p>
         </div>
         <div class="col-10">

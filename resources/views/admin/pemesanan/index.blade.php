@@ -43,7 +43,7 @@
                         <tr>
                           <th>Nomor Nota</th>
                           <th>Tanggal Pemesanan</th>
-                          <th>Supplier</th>
+                          <th>Pemasok</th>
                           <th>Total</th>
                           <th>Status</th>
                           <th>Aksi</th>
@@ -61,8 +61,11 @@
                           <td>
 
                             <a href="{{ route('pemesanan.show', ['pemesanan'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
-                            <a href="{{ route('pemesanan.edit', ['pemesanan'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
-                            <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPemesanan"><i class="fas fa-trash"></i></button>
+                            
+                            @if($item->status != "Telah diterima di gudang")
+                              <a href="{{ route('pemesanan.edit', ['pemesanan'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
+                              <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPemesanan"><i class="fas fa-trash"></i></button>
+                            @endif
                             
                           </td>
                         </tr>
@@ -213,11 +216,11 @@
 
   if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('success') }}", "Success", toastrOptions);
+    toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
   }
   else if ("{{ session('error') }}" != "")
   {
-    toastr.error("{{ session('error') }}", "Error", toastrOptions);
+    toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
   $(document).ready(function() {

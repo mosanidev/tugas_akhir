@@ -17,7 +17,7 @@ class CreatePeriodeDiskonTable extends Migration
 
         Schema::create('periode_diskon', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nama', 55)->nullable();
+            // $table->string('nama', 55)->nullable();
             $table->date('tanggal_dimulai')->nullable();
             $table->date('tanggal_berakhir')->nullable();
             $table->string('keterangan', 500)->nullable();

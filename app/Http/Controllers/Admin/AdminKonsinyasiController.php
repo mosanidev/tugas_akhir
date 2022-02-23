@@ -55,9 +55,11 @@ class AdminKonsinyasiController extends Controller
 
         $konsinyasiYgMirip = DB::table('konsinyasi')
                         ->where('supplier_id', '=', $request->supplier_id)
-                        ->where('tanggal_titip', '>=', $request->tanggal_titip)
-                        ->where('tanggal_jatuh_tempo', '<=', $request->tanggal_jatuh_tempo)
+                        ->where('tanggal_titip', '<=', $request->tanggal_titip)
+                        ->where('tanggal_jatuh_tempo', '>=', $request->tanggal_jatuh_tempo)
                         ->get();
+
+        dd($konsinyasiYgMirip);
 
         if(count($barang) == 0)
         {

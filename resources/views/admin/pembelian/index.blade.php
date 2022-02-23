@@ -41,10 +41,11 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th>Nomor Nota</th>
+                          <th class="width: 10px;">No Pembelian</th>
+                          <th>Nomor Nota dari Pemasok</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
-                          <th>Supplier</th>
+                          <th>Pemasok</th>
                           <th>Total</th>
                           <th>Status Bayar</th>
                           <th>Aksi</th>
@@ -54,24 +55,26 @@
                       @php $num = 1; @endphp
                       @foreach($pembelian as $item)
                         <tr class="rowPembelian">
-                          <td>{{ $item->nomor_nota }}</td>
+                          <td class="width: 10px;">{{ $item->id }}</td>
+                          <td>{{ $item->nomor_nota_dari_supplier }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
-                          <td>{{ "Rp " . number_format(($item->total_sudah_dibayar+$item->total_belum_dibayar)-$item->diskon-$item->ppn,0,',','.') }}</td>
+                          <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>
                             {{ $item->status_bayar }}
                           </td>
                           <td>
                             <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             
-                            @if($item->status_retur == "Tidak ada retur")
+                            {{-- @if($item->status_retur == "Tidak ada retur")
                               <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
-                              <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian"><i class="fas fa-trash"></i></button>
+                              <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota_dari_supplier }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian"><i class="fas fa-trash"></i></button>
                             @elseif ($item->status_retur == "Ada retur")
                               <button class='btn btn-warning btnInfo' data-aksi="ubah" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-edit"></i></button>
                               <button class='btn btn-danger btnInfo' data-aksi="hapus" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-trash"></i></button>
-                            @endif
+                            @endif --}}
+
                           </td>
                         </tr>
                       @endforeach

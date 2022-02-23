@@ -53,15 +53,14 @@
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Diskon Potongan Harga</p>
                     <div class="col-sm-8">
-                        Rp   <input type="number" id="diskon_potongan_harga" class="form-control d-inline ml-1" style="width: 94.2%;" value="0" name="diskon_potongan_harga" step="100" min="0">
+                        Rp   <input type="number" id="diskon_potongan_harga" class="form-control d-inline ml-1" style="width: 94.2%;" name="diskon_potongan_harga" step="100" min="0">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Kuantitas</p>
                     <div class="col-sm-8">
-                        <input type="number" id="kuantitas" class="form-control d-inline ml-1" name="kuantitas" min="1" required>
-              
+                        <input type="number" id="kuantitas" class="form-control d-inline ml-1" name="kuantitas" min="1" value="1" required>
                     </div>
                 </div>
                 <div class="form-group row">

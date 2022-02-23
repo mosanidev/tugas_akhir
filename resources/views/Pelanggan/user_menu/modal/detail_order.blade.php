@@ -13,9 +13,23 @@
             </div>
             
             <hr>
-            <div class="rowContent">
-                
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 rowContent">
+
+                    </div>
+                    <div class="col-6 rowKirim">
+                        
+                    </div>
+                </div>
             </div>
+
+            <div class="row">
+                <div class="col-12 rowContentBrg">
+
+                </div>
+            </div>
+            
             <div class="row">
                 <div class="col-4 ml-2">
                 </div>

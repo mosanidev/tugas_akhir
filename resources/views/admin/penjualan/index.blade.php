@@ -82,7 +82,7 @@
                       @foreach($penjualan as $item)
                         <tr>
                           <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm')." WIB" }}</td>
                           <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                           <td>{{ $item->metode_transaksi }}</td>
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
@@ -183,7 +183,9 @@
     let filterJangkaWaktu = $('#selectJangkaWaktu').val();
     let filterStatus = $('#selectStatus').val();
 
-    var table = $('#dataTable').DataTable({});
+    var table = $('#dataTable').DataTable( {
+        "order": []
+    } );
 
     $('.selectFilter').on('click', function() {
       

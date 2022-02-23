@@ -19,12 +19,6 @@
                 @csrf
                 <input type="hidden" id="dataDiskonBarang" name="diskon_barang">
                 <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Nama</p>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" name="nama" autocomplete="off" required>
-                    </div>
-                </div>
-                <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Tanggal Dimulai</p>
                     <div class="col-sm-8">
                         <div class="form-group">

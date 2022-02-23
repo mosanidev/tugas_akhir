@@ -13,12 +13,13 @@
             @csrf
             @method('PUT')
 
+            <input type="hidden" name="keterangan" value="proses_kirim_baru">
             <input type="hidden" value="" name="pengiriman_id">
             <input type="hidden" value="" name="nomor_resi">
             <input type="hidden" value="" name="tanggal_diserahkan_ke_pengirim">
             <input type="hidden" value="" name="status_pengiriman">
 
-            <p class="text-justify d-inline">Apakah anda yakin ingin mengkonfirmasi bahwa data pengiriman sudah valid ? Jika iya maka status pengiriman berubah menjadi "Pesanan sudah diserahkan ke pihak pengirim".</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin mengkonfirmasi bahwa data pengiriman sudah valid ? Jika iya maka status pengiriman berubah menjadi "Pesanan sudah diserahkan ke pihak pengirim" dan sistem akan mengurangi stok barang.</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>

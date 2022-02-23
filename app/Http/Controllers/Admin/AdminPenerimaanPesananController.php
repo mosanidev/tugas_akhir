@@ -50,25 +50,25 @@ class AdminPenerimaanPesananController extends Controller
         return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
     }
 
-    public function prosesTerimaSebagian($id)
-    {
-        $pemesanan = DB::table('pemesanan')
-                        ->select('pemesanan.*', 'supplier.nama as nama_supplier')
-                        ->where('pemesanan.id', '=', $id)
-                        ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
-                        ->get();
+    // public function prosesTerimaSebagian($id)
+    // {
+    //     $pemesanan = DB::table('pemesanan')
+    //                     ->select('pemesanan.*', 'supplier.nama as nama_supplier')
+    //                     ->where('pemesanan.id', '=', $id)
+    //                     ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+    //                     ->get();
 
-        $detail_pemesanan = DB::table('detail_back_order')
-                                ->select('detail_back_order.*', 'back_order.pemesanan_id', 'barang.id', 'barang.kode', 'barang.nama', 'barang.harga_jual')
-                                ->where('back_order.pemesanan_id', '=', $id)
-                                ->join('barang', 'detail_back_order.barang_id', '=', 'barang.id')
-                                ->join('back_order', 'detail_back_order.back_order_id', '=', 'back_order.id')
-                                ->whereRaw('detail_back_order.back_order_id = (select max(`back_order_id`) from detail_back_order)')
-                                ->get(); 
+    //     $detail_pemesanan = DB::table('detail_back_order')
+    //                             ->select('detail_back_order.*', 'back_order.pemesanan_id', 'barang.id', 'barang.kode', 'barang.nama', 'barang.harga_jual')
+    //                             ->where('back_order.pemesanan_id', '=', $id)
+    //                             ->join('barang', 'detail_back_order.barang_id', '=', 'barang.id')
+    //                             ->join('back_order', 'detail_back_order.back_order_id', '=', 'back_order.id')
+    //                             ->whereRaw('detail_back_order.back_order_id = (select max(`back_order_id`) from detail_back_order)')
+    //                             ->get(); 
 
-        return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
+    //     return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
 
-    }
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -78,24 +78,32 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function store(Request $request)
     {
+        $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
+
         $penerimaan_pesanan_id = DB::table('penerimaan_pemesanan')
                                         ->insertGetId([
                                             'pemesanan_id' => $request->pemesanan_id,
-                                            'tanggal' => $request->tanggal_terima
+                                            'tanggal' => $request->tanggal_terima,
+                                            'users_id' => auth()->user()->id
                                         ]);
 
         $pembelian_id = DB::table('pembelian')
                         ->insertGetId([
+                            'nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier,
                             'supplier_id' => $request->supplier_id,
                             'tanggal' => $request->tanggal_terima,
-                            'users_id' => auth()->user()->id,
-                            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
+                            'ongkos_kirim' => $request->ongkos_kirim,
                             'metode_pembayaran' => $request->metode_pembayaran,
-                            'status_bayar' => $request->status_bayar,
+                            'status_bayar' => $status_bayar,
+                            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                            'sisa_belum_bayar' => $request->sisa_belum_bayar,
+                            'total' => $request->total,
                             'status_retur' => 'Tidak ada retur',
-                            'total' => $request->total
+                            'uang_muka' => $request->uang_muka,
+                            'total_terbayar' => $request->total_terbayar,
+                            'users_id' => auth()->user()->id
                         ]);
                                         
         $barang_diterima = json_decode($request->barang_diterima, true);
@@ -132,60 +140,33 @@ class AdminPenerimaanPesananController extends Controller
                                             'subtotal' => $barang_diterima[$i]['subtotal']
                                         ]);
 
-            $insertBarang = DB::table('barang_has_kadaluarsa')
+            $cariBarang = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $barang_diterima[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $barang_diterima[$i]['tanggal_kadaluarsa'])
+                            ->get();
+            
+            if(count($cariBarang) > 0)
+            {
+                $updateBarang = DB::table('barang_has_kadaluarsa')
+                                ->where('id', '=', $cariBarang[0]->id)
+                                ->increment('jumlah_stok_di_gudang', $barang_diterima[$i]['kuantitas_terima']);
+            }
+            else 
+            {
+                $insertBarang = DB::table('barang_has_kadaluarsa')
                                 ->insert([
                                     'barang_id' => $barang_diterima[$i]['barang_id'],
                                     'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
                                     'jumlah_stok_di_gudang' => $barang_diterima[$i]['kuantitas_terima']
                                 ]);
-        }
-
-        $barang_tidak_diterima = json_decode($request->barang_tidak_diterima, true);
-
-        $jumlahBarangTidakDiterima = count(array_filter($barang_tidak_diterima, function($x) { return !empty($x); }));
-
-        if($jumlahBarangTidakDiterima > 0)
-        {
-            $status = "Telah diterima sebagian";
-
-            $back_order_id = DB::table('back_order')
-                                ->insertGetId([
-                                    'pemesanan_id' => $request->pemesanan_id,
-                                    'tanggal' => $request->tanggal_terima
-                                ]);
-
-            for($i = 0; $i < count($barang_tidak_diterima); $i++)
-            {
-                if($barang_tidak_diterima[$i] != null)
-                {
-                    $totalHargaBarangTidakDiterima += $barang_tidak_diterima[$i]['subtotal'];
-
-                    $insertDetailBackOrder = DB::table('detail_back_order')
-                                                ->insert([
-                                                    'back_order_id' => $back_order_id,
-                                                    'barang_id' => $barang_tidak_diterima[$i]['barang_id'],
-                                                    'harga_pesan' => $barang_tidak_diterima[$i]['harga_pesan'],
-                                                    'kuantitas' => $barang_tidak_diterima[$i]['kuantitas'],
-                                                    'subtotal' => $barang_tidak_diterima[$i]['kuantitas']*$barang_tidak_diterima[$i]['harga_pesan']
-                                                ]);
-                }
-            }        
+            }
             
-            $update_back_order = DB::table('back_order')
-                                    ->where('id', '=', $back_order_id)
-                                    ->update([
-                                        'total' => $totalHargaBarangTidakDiterima
-                                    ]);
-        }
-        else 
-        {
-            $status = "Telah diterima semua";
         }
 
         $update_pemesanan = DB::table('pemesanan')
                              ->where('id', '=', $request->pemesanan_id)
                              ->update([
-                                'status' => $status,
+                                'status' => 'Telah diterima di gudang',
                                 'total' => $totalHargaBarangDiterima
                              ]);
     
@@ -200,7 +181,23 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function show($id)
     {
-        //
+        $pemesanan = DB::table('pemesanan')
+                        ->select('pemesanan.nomor_nota', 'pemesanan.tanggal', 'supplier.id as supplier_id', 'supplier.nama as nama_pemasok')
+                        ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+                        ->where('pemesanan.id', '=', $id)
+                        ->get();
+         
+        $detail_penerimaan_pesanan = DB::table('detail_penerimaan_pemesanan')
+                                        ->select('detail_penerimaan_pemesanan.*', 'barang.kode', 'barang.nama')
+                                        ->where('detail_penerimaan_pemesanan.pemesanan_id', '=', $id)
+                                        ->join('barang', 'detail_penerimaan_pemesanan.barang_id', '=', 'barang.id')
+                                        ->get();
+
+        $penerimaan_pesanan = DB::table('penerimaan_pemesanan')
+                                ->where('id', '=', $id)
+                                ->get();
+
+        return view('admin.penerimaan_pesanan.lihat', ['pemesanan' => $pemesanan, 'detail_penerimaan_pesanan' => $detail_penerimaan_pesanan, 'penerimaan_pesanan' => $penerimaan_pesanan]);
     }
 
     /**

@@ -41,7 +41,15 @@
                               <td>{{ $item->tanggal }}</td>
                               <td>{{ $item->kebijakan_retur }}</td>
                               <td>
-                                <a href="{{ route('retur_pembelian.show', ['retur_pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                                <form action="{{ route('retur_pembelian.show', ['retur_pembelian'=>$item->id]) }}" class="d-inline">
+                                  @if($item->pembelian_id != null)
+                                    <input type="hidden" name="jenis" value="Pembelian">
+                                  @else 
+                                    <input type="hidden" name="jenis" value="Konsinyasi">
+                                  @endif
+                                  <button type="submit" class='btn btn-info'><i class="fas fa-info-circle"></i></button>
+                                </form>
+                                {{-- <a href="{{ route('retur_pembelian.show', ['retur_pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a> --}}
                                 <a href="{{ route('retur_pembelian.edit', ['retur_pembelian' => $item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
                                 <button type="button" class="btn btn-danger btnHapus" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalHapusPembelian"><i class="fas fa-trash"></i></button>
                               </td>

@@ -63,56 +63,48 @@
             </div>
 
             <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Ongkos Kirim</label>
+                <div class="col-sm-8">
+                    <p>{{ "Rp " . number_format($pemesanan[0]->ongkos_kirim,0,',','.') }}</p>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status bayar</label>
                 <div class="col-sm-8">
                   <p>{{ $pemesanan[0]->status_bayar }}</p>
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total</label>
+                <div class="col-sm-8">
+                    <p>{{ "Rp " . number_format($pemesanan[0]->total,0,',','.') }}</p>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Total Akhir <br> ( total + ongkos kirim - (diskon + PPN))  </label>
+                <div class="col-sm-8">
+                    <p>{{ "Rp " . number_format(($pemesanan[0]->total+$pemesanan[0]->ongkos_kirim)-($pemesanan[0]->diskon+$pemesanan[0]->ppn),0,',','.') }}</p>
+                </div>
+            </div>
+
             
             @if($pemesanan[0]->status_bayar == "Lunas sebagian")
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_belum_dibayar+$pemesanan[0]->total_sudah_dibayar,0,',','.') }}</p>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total (dikurangi diskon & ppn)</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_belum_dibayar-$pemesanan[0]->diskon-$pemesanan[0]->ppn+$pemesanan[0]->total_sudah_dibayar,0,',','.') }}</p>
-                    </div>
-                </div>
 
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
                     <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_sudah_dibayar,0,',','.') }}</p>
+                        <p>{{ "Rp " . number_format($pemesanan[0]->total_terbayar,0,',','.') }}</p>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Sisa belum dibayar</label>
+                    <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
                     <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_belum_dibayar-$pemesanan[0]->diskon-$pemesanan[0]->ppn,0,',','.') }}</p>
-                    </div>
-                </div>
-
-            @else 
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_belum_dibayar,0,',','.') }}</p>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total (dikurangi diskon & ppn)</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_belum_dibayar-$pemesanan[0]->diskon-$pemesanan[0]->ppn,0,',','.') }}</p>
+                        <p>{{ "Rp " . number_format($pemesanan[0]->sisa_belum_bayar,0,',','.') }}</p>
                     </div>
                 </div>
 
@@ -129,6 +121,7 @@
                                 <tr>
                                   <th>Barang</th>
                                   <th>Harga Pesan</th>
+                                  <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
                                 </tr>
@@ -138,6 +131,7 @@
                                     <tr>
                                         <td>{{ $item->kode." - ".$item->nama }}</td>
                                         <td>{{ "Rp " . number_format($item->harga_pesan,0,',','.') }}</td>
+                                        <td>{{ "Rp " . number_format($item->diskon_potongan_harga,0,',','.') }}</td>
                                         <td>{{ $item->kuantitas }}</td>
                                         <td>{{ "Rp " . number_format($item->subtotal,0,',','.') }}</td>
                                     </tr>

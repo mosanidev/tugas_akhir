@@ -53,6 +53,8 @@ class AdminPemesananController extends Controller
      */
     public function store(Request $request)
     {
+        // $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
+
         $idPemesanan = DB::table('pemesanan')
                         ->insertGetId([
                             'nomor_nota' => $request->nomor_nota,
@@ -61,6 +63,7 @@ class AdminPemesananController extends Controller
                             'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
+                            'ongkos_kirim' => $request->ongkos_kirim,
                             'metode_pembayaran' => $request->metodePembayaran,
                             'status_bayar' => 'Belum lunas',
                             'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
@@ -120,7 +123,19 @@ class AdminPemesananController extends Controller
      */
     public function edit($id)
     {
-        //
+        $pemesanan = DB::table('pemesanan')
+                        ->select('pemesanan.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
+                        ->where('pemesanan.id', '=', $id)
+                        ->get();
+
+        $detail_pemesanan = DB::table('detail_pemesanan')
+                            ->select('detail_pemesanan.*', 'barang.kode', 'barang.nama')
+                            ->join('barang', 'detail_pemesanan.barang_id', '=', 'barang.id')
+                            ->where('detail_pemesanan.pemesanan_id', '=', $id)
+                            ->get();
+
+        return view('admin.pemesanan.ubah', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
     }
 
     /**
