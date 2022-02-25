@@ -8,21 +8,65 @@
       <div class="col-sm-6">
         <h1><strong>Barang</strong></h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
   <hr>
   <p class="mt-2 ml-2">Filter : </p> 
+
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Jenis</p> 
+    </div>
+    <div class="col-9 divFilterJenis">
+        <select class="form-control w-50 selectFilter" id="filterJenis">
+          <option selected>Semua</option>
+          @foreach($jenis_barang as $item)
+            <option value="{{ $item->jenis_barang }}">{{ $item->jenis_barang }}</option>
+          @endforeach
+        </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Kategori</p> 
+    </div>
+    <div class="col-9 divFilterKategori">
+        <select class="form-control w-50 selectFilter" id="filterKategori">
+          <option selected>Semua</option>
+          @foreach($kategori_barang as $item)
+            <option value="{{ $item->kategori_barang }}">{{ $item->kategori_barang }}</option>
+          @endforeach
+        </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-3">
+      <p class="mt-2 ml-2">Merek</p> 
+    </div>
+    <div class="col-9 divFilterMerek">
+        <select class="form-control w-50 selectFilter" id="filterMerek">
+          <option selected>Semua</option>
+          @foreach($merek_barang as $item)
+            <option value="{{ $item->merek_barang }}">{{ $item->merek_barang }}</option>
+          @endforeach
+        </select>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-3">
       <p class="mt-2 ml-2">Tipe barang</p> 
     </div>
-    <div class="col-9">
-        <select class="form-control w-50 selectFilter">
+    <div class="col-9 divFilterTipe">
+        <select class="form-control w-50 selectFilter" id="filterTipe">
           <option selected>Semua</option>
           <option value="0">Barang reguler</option>
           <option value="1">Barang konsinyasi</option>
         </select>
     </div>
   </div>
+
 </section>
 
 <div class="container-fluid">
@@ -81,9 +125,31 @@
       </script>
   @endif
 
+  <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
+
   <script type="text/javascript">
 
     $(document).ready(function(){
+
+      $('#filterJenis').select2({
+          dropdownParent: $(".divFilterJenis"),
+          theme: 'bootstrap4'
+      });
+
+      $('#filterKategori').select2({
+          dropdownParent: $(".divFilterKategori"),
+          theme: 'bootstrap4'
+      });
+
+      $('#filterMerek').select2({
+          dropdownParent: $(".divFilterMerek"),
+          theme: 'bootstrap4'
+      });
+
+      // $('#filterTipe').select2({
+      //     dropdownParent: $(".divFilterTipe"),
+      //     theme: 'bootstrap4'
+      // });
 
       $('.btn-hapus-barang').on('click', function() {
 
@@ -105,11 +171,14 @@
         toastr.success("{{ session('error') }}", "Gagal", toastrOptions);
       }
 
-      let filterTipeBarang = $('.selectFilter').val();
+      let filterTipe = $('#filterTipe').val();
+      let filterJenis = $('#filterJenis').val();
+      let filterKategori = $('#filterKategori').val();
+      let filterMerek = $('#filterMerek').val();
 
       var table = $('#dataTable').DataTable({});
 
-      $('.selectFilter').on('click', function() {
+      $('.selectFilter').on('change', function() {
         
         table.draw();
 
@@ -118,21 +187,42 @@
       $.fn.dataTable.ext.search.push(
           function( settings, data, dataIndex ) {
             
-            filterTipeBarang = $('.selectFilter').val();
+            filterTipe = $('#filterTipe').val();
+            filterJenis = $('#filterJenis').val();
+            filterKategori = $('#filterKategori').val();
+            filterMerek = $('#filterMerek').val();
 
             let tipeBarang = data[1];
+            let jenisBarang = data[2];
+            let kategoriBarang = data[3];
+            let merekBarang = data[4];
 
             var showTipeBarang = false;
+            var showJenisBarang = false;
+            var showKategoriBarang = false;
+            var showMerekBarang = false;
             
-            if (filterTipeBarang == "Semua") {
+            if (filterTipe == "Semua" || filterJenis == "Semua" || filterKategori == "Semua" || filterMerek == "Semua") {
               $.fn.dataTable.ext.search.length == 0; 
             }
 
-            if (filterTipeBarang == "Semua" || filterTipeBarang == tipeBarang) {
+            if (filterTipe == "Semua" || filterTipe == tipeBarang) {
               showTipeBarang = true;
             }
 
-            return showTipeBarang;
+            if (filterJenis == "Semua" || filterJenis == jenisBarang) {
+              showJenisBarang = true;
+            }
+
+            if (filterKategori == "Semua" || filterKategori == kategoriBarang) {
+              showKategoriBarang = true;
+            }
+
+            if (filterMerek == "Semua" || filterMerek == merekBarang) {
+              showMerekBarang = true;
+            }
+
+            return showTipeBarang && showJenisBarang && showKategoriBarang && showMerekBarang;
       });
 
     });

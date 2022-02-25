@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use SSP;
 
 class AdminPenjualanController extends Controller
 {
@@ -17,13 +18,14 @@ class AdminPenjualanController extends Controller
     {
         $penjualan = DB::table('penjualan')
                         ->select('penjualan.*', 'detail_penjualan.*', 'pembayaran.*', 'users.*', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar as status_bayar')
-                        ->where('penjualan.jenis', '=', 'Online')
+                        // ->where('penjualan.jenis', '=', 'Online')
                         ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
                         ->join('pembayaran', 'pembayaran.id', '=', 'penjualan.pembayaran_id')
                         ->join('users', 'penjualan.users_id', '=', 'users.id')
                         ->groupBy('penjualan.id')
                         ->orderBy('penjualan.tanggal', 'desc')
                         ->get();
+
 
         return view('admin.penjualan.index', ['penjualan'=>$penjualan]);
     }
@@ -47,6 +49,31 @@ class AdminPenjualanController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    public function filter(Request $request)
+    {
+        $metode_transaksi = $request->metode_transaksi;
+
+        if ($request->ajax()) {
+            $data = DB::table('penjualan')
+                        ->where('metode_transaksi', '=', $metode_transaksi)
+                        ->get();
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+     
+                           $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+       
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+        
+        return view('admin.penjualan.index');
+         
     }
 
     /**

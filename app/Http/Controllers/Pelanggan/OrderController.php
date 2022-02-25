@@ -131,8 +131,7 @@ class OrderController extends Controller
                                 'tanggal' => $transaction_time,
                                 'pembayaran_id' => $id_pembayaran, 
                                 'metode_transaksi' => 'Ambil di toko', 
-                                'status_jual'=>$status, 
-                                'created_at'=>$dateNow]);
+                                'status_jual'=>$status]);
 
             $total = 0;
             for($i = 0; $i < count($cart); $i++)
@@ -372,8 +371,7 @@ class OrderController extends Controller
                                     'tanggal' => $transaction_time,
                                     'pembayaran_id' => $id_pembayaran, 
                                     'metode_transaksi' => 'Dikirim ke alamat', 
-                                    'status_jual' => $status, 
-                                    'created_at'=>$dateNow]);
+                                    'status_jual' => $status]);
 
             $total = 0;
 
@@ -561,8 +559,7 @@ class OrderController extends Controller
                                     'tanggal' => $transaction_time,
                                     'pembayaran_id' => $id_pembayaran, 
                                     'metode_transaksi' => 'Dikirim ke berbagai alamat', 
-                                    'status_jual'=>$status, 
-                                    'created_at'=>$dateNow]);
+                                    'status_jual'=>$status]);
 
             $total = 0;
 

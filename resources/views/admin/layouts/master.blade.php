@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css" integrity="sha512-bYPO5jmStZ9WI2602V2zaivdAnbAhtfzmxnEGh9RwtlI00I9s8ulGe4oBa5XxiC6tCITJH/QG70jswBhbLkxPw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
+    
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <!-- Custom styles for this template-->
@@ -43,6 +43,9 @@
     <link rel="stylesheet" href="{{ asset('/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('/plugins/toastr/toastr.min.css') }}">
+
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{{ asset('/plugins/daterangepicker/daterangepicker.css') }}">
     
     <script src="{{ asset('/scripts/helper.js') }}"></script>
     
@@ -314,6 +317,9 @@
     <script src="{{ asset('/sb_admin_2/js/demo/datatables-demo.js') }}"></script>
     <!-- bootstrap time picker -->
     <script src="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
+    
+    <!-- date-range-picker -->
+    <script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}"></script>
 
     @include('pelanggan.modal.loader')
 

@@ -18,14 +18,24 @@ class AdminBarangController extends Controller
      */
     public function index()
     {
-        $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')
+        $barang = DB::table('barang')
+                    ->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')
                     ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                     ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                     ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
                     ->orderBy('barang.kode')
                     ->get();
 
-        return view('admin.barang.index', ['barang' => $barang]);
+        $jenis = DB::table('jenis_barang')
+                    ->get();
+
+        $kategori = DB::table('kategori_barang')
+                    ->get();
+
+        $merek = DB::table('merek_barang')
+                    ->get();
+
+        return view('admin.barang.index', ['barang' => $barang, 'jenis_barang' => $jenis, 'kategori_barang' => $kategori, 'merek_barang' => $merek]);
     }
 
     /**
@@ -251,13 +261,63 @@ class AdminBarangController extends Controller
     public function viewStokBarang()
     {
         $barang = DB::table('barang')
-                        ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum')
+                        ->select('barang.id as barang_id', 
+                                'barang.kode', 
+                                'barang.nama', 
+                                'barang.satuan',
+                                'jenis_barang.jenis_barang as nama_jenis', 
+                                'barang.barang_konsinyasi', 
+                                'barang.batasan_stok_minimum'
+                                ) 
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->whereNotIn('barang.id',function($query){
+                            $query->select('barang_id')->from('barang_has_kadaluarsa');
+                         })
                         ->groupBy('barang.id')
                         ->orderBy('nama')
                         ->get();
+
+        $barangStok = DB::table('barang')
+                        ->select('barang.id as barang_id',
+                                'barang.kode', 
+                                'barang.nama', 
+                                'barang.satuan', 
+                                'jenis_barang.jenis_barang as nama_jenis',  
+                                'barang.batasan_stok_minimum', 
+                                'barang.barang_konsinyasi', 
+                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok_di_gudang'),
+                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok_di_rak'),
+                                'barang_has_kadaluarsa.tanggal_kadaluarsa'
+                                )
+                        ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                        ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                        ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                        // ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa >= SYSDATE()')
+                        ->groupBy('barang.id')
+                        ->orderBy('barang.kode')
+                        ->get();
+
+        // $barangStok = DB::table('barang')
+        //                 ->select('barang.id as barang_id',
+        //                         'barang.kode', 
+        //                         'barang.nama', 
+        //                         'barang.satuan', 
+        //                         'jenis_barang.jenis_barang as nama_jenis',  
+        //                         'barang.batasan_stok_minimum', 
+        //                         'barang.barang_konsinyasi', 
+        //                         'barang_has_kadaluarsa.jumlah_stok_di_gudang',
+        //                         'barang_has_kadaluarsa.jumlah_stok_di_rak',
+        //                         'barang_has_kadaluarsa.tanggal_kadaluarsa'
+        //                         )
+        //                 ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+        //                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+        //                 ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+        //                 ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+        //                 ->orderBy('barang.kode')
+        //                 ->get();
 
         $stokBarang = DB::table('barang')
                         ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' - ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang)+sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok'))
@@ -273,14 +333,87 @@ class AdminBarangController extends Controller
                             ->select('jenis_barang.jenis_barang as nama_jenis')
                             ->get();
 
-        return view('admin.barang.stok.index', ['barang' => $barang, 'stokBarang' => $stokBarang, 'jenis_barang' => $jenis_barang]);
+        return view('admin.barang.stok.index', ['barang' => $barang, 'barangStok' => $barangStok, 'stokBarang' => $stokBarang, 'jenis_barang' => $jenis_barang]);
+    }
+
+    public function filter(Request $request)
+    {
+        $jenis_barang = $request->jenis_barang;
+        $masa_kadaluarsa = $request->masa_kadaluarsa;
+        $status_stok_gudang = $request->status_stok_gudang;
+        $status_stok_rak = $request->status_stok_rak;
+        $tipe_barang = $request->tipe_barang;
+
+        $barang = DB::table('barang')
+                        ->select('barang.id as barang_id', 
+                                'barang.kode', 
+                                'barang.nama', 
+                                'barang.satuan',
+                                'jenis_barang.jenis_barang as nama_jenis', 
+                                'barang.barang_konsinyasi', 
+                                'barang.batasan_stok_minimum'
+                                ) 
+                        ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                        ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                        ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->whereNotIn('barang.id',function($query){
+                            $query->select('barang_id')->from('barang_has_kadaluarsa');
+                         })
+                        ->groupBy('barang.id')
+                        ->orderBy('barang.kode');
+
+        $barangStok = DB::table('barang')
+                        ->select('barang.id as barang_id',
+                                'barang.kode', 
+                                'barang.nama', 
+                                'barang.satuan', 
+                                'jenis_barang.jenis_barang as nama_jenis',  
+                                'barang.batasan_stok_minimum', 
+                                'barang.barang_konsinyasi', 
+                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok_di_gudang'),
+                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok_di_rak'),
+                                'barang_has_kadaluarsa.tanggal_kadaluarsa'
+                                )
+                        ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                        ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                        ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
+                        ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                        // ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa >= SYSDATE()')
+                        ->groupBy('barang.id')
+                        ->orderBy('barang.kode');
+
+        dd($barangStok->get());
+
+        if($jenis_barang != "Semua")
+        {
+            $barang->where('jenis_barang.jenis_barang', '=', $jenis_barang);
+            $barangStok->where('jenis_barang.jenis_barang', '=', $jenis_barang);
+
+        }
+
+        $barang = $barang->get();
+        $barangStok = $barangStok->get();
+
+        return response()->json(['barang'=>$barang, 'barangStok'=>$barangStok]);
+    
     }
 
     public function viewDetailStokBarang($id)
     {
         $detailStokBarang = DB::table('barang_has_kadaluarsa')
-                                ->select('tanggal_kadaluarsa', 'jumlah_stok_di_gudang', 'jumlah_stok_di_rak')
-                                ->where('barang_id', '=', $id)
+                                ->select('jenis_barang.jenis_barang as nama_jenis',
+                                         'kategori_barang.kategori_barang as nama_kategori',
+                                         'merek_barang.merek_barang as nama_merek',
+                                         'barang.batasan_stok_minimum',
+                                         'barang_has_kadaluarsa.tanggal_kadaluarsa', 
+                                         'barang_has_kadaluarsa.jumlah_stok_di_gudang', 
+                                         'barang_has_kadaluarsa.jumlah_stok_di_rak', 
+                                         'barang.barang_konsinyasi')
+                                ->where('barang_has_kadaluarsa.barang_id', '=', $id)
+                                ->join('barang', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                                ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                                ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
+                                ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
                                 ->get();
 
         return response()->json(['detail'=>$detailStokBarang]);

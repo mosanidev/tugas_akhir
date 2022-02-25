@@ -29,16 +29,15 @@
 
     <div class="row">
       <div class="col-3">
-        <p class="mt-2 ml-2">Rentang Waktu</p> 
+        <p class="mt-2 ml-2">Rentang Tanggal</p> 
       </div>
       <div class="col-9">
-          <select class="form-control w-50 selectFilter" id="selectJangkaWaktu">
-            <option selected>Selamanya</option>
-            <option>Hari Ini</option>
-            <option>Kemarin</option>
-            <option>7 Hari Terakhir</option>
-            <option>30 Hari Terakhir</option>
-          </select>
+        <div class="input-group w-50">
+              <input type="text" class="form-control selectFilter" id="rentangTanggal">
+              <div class="input-group-append">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div> 
       </div>
     </div>
 
@@ -92,7 +91,7 @@
                             @if($item->status_jual == "Pesanan sudah dibayar" && $item->metode_transaksi == "Ambil di toko")
                               <button class="btn btn-info mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button> 
                             @endif
-                          </td>
+                          </td> 
                         </tr>
                       @endforeach
                     </tbody>
@@ -180,14 +179,14 @@
     });
 
     let filterMetodeTransaksi = $('#selectMetodeTransaksi').val();
-    let filterJangkaWaktu = $('#selectJangkaWaktu').val();
+    let filterRentangTanggal = $('#rentangTanggal').val();
     let filterStatus = $('#selectStatus').val();
 
     var table = $('#dataTable').DataTable( {
         "order": []
-    } );
+    });
 
-    $('.selectFilter').on('click', function() {
+    $('.selectFilter').on('change', function() {
       
       table.draw();
 
@@ -196,7 +195,7 @@
     $.fn.dataTable.ext.search.push(
         function( settings, data, dataIndex ) {
           filterMetodeTransaksi = $('#selectMetodeTransaksi').val();
-          filterJangkaWaktu = $('#selectJangkaWaktu').val();
+          filterRentangTanggal = $('#rentangTanggal').val();
           filterStatus = $('#selectStatus').val();
 
           let metodeTransaksi = data[3];
@@ -204,10 +203,10 @@
           let tanggal = data[1].replace(" WIB", "");
 
           var showMetodeTransaksi = false;
-          var showJangkaWaktu = false;
+          var showRentangTanggal = false;
           var showStatus = false;
           
-          if (filterMetodeTransaksi == "Semua" || filterStatus.val == "Semua" || filterJangkaWaktu == "Selamanya") {
+          if (filterMetodeTransaksi == "Semua" || filterStatus.val == "Semua" || filterRentangTanggal == "Selamanya") {
             $.fn.dataTable.ext.search.length == 0; 
           }
 
@@ -215,25 +214,9 @@
             showMetodeTransaksi = true;
           }
 
-          var REFERENCE = moment(); // fixed just for testing, use moment();
-          var TODAY = REFERENCE.clone().startOf('day');
-          var YESTERDAY = REFERENCE.clone().subtract(1, 'days').startOf('day');
-          var A_WEEK_OLD = REFERENCE.clone().subtract(7, 'days').startOf('day');
-
-          // function isWithinAWeek(momentDate) {
-          //     return momentDate.isAfter(A_WEEK_OLD);
-          // }
-          // function isTwoWeeksOrMore(momentDate) {
-          //     return !isWithinAWeek(momentDate);
-          // }
-
-          if(filterJangkaWaktu == "Selamanya" || filterJangkaWaktu == "Hari Ini" && moment(tanggal).isSame(TODAY, 'd'))
+          if(filterRentangTanggal == "Selamanya" || moment(tanggal).isBetween(filterRentangTanggal.split(" - ")[0], filterRentangTanggal.split(" - ")[1], 'days', '[]') == true)
           {
-            showJangkaWaktu = true;
-          }
-          else if(filterJangkaWaktu == "Selamanya" || filterJangkaWaktu == "Kemarin" && moment(tanggal).isSame(YESTERDAY, 'd'))
-          {
-            showJangkaWaktu = true;
+            showRentangTanggal = true;
           }
           
           if(filterStatus == "Semua" || filterStatus == status)
@@ -241,9 +224,22 @@
             showStatus = true;
           }
 
-          return showMetodeTransaksi && showJangkaWaktu && showStatus;
+          return showMetodeTransaksi && showRentangTanggal && showStatus;
     });
 
+    //Date range picker
+
+    $('#rentangTanggal').daterangepicker({
+      startDate: moment().startOf('days'),
+      endDate: moment().startOf('days'),
+      locale: {
+        format: 'YYYY-MM-DD'
+      }
+    });
+
+    // $('#rentangTanggal').val("Selamanya");
+
+  
     // $('#selectMetodeTransaksi').on('change', function() {
 
     //   alert("diganti");

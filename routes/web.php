@@ -252,7 +252,7 @@ Route::group(['prefix' => 'admin'], function() {
         });
         
         Route::get('/barang/stok', [AdminBarangController::class, 'viewStokBarang'])->name('stok.barang.index');
-
+        Route::get('/barang/stok/filter', [AdminBarangController::class, 'filter'])->name('stok.barang.filter');
         Route::get('/barang/stok/detail/{barang}', [AdminBarangController::class, 'viewDetailStokBarang'])->name('stok.barang.detail');
 
         Route::resource('/barang', AdminBarangController::class);
@@ -293,6 +293,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/konsinyasi/barangkonsinyasi', AdminDetailKonsinyasiController::class);
 
         Route::resource('/penjualan', AdminPenjualanController::class);
+        Route::get('/penjualan/f/filter', [AdminPenjualanController::class, 'filter'])->name('penjualan.filter');
 
         Route::resource('/penjualanoffline', AdminPenjualanOfflineController::class);
 

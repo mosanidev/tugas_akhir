@@ -25,7 +25,7 @@ class AdminPengirimanController extends Controller
                                  'pengiriman.id as pengiriman_id')
                         ->whereNotNull('detail_penjualan.pengiriman_id')
                         ->where('penjualan.status_jual', '=', 'Pesanan sudah dibayar')
-                        ->where('penjualan.jenis', '=', 'Online')
+                        // ->where('penjualan.jenis', '=', 'Online')
                         ->whereNotIn("penjualan.metode_transaksi", ['Ambil di toko'])
                         ->join('penjualan', 'detail_penjualan.penjualan_id', '=', 'penjualan.id')
                         ->join('multiple_pengiriman', 'detail_penjualan.pengiriman_id', '=', 'multiple_pengiriman.pengiriman_id')

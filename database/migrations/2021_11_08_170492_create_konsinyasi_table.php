@@ -27,7 +27,7 @@ class CreateKonsinyasiTable extends Migration
             $table->enum('metode_pembayaran', ['Tunai', 'Transfer Bank']);
             $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas'])->default('Belum lunas');
             $table->string('bukti_bayar', 255)->nullable();
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 
