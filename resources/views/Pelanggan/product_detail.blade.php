@@ -53,7 +53,7 @@
                             {{-- <p class="d-inline">Stok</p> <p class="d-inline"><strong>{{$barang[0]->jumlah_stok}}</strong></p> --}}
                             
                             <input type="hidden" name="barang_id" id="barangID" value="{{ $barang[0]->id }}">
-                            <button class="btn btn-success ml-3" type="button" id="btnBeli" style="width:40%;">Masukkan ke keranjang</button>
+                            <button class="btn btn-success ml-3" type="button" data-id="{{ $barang[0]->id }}" id="btnMasukkanKeranjang" style="width:40%;">Masukkan ke keranjang</button>
 
                         @if(isset($data_barang_wishlist))
                             {{-- <button type="button" id="wishlist" data-id="{{ $barang[0]->id }}" class="btn btn-success ml-3"><i class="far fa-heart mr-2"></i>Wishlist</button> --}}
@@ -63,7 +63,7 @@
                                 <form method="POST" class="d-inline" action="{{ route('wishlist.destroy', ['wishlist'=>$data_barang_wishlist[0]->id]) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-success ml-3"><i class="fas fa-heart mr-2"></i>Wishlist</button>
+                                    <button type="submit" class="btn btn-success ml-3"><i class="fas fa-heart mr-2"></i>Favorit</button>
                                 </form>
 
                             @else 
@@ -72,7 +72,7 @@
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $barang[0]->id }}"/>
                                     <input type="hidden" name="harga_barang" value="{{ $barang[0]->harga_jual-$barang[0]->diskon_potongan_harga }}"/>
-                                    <button type="submit" class="btn btn-success ml-3"><i class="far fa-heart mr-2"></i>Wishlist</button>
+                                    <button type="submit" class="btn btn-success ml-3"><i class="far fa-heart mr-2"></i>Favorit</button>
                                 </form>
 
                             @endif 
@@ -113,16 +113,20 @@
                                         @for($i = 0; $i < $barangSerupaLength; $i++)
 
                                             <div class="col-md-3 mb-3">
-                                                <div class="card" style="">
-                                                    <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                <div class="card">
+                                                    <div style="height: 150px;">
+                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" alt="Foto Produk">
+                                                    </div>
                                                     <div class="card-body">
-                                                    <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
+                                                        <div style="height: 60px;">
+                                                            <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
+                                                        </div>
                                                     @if($barang_serupa[$i]->diskon_potongan_harga != 0)
                                                         <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                     @else
                                                         <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                     @endif
-                                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                    <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_serupa[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -138,16 +142,20 @@
                                         @for($i = 4; $i < count($barang_serupa); $i++)
 
                                             <div class="col-md-3 mb-3">
-                                                <div class="card" style="">
-                                                    <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                <div class="card">
+                                                    <div style="height: 150px;">
+                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" alt="Foto Produk">
+                                                    </div>
                                                     <div class="card-body">
-                                                        <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
+                                                        <div style="height: 60px;">
+                                                            <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
+                                                        </div>
                                                         @if($barang_serupa[$i]->diskon_potongan_harga != 0)
-                                                        <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
-                                                    @else
-                                                        <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
-                                                    @endif
-                                                    <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                        @else
+                                                            <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                        @endif
+                                                    <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_serupa[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -193,17 +201,21 @@
                                         @for($i = 0; $i < $barangLainLength; $i++)
 
                                             <div class="col-md-3 mb-3">
-                                                <div class="card" style="">
+                                                <div class="card">
                                                     <form method="POST" action="{{ route('addCart') }}">
-                                                        <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                        <div style="height: 150px;">
+                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" alt="Foto Produk">
+                                                        </div>
                                                         <div class="card-body">
-                                                        <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
-                                                        @if($barang_lain[$i]->diskon_potongan_harga != 0)
-                                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
-                                                        @else
-                                                            <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
-                                                        @endif
-                                                        <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                            <div style="height: 60px;">
+                                                                <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
+                                                            </div>
+                                                            @if($barang_lain[$i]->diskon_potongan_harga != 0)
+                                                                <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                            @else
+                                                                <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                            @endif
+                                                            <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_lain[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -221,16 +233,20 @@
                                             @for($i = 4; $i < count($barang_lain); $i++)
 
                                                 <div class="col-md-3 mb-3">
-                                                    <div class="card" style="">
-                                                        <img class="card-img-top" src="https://img.jakpost.net/c/2017/03/15/2017_03_15_23480_1489559147._large.jpg" alt="Card image cap">
+                                                    <div class="card">
+                                                        <div style="height: 150px;">
+                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" alt="Foto Produk">
+                                                        </div>
                                                         <div class="card-body">
-                                                        <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
-                                                        @if($barang_lain[$i]->diskon_potongan_harga != 0)
-                                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
-                                                        @else
-                                                            <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
-                                                        @endif
-                                                        <button class="btn btn-block btn-success add_to_cart" type="submit">Beli</button>
+                                                            <div style="height: 60px;">
+                                                                <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
+                                                            </div>
+                                                            @if($barang_lain[$i]->diskon_potongan_harga != 0)
+                                                                <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                            @else
+                                                                <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                            @endif
+                                                            <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_lain[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -282,8 +298,6 @@
                 {
                     $('#kuantitas-cart').val( $('#kuantitas-cart').val() - 1 );
                 }
-
-                console.log($('#kuantitas-cart').val());
 
             });
 
@@ -375,17 +389,41 @@
             });
 
 
-            $('#btnBeli').on('click', function() {
-
-                // console.log($('#kuantitasCart').val());
+            $('#btnMasukkanKeranjang').on('click', function() {
 
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('addCart') }}',
-                    data: { 'barang_id': $('#barangID').val(), 'qty': $('#kuantitas-cart').val() },
+                    data: { 'barang_id': $(this).attr('data-id'), 'qty': $('#kuantitas-cart').val() },
                     success:function(data) {
 
-                        toastr.success(data.status, "Success", toastrOptions);
+                        toastr.success(data.status, "Sukses", toastrOptions);
+
+                        let total_cart = $("#total_cart")[0].innerText;
+
+                        if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                        {
+                            $("#total_cart")[0].innerText = parseInt(total_cart)+1;
+                        } 
+
+                    },
+                    error: function (err) {
+                        console.log("AJAX error in request: " + JSON.stringify(err, null, 2));
+                    }
+                });
+
+
+            });
+
+            $('.add_to_cart').on('click', function() {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('addCart') }}',
+                    data: { 'barang_id': $(this).attr('data-id') },
+                    success:function(data) {
+
+                        toastr.success(data.status, "Sukses", toastrOptions);
 
                         let total_cart = $("#total_cart")[0].innerText;
 

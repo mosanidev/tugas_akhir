@@ -1,7 +1,8 @@
 @extends('pelanggan.layouts.template')
 
 @push('css')
-    {{-- @stack('css_user_menu') --}}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     @if(isset($alamat))
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
@@ -13,9 +14,6 @@
         <link rel="stylesheet" href="{{ asset('/plugins/select2/css/select2.min.css') }}">
         <link rel="stylesheet" href="{{ asset('/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     @endif
-
-
-    
 
 @endpush
 
@@ -29,7 +27,7 @@
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('order') }}">Transaksi</a>
                 <a class="btn btn-block btn-success btn-lg my-2 d-block" href="{{ route('returPenjualan.showForm') }}">Retur</a>
                 <a class="btn btn-block btn-success btn-lg my-2 d-block" href="{{ route('returPenjualan.showHistory') }}">Riwayat Retur</a>
-                <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('wishlist.index') }}">Wishlist</a>
+                <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('wishlist.index') }}">Favorit</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('notifikasi.index') }}">Notifikasi</a>
                 <a class="btn btn-block btn-success btn-lg my-2" href="{{ route('logout') }}">Keluar</a>
             </div>

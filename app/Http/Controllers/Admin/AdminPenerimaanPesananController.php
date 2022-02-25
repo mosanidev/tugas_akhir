@@ -78,6 +78,7 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
 
         $penerimaan_pesanan_id = DB::table('penerimaan_pemesanan')

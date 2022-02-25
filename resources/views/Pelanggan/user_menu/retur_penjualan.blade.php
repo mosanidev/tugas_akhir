@@ -2,7 +2,7 @@
     <div class="col-12">
         <div class="px-3 py-4">
             <h5 class="mb-3"><strong>Retur</strong></h5>
-            <p class="text-justify">Kriteria barang yang ditukarkan : </p>
+            <p class="text-justify">Kriteria barang yang dikembalikan : </p>
             <p class="text-justify">1. Kemasan produk rusak saat barang diterima oleh pelanggan</p>
             <p class="text-justify">2. Produk tidak sesuai dengan pesanan</p>
             <p class="text-justify">3. Produk diterima saat sudah melewati tanggal kadaluarsa</p>

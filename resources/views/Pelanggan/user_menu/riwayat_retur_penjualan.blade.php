@@ -7,7 +7,7 @@
         @if(isset($riwayat_retur))
 
             @if (count($riwayat_retur) == 0)
-                <h5 class="my-3">Anda belum memiliki riwayat retur penjualan</h5>
+                <h5 class="my-3">Anda belum memiliki riwayat retur</h5>
             @else
                 @foreach($riwayat_retur as $item) 
 

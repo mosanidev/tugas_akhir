@@ -15,11 +15,8 @@
             <hr>
             <div class="container">
                 <div class="row">
-                    <div class="col-6 rowContent">
+                    <div class="col-12 rowAlamatPengiriman">
 
-                    </div>
-                    <div class="col-6 rowKirim">
-                        
                     </div>
                 </div>
             </div>
@@ -27,6 +24,12 @@
             <div class="row">
                 <div class="col-12 rowContentBrg">
 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 rowPengiriman">
+                        
                 </div>
             </div>
             

@@ -22,6 +22,7 @@ use App\Http\Controllers\Pelanggan\WishlistController;
 use App\Http\Controllers\Pelanggan\NotifikasiController;
 use App\Http\Controllers\Pelanggan\ReturPenjualanController;
 use App\Http\Controllers\Pelanggan\TestimoniController;
+use App\Http\Controllers\Pelanggan\PengirimanController;
 use App\Http\Controllers\TesssController;
 
 // api
@@ -164,6 +165,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('profil', [UserController::class, 'show'])->name('profil');
     Route::post('profil', [UserController::class, 'updateProfil'])->name('updateProfil');
 
+    Route::get('/pengiriman/lacak_resi/{pengiriman}', [PengirimanController::class, 'lacakResi']);
+
     // retur penjualan route
     Route::get('retur', [ReturPenjualanController::class, 'showForm'])->name('returPenjualan.showForm');
     Route::get('riwayat_retur', [ReturPenjualanController::class, 'showHistory'])->name('returPenjualan.showHistory');
@@ -293,7 +296,6 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/konsinyasi/barangkonsinyasi', AdminDetailKonsinyasiController::class);
 
         Route::resource('/penjualan', AdminPenjualanController::class);
-        Route::get('/penjualan/f/filter', [AdminPenjualanController::class, 'filter'])->name('penjualan.filter');
 
         Route::resource('/penjualanoffline', AdminPenjualanOfflineController::class);
 

@@ -51,21 +51,20 @@ class HomeController extends Controller
 
         if (Auth::check())
         {
-            $showModalTestimoni = DB::table('testimoni')
-                                ->join('users', 'testimoni.users_id', '=', 'users.id')
-                                ->join('penjualan', 'users.id', '=', 'penjualan.users_id')
-                                ->where('testimoni.users_id', '=', auth()->user()->id)
+            $showModalTestimoni = false;
+
+            $testimoni = DB::table('testimoni')
+                                ->where('users_id', '=', auth()->user()->id)
+                                ->get();
+
+            $penjualan = DB::table('penjualan')
+                                ->where('users_id', '=', auth()->user()->id)
                                 ->where('penjualan.status_jual', '=', 'Pesanan sudah selesai')
                                 ->get();
 
-            
-            if(count($showModalTestimoni) == 0)
+            if(count($testimoni) == 0 && count($penjualan) > 0)
             {
                 $showModalTestimoni = true;
-            }
-            else 
-            {
-                $showModalTestimoni = false;
             }
 
             $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();

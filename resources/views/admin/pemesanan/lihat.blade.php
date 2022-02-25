@@ -144,6 +144,11 @@
             </div>
     </div>
     
+    @if(count($history_edit) > 0)
+        @foreach($history_edit as $item)
+        <p class="ml-5"><em>Telah diubah oleh {{$item->nama_depan." ".$item->nama_belakang}} pada {{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm') }} WIB</em></p>
+        @endforeach
+    @endif
 
 <script type="text/javascript">
 

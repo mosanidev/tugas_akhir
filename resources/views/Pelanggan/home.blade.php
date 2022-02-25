@@ -160,6 +160,7 @@
 
         $(document).ready(function() {
 
+            console.log("{{ $show_modal_testimoni }}");
             if("{{ $show_modal_testimoni }}")
             {
                 $('#modalTestimoni').modal('toggle');
@@ -180,9 +181,9 @@
                     },
                     success:function(data) {
 
-                        $('#modalLoading').modal('toggle');
+                        // $('#modalLoading').modal('toggle');
 
-                        toastr.success(data.status, "Success", toastrOptions);
+                        toastr.success(data.status, "Sukses", toastrOptions);
 
                         let total_cart = $("#total_cart")[0].innerText;
 

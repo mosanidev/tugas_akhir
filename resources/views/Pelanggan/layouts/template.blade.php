@@ -143,7 +143,7 @@
                                     <a class="dropdown-item" href="{{ route('order') }}">Transaksi</a>
                                     <a class="dropdown-item" href="{{ route('returPenjualan.showForm') }}">Retur</a>
                                     <a class="dropdown-item" href="{{ route('returPenjualan.showHistory') }}">Riwayat Retur</a>
-                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a>
+                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">Favorit</a>
 
                                     @if(isset($jumlah_notif))
                                         @if($jumlah_notif[0]->jumlah_notif > 0)   

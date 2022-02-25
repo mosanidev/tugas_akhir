@@ -1,10 +1,10 @@
 <div class="px-3 py-4">
-    <h5 class="mb-3"><strong>Wishlist</strong></h5>
+    <h5 class="mb-3"><strong>Favorit</strong></h5>
 
     <div id="container-alamat">
         <div class="content-alamat">
             @if (count($wishlist) == 0)
-                <h5 class="my-3">Maaf anda belum memiliki wishlist</h5>
+                <h5 class="my-3">Maaf anda belum memiliki produk favorit</h5>
             @else
                 <div>
                     <div class="w-100 text-right">

@@ -42,7 +42,11 @@ class OrderController extends Controller
     
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-        return view('pelanggan.user_menu.user_menu', ['penjualan'=>$penjualan, 'detail_penjualan'=>$detail_penjualan, 'semua_kategori'=>$kategori, 'total_cart'=>$total_cart]);
+        $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
+        
+        $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
+
+        return view('pelanggan.user_menu.user_menu', ['penjualan'=>$penjualan, 'detail_penjualan'=>$detail_penjualan, 'semua_kategori'=>$kategori, 'total_cart'=>$total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);
     }
     
     public function detailPayment(Request $request)
@@ -954,36 +958,6 @@ class OrderController extends Controller
                             ->groupBy('barang.id')
                             ->get();
 
-            if($pengiriman[0]->nomor_resi != null)
-            {
-                $cek_riwayat_pengiriman = Http::withHeaders([
-                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-                    ])->get("https://api.biteship.com/v1/trackings/$pengiriman[0]->nomor_resi/couriers/$pengiriman[0]->kode_shipper")->body();
-
-                $cek_riwayat_pengiriman = json_decode($cek_riwayat_pengiriman);
-            
-                if($cek_riwayat_pengiriman->success == true)
-                {
-                    // tracking via biteship melalui nomer resi
-                    $riwayat_pengiriman = $cek_riwayat_pengiriman;
-                } 
-            }
-            else 
-            {
-
-                $cek_riwayat_pengiriman = Http::withHeaders([
-                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-                    ])->get("https://api.biteship.com/v1/trackings/JP9480199312/couriers/jnt")->body();
-                
-                $cek_riwayat_pengiriman = json_decode($cek_riwayat_pengiriman); 
-
-                if($cek_riwayat_pengiriman->success == true)
-                {
-                    // tracking via biteship melalui nomer resi
-                    $riwayat_pengiriman = $cek_riwayat_pengiriman;
-                } 
-                
-            }
 
         }
         else if ($transaksi[0]->metode_transaksi == "Ambil di toko")

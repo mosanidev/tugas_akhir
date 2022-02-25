@@ -81,6 +81,7 @@
 </div>
 
 @include('pelanggan.user_menu.modal.detail_order')
+@include('pelanggan.user_menu.modal.cek_resi')
 
 
 @push('script_user_menu')
@@ -88,6 +89,102 @@
     <script type="text/javascript">
 
         $(document).ready(function() {
+
+            $(document).on('click', '.btnLihatInfoPengiriman', function(e) {
+
+                const pengiriman_id = $(this).attr('data-id');
+                //do whatever
+                console.log(pengiriman_id);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/pengiriman/lacak_resi/'+pengiriman_id,
+                    beforeSend: function() {
+
+                        $('#modalDetailOrder').modal('toggle');
+                        
+                        $('#modalCekResi').modal('toggle');
+
+                        $('#modalCekResi .modal-body .isiInfoKirim').html(`<div class="m-5" id="loader">
+                                                                                <div class="text-center">
+                                                                                    <div class="spinner-border" style="width: 5rem; height: 5rem; color:grey;" role="status">
+                                                                                        <span class="sr-only">Loading...</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>`);
+
+                    },
+                    success: function(data){
+
+                        $('#modalCekResi .modal-body .isiInfoKirim').html(`<div class="infoKirim">
+
+                                                                            </div>
+
+                                                                            <div class="lacakResi">
+                                                                            </div>`);
+
+                        let estimasiTiba = null;
+
+                        if(data.pengiriman[0].nama_shipper == 'Gojek' || data.pengiriman[0].nama_shipper == 'Grab')
+                        {
+                            estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY HH:mm") + " WIB";
+                        }
+                        else 
+                        {
+                            estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY");
+                        }
+
+                        $('.infoKirim').html(`<h5>Pengiriman</h5>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        ` + data.pengiriman[0].jenis_pengiriman + ` ` + data.pengiriman[0].nama_shipper + `
+                                                    </div>
+                                                    <div class="col-12">
+                                                        Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                    </div>
+                                                    <div class="col-12">
+                                                        Ongkos kirim ` + convertAngkaToRupiah(data.pengiriman[0].tarif) + `
+                                                    </div>
+                                                </div>
+                                                <hr>`);
+
+                        let rowKirim = `<div class="row">
+                                            <div class="col-3">
+                                                Nomor Resi
+                                            </div>
+                                            <div class="col-9">
+                                                ` + data.pengiriman[0].nomor_resi + `
+                                            </div>
+                                        </div>
+                                        <br>`;
+
+                        if(data.riwayat_pengiriman != null)
+                        {
+                            for(let o = 0; o < data.riwayat_pengiriman.history.length; o++)
+                            {
+                                // <i class="fa-solid fa-circle d-inline"></i>
+                                rowKirim += `<div class="row">
+                                                <div class="col-3">
+                                                    <p class="mt-2">` + moment(data.riwayat_pengiriman.history[o].updated_at).format("DD MMMM YYYY HH:mm") + ` WIB</p><br>
+                                                </div>
+                                                <div class="col-9">` +
+                                                    `<p class="mt-2">` +  data.riwayat_pengiriman.history[o].note + `</p><br> ` +
+                                                    `</div>
+                                            </div>`;
+                                // data.riwayat_pengiriman.history[o].status
+                            }
+
+                            $('.lacakResi').append(rowKirim);
+                        }
+
+                    }
+                })
+
+            });
+            // $('.infoPengiriman').on('click', '.btnLihatInfoPengiriman', function() {
+                
+            //     console.log("tesss");
+            // });
 
             $('.btnLihatDetailOrder').on('click', function(event) {
 
@@ -102,7 +199,9 @@
                     url: '/order/show/'+id, 
                     beforeSend: function() {
                         
-                        $('.rowContent').html("");
+                        $('.rowAlamatPengiriman').html("");
+                        $('.rowContentBrg').html("");
+                        $('.rowPengiriman').html("");
                         $('.infoTransaksi').html("");
                         $('#labelTotalTarifOngkir').html("");                        
                         $('#totalTarifOngkir').html("");
@@ -116,7 +215,7 @@
                     },
                     success:function(data) {
 
-                        console.log(data);
+                        // console.log(data);
 
                         closeLoader($('#modalDetailOrder .modal-body'), $('.infoTransaksi'));
 
@@ -440,7 +539,7 @@
                             // tampilkan data barang
                             for(let i=0; i < data.barang.length; i++)
                             {
-                                $('.rowContent').append(`<div class="row">
+                                $('.rowContentBrg').append(`<div class="row">
                                                             <div class="col-4 ml-2">
                                                                     <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                             </div>
@@ -463,39 +562,18 @@
                         }
                         else if(data.transaksi[0].metode_transaksi == "Dikirim ke alamat") // dikirim ke alamat
                         {   
-                            $('.rowContent').append(`<h5>Alamat Pengiriman</h5>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            ` + data.pengiriman[0].alamat + `
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            ` + data.pengiriman[0].kecamatan + `, ` + data.pengiriman[0].kota_kabupaten + `, ` + data.pengiriman[0].kode_pos + `
-                                                        </div>
-                                                    </div>`);
-
-                            if(data.riwayat_pengiriman != null)
-                            {
-                                let rowKirim = 0;
-                                for(let o = 0; o < data.riwayat_pengiriman.history.length; o++)
-                                {
-                                    rowKirim += `<i class="fa-solid fa-circle"></i>
+                            $('.rowAlamatPengiriman').append(`<h5>Alamat Pengiriman</h5>
                                                         <div class="row">
-                                                        <div class="col-3">
-                                                            <p class="mt-2">` + data.riwayat_pengiriman.history[o].updated_at + `</p><br>
+                                                            <div class="col-12">
+                                                                ` + data.pengiriman[0].alamat + `
+                                                            </div>
                                                         </div>
-                                                        <div class="col-9">` +
-                                                            `<p class="mt-2">` +  data.riwayat_pengiriman.history[o].status + ` ` + data.riwayat_pengiriman.history[o].note + `</p><br> ` +
-                                                            `</div>
-                                                        </div>`;
-                                }
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                ` + data.pengiriman[0].kecamatan + `, ` + data.pengiriman[0].kota_kabupaten + `, ` + data.pengiriman[0].kode_pos + `
+                                                            </div>
+                                                        </div>`);
 
-                                $('.rowKirim').append(rowKirim);
-                            }
-                            
-
-                            // let estimasiTiba = null;
                             if(data.pengiriman[0].nama_shipper == 'Gojek' || data.pengiriman[0].nama_shipper == 'Grab')
                             {
                                 estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
@@ -522,19 +600,20 @@
 
                             }
 
-                            $('.rowContentBrg').append(`<h5>Pengiriman</h5>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            ` + data.pengiriman[0].jenis_pengiriman + ` ` + data.pengiriman[0].nama_shipper + `
+                            $('.rowPengiriman').append(`<h5>Pengiriman</h5>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                ` + data.pengiriman[0].jenis_pengiriman + ` ` + data.pengiriman[0].nama_shipper + `
+                                                            </div>
+                                                            <div class="col-12">
+                                                                Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                            </div>
+                                                            <div class="col-12">
+                                                                Ongkos kirim ` + convertAngkaToRupiah(data.pengiriman[0].tarif) + `
+                                                            </div>
+                                                            <button class="btn btn-link text-success btnLihatInfoPengiriman" data-id="` + data.pengiriman[0].pengiriman_id + `"><strong>Lihat informasi pengiriman</strong></button>
                                                         </div>
-                                                        <div class="col-12">
-                                                            Estimasi pengiriman tiba ` + estimasiTiba + `
-                                                        </div>
-                                                        <div class="col-12">
-                                                            Ongkos kirim ` + convertAngkaToRupiah(data.pengiriman[0].tarif) + `
-                                                        </div>
-                                                    </div>
-                                                    <hr>`);               
+                                                        <hr>`);              
 
                             $('#labelSubtotalProduk').html("Subtotal Produk :");
 
@@ -551,8 +630,6 @@
 
                             let totalTarif = 0;
 
-                            console.log(data);
-
                             for(let i=0; i < data.pengiriman.length; i++)
                             {
                                 if(data.pengiriman[i].nama_shipper == 'Gojek' ||data.pengiriman[i].nama_shipper == 'Grab')
@@ -566,7 +643,7 @@
 
                                 totalTarif += data.pengiriman[i].tarif;
 
-                                $('.rowContent').append(`<h5>Alamat Pengiriman</h5>
+                                $('.rowAlamatPengiriman').append(`<h5>Alamat Pengiriman</h5>
                                                                 <div class="row">
                                                                     <div class="col-12">
                                                                         ` + data.pengiriman[i].alamat + `
@@ -582,7 +659,7 @@
                                 {
                                     if(data.barang[y].pengiriman_id == data.pengiriman[i].pengiriman_id)
                                     {
-                                        $('.rowContent').append(`<div class="row">
+                                        $('.rowContentBrg').append(`<div class="row">
                                                                     <div class="col-4 ml-2">
                                                                             <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
                                                                     </div>
@@ -599,7 +676,7 @@
 
                                 subTotalProduk += data.barang[i].subtotal;
 
-                                $('.rowContent').append(`<h5>Pengiriman</h5>
+                                $('.rowPengiriman').append(`<h5>Pengiriman</h5>
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     ` + data.pengiriman[i].jenis_pengiriman + ` ` + data.pengiriman[i].nama_shipper + `
@@ -641,7 +718,8 @@
                     }   
                 });
 
-            })
+            });
+
 
         });
 

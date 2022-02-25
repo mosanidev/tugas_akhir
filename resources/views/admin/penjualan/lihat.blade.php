@@ -84,7 +84,6 @@
                             <thead>
                                 <tr>
                                     <th>Barang</th>
-                                    <th>Tanggal Kadaluarsa</th>
                                     <th>Harga Jual</th>
                                     <th>Potongan Harga</th>
                                     <th>Kuantitas</th>
@@ -96,7 +95,6 @@
                                 @for($i=0; $i < count($detail_penjualan); $i++)
                                     <tr>
                                         <td>{{ $detail_penjualan[$i]->kode." - ".$detail_penjualan[$i]->nama }}</td>
-                                        <td>{{ $detail_penjualan[$i]->tanggal_kadaluarsa }}</td>
                                         <td>{{ "Rp " . number_format($detail_penjualan[$i]->harga_jual,0,',','.')  }}</td>
                                         <td>{{ "Rp " . number_format($detail_penjualan[$i]->diskon_potongan_harga,0,',','.')  }}</td>
                                         <td>{{ $detail_penjualan[$i]->kuantitas }}</td>

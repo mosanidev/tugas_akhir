@@ -12,7 +12,7 @@
             
             <input type="hidden" name="pemesanan_id" value="{{ $pemesanan[0]->id }}">
             <input type="hidden" name="barang_diterima" id="dataBarangDiterima" value="">
-            {{-- <input type="hidden" name="barang_tidak_diterima" id="dataBarangTidakDiterima" value=""> --}}
+            <input type="hidden" name="barang_tidak_diterima" id="dataBarangTidakDiterima" value="">
             <input type="hidden" name="nomor_nota_dari_supplier">
 
             <div class="form-group row">
@@ -163,7 +163,6 @@
 
 @include('admin.penerimaan_pesanan.modal.create')
 @include('admin.penerimaan_pesanan.modal.confirm_add')
-@include('admin.penerimaan_pesanan.modal.isikanNomorNota')
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -246,7 +245,7 @@
             //     }
             // });
 
-            // $('#dataBarangTidakDiterima').val(JSON.stringify(barangTidakDiterima));
+            $('#dataBarangTidakDiterima').val(JSON.stringify(barangTidakDiterima));
 
             $('#formTambah').submit();
 

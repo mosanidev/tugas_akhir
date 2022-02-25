@@ -161,15 +161,15 @@
         {
             toastr.error("Harga pesan tidak boleh kurang dari atau sama dengan 0", "Gagal", toastrOptions);
         }
-        else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val() }).length > 0)
+        else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val() }).length > 0)
         {
-            toastr.error("Barang dengan tanggal kadaluarsa yang sama sudah ada di tabel barang yang dipesan" , "Gagal", toastrOptions);
+            toastr.error("Barang yang dipesan sudah ada di tabel barang yang dipesan" , "Gagal", toastrOptions);
         }
         else if(parseInt($('#harga_pesan').val()) - parseInt($('#diskon_potongan_harga').val()) <= 0)
         {
             toastr.error("Harga pesan tidak boleh kurang dari 0" , "Gagal", toastrOptions);
         }
-        else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val() && e.tanggal_kadaluarsa == $('#tanggal_kadaluarsa').val()}).length == 0)
+        else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val()}).length == 0)
         {
             barangDipesan.push({
                 "barang_id": $('#barang :selected').val(),

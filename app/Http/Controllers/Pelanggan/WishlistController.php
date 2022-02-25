@@ -20,7 +20,11 @@ class WishlistController extends Controller
         $wishlist = DB::table('wishlist')->select('wishlist.id', 'wishlist.barang_id', 'barang.foto', 'barang.nama', 'barang.diskon_potongan_harga', 'barang.harga_jual')->join('barang', 'wishlist.barang_id', '=', 'barang.id')->where('users_id','=',auth()->user()->id)->get();
         $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
 
-        return view('pelanggan..user_menu.user_menu', ['wishlist'=>$wishlist, 'semua_kategori' => $kategori, 'total_cart'=>$total_cart]);
+        $jumlah_notif_belum_dilihat = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->where('notifikasi.status', '=', 'Belum dilihat')->get();
+
+        $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
+
+        return view('pelanggan..user_menu.user_menu', ['wishlist'=>$wishlist, 'semua_kategori' => $kategori, 'total_cart'=>$total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);
     }
 
     /**
@@ -48,7 +52,7 @@ class WishlistController extends Controller
         
         $insert = DB::table('wishlist')->insert(['barang_id' => $request->id, 'users_id'=>auth()->user()->id]);
         
-        return redirect()->back()->with(['success'=>'Berhasil ditambahkan di daftar wishlist']);
+        return redirect()->back()->with(['success'=>'Berhasil ditambahkan ke daftar produk favorit']);
         
     }
 
@@ -94,17 +98,16 @@ class WishlistController extends Controller
      */
     public function destroy($id)
     {
-        dd($id);
         $delete = DB::table('wishlist')->where('id', '=', $id)->where('users_id', '=', auth()->user()->id)->delete();
 
         // return redirect()->route('detail', ['id'=>$id])->with(['status'=>'Dihapus di wishlist']);
-        return redirect()->back()->with(['success'=>'Berhasil dihapus di daftar wishlist']);
+        return redirect()->back()->with(['success'=>'Berhasil dihapus di daftar produk favorit']);
     }
 
     public function deleteAll()
     {
         $delete = DB::table('wishlist')->where('users_id', '=', auth()->user()->id)->delete();
-        return redirect()->back()->with(['status'=>'Berhasil dihapus di daftar wishlist']);
+        return redirect()->back()->with(['status'=>'Berhasil dihapus di daftar produk favorit']);
     }
 
     public function deleteByMarked(Request $request)
