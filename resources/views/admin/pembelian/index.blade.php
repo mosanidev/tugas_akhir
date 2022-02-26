@@ -65,11 +65,12 @@
                             {{ $item->status_bayar }}
                           </td>
                           <td>
-                            <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
+                            <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-secondary w-100 mb-1'>Lunasi</a>
+                            <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
                             
-                            @if($item->status_retur == "Tidak ada retur" && $item->status_bayar == "Belum lunas")
-                              <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
-                              <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota_dari_supplier }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian"><i class="fas fa-trash"></i></button>
+                            @if($item->status_retur == "Tidak ada retur" && $item->status_bayar == "Belum lunas" || $item->status_bayar == "Lunas sebagian")
+                              <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning w-100 mb-1'>Ubah</a>
+                              <button class='btn btn-danger btnHapus w-100' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota_dari_supplier }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian">Hapus</button>
                             @endif
 
                           </td>

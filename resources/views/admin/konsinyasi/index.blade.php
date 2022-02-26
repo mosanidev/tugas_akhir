@@ -25,7 +25,6 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
@@ -39,16 +38,16 @@
                         @php $num = 1; @endphp
                         @foreach($konsinyasi as $item)
                           <tr>
-                            <td style="width: 10px">{{ $num++ }}</td>
                             <td>{{ $item->nomor_nota }}</td>
                             <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('D MMMM Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
                             <td>{{ $item->nama_supplier }}</td>
                             <td>{{ $item->status_bayar }}</td>
                             <td>
-                              <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
-                              <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
-                              <button type="button" class="btn btn-danger btnHapusKonsinyasi" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi"><i class="fas fa-trash"></i></button>
+                              <button type="button" class="btn btn-secondary w-100 mb-1" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Lunasi</button>
+                              <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
+                              <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning w-100 mb-1'>Ubah</a>
+                              <button type="button" class="btn btn-danger btnHapusKonsinyasi w-100 mb-1" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
                             </td>
                           </tr>
                         @endforeach
@@ -61,6 +60,7 @@
 </div>
 
 @include('admin.konsinyasi.modal.create_konsinyasi')
+@include('admin.konsinyasi.modal.confirm_delete')
 
 <!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -89,6 +89,17 @@
       let totalHutang = $('#btnLunasi').attr('data-total-hutang');
 
       $('#formLunasi').attr('action', '/admin/konsinyasi/lunasi/'+id);
+
+    });
+
+    $('.btnHapusKonsinyasi').on('click', function() {
+
+      const nomorNota = $(this).attr('data-nomor-nota');
+      const id = $(this).attr('data-id');
+
+      $('.nomorNotaKonsinyasi').html(nomorNota);
+
+      $('#formHapus').attr('action', '/admin/konsinyasi/'+id);
 
     });
 

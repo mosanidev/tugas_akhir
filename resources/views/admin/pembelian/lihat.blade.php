@@ -125,7 +125,7 @@
                                   <tr>
                                     <td>{{ $item->kode." - ".$item->nama }}</td>
                                     @if($item->tanggal_kadaluarsa == "9999-12-12 00:00:00")
-                                      {{ "Tidak ada" }}
+                                      <td>{{ "Tidak ada" }}</td>
                                     @else 
                                       <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('D MMMM Y') }}</td>
                                     @endif

@@ -140,6 +140,8 @@ class AdminPenjualanController extends Controller
                         // ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
                         ->get();
 
+        dd($penjualan);
+
         if($request->status_penjualan == "Pesanan siap diambil di toko")
         {
             $updateNotif = DB::table('notifikasi')

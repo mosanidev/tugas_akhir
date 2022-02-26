@@ -74,9 +74,7 @@ class AdminKonsinyasiController extends Controller
                             'tanggal_titip' => $request->tanggal_titip,
                             'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
                             'supplier_id' => $request->supplier_id,
-                            'metode_pembayaran' => $request->metode_pembayaran,
-                            'created_at' => \Carbon\Carbon::now(),
-                            'updated_at' => \Carbon\Carbon::now()
+                            'metode_pembayaran' => $request->metode_pembayaran
                         ]);
 
         return redirect()->route('konsinyasi.add.barang', ['konsinyasi' => $konsinyasi]);
@@ -294,7 +292,79 @@ class AdminKonsinyasiController extends Controller
      */
     public function edit($id)
     {
-        //
+        $konsinyasi = DB::table('konsinyasi')
+                        ->select('konsinyasi.*', 'supplier.nama as nama_supplier')
+                        ->where('konsinyasi.id', '=', $id)
+                        ->join('supplier', 'supplier.id', '=', 'konsinyasi.supplier_id')
+                        ->get();
+
+        $detailKonsinyasi = DB::table('detail_konsinyasi')
+                                ->select('detail_konsinyasi.*', 'barang.kode', 'barang.nama', 'barang.harga_jual', 'barang.diskon_potongan_harga')
+                                ->where('konsinyasi_id', '=', $id)
+                                ->join('barang_has_kadaluarsa', 'detail_konsinyasi.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
+                                ->join('barang', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                                ->get();
+
+        $supplier = DB::table('supplier')->where('jenis', '=', 'Individu')->get();
+
+        $barang_konsinyasi = DB::table('barang')->where('barang_konsinyasi', '=', 1)->get();
+
+        return view('admin.konsinyasi.ubah', ['konsinyasi' => $konsinyasi, 'detail_konsinyasi' => $detailKonsinyasi, 'supplier' => $supplier, 'barang_konsinyasi' => $barang_konsinyasi]);
+    }
+
+    public function reset($id)
+    {
+        $detailKonsinyasi = DB::table('detail_konsinyasi')
+                                ->where('konsinyasi_id', '=', $id)
+                                ->get();
+
+        for($i = 0; $i < count(array($detailKonsinyasi)); $i++)
+        {
+            $stokDiGudang = DB::table('barang_has_kadaluarsa')
+                            ->select('jumlah_stok_di_gudang')
+                            ->where('barang_id', '=', $detailKonsinyasi[$i]->barang_id)
+                            ->where('tanggal_kadaluarsa', '=', $detailKonsinyasi[$i]->tanggal_kadaluarsa)
+                            ->get();
+
+            $stokDiRak = DB::table('barang_has_kadaluarsa')
+                            ->select('jumlah_stok_di_rak')
+                            ->where('barang_id', '=', $detailKonsinyasi[$i]->barang_id)
+                            ->where('tanggal_kadaluarsa', '=', $detailKonsinyasi[$i]->tanggal_kadaluarsa)
+                            ->get();
+
+            $qtyGudang = $stokDiGudang[0]->jumlah_stok_di_gudang;
+
+            if($detailKonsinyasi[$i]->jumlah_titip > $qtyGudang)
+            {
+                $kurangiStokGudang = DB::table('barang_has_kadaluarsa')
+                                ->where('barang_id', '=', $detailKonsinyasi[$i]->barang_id)
+                                ->where('tanggal_kadaluarsa', '=', $detailKonsinyasi[$i]->tanggal_kadaluarsa)
+                                ->update([
+                                    'jumlah_stok_di_gudang' => 0
+                                ]);
+            
+                $qtyGudang -= $detailKonsinyasi[$i]->kuantitas;
+
+                $kurangiStokRak = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $detailKonsinyasi[$i]->barang_id)
+                                    ->where('tanggal_kadaluarsa', '=', $detailKonsinyasi[$i]->tanggal_kadaluarsa)
+                                    ->update([
+                                        'jumlah_stok_di_rak' => $qtyGudang
+                                    ]);
+            }
+            else 
+            {
+                $kurangiStokGudang = DB::table('barang_has_kadaluarsa')
+                                ->where('barang_id', '=', $detailKonsinyasi[$i]->barang_id)
+                                ->where('tanggal_kadaluarsa', '=', $detailKonsinyasi[$i]->tanggal_kadaluarsa)
+                                ->decrement('jumlah_stok_di_gudang', $detailKonsinyasi[$i]->jumlah_titip);
+
+            }
+        }
+
+        $deleteDetailKonsinyasi = DB::table('detail_konsinyasi')
+                                        ->where('konsinyasi_id', '=', $id)
+                                        ->delete();
     }
 
     /**
@@ -306,17 +376,63 @@ class AdminKonsinyasiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $update = DB::table('konsinyasi')->where('id', $id)
+        $this->reset($id);
+
+        $update = DB::table('konsinyasi')
+                    ->where('id', $id)
                     ->update([
                         'nomor_nota' => $request->nomor_nota,
                         'supplier_id' => $request->supplier_id,
                         'tanggal_titip' => $request->tanggal_titip,
                         'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-                        'metode_pembayaran' => $request->metode_pembayaran,
-                        'status' => $request->status
+                        'metode_pembayaran' => $request->metode_pembayaran
                     ]);
 
-        return redirect()->back()->with(['success', 'Data berhasil diubah']);
+        $dataBarang = json_decode($request->barangKonsinyasi, true);
+
+        for ($i = 0; $i < count((array) $dataBarang); $i++)
+        {
+            $tglKadaluarsa = $dataBarang[$i]['tanggal_kadaluarsa'] != "Tidak ada" ? $dataBarang[$i]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
+
+            $selectBarang = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
+                            ->get();
+
+            if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
+            {
+                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->insert([
+                                        'barang_id' => $dataBarang[$i]['barang_id'],
+                                        'tanggal_kadaluarsa' => $tglKadaluarsa,
+                                        'jumlah_stok_di_gudang' => $dataBarang[$i]['jumlah_titip']
+                                    ]);
+                    
+            }
+            else // jika ada barang yang sama maka tambah kuantitas
+            {
+                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                                    ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
+                                    ->increment('jumlah_stok_di_gudang', $dataBarang[$i]['jumlah_titip']);  
+
+            }
+
+            $insertDetailKonsinyasi = DB::table('detail_konsinyasi')
+                                            ->insert([
+                                                'konsinyasi_id'          => $id,
+                                                'barang_id'             => $dataBarang[$i]['barang_id'],
+                                                'tanggal_kadaluarsa'    => $tglKadaluarsa,
+                                                'jumlah_titip'          => $dataBarang[$i]['jumlah_titip'],
+                                                'komisi'                => $dataBarang[$i]['komisi'],
+                                                'hutang'                => $dataBarang[$i]['hutang'],
+                                                'subtotal_komisi'       => $dataBarang[$i]['komisi']*$dataBarang[$i]['jumlah_titip'],
+                                                'subtotal_hutang'       => $dataBarang[$i]['hutang']*$dataBarang[$i]['jumlah_titip']
+                                            ]);
+
+        }
+
+        return redirect()->route('konsinyasi.index')->with(['success', 'Data konsinyasi berhasil diubah']);
     }
 
     public function storeBarangKonsinyasi(Request $request)
@@ -379,8 +495,10 @@ class AdminKonsinyasiController extends Controller
      */
     public function destroy($id)
     {
+        $this->reset($id);
+
         $delete = DB::table('konsinyasi')->where('id', $id)->delete();
 
-        return redirect()->back()->with(['success' => 'Data berhasil dihapus']);
+        return redirect()->back()->with(['success' => 'Data konsinyasi berhasil dihapus']);
     }
 }

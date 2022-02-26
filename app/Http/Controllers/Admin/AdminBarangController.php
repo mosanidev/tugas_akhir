@@ -418,4 +418,26 @@ class AdminBarangController extends Controller
 
         return response()->json(['detail'=>$detailStokBarang]);
     }
+
+    public function viewKadaluarsaBarang()
+    {
+        $barang = DB::table('barang')
+                    ->select('barang.id as barang_id',
+                             'barang_has_kadaluarsa.tanggal_kadaluarsa',
+                             'barang_has_kadaluarsa.jumlah_stok_di_gudang',
+                             'barang_has_kadaluarsa.jumlah_stok_di_rak',
+                             'jenis_barang.jenis_barang',
+                             'barang.kode',
+                             'barang.satuan',
+                             'barang.nama',
+                             'barang.barang_konsinyasi')
+                    ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                    ->join('jenis_barang', 'jenis_barang.id', '=', 'barang.jenis_id')
+                    ->get();
+
+        $jenis_barang = DB::table('jenis_barang')
+                            ->get();
+
+        return view('admin.barang.kadaluarsa.index', ['barang' => $barang, 'jenis_barang' => $jenis_barang]);
+    }
 }

@@ -20,7 +20,7 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Tanggal Titip</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" min="1" id="tanggalTitip" name="tanggal_titip">
+                    <input type="text" class="form-control" min="1" id="tanggalTitip" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" name="tanggal_titip">
                   </div>
                 </div>
                 <div class="form-group row">
@@ -46,7 +46,7 @@
                         <select name="metode_pembayaran" class="form-control" id="penitip">
                           <option disabled selected>Pilih metode pembayaran</option>
                           <option value="Tunai">Tunai</option>
-                          <option value="Transfer Bank">Transfer Bank</option>
+                          <option value="Transfer bank">Transfer bank</option>
                         </select>
                     </div>
                 </div>
@@ -111,6 +111,11 @@
       else 
       { 
         $('#formTambah').submit();
+
+        $('#modalTambahKonsinyasi').modal('toggle');
+
+        $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
       }
       
         

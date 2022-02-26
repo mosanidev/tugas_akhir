@@ -254,6 +254,7 @@ Route::group(['prefix' => 'admin'], function() {
 
         });
         
+        Route::get('/barang/kadaluarsa', [AdminBarangController::class, 'viewKadaluarsaBarang'])->name('kadaluarsa.barang.index');
         Route::get('/barang/stok', [AdminBarangController::class, 'viewStokBarang'])->name('stok.barang.index');
         Route::get('/barang/stok/filter', [AdminBarangController::class, 'filter'])->name('stok.barang.filter');
         Route::get('/barang/stok/detail/{barang}', [AdminBarangController::class, 'viewDetailStokBarang'])->name('stok.barang.detail');

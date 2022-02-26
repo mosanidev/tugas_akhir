@@ -178,27 +178,50 @@
 
     $('#btnTambahBarangKonsinyasi').on('click', function() {
 
-      let tglKadaluarsa = $('#tglKadaluarsa').val();
-
-      if(tglKadaluarsa == "")
+      if($('#selectBarangKonsinyasi')[0].selectedIndex == 0)
       {
-        tglKadaluarsa = "Tidak ada";
+        toastr.error("Harap pilih barang yang dititipkan terlebih dahulu", "Gagal", toastrOptions);
       }
+      else if($('#inputKomisi').val() == "")
+      {
+        toastr.error("Harap isi komisi dari barang yang dititipkan terlebih dahulu", "Gagal", toastrOptions);
+      }
+      else if($('#inputJumlahTitip').val() == "")
+      {
+        toastr.error("Harap isi jumlah yang dititipkan terlebih dahulu", "Gagal", toastrOptions);
+      }
+      else if($('#tglKadaluarsa').val() == "")
+      {
+        toastr.error("Harap isi tanggal kadaluarsa dari barang yang dititipkan terlebih dahulu", "Gagal", toastrOptions);
+      }
+      else if(arrBarangKonsinyasi.filter(function(e) { return e.barang_id == $('#selectBarangKonsinyasi :selected').val() && e.tanggal_kadaluarsa == $('#tglKadaluarsa').val() }).length > 0)
+      {
+        toastr.error("Sudah ada barang dengan tanggal kadaluarsa yang sama di tabel", "Gagal", toastrOptions);
+      }
+      else 
+      {
+        let tglKadaluarsa = $('#tglKadaluarsa').val();
 
-      arrBarangKonsinyasi.push({
-        "barang_id": $('#selectBarangKonsinyasi :selected').val(),
-        "barang":  $('#selectBarangKonsinyasi :selected').text(),
-        "tanggal_kadaluarsa": tglKadaluarsa,
-        "harga_jual_akhir": convertRupiahToAngka($('#hargaJualAkhir').val()),
-        "komisi": $('#inputKomisi').val(),
-        "hutang": convertRupiahToAngka($('#hutang').val()),
-        "jumlah_titip": $('#inputJumlahTitip').val()
-      });
+        if(tglKadaluarsa == "")
+        {
+          tglKadaluarsa = "Tidak ada";
+        }
 
-      $('#modalTambahBarangKonsinyasi').modal('toggle');
+        arrBarangKonsinyasi.push({
+          "barang_id": $('#selectBarangKonsinyasi :selected').val(),
+          "barang":  $('#selectBarangKonsinyasi :selected').text(),
+          "tanggal_kadaluarsa": tglKadaluarsa,
+          "harga_jual_akhir": convertRupiahToAngka($('#hargaJualAkhir').val()),
+          "komisi": $('#inputKomisi').val(),
+          "hutang": convertRupiahToAngka($('#hutang').val()),
+          "jumlah_titip": $('#inputJumlahTitip').val()
+        });
 
-      implementDataOnTable();
+        implementDataOnTable();
 
+        $('#modalTambahBarangKonsinyasi').modal('toggle');
+
+      }
     });
 
 </script>

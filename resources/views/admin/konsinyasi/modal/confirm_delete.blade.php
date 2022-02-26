@@ -11,7 +11,7 @@
           <form class="d-inline" action="" id="formHapus" method="POST">
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data konsinyasi ? Jika anda menghapus data konsinyasi ini semua barang yang terkait konsinyasi akan terhapus</p>
+            <p class="text-justify d-inline">Apakah anda yakin ingin menghapus data konsinyasi dengan nomor nota <p class="d-inline nomorNotaKonsinyasi"></p> ? Jika anda menghapus data konsinyasi ini semua barang yang terkait konsinyasi akan terhapus</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>
@@ -19,8 +19,5 @@
         </div>
         </form>
       </div>
-      <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-  </div>
-  <!-- /.modal -->
+</div>
