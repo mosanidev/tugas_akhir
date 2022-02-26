@@ -59,8 +59,6 @@ class AdminKonsinyasiController extends Controller
                         ->where('tanggal_jatuh_tempo', '>=', $request->tanggal_jatuh_tempo)
                         ->get();
 
-        dd($konsinyasiYgMirip);
-
         if(count($barang) == 0)
         {
             return redirect()->back()->with(['error' => 'Gagal simpan konsinyasi. Tidak ada riwayat barang dari penitip']);

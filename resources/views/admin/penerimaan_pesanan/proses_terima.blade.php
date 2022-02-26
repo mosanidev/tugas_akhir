@@ -12,7 +12,8 @@
             
             <input type="hidden" name="pemesanan_id" value="{{ $pemesanan[0]->id }}">
             <input type="hidden" name="barang_diterima" id="dataBarangDiterima" value="">
-            <input type="hidden" name="barang_tidak_diterima" id="dataBarangTidakDiterima" value="">
+            {{-- <input type="hidden" name="barang_tidak_diterima" id="dataBarangTidakDiterima" value=""> --}}
+            <input type="hidden" name="detail_penerimaan" id="dataDetailPenerimaan" value="">
             <input type="hidden" name="nomor_nota_dari_supplier">
 
             <div class="form-group row">
@@ -170,7 +171,45 @@
 
 <script type="text/javascript">
 
+    let detailPemesanan = @php echo json_encode($detail_pemesanan); @endphp
+
     $(document).ready(function() {
+
+        function loadDetailPenerimaaan()
+        {
+          let detailPenerimaanPesanan = [];
+
+          for(let i = 0; i < barangDiterima.length; i++)
+          {
+            for (let x = 0; x < detailPemesanan.length; x++)
+            {
+              if(barangDiterima[i].barang_id == detailPemesanan[x].barang_id)
+              {
+                detailPenerimaanPesanan.push({
+                  "barang_id": barangDiterima[i].barang_id,
+                  "barang_kode": barangDiterima[i].barang_kode,
+                  "barang_nama": barangDiterima[i].barang_nama,
+                  "kuantitas_pesan": barangDiterima[i].kuantitas_pesan,
+                  "kuantitas_terima": barangDiterima[i].kuantitas_terima,
+                  "kuantitas_tidak_terima": parseInt(barangDiterima[i].kuantitas_pesan) - parseInt(barangDiterima[i].kuantitas_terima),
+                })
+              }
+              else if (barangDiterima[i].barang_id != detailPemesanan[x].barang_id)
+              {
+                detailPenerimaanPesanan.push({
+                  "barang_id": detailPemesanan[x].barang_id,
+                  "barang_kode": detailPemesanan[x].kode,
+                  "barang_nama": detailPemesanan[x].nama,
+                  "kuantitas_pesan": detailPemesanan[x].kuantitas,
+                  "kuantitas_terima": 0,
+                  "kuantitas_tidak_terima": parseInt(detailPemesanan[x].kuantitas),
+                })
+              }
+            }
+          }
+
+          return detailPenerimaanPesanan;
+        }
 
         $('#datepickerTglTerima').datepicker({
             format: 'yyyy-mm-dd',
@@ -245,7 +284,9 @@
             //     }
             // });
 
-            $('#dataBarangTidakDiterima').val(JSON.stringify(barangTidakDiterima));
+            $('#dataDetailPenerimaan').val(JSON.stringify(loadDetailPenerimaaan()));
+
+            // $('#dataBarangTidakDiterima').val(JSON.stringify(barangTidakDiterima));
 
             $('#formTambah').submit();
 
@@ -472,6 +513,7 @@
       }
 
     });
+
     
 </script>
 @endsection

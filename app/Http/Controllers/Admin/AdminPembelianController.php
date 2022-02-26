@@ -142,7 +142,7 @@ class AdminPembelianController extends Controller
                         ->get();
 
         $detailPembelian = DB::table('detail_pembelian')
-                            ->select('barang.kode', 'barang.nama', 'detail_pembelian.tanggal_kadaluarsa', 'detail_pembelian.harga_beli', 'detail_pembelian.kuantitas', 'detail_pembelian.subtotal')
+                            ->select('barang.kode', 'barang.nama', 'detail_pembelian.tanggal_kadaluarsa', 'detail_pembelian.harga_beli', 'detail_pembelian.diskon_potongan_harga', 'detail_pembelian.kuantitas', 'detail_pembelian.subtotal')
                             ->where('pembelian.id', $id)
                             ->join('pembelian', 'pembelian.id', '=', 'detail_pembelian.pembelian_id')
                             ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
@@ -159,7 +159,12 @@ class AdminPembelianController extends Controller
      */
     public function edit($id)
     {
-        $pembelian = DB::table('pembelian')->select('pembelian.*', 'supplier.nama as nama_supplier')->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')->where('pembelian.id', '=', $id)->get();
+        $pembelian = DB::table('pembelian')
+                        ->select('pembelian.*', 
+                                 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                        ->where('pembelian.id', '=', $id)
+                        ->get();
         
         if($pembelian[0]->status_retur == "Ada Retur")
         {
@@ -173,6 +178,7 @@ class AdminPembelianController extends Controller
                                      'barang.kode as barang_kode',
                                      'barang.nama as barang_nama',
                                      'detail_pembelian.harga_beli',
+                                     'detail_pembelian.diskon_potongan_harga',
                                      'detail_pembelian.kuantitas',
                                      'detail_pembelian.subtotal',
                                      'detail_pembelian.tanggal_kadaluarsa')
@@ -181,6 +187,21 @@ class AdminPembelianController extends Controller
                             ->get();
 
         return view('admin.pembelian.ubah', ['pembelian'=>$pembelian, 'detail_pembelian'=>$detail_pembelian, 'supplier'=>$supplier, 'barang'=>$barang]);
+    }
+
+    public function reset($id)
+    {
+        $detailPembelian = DB::table('detail_pembelian')
+                            ->where('pembelian_id', '=', $id)
+                            ->get();
+
+        for($i = 0; $i < count(array($detailPembelian)); $i++)
+        {
+            $kurangiStok = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
+                            ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
+                            ->decrement('jumlah_stok_di_gudang', $detailPembelian[$i]->kuantitas);
+        }
     }
 
     /**
@@ -192,8 +213,10 @@ class AdminPembelianController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->reset($id);
+
         $update = DB::table('pembelian')->where('id', $id)
-                        ->update(['nomor_nota' => $request->nomor_nota, 
+                        ->update(['nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier, 
                                   'tanggal'=>$request->tanggal_buat, 
                                   'tanggal_jatuh_tempo'=> $request->tanggal_jatuh_tempo, 
                                   'metode_pembayaran' => $request->metode_pembayaran,
@@ -201,7 +224,9 @@ class AdminPembelianController extends Controller
                                   'status_bayar' => $request->status_bayar, 
                                   'ppn' => $request->ppn, 
                                   'supplier_id'=>$request->supplier_id,
-                                  'total' => $request->total]);
+                                  'total' => $request->total,
+                                  'uang_muka' => $request->uang_muka,
+                                  'total_terbayar' => $request->total_terbayar,]);
 
         $detailPembelian = DB::table('detail_pembelian')
                             ->where('pembelian_id', '=', $id)
@@ -298,17 +323,7 @@ class AdminPembelianController extends Controller
      */
     public function destroy($id)
     {
-        $detailPembelian = DB::table('detail_pembelian')
-                            ->where('pembelian_id', '=', $id)
-                            ->get();
-
-        for($i = 0; $i < count(array($detailPembelian)); $i++)
-        {
-            $kurangiStok = DB::table('barang_has_kadaluarsa')
-                            ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
-                            ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
-                            ->decrement('jumlah_stok', $detailPembelian[$i]->kuantitas);
-        }
+        $this->reset($id);
 
         $delete = DB::table('pembelian')->where('id', '=', $id)->delete();
 

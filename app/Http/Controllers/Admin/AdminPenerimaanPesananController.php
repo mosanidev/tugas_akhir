@@ -78,7 +78,6 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
 
         $penerimaan_pesanan_id = DB::table('penerimaan_pemesanan')
@@ -109,56 +108,54 @@ class AdminPenerimaanPesananController extends Controller
                                         
         $barang_diterima = json_decode($request->barang_diterima, true);
 
-        $totalHargaBarangDiterima = 0;
-
-        $totalHargaBarangTidakDiterima = 0;
+        $detail_penerimaan = json_decode($request->detail_penerimaan, true);
 
         $status = "";
 
-        for($i = 0; $i < count($barang_diterima); $i++)
+        for($i = 0; $i < count($detail_penerimaan); $i++)
         {
-            $totalHargaBarangDiterima += $barang_diterima[$i]['subtotal'];
-
             $insertDetailPenerimaan = DB::table('detail_penerimaan_pemesanan')
                                         ->insert([
                                             'pemesanan_id' => $request->pemesanan_id,
-                                            'barang_id' => $barang_diterima[$i]['barang_id'],
-                                            'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
-                                            'harga_pesan' => $barang_diterima[$i]['harga_pesan'],
-                                            'jumlah_pesan' => $barang_diterima[$i]['kuantitas_pesan'],
-                                            'jumlah_terima' => $barang_diterima[$i]['kuantitas_terima'],
-                                            'subtotal' => $barang_diterima[$i]['subtotal']
+                                            'barang_id' => $detail_penerimaan[$i]['barang_id'],
+                                            'jumlah_pesan' => $detail_penerimaan[$i]['kuantitas_pesan'],
+                                            'jumlah_terima' => $detail_penerimaan[$i]['kuantitas_terima'],
+                                            'jumlah_tidak_terima' => $detail_penerimaan[$i]['kuantitas_tidak_terima']
                                         ]);
+        }
+
+        for($x = 0; $x < count($barang_diterima); $x++)
+        {
 
             $insertDetailPembelian = DB::table('detail_pembelian')
                                         ->insert([
                                             'pembelian_id' => $pembelian_id,
-                                            'barang_id' => $barang_diterima[$i]['barang_id'],
-                                            'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
-                                            'kuantitas' => $barang_diterima[$i]['kuantitas_terima'],
+                                            'barang_id' => $barang_diterima[$x]['barang_id'],
+                                            'tanggal_kadaluarsa' => $barang_diterima[$x]['tanggal_kadaluarsa'],
+                                            'kuantitas' => $barang_diterima[$x]['kuantitas_terima'],
                                             'diskon_potongan_harga' => 0,
-                                            'harga_beli' => $barang_diterima[$i]['harga_pesan'],
-                                            'subtotal' => $barang_diterima[$i]['subtotal']
+                                            'harga_beli' => $barang_diterima[$x]['harga_pesan'],
+                                            'subtotal' => $barang_diterima[$x]['subtotal']
                                         ]);
 
             $cariBarang = DB::table('barang_has_kadaluarsa')
-                            ->where('barang_id', '=', $barang_diterima[$i]['barang_id'])
-                            ->where('tanggal_kadaluarsa', '=', $barang_diterima[$i]['tanggal_kadaluarsa'])
+                            ->where('barang_id', '=', $barang_diterima[$x]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $barang_diterima[$x]['tanggal_kadaluarsa'])
                             ->get();
             
             if(count($cariBarang) > 0)
             {
                 $updateBarang = DB::table('barang_has_kadaluarsa')
                                 ->where('id', '=', $cariBarang[0]->id)
-                                ->increment('jumlah_stok_di_gudang', $barang_diterima[$i]['kuantitas_terima']);
+                                ->increment('jumlah_stok_di_gudang', $barang_diterima[$x]['kuantitas_terima']);
             }
             else 
             {
                 $insertBarang = DB::table('barang_has_kadaluarsa')
                                 ->insert([
-                                    'barang_id' => $barang_diterima[$i]['barang_id'],
-                                    'tanggal_kadaluarsa' => $barang_diterima[$i]['tanggal_kadaluarsa'],
-                                    'jumlah_stok_di_gudang' => $barang_diterima[$i]['kuantitas_terima']
+                                    'barang_id' => $barang_diterima[$x]['barang_id'],
+                                    'tanggal_kadaluarsa' => $barang_diterima[$x]['tanggal_kadaluarsa'],
+                                    'jumlah_stok_di_gudang' => $barang_diterima[$x]['kuantitas_terima']
                                 ]);
             }
             
@@ -168,7 +165,6 @@ class AdminPenerimaanPesananController extends Controller
                              ->where('id', '=', $request->pemesanan_id)
                              ->update([
                                 'status' => 'Telah diterima di gudang',
-                                'total' => $totalHargaBarangDiterima
                              ]);
     
         return redirect()->route('penerimaan_pesanan.index')->with(['success' => 'Data berhasil diproses']);
@@ -195,7 +191,7 @@ class AdminPenerimaanPesananController extends Controller
                                         ->get();
 
         $penerimaan_pesanan = DB::table('penerimaan_pemesanan')
-                                ->where('id', '=', $id)
+                                ->where('pemesanan_id', '=', $id)
                                 ->get();
 
         return view('admin.penerimaan_pesanan.lihat', ['pemesanan' => $pemesanan, 'detail_penerimaan_pesanan' => $detail_penerimaan_pesanan, 'penerimaan_pesanan' => $penerimaan_pesanan]);

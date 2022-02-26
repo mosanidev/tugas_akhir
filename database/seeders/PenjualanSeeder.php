@@ -25,7 +25,7 @@ class PenjualanSeeder extends Seeder
                 'pembayaran_id'             => 1,
                 'metode_transaksi'          => 'Dikirim ke alamat',
                 'status_jual'               => 'Pesanan sudah dibayar',
-                'jenis'                     => 'Online',
+                // 'jenis'                     => 'Online',
                 'total'                     => 65100
             ]
         );
@@ -39,7 +39,7 @@ class PenjualanSeeder extends Seeder
                 'pembayaran_id'             => 2,
                 'metode_transaksi'          => 'Dikirim ke alamat',
                 'status_jual'               => 'Pesanan sudah selesai',
-                'jenis'                     => 'Online',
+                // 'jenis'                     => 'Online',
                 'total'                     => 269000
             ]
         );

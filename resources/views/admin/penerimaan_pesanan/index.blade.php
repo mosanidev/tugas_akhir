@@ -204,11 +204,11 @@
 
   if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('success') }}", "Success", toastrOptions);
+    toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
   }
   else if ("{{ session('error') }}" != "")
   {
-    toastr.error("{{ session('error') }}", "Error", toastrOptions);
+    toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
   $(document).ready(function() {

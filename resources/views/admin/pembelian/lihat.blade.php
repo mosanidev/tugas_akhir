@@ -115,6 +115,7 @@
                                   <th>Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
+                                  <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
                                 </tr>
@@ -129,6 +130,7 @@
                                       <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('D MMMM Y') }}</td>
                                     @endif
                                     <td>{{ "Rp " . number_format($item->harga_beli,0,',','.') }}</td>
+                                    <td>{{ "Rp " . number_format($item->diskon_potongan_harga,0,',','.') }}</td>
                                     <td>{{ $item->kuantitas }}</td>
                                     <td>{{ "Rp " . number_format($item->subtotal,0,',','.') }}</td>
                                   </tr>

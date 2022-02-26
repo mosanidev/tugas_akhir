@@ -67,13 +67,10 @@
                           <td>
                             <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             
-                            {{-- @if($item->status_retur == "Tidak ada retur")
+                            @if($item->status_retur == "Tidak ada retur" && $item->status_bayar == "Belum lunas")
                               <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>
                               <button class='btn btn-danger btnHapus' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota_dari_supplier }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian"><i class="fas fa-trash"></i></button>
-                            @elseif ($item->status_retur == "Ada retur")
-                              <button class='btn btn-warning btnInfo' data-aksi="ubah" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-edit"></i></button>
-                              <button class='btn btn-danger btnInfo' data-aksi="hapus" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalInfo"><i class="fas fa-trash"></i></button>
-                            @endif --}}
+                            @endif
 
                           </td>
                         </tr>
