@@ -132,7 +132,7 @@
                                             <p>Silahkan pilih alamat terlebih dahulu</p>
                                         @endif
                                     @else
-                                        <p>Maaf belum ada data alamat yang tersimpan</p>
+                                        <p>Belum ada data alamat yang tersimpan</p>
                                     @endif
                                 {{-- </div> --}}
                             </div>

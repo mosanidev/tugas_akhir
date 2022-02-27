@@ -123,7 +123,7 @@
                     </div>
                 @else 
                     <div>
-                        <h5 class="py-3">Maaf keranjang belanja anda masih kosong</h5>
+                        <h5 class="py-3">Keranjang belanja anda masih kosong</h5>
                         <a href="{{ url('home') }}" class="btn btn-success float-right mt-3 ">Kembali</a>
                     </div>
                 @endif 

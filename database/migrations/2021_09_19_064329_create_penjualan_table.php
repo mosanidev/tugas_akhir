@@ -25,7 +25,7 @@ class CreatePenjualanTable extends Migration
             $table->foreign('pembayaran_id')->references('id')->on('pembayaran')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('metode_transaksi', ['Dikirim ke alamat', 'Ambil di toko', 'Dikirim ke berbagai alamat']);
             $table->string('status_jual')->nullable();
-            $table->enum('status_retur', ['Tidak Ada Retur', 'Ada Retur'])->default('Tidak Ada Retur');
+            $table->enum('status_retur', ['Tidak ada retur', 'Ada retur'])->default('Tidak ada retur');
             // $table->enum('jenis', ['Online', 'Offline'])->default('Online');
             $table->double('total')->nullable();
             // $table->timestamps();

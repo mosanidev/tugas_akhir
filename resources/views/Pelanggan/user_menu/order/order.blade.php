@@ -4,7 +4,7 @@
         <div class="content-alamat">
 
             @if (count($penjualan) == 0)
-                <h5 class="my-3">Maaf anda belum memiliki riwayat transaksi</h5>
+                <h5 class="my-3">Anda belum memiliki riwayat transaksi</h5>
             @else
                 @for($i = 0; $i<count($penjualan); $i++) 
                     <div class="bg-light border border-4 p-3 mb-3">

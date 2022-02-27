@@ -4,7 +4,7 @@
     <div id="container-alamat">
         <div class="content-alamat">
             @if (count($wishlist) == 0)
-                <h5 class="my-3">Maaf anda belum memiliki produk favorit</h5>
+                <h5 class="my-3">Anda belum memiliki produk favorit</h5>
             @else
                 <div>
                     <div class="w-100 text-right">

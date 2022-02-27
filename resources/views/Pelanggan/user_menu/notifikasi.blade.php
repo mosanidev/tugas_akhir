@@ -6,7 +6,7 @@
         @if(isset($notifikasi) && isset($jumlah_notif))
 
             @if ($jumlah_notif[0]->jumlah_notif == 0)
-                <h5 class="my-3">Maaf anda belum memiliki notifikasi</h5>
+                <h5 class="my-3">Anda belum memiliki notifikasi</h5>
             @else
                 @foreach($notifikasi as $item) 
 

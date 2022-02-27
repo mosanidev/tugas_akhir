@@ -208,6 +208,12 @@ class OrderController extends Controller
                             'updated_at' => \Carbon\Carbon::now(),
                             'status' => 'Belum dilihat'
                         ]);
+
+                $updatePembayaran = DB::table('pembayaran')
+                                    ->where('id','=',$id_pembayaran)
+                                    ->update([
+                                        'status_bayar' => 'Sudah lunas'
+                                    ]);
             }
             else if($penjualan[0]->status_jual == "Menunggu pesanan dibayarkan")
             {
@@ -418,6 +424,12 @@ class OrderController extends Controller
                             'created_at' => \Carbon\Carbon::now(),
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
+
+                $updatePembayaran = DB::table('pembayaran')
+                        ->where('id','=',$id_pembayaran)
+                        ->update([
+                            'status_bayar' => 'Sudah lunas'
+                        ]);
             }
             else if($penjualan[0]->status_jual == "Menunggu pesanan dibayarkan")
             {
@@ -615,6 +627,12 @@ class OrderController extends Controller
                             'status' => 'Belum dilihat',
                             'created_at' => \Carbon\Carbon::now(),
                             'updated_at' => \Carbon\Carbon::now(),
+                        ]);
+
+                $updatePembayaran = DB::table('pembayaran')
+                        ->where('id','=',$id_pembayaran)
+                        ->update([
+                            'status_bayar' => 'Sudah lunas'
                         ]);
             }
             else if($penjualan[0]->status_jual == "Menunggu pesanan dibayarkan")

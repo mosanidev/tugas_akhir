@@ -7,7 +7,7 @@
 
 
             @if (count($alamat) == 0)
-                <h5 class="my-3">Maaf anda belum memiliki alamat pengiriman</h5>
+                <h5 class="my-3">Anda belum memiliki alamat pengiriman</h5>
             @else
 
                 @foreach($alamat as $item)
@@ -596,8 +596,6 @@
                         if(data.status == 1)
                         {
                             e.target.parentElement.remove();
-                            // $("#content-alamat").append("<h5 class='my-3'>Maaf anda belum memiliki alamat pengiriman</h5>");
-
                         }
 
                     }

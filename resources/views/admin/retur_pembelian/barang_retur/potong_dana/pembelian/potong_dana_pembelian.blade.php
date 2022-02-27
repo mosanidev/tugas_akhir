@@ -88,7 +88,6 @@
                             </tr>
                         </thead>
                         <tbody id="contentTable">
-                            {{ dd($detail_pembelian) }}
                         </tbody>
                     </table>
                 </div>

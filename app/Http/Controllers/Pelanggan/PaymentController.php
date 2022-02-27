@@ -108,7 +108,7 @@ class PaymentController extends Controller
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status_jual' => 'Pembayaran diterima namun perlu pengecekan lebih lanjut oleh admin', 'updated_at' => $dateNow]);
+                        ->update(['status_jual' => 'Pembayaran diterima namun perlu pengecekan lebih lanjut oleh admin']);
 
             $penjualan = DB::table('penjualan')
                         ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
@@ -130,8 +130,6 @@ class PaymentController extends Controller
                             ->where('penjualan.nomor_nota', '=', $notif->order_id) 
                             ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
                             ->get();
-
-            // $idPembayaran = DB::table('pembayaran')->select('pembayaran.id')->join('penjualan', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.nomor_nota', '=', $notif->order_id)->get();
             
             $updatePembayaran = DB::table('pembayaran')
                                 ->where('id', $penjualan[0]->pembayaran_id)     
@@ -142,7 +140,7 @@ class PaymentController extends Controller
 
             $updatePenjualan = DB::table('penjualan')
                                 ->where('nomor_nota', $notif->order_id)   
-                                ->update(['status_jual' => 'Pesanan sudah dibayar', 'updated_at' => $dateNow]);
+                                ->update(['status_jual' => 'Pesanan sudah dibayar']);
 
             $updateNotif = DB::table('notifikasi')
                             ->where('penjualan_id', '=', $penjualan[0]->penjualan_id)
@@ -156,14 +154,14 @@ class PaymentController extends Controller
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status_jual' => 'Menunggu pesanan dibayarkan', 'updated_at' => $dateNow]);
+                        ->update(['status_jual' => 'Menunggu pesanan dibayarkan']);
 
         }
         else if ($status == "denied")
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status_jual' => 'Pembayaran pesanan ditolak', 'updated_at' => $dateNow]);
+                        ->update(['status_jual' => 'Pembayaran pesanan ditolak']);
 
             $penjualan = DB::table('penjualan')
                         ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
@@ -182,7 +180,7 @@ class PaymentController extends Controller
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status_jual' => 'Pembayaran pesanan melebihi batas waktu yang ditentukan', 'updated_at' => $dateNow]);
+                        ->update(['status_jual' => 'Pembayaran pesanan melebihi batas waktu yang ditentukan']);
 
             $penjualan = DB::table('penjualan')
                         ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
@@ -201,7 +199,7 @@ class PaymentController extends Controller
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status_jual' => 'Pesanan dibatalkan', 'updated_at' => $dateNow]);
+                        ->update(['status_jual' => 'Pesanan dibatalkan']);
 
             $penjualan = DB::table('penjualan')
                         ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')
@@ -220,7 +218,7 @@ class PaymentController extends Controller
         {
             $update = DB::table('penjualan')
                         ->where('nomor_nota', $notif->order_id)     
-                        ->update(['status_jual' => 'Pembayaran pesanan gagal diproses', 'updated_at' => $dateNow]);
+                        ->update(['status_jual' => 'Pembayaran pesanan gagal diproses']);
 
             $penjualan = DB::table('penjualan')
                         ->select('penjualan.nomor_nota', 'penjualan.users_id', 'penjualan.id as penjualan_id', 'pembayaran.id as pembayaran_id', 'pembayaran.batasan_waktu')

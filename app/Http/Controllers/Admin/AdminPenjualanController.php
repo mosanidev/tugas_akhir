@@ -134,13 +134,10 @@ class AdminPenjualanController extends Controller
                     ]);
 
         $penjualan = DB::table('penjualan')
-                        ->select('penjualan.nomor_nota', 'detail_penjualan.barang_id as barang_dijual', 'detail_penjualan.kuantitas as jumlah_dijual')
+                        ->select('penjualan.nomor_nota')
                         ->where('penjualan.id', '=', $id)
                         ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
-                        // ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
                         ->get();
-
-        dd($penjualan);
 
         if($request->status_penjualan == "Pesanan siap diambil di toko")
         {
@@ -162,41 +159,17 @@ class AdminPenjualanController extends Controller
                                 'updated_at' => \Carbon\Carbon::now()
                             ]);
 
-            for($i = 0; $i < count($penjualan); $i++)
-            {
-                $qty= $penjualan[$i]->jumlah_dijual*1;
-
-                $dtBarang = DB::table('barang_has_kadaluarsa')
-                                ->where('barang_id', '=', $penjualan[$i]->barang_dijual)
-                                ->where('jumlah_stok_di_gudang','>',0)
-                                ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
-                                ->orderBy('tanggal_kadaluarsa','ASC')
+            $detailPenjualan = DB::table('detail_penjualan')
+                                ->where('penjualan_id', '=', $id)
                                 ->get();
 
-                for ($j=0;$j<count($dtBarang);$j++)
-                {
-                    $stok=$dtBarang[$j]->jumlah_stok_di_gudang*1;
-    
-                    if ($qty>0)
-                    {
-                        if ($qty>$stok)
-                        {
-                            $kurangiStok = DB::table('barang_has_kadaluarsa')
-                                            ->where('id','=',$dtBarang[$j]->id)
-                                            ->update(['jumlah_stok_di_gudang' => 0]);
-                            $qty-=$stok;
-                        }
-                        else {
-                            $stokBaru=$stok-$qty;
-                            $kurangiStok = DB::table('barang_has_kadaluarsa')
-                                                ->where('id','=',$dtBarang[$j]->id)
-                                                ->update(['jumlah_stok_di_gudang' => $stokBaru]);
-                            $qty=0;
-    
-                        }
-                    }
-                }
-            }   
+            foreach($detailPenjualan as $item)
+            {
+                $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                ->where('barang_id', '=', $item->barang_id)
+                                ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
+                                ->decrement('jumlah_stok_di_gudang', $item->kuantitas);
+            }
 
         }
 

@@ -205,6 +205,23 @@
                 return arr;
             }
 
+            $('.check-box').on('change', function() {
+
+                let checked = $(this).is(':checked');
+                let id = $('.check-box').val().split(" - ")[1];
+                let index = $("input[name='alamat_" + id + "[]']").index(this);
+
+                if($("input[name='kuantitas_" + id + "[]']")[index].value == 0 && checked == true)
+                {
+                    $("input[name='kuantitas_" + id + "[]']")[index].value = 1;
+                }
+                else if(checked == false)
+                {
+                    $("input[name='kuantitas_" + id + "[]']")[index].value = 0;
+                }
+
+            });
+
         });
             
 
