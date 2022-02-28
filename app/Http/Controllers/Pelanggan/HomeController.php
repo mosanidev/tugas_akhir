@@ -30,7 +30,7 @@ class HomeController extends Controller
         $barang_promo = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->where('barang.diskon_potongan_harga', '>', 0)
                             ->where('periode_diskon.tanggal_dimulai', '<=', $curDate)
                             ->where('periode_diskon.tanggal_berakhir', '>=', $curDate)

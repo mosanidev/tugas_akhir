@@ -8,9 +8,8 @@
       <div class="col-sm-6">
         <h1>Pemasok</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
-{{-- {{ dd($jenis_barang) }} --}}
 <div class="container-fluid">
 
   <button data-toggle="modal" data-target="#modalTambahSupplier" class="btn btn-success ml-2 mb-3">Tambah</button>
@@ -24,7 +23,6 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th style="width: 10px">No</th>
                       <th>Nama</th>
                       <th>Alamat</th>
                       <th>Nomor Telepon</th>
@@ -36,7 +34,6 @@
                     @php $num = 1; @endphp
                     @foreach($supplier as $item)
                       <tr>
-                        <td style="width: 10px">{{ $num++ }}</td>
                         <td>{{ $item->nama }}</td>
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->nomor_telepon }}</td>

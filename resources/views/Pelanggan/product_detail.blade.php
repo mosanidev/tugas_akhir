@@ -397,8 +397,15 @@
                     data: { 'barang_id': $(this).attr('data-id'), 'qty': $('#kuantitas-cart').val() },
                     success:function(data) {
 
-                        toastr.success(data.status, "Sukses", toastrOptions);
-
+                        if(data.status == "Maaf jumlah barang yang ditambahkan melebihi jumlah stok")
+                        {
+                            toastr.error(data.status, "Gagal", toastrOptions);
+                        }
+                        else 
+                        {
+                            toastr.success(data.status, "Sukses", toastrOptions);
+                        }
+                        
                         let total_cart = $("#total_cart")[0].innerText;
 
                         if (data.status == "Barang berhasil dimasukkan ke keranjang")
@@ -423,7 +430,14 @@
                     data: { 'barang_id': $(this).attr('data-id') },
                     success:function(data) {
 
-                        toastr.success(data.status, "Sukses", toastrOptions);
+                        if(data.status == "Maaf jumlah barang yang ditambahkan melebihi jumlah stok")
+                        {
+                            toastr.error(data.status, "Gagal", toastrOptions);
+                        }
+                        else 
+                        {
+                            toastr.success(data.status, "Sukses", toastrOptions);
+                        }
 
                         let total_cart = $("#total_cart")[0].innerText;
 

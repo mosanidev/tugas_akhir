@@ -14,22 +14,49 @@
 
     <a href="{{ route('pembelian.create') }}" class="btn btn-success ml-2">Tambah</a>
 
-    <div class="my-4">
+    {{-- <div class="my-4">
       <p>Filter : </p>
+
+      <div class="row">
+        <div class="col-3">
+          <p class="mt-2 ml-2">Rentang Tanggal Buat Nota Pembelian</p> 
+        </div>
+        <div class="col-9">
+          <div class="input-group w-50">
+                <input type="text" class="form-control selectFilter" id="rentangTanggalBuat">
+                <div class="input-group-append">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+          </div> 
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <p class="mt-2 ml-2">Rentang Tanggal Jatuh Tempo Pelunasan</p> 
+        </div>
+        <div class="col-9">
+          <div class="input-group w-50">
+                <input type="text" class="form-control selectFilter" id="rentangTanggalJatuhTempo">
+                <div class="input-group-append">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+              </div>
+          </div> 
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-3">
           <p class="mt-2 ml-2">Status Bayar</p> 
         </div>
         <div class="col-9">
-            <select class="form-control w-50 selectFilter">
+            <select class="form-control w-50 selectFilter" id="statusBayar">
               <option selected>Semua</option>
               <option>Belum lunas</option>
               <option>Sudah lunas</option>
-              <option>Lunas sebagian</option>
             </select>
         </div>
-      </div>
+      </div> --}}
 
     </div>
     <div class="card shadow my-4">
@@ -44,7 +71,7 @@
                           <th class="width: 10px;">No Pembelian</th>
                           <th>Nomor Nota dari Pemasok</th>
                           <th>Tanggal Buat</th>
-                          <th>Tanggal Jatuh Tempo</th>
+                          <th>Tanggal Jatuh Tempo Pelunasan</th>
                           <th>Pemasok</th>
                           <th>Total</th>
                           <th>Status Bayar</th>
@@ -81,7 +108,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -100,6 +126,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <!-- Select2 -->
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
+
+<script src="{{ asset('/plugins/daterangepicker/daterangepicker.js') }}"></script>
 
 <script type="text/javascript">
 
@@ -218,49 +246,70 @@
     toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
+  $('#rentangTanggalBuat').daterangepicker({
+      startDate: moment().startOf('days'),
+      endDate: moment().startOf('days'),
+      locale: {
+        format: 'YYYY-MM-DD'
+      }
+  });
+
+  $('#rentangTanggalJatuhTempo').daterangepicker({
+      startDate: moment().startOf('days'),
+      endDate: moment().startOf('days'),
+      locale: {
+        format: 'YYYY-MM-DD'
+      }
+  });
+
   $(document).ready(function() {
 
-    let table = $('#dataTable').DataTable({});
-
-    let filter = $('.selectFilter :selected').val();
-
-    $('.selectFilter').on('click', function() {
-    
-      console.log($('.selectFilter :selected').val());
-      filterByStatus();
-
+    let table = $('#dataTable').DataTable({
+      "order": [[ 2, 'desc' ], [3, 'desc']]
     });
 
-    function filterByStatus() 
-    { 
-      $.fn.dataTable.ext.search.push(
-            function( settings, data, dataIndex ) {
+    // let filter = $('.selectFilter :selected').val();
 
-              filter = $('.selectFilter :selected').val();
+    // $('.selectFilter').on('change', function() {
+    
+    //   table.draw();
 
-              var showFilter = false;
+    // });
 
-              let dataFiltered = data[0];
-              
-              $.fn.dataTable.ext.search.length == 0; 
-              
-              if (filter == "Semua" || filter == "Draft" && dataFiltered == 'Draft') 
-              {
-                showFilter = true;
-              }
+    // $.fn.dataTable.ext.search.push(
+    //     function( settings, data, dataIndex ) {
+    //       filterMetodeTransaksi = $('#selectMetodeTransaksi').val();
+    //       filterRentangTanggal = $('#rentangTanggal').val();
+    //       filterStatus = $('#selectStatus').val();
 
-              if (filter == "Semua" || filter == "Complete" && dataFiltered == 'Complete') 
-              {
-                showFilter = true;
-              }
+    //       let metodeTransaksi = data[3];
+    //       let status = data[5];
+    //       let tanggal = data[1].replace(" WIB", "");
 
-              return showFilter;
+    //       var showMetodeTransaksi = false;
+    //       var showRentangTanggal = false;
+    //       var showStatus = false;
+          
+    //       if (filterMetodeTransaksi == "Semua" || filterStatus.val == "Semua" || filterRentangTanggal == "Selamanya") {
+    //         $.fn.dataTable.ext.search.length == 0; 
+    //       }
 
-        });
+    //       if (filterMetodeTransaksi == "Semua" || filterMetodeTransaksi == metodeTransaksi) {
+    //         showMetodeTransaksi = true;
+    //       }
 
-        table.draw();
-    }
+    //       if(filterRentangTanggal == "Selamanya" || moment(tanggal).isBetween(filterRentangTanggal.split(" - ")[0], filterRentangTanggal.split(" - ")[1], 'days', '[]') == true)
+    //       {
+    //         showRentangTanggal = true;
+    //       }
+          
+    //       if(filterStatus == "Semua" || filterStatus == status)
+    //       {
+    //         showStatus = true;
+    //       }
 
+    //       return showMetodeTransaksi && showRentangTanggal && showStatus;
+    // });
     
     $(".btnHapus").on('click', function() {
 

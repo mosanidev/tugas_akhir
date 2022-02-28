@@ -23,7 +23,6 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                          <th style="width: 10px">No</th>
                           <th>Nomor Nota</th>
                           <th>Tanggal Retur</th>
                           <th>Kebijakan Retur</th>
@@ -36,7 +35,6 @@
                           @php $num = 1; @endphp
                           @foreach($retur_pembelian as $item)
                             <tr>
-                              <td style="width: 10px">{{ $num++ }}</td>
                               <td>{{ $item->nomor_nota }}</td>
                               <td>{{ $item->tanggal }}</td>
                               <td>{{ $item->kebijakan_retur }}</td>
@@ -71,9 +69,13 @@
 
 <script type="text/javascript">
 
-  if("{{ session('status') }}" != "")
+  if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('status') }}");
+    toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+  }
+  else if("{{ session('error') }}" != "")
+  {
+    toastr.error("{{ session('error') }}", "Error", toastrOptions);
   }
 
   $('.btnHapus').on('click', function() {

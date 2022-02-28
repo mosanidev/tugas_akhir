@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Tambah Retur Pembelian</h5>
+            <h5 class="modal-title">Tambah Barang Diretur</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -25,7 +25,7 @@
                 <div class="form-group row" id="divTampungSelectBarangRetur">
                     <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Retur</p>
                     <div class="col-sm-8">
-                        <input type="text" id="barangRetur" class="form-control" readonly>
+                        <input type="text" id="tglKadaluarsaBarangRetur" class="form-control" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -69,6 +69,7 @@
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script type="text/javascript">
 
@@ -82,10 +83,10 @@
     $('#selectBarangRetur').on('change', function() {
 
         let barang = $('#selectBarangRetur :selected').val();
-        let jumlahTitip = $('#selectBarangRetur :selected').attr('data-jumlah-titip');
-        let jumlahStok = $('#selectBarangRetur :selected').attr('data-jumlah-stok');
+        let jumlahTitip = parseInt($('#selectBarangRetur :selected').attr('data-jumlah-titip'));
+        let jumlahStok = parseInt($('#selectBarangRetur :selected').attr('data-jumlah-stok'));
         let satuanBarangRetur = $('#selectBarangRetur :selected').attr('data-satuan');
-        let tglKadaluarsa = $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa');
+        let tglKadaluarsa = moment($('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa')).format("Y-MM-DD HH:mm");
 
         let batasan = null;
 
@@ -102,7 +103,7 @@
             batasan = jumlahTitip;
         }
 
-        $('#barangRetur').val(tglKadaluarsa);
+        $('#tglKadaluarsaBarangRetur').val(tglKadaluarsa);
         $('#jumlahRetur').attr('max', batasan);
         $('#satuanBarangRetur').val(satuanBarangRetur);
         $('#jumlahTitip').val(jumlahTitip);
@@ -118,21 +119,70 @@
 
     $('#btnTambahBarangRetur').on('click', function() {
 
-        arrBarangRetur.push({
-            "barang_id": $('#selectBarangRetur :selected').val(),
-            "barang_kode": $('#selectBarangRetur :selected').attr('data-kode'),
-            "barang_nama": $('#selectBarangRetur :selected').attr('data-nama'),
-            "barang_satuan": $('#satuanBarangRetur').val(),
-            "barang_tanggal_kadaluarsa" : $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa'),
-            "jumlah_titip": $('#jumlahTitip').val(),
-            "jumlah_retur": $('#jumlahRetur').val(),
-            "subtotal": null,
-            "keterangan": $('#keterangan').val()
-        });
-        
-        $('#modalTambahBarangRetur').modal("toggle");
+        let maxJumlahRetur = parseInt($('#jumlahRetur').attr('max'));
 
-        implementDataOnTable();
+        if($('#selectBarangRetur')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap pilih barang yang diretur", "Gagal", toastrOptions);
+        }
+        else if($('#jumlahRetur').val() == "")
+        {
+            toastr.error("Harap isi jumlah barang yang diretur", "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#jumlahRetur').val()) <= 0)
+        {
+            toastr.error("Jumlah yang diretur tidak dapat sama atau kurang dari 0", "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#jumlahRetur').val()) > maxJumlahRetur)
+        {
+            toastr.error("Jumlah yang diretur tidak sesuai dengan yang dibeli atau yang tersedia di stok", "Gagal", toastrOptions);
+        }
+        else if($('#keterangan').val() == "")
+        {
+            toastr.error("Harap keterangan mengenai barang yang diretur", "Gagal", toastrOptions);
+        }
+        else 
+        {
+            let totalRetur = 0;
+
+            arrBarangRetur.push({
+                "barang_id": $('#selectBarangRetur :selected').val(),
+                "barang_kode": $('#selectBarangRetur :selected').attr('data-kode'),
+                "barang_nama": $('#selectBarangRetur :selected').attr('data-nama'),
+                "barang_satuan": $('#satuanBarangRetur').val(),
+                "barang_tanggal_kadaluarsa" : $('#tglKadaluarsaBarangRetur').val(),
+                "jumlah_titip": $('#jumlahTitip').val(),
+                "jumlah_retur": $('#jumlahRetur').val(),
+                "subtotal": null,
+                "keterangan": $('#keterangan').val()
+            });
+
+            arrBarangRetur.forEach(function(item, index, arr) {
+
+                if(arrBarangRetur[index].barang_id == $('#selectBarangRetur :selected').val() && arrBarangRetur[index].barang_tanggal_kadaluarsa == $('#tglKadaluarsaBarangRetur').val())
+                {
+                    totalRetur += parseInt(arrBarangRetur[index].jumlah_retur);
+                }
+
+            });
+
+            if(totalRetur > maxJumlahRetur)
+            {
+                toastr.error("Jumlah yang diretur tidak sesuai dengan yang dibeli atau yang tersedia di stok", "Gagal", toastrOptions);
+
+                arrBarangRetur.pop();          
+            }
+            else 
+            {
+                $('#modalTambahBarangRetur').modal("toggle");
+
+                implementDataOnTable();
+            }
+            
+            
+            
+        }
+        
 
     });
 

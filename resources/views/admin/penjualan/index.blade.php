@@ -89,7 +89,7 @@
                           <td>
                             <a href="{{ route('penjualan.show', ['penjualan'=>$item->penjualan_id]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                             @if($item->status_jual == "Pesanan sudah dibayar" && $item->metode_transaksi == "Ambil di toko")
-                              <button class="btn btn-info mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button> 
+                              <button class="btn btn-warning mb-2 btnUbahStatus" data-toggle="modal" data-target="#modalUbahStatusPenjualan" data-id="{{$item->penjualan_id}}">Ubah Status</button> 
                             @endif
                           </td> 
                         </tr>

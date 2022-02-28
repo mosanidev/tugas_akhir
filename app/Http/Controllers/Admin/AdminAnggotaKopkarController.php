@@ -26,6 +26,7 @@ class AdminAnggotaKopkarController extends Controller
                         ->select(DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama"), DB::raw('sum(penjualan.total) as pembelian'))
                         ->join('penjualan', 'penjualan.users_id', '=', 'users.id')
                         ->where('penjualan.status_jual', '=', 'Pesanan sudah dibayar')
+                        ->where('penjualan.status_retur', '=', 'Tidak ada retur')
                         ->where('users.jenis', '=', 'Anggota_Kopkar')
                         ->whereBetween('penjualan.tanggal', [$request->filter_tanggal_awal,$request->filter_tanggal_akhir])
                         ->where('users.status_verifikasi_anggota', '=', 'Verified')

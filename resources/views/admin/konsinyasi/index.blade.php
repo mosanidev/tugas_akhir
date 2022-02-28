@@ -28,7 +28,7 @@
                           <th>Nomor Nota</th>
                           <th>Tanggal Buat</th>
                           <th>Tanggal Jatuh Tempo</th>
-                          <th>Supplier</th>
+                          <th>Pemasok</th>
                           <th>Status Bayar</th>
                           <th>Aksi</th>
                         </tr>

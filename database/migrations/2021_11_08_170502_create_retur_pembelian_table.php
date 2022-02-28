@@ -18,7 +18,8 @@ class CreateReturPembelianTable extends Migration
         Schema::create('retur_pembelian', function (Blueprint $table) {
             $table->increments('id');
             $table->date('tanggal');
-            $table->string('nomor_nota', 100)->unique()->nullable();
+            // $table->string('nomor_nota', 100)->unique()->nullable();
+            $table->string('nomor_nota', 100);
             $table->unsignedInteger('users_id');
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('pembelian_id')->nullable();

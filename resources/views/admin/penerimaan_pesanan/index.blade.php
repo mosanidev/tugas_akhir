@@ -43,7 +43,7 @@
                         <tr>
                           <th>Nomor Nota Pemesanan</th>
                           <th>Tanggal Pemesanan</th>
-                          <th>Supplier</th>
+                          <th>Pemasok</th>
                           <th>Total</th>
                           <th>Status</th>
                           <th>Aksi</th>
@@ -62,6 +62,7 @@
 
                             @if($item->status == "Belum diterima di gudang")
                               <a href="{{ route('penerimaan_pesanan.proses_terima', ['pemesanan' => $item->id]) }}" class='btn btn-info'>Proses Terima Pesanan</a>
+                              <a href="#batal" class='btn btn-info'>Batal Terima Pesanan</a>
                             @else 
                               <a href="{{ route('penerimaan_pesanan.show', ['penerimaan_pesanan'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a>
                             @endif

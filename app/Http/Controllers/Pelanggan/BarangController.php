@@ -11,8 +11,6 @@ class BarangController extends Controller
 {
     public function showDetail($id)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_barang = DB::table('barang')
                         ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
@@ -21,7 +19,7 @@ class BarangController extends Controller
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->select('barang.*', 'kategori_barang.kategori_barang', 'jenis_barang.jenis_barang', 'merek_barang.merek_barang', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok"))
                         ->get();
 
@@ -32,7 +30,7 @@ class BarangController extends Controller
                                 ->where('barang.jenis_id', '=', $data_barang[0]->jenis_id)
                                 ->whereNotIn('barang.id', [$data_barang[0]->id])
                                 ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                                ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                                ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                                 ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                                 ->whereNotIn('barang.id', [$id])
                                 ->inRandomOrder()
@@ -44,7 +42,7 @@ class BarangController extends Controller
                             ->where('barang.kategori_id', '=', $data_barang[0]->kategori_id)
                             ->whereNotIn('barang.id', [$data_barang[0]->id])
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->whereNotIn('barang.id', [$id])
                             ->inRandomOrder()
@@ -69,13 +67,13 @@ class BarangController extends Controller
 
     public function showPromo()
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
+        // $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
 
         $data_barang = DB::table('barang')
                         ->select('barang.*', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as jumlah_stok')
                         ->where('barang.diskon_potongan_harga', '>', 0)
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->inRandomOrder()
                         ->get();
@@ -87,7 +85,7 @@ class BarangController extends Controller
 
     public function searchBarang(Request $request)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
+        // $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
 
         $data_barang = DB::table('barang')
                         ->select('barang.*', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as jumlah_stok', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang')

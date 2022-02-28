@@ -20,11 +20,11 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Tanggal Titip</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" min="1" id="tanggalTitip" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" name="tanggal_titip">
+                    <input type="text" class="form-control" min="1" id="tanggalTitip" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" name="tanggal_titip" readonly>
                   </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Bayar</label>
+                    <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" min="1" id="tanggalJatuhTempo" name="tanggal_jatuh_tempo">
                     </div>
@@ -69,6 +69,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script type="text/javascript">
 
@@ -79,7 +80,8 @@
 
     $('#tanggalJatuhTempo').datepicker({
       format: 'yyyy-mm-dd',
-      autoclose: true
+      autoclose: true,
+      startDate: new Date()
     });
 
     $('#penitip').select2({

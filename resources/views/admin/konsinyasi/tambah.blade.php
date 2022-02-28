@@ -77,7 +77,6 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                  <th style="width: 10px">No</th>
                                   <th>Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Jual</th>
@@ -150,7 +149,6 @@
                     // totalHutang += parseInt(arrBarangKonsinyasi[i].subtotal_hutang);
 
                     rowTable += `<tr>
-                                    <td style="width: 10px">` + num + `</td>
                                     <td>` + arrBarangKonsinyasi[i].barang + `</td>
                                     <td>` + arrBarangKonsinyasi[i].tanggal_kadaluarsa + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].harga_jual_akhir) + `</td>
@@ -217,6 +215,8 @@
             $('#dataBarangKonsinyasi').val(JSON.stringify(arrBarangKonsinyasi));
 
             $('#formTambah').submit();
+
+            $('#modalKonfirmasiKonsinyasi').modal('toggle');
 
             $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 

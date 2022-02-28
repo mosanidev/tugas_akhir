@@ -73,7 +73,7 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('home_admin') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Dashboard</span></a>
             </li>
 
@@ -88,7 +88,7 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('banner.index') }}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fas fa-solid fa-circle"></i>
                 <span>Banner</span></a>
             </li>
 
@@ -96,7 +96,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBarang"
                     aria-expanded="true">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Barang</span>
                 </a>
                 <div id="collapseBarang" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -118,7 +118,7 @@
             <li class="nav-item d-none">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePenjualan"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Penjualan</span>
                 </a>
                 <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities"
@@ -134,7 +134,7 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('penjualan.index') }}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fas fa-solid fa-circle"></i>
                 <span>Penjualan Online</span></a>
             </li>
 
@@ -142,7 +142,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Pengadaan Barang</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
@@ -161,21 +161,21 @@
 
             <li class="nav-item">
               <a class="nav-link" href="{{ route('pengiriman.index') }}">
-                  <i class="fas fa-fw fa-chart-area"></i>
+                  <i class="fas fa-solid fa-circle"></i>
                   <span>Pengiriman</span>
               </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('retur_pembelian.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Retur Pembelian</span>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('retur_penjualan.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Retur Penjualan</span>
                 </a>
             </li>
@@ -183,7 +183,7 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('karyawan.index') }}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fas fa-solid fa-circle"></i>
                 <span>Karyawan</span></a>
             </li>
 
@@ -191,7 +191,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiesAnggota"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fas fa-solid fa-circle"></i>
                     <span>Anggota Kopkar</span>
                 </a>
                 <div id="collapseUtilitiesAnggota" class="collapse" aria-labelledby="headingUtilities"

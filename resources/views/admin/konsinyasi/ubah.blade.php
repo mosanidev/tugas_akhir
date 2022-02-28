@@ -4,7 +4,7 @@
     
     <a href="{{ route('konsinyasi.index') }}" class="btn btn-link"><- Kembali ke daftar konsinyasi</a>
 
-    <h3>Tambah Konsinyasi</h3>
+    <h3>Ubah Konsinyasi</h3>
 
     <div class="px-2 py-3">
         <form method="POST" action="{{ route('konsinyasi.update', ['konsinyasi' => $konsinyasi[0]->id]) }}" id="formUbah">
@@ -107,7 +107,7 @@
                     "hutang": detail_konsinyasi[index].hutang,
                     "jumlah_titip": detail_konsinyasi[index].jumlah_titip,
                     "komisi": detail_konsinyasi[index].komisi,
-                    "tanggal_kadaluarsa": detail_konsinyasi[index].tanggal_kadaluarsa
+                    "tanggal_kadaluarsa": moment(detail_konsinyasi[index].tanggal_kadaluarsa).format("Y-MM-DD HH:mm")
                 });
 
                 implementDataOnTable();
@@ -164,7 +164,7 @@
 
                     rowTable += `<tr>
                                     <td>` + arrBarangKonsinyasi[i].barang + `</td>
-                                    <td>` + moment(arrBarangKonsinyasi[i].tanggal_kadaluarsa).format("D MMMM Y") + ", " + moment(arrBarangKonsinyasi[i].tanggal_kadaluarsa).format("HH:mm") + " WIB" + `</td>
+                                    <td>` + moment(arrBarangKonsinyasi[i].tanggal_kadaluarsa).format("Y-MM-DD HH:mm") +  `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].harga_jual_akhir) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].komisi) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].hutang) + `</td>

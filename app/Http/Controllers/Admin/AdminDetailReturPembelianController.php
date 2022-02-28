@@ -67,15 +67,15 @@ class AdminDetailReturPembelianController extends Controller
         $updatePembelian = DB::table('pembelian')
                             ->where('id', '=', $request->pembelian_id)
                             ->update([
-                                'status_retur' => 'Ada Retur'
+                                'status_retur' => 'Ada retur'
                             ]);
 
-        return redirect()->route('retur_pembelian.index')->with(['success' => 'Data berhasil ditambah']);
+        return redirect()->route('retur_pembelian.index')->with(['success' => 'Data retur pembelian berhasil ditambah']);
 
     }
 
     public function storeTukarBarang(Request $request)
-    {        
+    {      
         $tukarBarang = json_decode($request->tukarBarang, true);
 
         for($i = 0; $i < count((array) $tukarBarang); $i++)
@@ -98,16 +98,37 @@ class AdminDetailReturPembelianController extends Controller
                                         ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
                                         ->decrement('jumlah_stok_di_gudang',  $tukarBarang[$i]['kuantitas_barang_ganti']);
 
-            $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
+            $cariBarangygSama = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
+                                    ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                    ->get();
+
+            if(count($cariBarangygSama) > 0)
+            {
+                $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
+                                        ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
+                                        ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                        ->increment('jumlah_stok_di_gudang', $tukarBarang[$i]['kuantitas_barang_ganti']);
+            }
+            else 
+            {
+                $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
                                     ->insert([
                                         'barang_id' => $tukarBarang[$i]['barang_ganti_id'],
                                         'tanggal_kadaluarsa' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
                                         'jumlah_stok_di_gudang' => $tukarBarang[$i]['kuantitas_barang_ganti']
                                     ]);
+            }
                                     
         }
 
-        return redirect()->route('retur_pembelian.index')->with(['success' => 'Data berhasil ditambah']);
+        $updatePembelian = DB::table('pembelian')
+                            ->where('id', '=', $request->pembelian_id)
+                            ->update([
+                                'status_retur' => 'Ada retur'
+                            ]);
+
+        return redirect()->route('retur_pembelian.index')->with(['success' => 'Data retur pembelian berhasil ditambah']);
     }
 
     /**

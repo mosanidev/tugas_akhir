@@ -34,7 +34,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
+                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
                       <input type="text" class="form-control pull-right" name="tanggalJatuhTempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
@@ -45,10 +45,10 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Supplier</label>
+                <label class="col-sm-4 col-form-label">Pemasok</label>
                 <div class="col-sm-8">
                   <select class="form-control" name="supplier_id" id="selectSupplier" required>
-                      <option disabled selected>Supplier</option>
+                      <option disabled selected>Pilih pemasok barang</option>
                       @foreach($supplier as $item)
                           <option value="{{ $item->id }}">{{$item->nama}}</option>
                       @endforeach
@@ -59,7 +59,7 @@
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                 <div class="col-sm-8">
                   <select class="form-control" name="metodePembayaran" id="selectMetodePembayaran" required>
-                      <option disabled selected>Metode Pembayaran</option>
+                      <option disabled selected>Pilih metode pembayaran</option>
                       <option value="Transfer Bank">Transfer Bank</option>
                       <option value="Tunai">Tunai</option>
                   </select> 
@@ -68,7 +68,6 @@
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total</label>
                 <div class="col-sm-8">
-                    {{-- <input type="hidden" value="0" id="totalAwal"> --}}
                     <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="total" name="total" readonly/>
                     <input type="text" class="form-control" value="Rp 0" id="totalRupiah" readonly>
                 </div>
@@ -83,7 +82,6 @@
                 <label class="col-sm-4 col-form-label">PPN</label>
                 <div class="col-sm-8">
                     Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="0" min="0" step="100" style="width: 95.8%;" required>
-                  {{-- <input type="number" class="form-control d-inline mr-1" name="ppn" id="inputPPN" value="0" min="0" step="1" style="width: 96.2%;" required> % --}}
                 </div>
               </div>
               <div class="form-group row">
@@ -131,8 +129,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                  <th style="width: 10px">No</th>
-                                  <th>Barang</th>
+                                  <th style="width: 50%;">Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
                                   <th>Diskon Potongan Harga</th>
@@ -170,7 +167,8 @@
 
         $('#datepickerTglJatuhTempo').datepicker({
             format: 'yyyy-mm-dd',
-            autoclose: true
+            autoclose: true,
+            startDate: new Date()
         });
 
         $('#tanggal_kadaluarsa').datepicker({
@@ -330,8 +328,7 @@
                 num += 1;
                 total += barangDibeli[i].subtotal;
                 rowTable += `<tr>    
-                                <td>` + num +  `</td>
-                                <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
+                                <td style="width: 50%;">` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
                                 <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].diskon_potongan_harga) +  `</td>

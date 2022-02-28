@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h3>Tambah Barang Retur</h3>
+    <h3>Tambah Retur Konsinyasi</h3>
 
     <div class="px-2 py-3">
         <form method="POST" action="{{ route('retur_pembelian.storeReturDana') }}">
@@ -67,7 +67,6 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th style="width: 10px">No</th>
                                 <th>Barang Retur</th>
                                 <th>Tanggal Kadaluarsa Barang Retur</th>
                                 <th class="d-none">Barang ID</th>
@@ -88,11 +87,13 @@
             <input type="hidden" name="pembelian_id" value="{{ $retur_pembelian[0]->id }}">
             <input type="hidden" name="retur_pembelian_id" value="{{ $retur_pembelian[0]->id }}">
             <input type="hidden" id="dataBarangRetur" value="" name="barangRetur"/>
-            <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
+            <button type="button" class="btn btn-success w-50 btn-block mx-auto" id="btnSimpan">Simpan</button>
         </form>
         
     </form>
 </div>
+
+  <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
   @include('admin.retur_pembelian.barang_retur.potong_dana.konsinyasi.create')
 
@@ -111,8 +112,7 @@
                 total += parseInt(arrBarangRetur[i].subtotal);
 
                 rowTable += `<tr>
-                                <td>` + num + `</td>
-                                <td>` + arrBarangRetur[i].barang_kode + " "  + arrBarangRetur[i].barang_nama + `</td>
+                                <td>` + arrBarangRetur[i].barang_kode + " - "  + arrBarangRetur[i].barang_nama + `</td>
                                 <td class="d-none">` + arrBarangRetur[i].barang_id + `</td>
                                 <td>` + arrBarangRetur[i].barang_tanggal_kadaluarsa + `</td>
                                 <td>` + arrBarangRetur[i].barang_satuan + `</td>

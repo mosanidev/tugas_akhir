@@ -108,12 +108,13 @@
                     <p class="text-justify">Buka Hari Senin-Sabtu <br> jam 08:00 - 16:00</p>
                     <p class="text-justify" id="maks_ambil"></p>
 
-                    @if(auth()->user()->jenis == "Pelanggan")
-                        <a class="btn btn-success text-light" id="pay">Beli</a><br>
+                    <a class="btn btn-success text-light" id="pay">Beli</a><br>
+
+                    {{-- @if(auth()->user()->jenis == "Pelanggan")
                     @else  
-                        {{-- anggota kopkar --}}
+                        anggota kopkar
                         <button class="btn btn-success text-light" data-toggle="modal" data-target="#modalBeliAnggotaKopkar">Beli</button>
-                    @endif
+                    @endif --}}
 
                 </div>
             </div>

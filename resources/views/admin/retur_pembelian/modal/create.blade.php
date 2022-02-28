@@ -9,13 +9,13 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ route('retur_pembelian.store') }}"> 
+            <form method="POST" action="{{ route('retur_pembelian.store') }}" id="formTambah"> 
                 @csrf 
                 <div class="form-group row" id="divTampungSelectNotaBeli">
                     <p class="col-sm-4 col-form-label">Nomor Nota</p>
                     <div class="col-sm-8">
                         <select class="form-control" id="selectNotaBeli" name="id_pembelian" required>
-                            <option disabled selected>Pilih Nomor Nota Pembelian</option>
+                            <option disabled selected>Pilih nomor nota</option>
                             @foreach($pembelian as $item)
                                 <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status_bayar }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota_dari_supplier }}</option>
                             @endforeach
@@ -60,7 +60,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglRetur" required>
+                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglRetur" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -82,9 +82,8 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Supplier</p>
+                    <p class="col-sm-4 col-form-label">Pemasok</p>
                     <div class="col-sm-8">
-                        {{-- <input type="hidden" name="supplier" id="supplierID"> --}}
                         <input type="text" id="supplier" class="form-control" readonly>
                       </select> 
                     </div>
@@ -94,8 +93,9 @@
                     <div class="col-sm-8">
                         <select class="form-control" id="selectKebijakanRetur" required>
                             <option disabled selected>Pilih kebijakan retur</option>
-                            <option value="Tukar Barang">Tukar barang</option>
-                            <option value="Potong Dana Pembelian">Potong dana pembelian</option>
+                            <option value="Tukar barang">Tukar barang</option>
+                            <option value="Potong dana pembelian">Potong dana pembelian</option>
+                            <option value="Retur barang konsinyasi" disabled>Retur barang konsinyasi</option>
                         </select> 
                         <input type="hidden" id="kebijakan_retur" name="kebijakan_retur" value=""> 
                     </div>
@@ -111,6 +111,7 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
@@ -128,8 +129,29 @@
 
     $('#btnTambahDataRetur').on('click', function(){
 
-        $('#btnTambahDataRetur').attr("type", "submit");
-        $('#btnTambahDataRetur')[0].click();
+        if($('#selectNotaBeli')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap pilih nota pembelian terlebih dahulu", "Gagal", toastrOptions)
+        }
+        else if($('#nomor_nota_retur').val() == "")
+        {
+            toastr.error("Harap isi nomor nota retur terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if(moment($('#datepickerTglRetur').val()).isBetween($('#datepickerTglBeli').val(), $('#datepickerTglJatuhTempoNotaBeli').val(), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Potong dana pembelian" || 
+                moment($('#datepickerTglRetur').val()).isBetween($('#datepickerTglBeli').val(), $('#datepickerTglJatuhTempoNotaBeli').val(), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Retur barang konsinyasi" ||
+                $('#statusPembelian').val() == "Sudah lunas" && $('#selectKebijakanRetur').val() == "Potong dana pembelian" ||
+                $('#selectKebijakanRetur').val() == "Retur barang konsinyasi")
+        {
+            toastr.error("Mohon maaf pembelian atau konsinyasi tidak dapat diretur", "Gagal", toastrOptions);
+        }
+        else if($('#selectKebijakanRetur')[0].selectedIndex == 0)
+        {
+            toastr.error("Harap pilih kebijakan retur terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else
+        {
+            $('#formTambah').submit();
+        }
 
     });
 
@@ -155,13 +177,15 @@
         {
             $('#selectKebijakanRetur').attr("disabled", false);
             $('#jenis').val('Pembelian');
+            $('#kebijakan_retur').val("Retur barang konsinyasi");
+            $("#selectKebijakanRetur").val("Pilih kebijakan retur").trigger('change.select2');
         }
         else 
         {
             $('#jenis').val('Konsinyasi');
             $('#selectKebijakanRetur').attr("disabled", true);
-            $('#selectKebijakanRetur').val("Potong Dana Pembelian");
-            $('#kebijakan_retur').val("Potong Dana Pembelian");
+            $('#selectKebijakanRetur').val("Retur barang konsinyasi");
+            $('#kebijakan_retur').val("Retur barang konsinyasi");
         }
 
         $('#statusPembelian').val( $('#selectNotaBeli :selected').attr("data-status-pembelian") );

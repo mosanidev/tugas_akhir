@@ -65,7 +65,7 @@ class AdminKonsinyasiController extends Controller
         }
         else if(count($konsinyasiYgMirip) > 0)
         {
-            return redirect()->back()->with(['error' => 'Gagal simpan konsinyasi. Terdapat konsinyasi yang memiliki tanggal penitipan dan jatuh tempo']);
+            return redirect()->back()->with(['error' => 'Gagal simpan konsinyasi. Sudah ada data konsinyasi dengan penitip yang sama']);
         }
 
         $konsinyasi = DB::table('konsinyasi')
@@ -307,7 +307,7 @@ class AdminKonsinyasiController extends Controller
 
         $supplier = DB::table('supplier')->where('jenis', '=', 'Individu')->get();
 
-        $barang_konsinyasi = DB::table('barang')->where('barang_konsinyasi', '=', 1)->get();
+        $barang_konsinyasi = DB::table('barang')->where('barang_konsinyasi', '=', 1)->where('supplier_id', '=', $konsinyasi[0]->supplier_id)->get();
 
         return view('admin.konsinyasi.ubah', ['konsinyasi' => $konsinyasi, 'detail_konsinyasi' => $detailKonsinyasi, 'supplier' => $supplier, 'barang_konsinyasi' => $barang_konsinyasi]);
     }
@@ -376,6 +376,18 @@ class AdminKonsinyasiController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $konsinyasiYgMirip = DB::table('konsinyasi')
+                        ->where('supplier_id', '=', $request->supplier_id)
+                        ->where('tanggal_titip', '<=', $request->tanggal_titip)
+                        ->where('tanggal_jatuh_tempo', '>=', $request->tanggal_jatuh_tempo)
+                        ->whereNotIn('id', [$id])
+                        ->get();
+
+        if(count($konsinyasiYgMirip) > 0)
+        {
+            return redirect()->back()->with(['error' => 'Gagal simpan konsinyasi. Sudah ada data konsinyasi dengan penitip yang sama']);
+        }
+
         $this->reset($id);
 
         $update = DB::table('konsinyasi')

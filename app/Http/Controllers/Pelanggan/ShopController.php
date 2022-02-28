@@ -11,8 +11,6 @@ class ShopController extends Controller
 {
     public function filterSearchOrder(Request $request)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_kategori = DB::table('kategori_barang')->get();
 
         $data_barang = DB::table('barang')
@@ -22,7 +20,7 @@ class ShopController extends Controller
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->where('nama', 'like', '%'.strtolower($request->key).'%')
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
                         ->groupBy('barang.id');
 
@@ -98,8 +96,6 @@ class ShopController extends Controller
     
     public function filterOrder(Request $request, $id)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_kategori = DB::table('kategori_barang')->get();
 
         $data_barang = DB::table('barang')
@@ -107,7 +103,7 @@ class ShopController extends Controller
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->where('barang.kategori_id', '=', $id)
                         ->groupBy('barang.id');
@@ -194,7 +190,7 @@ class ShopController extends Controller
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->inRandomOrder()
                             ->groupBy('barang.id')
                             ->paginate(15);
@@ -206,7 +202,7 @@ class ShopController extends Controller
                                 ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                                 ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                                 ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
-                                ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                                ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                                 ->where('barang.jenis_id', '=', $id)
                                 ->orderBy('nama', 'asc')
                                 ->groupBy('barang.id')
@@ -220,7 +216,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->orderBy('nama', 'desc')
                             ->groupBy('barang.id')
                             ->paginate(15);
@@ -233,7 +229,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) desc')
                             ->groupBy('barang.id')
                             ->paginate(15);
@@ -246,7 +242,7 @@ class ShopController extends Controller
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
                             ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                             ->where('barang.jenis_id', '=', $id)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')
                             ->groupBy('barang.id')
                             ->paginate(15);
@@ -275,8 +271,6 @@ class ShopController extends Controller
 
     public function showRandom()
     {
-        // $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_jenis = DB::table('jenis_barang')->get();
 
         $data_kategori = DB::table('kategori_barang')->get();
@@ -284,7 +278,7 @@ class ShopController extends Controller
         $data_barang = DB::table('barang')
                         ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->inRandomOrder()
                         ->groupBy('barang.id')
@@ -312,15 +306,13 @@ class ShopController extends Controller
 
     public function showProductsBasedOnType($id)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_semua_kategori = DB::table('kategori_barang')->get();
         $data_kategori = DB::table('barang')->select('barang.kategori_id', 'kategori_barang.kategori_barang')->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')->join('jenis_barang', 'jenis_barang.id', '=', 'barang.jenis_id')->where('barang.jenis_id', '=', $id)->distinct()->get();
         $data_jenis_dipilih = DB::table('jenis_barang')->where('id', '=', $id)->get();
         $data_barang = DB::table('barang')
                         ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->where('jenis_id', '=', $id)
@@ -347,13 +339,11 @@ class ShopController extends Controller
 
     public function showProductsBasedOnCategory($id)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_kategori = DB::table('kategori_barang')->get();
         $data_barang = DB::table('barang')
                         ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'), 'merek_barang.merek_barang as nama_merek', 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori')
                         ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
@@ -385,8 +375,6 @@ class ShopController extends Controller
 
     public function orderProducts(Request $request)
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
         $data_barang = null;
 
         $data_kategori = DB::table('kategori_barang')->get();
@@ -398,7 +386,7 @@ class ShopController extends Controller
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->inRandomOrder()
                             ->groupBy('barang.id')
@@ -409,7 +397,7 @@ class ShopController extends Controller
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderBy('nama', 'asc')
                             ->groupBy('barang.id')
@@ -420,7 +408,7 @@ class ShopController extends Controller
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderBy('nama', 'desc')
                             ->groupBy('barang.id')
@@ -431,7 +419,7 @@ class ShopController extends Controller
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) desc')
                             ->groupBy('barang.id')
@@ -442,7 +430,7 @@ class ShopController extends Controller
             $data_barang = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
-                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')
                             ->groupBy('barang.id')

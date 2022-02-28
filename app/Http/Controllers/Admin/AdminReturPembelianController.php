@@ -76,7 +76,6 @@ class AdminReturPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         if($request->jenis == "Pembelian")
         {
             $id_retur_pembelian = DB::table('retur_pembelian')
@@ -100,7 +99,6 @@ class AdminReturPembelianController extends Controller
                                     ]);
         }
         
-
         return redirect()->route('retur_pembelian.show', ['retur_pembelian' => $id_retur_pembelian, 'jenis' => $request->jenis]);
         
     }
@@ -124,18 +122,19 @@ class AdminReturPembelianController extends Controller
                                 ->get();
 
             $detail_pembelian = DB::table('detail_pembelian')
-                                    ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok_di_gudang')
+                                    ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok_di_gudang', 'pembelian.total')
                                     ->where('detail_pembelian.pembelian_id', '=', $retur_pembelian[0]->pembelian_id)  
                                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.tanggal_kadaluarsa', '=', 'detail_pembelian.tanggal_kadaluarsa')
                                     ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
+                                    ->join('pembelian', 'detail_pembelian.pembelian_id', '=', 'pembelian.id')
                                     ->groupBy('barang.id')
                                     ->get();
 
-            if($retur_pembelian[0]->kebijakan_retur == "Tukar Barang")
+            if($retur_pembelian[0]->kebijakan_retur == "Tukar barang")
             {
                 return view('admin.retur_pembelian.barang_retur.tukar_barang.tukar_barang', ['detail_pembelian' => $detail_pembelian, 'retur_pembelian' => $retur_pembelian]);
             }
-            else if ($retur_pembelian[0]->kebijakan_retur == "Potong Dana Pembelian")
+            else if ($retur_pembelian[0]->kebijakan_retur == "Potong dana pembelian")
             {
                 return view('admin.retur_pembelian.barang_retur.potong_dana.pembelian.potong_dana_pembelian', ['detail_pembelian' => $detail_pembelian, 'retur_pembelian' => $retur_pembelian]);
             }
@@ -161,7 +160,7 @@ class AdminReturPembelianController extends Controller
             // INI KENAPA KOK ADA EMPAT ~?
             // KALO INNER JOIN NYA TANGGAL KADALUARSA DAN KEBETULAN ADA BARANG YANG TGL KADALUARSA SAMA MAKA KELUAR EMPAT DATA
 
-            return view('admin.retur_pembelian.barang_retur.potong_dana.konsinyasi.potong_dana_pembelian', ['detail_pembelian' => $detail_pembelian, 'retur_pembelian' => $retur_pembelian]);
+            return view('admin.retur_pembelian.barang_retur.potong_dana.konsinyasi.retur_barang_konsinyasi', ['detail_pembelian' => $detail_pembelian, 'retur_pembelian' => $retur_pembelian]);
                             
         }
         

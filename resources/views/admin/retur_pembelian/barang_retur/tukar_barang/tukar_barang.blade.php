@@ -9,6 +9,8 @@
         <form method="POST" action="{{ route('retur_pembelian.storeTukarBarang') }}">
         @csrf
 
+        <input type="hidden" name="pembelian_id" value="{{ $detail_pembelian[0]->pembelian_id }}">
+
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Nomor Nota Retur</label>
             <div class="col-sm-8">
@@ -91,7 +93,7 @@
         </div> 
             <input type="hidden" name="retur_pembelian_id" value="{{ $retur_pembelian[0]->id }}"> 
             <input type="hidden" id="dataTukarBarang" value="" name="tukarBarang"/> 
-            <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
+            <button type="button" class="btn btn-success w-50 btn-block mx-auto" id="btnSimpan">Simpan</button>
         </form>
         
     </form>

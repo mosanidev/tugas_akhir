@@ -174,12 +174,13 @@
                         </div>
                 </div>
                 
-                @if(auth()->user()->jenis == "Pelanggan")
-                        <a class="btn btn-success text-light" id="pay">Beli</a><br>
+                <a class="btn btn-success text-light" id="pay">Beli</a><br>
+                
+                {{-- @if(auth()->user()->jenis == "Pelanggan")        
                 @else  
-                    {{-- anggota kopkar --}}
+                    anggota kopkar
                     <button class="btn btn-success text-light" id="modalPayPotongGaji">Beli</button>
-                @endif
+                @endif --}}
 
             </div>
         </div>

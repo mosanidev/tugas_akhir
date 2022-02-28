@@ -143,7 +143,8 @@
       datepicker: true,
       lang: 'id',
       defaultTime: '16:00 AM',
-      format: 'Y-m-d H:i:00'
+      format: 'Y-m-d H:i',
+      minDate: 0
     }); 
 
     jQuery('#tglKadaluarsa').click(function(){

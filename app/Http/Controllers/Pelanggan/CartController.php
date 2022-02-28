@@ -140,6 +140,7 @@ class CartController extends Controller
                     ->join('barang', 'cart.barang_id', '=', 'barang.id')
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->where('cart.users_id', '=', auth()->user()->id)
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                     ->groupBy('cart.barang_id')
                     ->get();
 
@@ -159,6 +160,7 @@ class CartController extends Controller
         $barang = DB::table('barang')
                     ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                     ->where('barang.id', '=', $request->barang_id)
                     ->get();
 
@@ -172,7 +174,10 @@ class CartController extends Controller
         if(Auth::check()) // jika sudah login, masukkan data barang dan keranjang belanja langsung ke database
         {
             // query untuk memperoleh data keranjang belanja yang barangnya sama dan dimiliki oleh user yang sama dengan yang login
-            $cart = DB::table('cart')->where('barang_id', '=', $request->barang_id)->where('users_id', '=', auth()->user()->id)->get();
+            $cart = DB::table('cart')
+                    ->where('cart.barang_id', '=', $request->barang_id)
+                    ->where('cart.users_id', '=', auth()->user()->id)
+                    ->get();
 
             // query untuk memperoleh total barang di keranjang belanja milik user yang login
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();

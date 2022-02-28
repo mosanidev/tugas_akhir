@@ -12,7 +12,7 @@
             {{-- action="{{ route('supplier.destroy', 'id') }}" --}}
             @csrf
             @method('DELETE')
-            <p class="text-justify">Apakah anda yakin ingin menghapus data supplier ? Semua data pembelian dengan supplier tersebut juga akan terhapus</p>
+            <p class="text-justify">Apakah anda yakin ingin menghapus data pemasok ? Semua data pembelian dengan pemasok tersebut juga akan terhapus</p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary">Iya</button>
