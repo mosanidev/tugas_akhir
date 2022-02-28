@@ -177,6 +177,41 @@ class AdminReturPembelianController extends Controller
         //
     }
 
+    public function detail($id)
+    {
+        $retur_pembelian = DB::table('retur_pembelian')
+                            ->select('retur_pembelian.*', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama_pembuat"))
+                            ->where('retur_pembelian.id', '=', $id)
+                            ->join('users', 'retur_pembelian.users_id', '=', 'users.id')
+                            ->get();
+
+        $detail_retur_pembelian = DB::table('detail_retur_pembelian')
+                                    ->select('detail_retur_pembelian.*', 'barang.kode', 'barang.nama', 'barang.barang_konsinyasi', 'barang.satuan', 'detail_pembelian.harga_beli', 'detail_pembelian.diskon_potongan_harga', 'detail_pembelian.kuantitas')
+                                    ->where('detail_retur_pembelian.retur_pembelian_id', '=', $id)
+                                    ->join('barang', 'detail_retur_pembelian.barang_retur', '=', 'barang.id')
+                                    ->join('retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')
+                                    ->join('pembelian', 'pembelian.id', '=', 'retur_pembelian.pembelian_id')
+                                    ->join('detail_pembelian', 'detail_pembelian.pembelian_id', '=', 'pembelian.id')
+                                    ->get();
+
+        $pembelian = DB::table('pembelian')
+                        ->where('id', '=', $retur_pembelian[0]->pembelian_id)
+                        ->get();
+
+        if($retur_pembelian[0]->kebijakan_retur == "Potong dana pembelian")
+        {
+            return view('admin.retur_pembelian.detail.detail_potong_dana_pembelian', ['pembelian' => $pembelian, 'retur_pembelian'=>$retur_pembelian, 'detail_retur_pembelian' => $detail_retur_pembelian]);
+        }
+        else if ($retur_pembelian[0]->kebijakan_retur == "Tukar barang")
+        {
+
+        }
+        else 
+        {
+            // konsinyasi
+        }
+    }
+
     public function loadBarangRetur($id)
     {
         $barang_retur = DB::table('barang')->select('barang.id', 'barang.nama')->join('detail_pembelian', 'barang.id', '=', 'detail_pembelian.barang_id')->where('detail_pembelian.pembelian_id', '=', $id)->get();

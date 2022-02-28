@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label">Nomor Nota Pembelian</label>
+            <label class="col-sm-4 col-form-label">Nomor Nota Pembelian dari Pemasok</label>
             <div class="col-sm-8">
                 <p class="mt-2">{{ $retur_pembelian[0]->nomor_nota_pembelian }}</p>
             </div>
