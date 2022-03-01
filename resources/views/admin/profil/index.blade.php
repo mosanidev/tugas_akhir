@@ -27,6 +27,7 @@
                         </div>
 
                         <button type="button" class="btn btn-block btn-info my-1" style="width: 71%;" id="gantiFotoProfil">Unggah Foto Profil</button>
+                        <button type="button" class="btn btn-block btn-info my-1" style="width: 71%;" id="hapusFotoProfil">Hapus Foto Profil</button>
                     </form>
                 </div>
             </div>
@@ -107,7 +108,13 @@
             readURL(this);
         });
 
-    
+        $('#hapusFotoProfil').on('click', function() {
+            
+            $('#inputGantiFotoProfil').val("");
+            
+            $('#img-profil').attr("src", "{{ asset('/images/profil/user_null.png') }}");
+
+        });
 
         if("{{ session('success') }}" != "")
         {

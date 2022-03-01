@@ -23,6 +23,8 @@
                     </div>
 
                     <button type="button" class="btn btn-block btn-success my-1" id="gantiFotoProfil">Unggah Foto Profil</button>
+                    <button type="button" class="btn btn-block btn-success my-1" id="hapusFotoProfil">Hapus Foto Profil</button>
+
                 </form>
             </div>
         </div>
@@ -70,6 +72,14 @@
         $('#gantiFotoProfil').on('click', function() {
 
             $('#inputGantiFotoProfil').click();
+
+        });
+
+        $('#hapusFotoProfil').on('click', function() {
+            
+            $('#inputGantiFotoProfil').val("");
+            
+            $('#img-profil').attr("src", "{{ asset('/images/profil/user_null.png') }}");
 
         });
 
