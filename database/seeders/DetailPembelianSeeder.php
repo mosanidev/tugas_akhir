@@ -16,16 +16,17 @@ class DetailPembelianSeeder extends Seeder
     {
         DB::table('detail_pembelian')->delete();
         
-        // DB::table('detail_pembelian')->insert(
-        //     [   
-        //         'pembelian_id'              => 1,  
-        //         'barang_id'                 => 8,
-        //         'tanggal_kadaluarsa'        => '2022-01-29 00:00:00',
-        //         'kuantitas'                 => 2,
-        //         'harga_beli'                => 5000,
-        //         'subtotal'                  => 10000
-        //     ]
-        // );
+        DB::table('detail_pembelian')->insert(
+            [   
+                'pembelian_id'              => 1,  
+                'barang_id'                 => 29,
+                'tanggal_kadaluarsa'        => '2022-10-26 00:00:00',
+                'kuantitas'                 => 1,
+                'harga_beli'                => 5000,
+                'diskon_potongan_harga'     => 5000,
+                'subtotal'                  => 5000
+            ]
+        );
 
         // DB::table('detail_pembelian')->insert(
         //     [   

@@ -19,6 +19,7 @@ class AdminReturPembelianController extends Controller
                         ->select('konsinyasi.id', 'konsinyasi.nomor_nota', 'konsinyasi.tanggal_titip', 'konsinyasi.status_bayar', 'konsinyasi.tanggal_jatuh_tempo', 'konsinyasi.supplier_id', 'supplier.nama as nama_supplier', 'supplier.jenis as jenis_supplier')
                         ->leftJoin('retur_pembelian', 'retur_pembelian.pembelian_id', '=', 'konsinyasi.id')
                         ->join('supplier', 'supplier.id', '=', 'konsinyasi.supplier_id')
+                        ->where('status_bayar', '=', 'Belum lunas')
                         ->where('retur_pembelian.konsinyasi_id', '=', null);
 
         // select pembelian yang datanya tidak ada di retur pembelian
@@ -57,8 +58,6 @@ class AdminReturPembelianController extends Controller
         $retur_pembelian = DB::table('retur_pembelian')->select('pembelian_id')->pluck('pembelian_id')->toArray();
         $pembelian = DB::table('pembelian')->whereNotIn('id', [$retur_pembelian])->get();
         $detail_pembelian = DB::table('detail_pembelian')->whereNotIn('pembelian_id', [$retur_pembelian])->get();
-
-        // dd($detail_pembelian);
 
         // $retur_konsinyasi = DB::table('retur_pembelian')->select('konsinyasi_id')->pluck('konsinyasi_id')->toArray();
         // $konsinyasi = DB::table('konsinyasi')->whereNotIn('id', [$retur_konsinyasi])->get();
@@ -113,14 +112,13 @@ class AdminReturPembelianController extends Controller
     {
         if($request->jenis == "Pembelian")
         {   
-
             $retur_pembelian = DB::table('retur_pembelian')
                                 ->select('retur_pembelian.*', 'pembelian.nomor_nota_dari_supplier as nomor_nota_pembelian', 'pembelian.tanggal as tanggal_buat_nota_beli', 'pembelian.tanggal_jatuh_tempo as tanggal_jatuh_tempo_beli', 'pembelian.status_bayar as status_pembelian', DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) AS nama_pembuat"))
                                 ->where('retur_pembelian.id', '=', $id)
                                 ->join('pembelian', 'pembelian.id', '=', 'retur_pembelian.pembelian_id')
                                 ->join('users', 'users.id', '=', 'retur_pembelian.users_id')
                                 ->get();
-
+                        
             $detail_pembelian = DB::table('detail_pembelian')
                                     ->select('detail_pembelian.*', 'detail_pembelian.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok_di_gudang', 'pembelian.total')
                                     ->where('detail_pembelian.pembelian_id', '=', $retur_pembelian[0]->pembelian_id)  
@@ -152,7 +150,8 @@ class AdminReturPembelianController extends Controller
             $detail_pembelian = DB::table('detail_konsinyasi')
                                     ->select('detail_konsinyasi.*', 'detail_konsinyasi.tanggal_kadaluarsa', 'barang.kode', 'barang.nama', 'barang.satuan', 'barang_has_kadaluarsa.jumlah_stok_di_gudang')
                                     ->where('detail_konsinyasi.konsinyasi_id', '=', $retur_pembelian[0]->konsinyasi_id)  
-                                    ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_konsinyasi.barang_id')
+                                    ->join('barang_has_kadaluarsa', 'detail_konsinyasi.tanggal_kadaluarsa', '=', 'barang_has_kadaluarsa.tanggal_kadaluarsa')
+                                    // ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_konsinyasi.barang_id')
                                     ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
                                     ->groupBy('barang.id')
                                     ->get();
@@ -204,11 +203,31 @@ class AdminReturPembelianController extends Controller
         }
         else if ($retur_pembelian[0]->kebijakan_retur == "Tukar barang")
         {
-
+            return view('admin.retur_pembelian.detail.detail_tukar_barang', ['pembelian' => $pembelian, 'retur_pembelian'=>$retur_pembelian, 'detail_retur_pembelian' => $detail_retur_pembelian]);
         }
         else 
         {
             // konsinyasi
+            $konsinyasi = DB::table('konsinyasi')
+                        ->where('id', '=', $retur_pembelian[0]->konsinyasi_id)
+                        ->get();
+
+            $detail_retur_pembelian = DB::table('detail_retur_pembelian')
+                                        ->select('detail_retur_pembelian.*', 
+                                                 'barang.kode', 
+                                                 'barang.nama', 
+                                                 'barang.barang_konsinyasi', 
+                                                 'barang.satuan', 
+                                                 'detail_konsinyasi.jumlah_titip')
+                                        ->where('detail_retur_pembelian.retur_pembelian_id', '=', $id)
+                                        ->join('barang', 'detail_retur_pembelian.barang_retur', '=', 'barang.id')
+                                        ->join('retur_pembelian', 'retur_pembelian.id', '=', 'detail_retur_pembelian.retur_pembelian_id')
+                                        ->join('detail_konsinyasi', 'detail_konsinyasi.konsinyasi_id', '=', 'retur_pembelian.konsinyasi_id')
+                                        ->get();
+
+            return view('admin.retur_pembelian.detail.detail_retur_barang_konsinyasi', ['konsinyasi' => $konsinyasi, 'retur_pembelian'=>$retur_pembelian, 'detail_retur_pembelian' => $detail_retur_pembelian]);
+
+
         }
     }
 
@@ -238,6 +257,148 @@ class AdminReturPembelianController extends Controller
         //
     }
 
+    public function reset($id)
+    {
+        $retur_pembelian = DB::table('retur_pembelian')
+                            ->where('id', '=', $id)
+                            ->get();
+
+        $detail_retur_pembelian = DB::table('detail_retur_pembelian')
+                            ->where('retur_pembelian_id', '=', $id)
+                            ->get();
+
+        if($retur_pembelian[0]->kebijakan_retur == "Tukar barang")
+        {   
+            foreach($detail_retur_pembelian as $item)
+            {
+                $brg = DB::table('barang_has_kadaluarsa')
+                        ->where('barang_id', '=', $item->barang_ganti)
+                        ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_ganti)
+                        ->get();
+
+                if(count($brg) > 0)
+                {
+                    $qty = $brg[0]->jumlah_stok_di_gudang;
+
+                    $kurangiStokBrgGanti = $qty - $item->kuantitas_barang_ganti;
+
+                    if($kurangiStokBrgGanti == 0)
+                    {
+                        $hapusBrg = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $item->barang_ganti)
+                                    ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_ganti)
+                                    ->delete();
+                    }
+                    else
+                    {
+                        $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $item->barang_ganti)
+                                            ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_ganti)
+                                            ->decrement('jumlah_stok_di_gudang', $item->kuantitas_barang_retur);
+                    }
+
+                    $cariBarangygSama = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $item->barang_retur)
+                                            ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                                            ->get();
+
+                    if(count($cariBarangygSama) > 0)
+                    {
+                        $tambahStokBarangAsal = DB::table('barang_has_kadaluarsa')
+                                                    ->where('barang_id', '=', $item->barang_retur)
+                                                    ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_retur)
+                                                    ->increment('jumlah_stok_di_gudang', $item->kuantitas_barang_retur);
+                    }
+                    else
+                    {
+                        $tambahBarangAsal = DB::table('barang_has_kadaluarsa')
+                                                ->insert([
+                                                    'barang_id' => $item->barang_retur,
+                                                    'tanggal_kadaluarsa' => $item->tanggal_kadaluarsa_retur,
+                                                    'jumlah_stok_di_gudang' => $item->kuantitas_barang_retur
+                                                ]);
+                    }
+                } 
+                else 
+                {
+                    return redirect()->back()->with(['error' => 'Gagal hapus data retur pembelian']);
+                } 
+            } 
+        }
+        else if($retur_pembelian[0]->kebijakan_retur == "Potong dana pembelian")
+        {
+            foreach($detail_retur_pembelian as $item)
+            {
+                $brg = DB::table('barang_has_kadaluarsa')
+                        ->where('barang_id', '=', $item->barang_retur)
+                        ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                        ->get();
+
+                if(count($brg) > 0)
+                {
+                    $qty = $brg[0]->jumlah_stok_di_gudang;
+
+                    $kurangiStokBrgRetur = $qty - $item->kuantitas_barang_retur;
+
+                    if($kurangiStokBrgRetur == 0)
+                    {
+                        $hapusBrg = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $item->barang_retur)
+                                    ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                                    ->delete();
+                    }
+                    else
+                    {
+                        $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $item->barang_retur)
+                                            ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                                            ->decrement('jumlah_stok_di_gudang', $item->kuantitas_barang_retur);
+                    }
+                } 
+                else 
+                {
+                    return redirect()->back()->with(['error' => 'Gagal hapus data retur pembelian']);
+                } 
+            }
+        }
+        else if($retur_pembelian[0]->kebijakan_retur == "Retur barang konsinyasi")
+        {
+            foreach($detail_retur_pembelian as $item)
+            {
+                $brg = DB::table('barang_has_kadaluarsa')
+                        ->where('barang_id', '=', $item->barang_retur)
+                        ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                        ->get();
+
+                if(count($brg) > 0)
+                {
+                    $qty = $brg[0]->jumlah_stok_di_gudang;
+
+                    $kurangiStokBrgRetur = $qty - $item->kuantitas_barang_retur;
+
+                    if($kurangiStokBrgRetur == 0)
+                    {
+                        $hapusBrg = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $item->barang_retur)
+                                    ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                                    ->delete();
+                    }
+                    else
+                    {
+                        $kurangiStok = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $item->barang_retur)
+                                            ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa_barang_retur)
+                                            ->decrement('jumlah_stok_di_gudang', $item->kuantitas_barang_retur);
+                    }
+                } 
+                else 
+                {
+                    return redirect()->back()->with(['error' => 'Gagal hapus data retur pembelian']);
+                } 
+            }
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -246,7 +407,26 @@ class AdminReturPembelianController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->reset($id);
+
+        $retur_pembelian = DB::table('retur_pembelian')
+                            ->where('id', '=', $id)
+                            ->get();
+
+        if($retur_pembelian[0]->kebijakan_retur != "Retur barang konsinyasi")
+        {
+            $update_pembelian = DB::table('pembelian')
+                                    ->where('id', '=', $retur_pembelian[0]->pembelian_id)
+                                    ->update([
+                                        'status_retur' => 'Tidak ada retur'
+                                    ]);
+        }
+
+        $delete_retur_pembelian = DB::table('retur_pembelian')
+                                    ->where('id', '=', $id)
+                                    ->delete();
+
+        return redirect()->back()->with(['success' => 'Data retur pembelian berhasil dihapus']);
     }
 
 }

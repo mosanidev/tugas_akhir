@@ -8,13 +8,11 @@
       <div class="col-sm-6">
         <h1>Konsinyasi</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 <div class="container-fluid">
 
     <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahKonsinyasi">Tambah</button>
-
-    {{-- <a href="{{ route('konsinyasi.create') }}" class="btn btn-success ml-2">Tambah</a> --}}
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -44,10 +42,16 @@
                             <td>{{ $item->nama_supplier }}</td>
                             <td>{{ $item->status_bayar }}</td>
                             <td>
-                              <button type="button" class="btn btn-secondary w-100 mb-1" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Lunasi</button>
-                              <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
-                              <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning w-100 mb-1'>Ubah</a>
-                              <button type="button" class="btn btn-danger btnHapusKonsinyasi w-100 mb-1" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
+
+                              @if($item->status_bayar == "Sudah lunas")
+                                <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
+                              @else
+                                <button type="button" class="btn btn-secondary w-100 mb-1 btnLunasi" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalLunasiKonsinyasi">Lunasi</button>
+                                <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
+                                <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning w-100 mb-1'>Ubah</a>
+                                <button type="button" class="btn btn-danger btnHapusKonsinyasi w-100 mb-1" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>
+                              @endif
+                              
                             </td>
                           </tr>
                         @endforeach
@@ -61,6 +65,8 @@
 
 @include('admin.konsinyasi.modal.create_konsinyasi')
 @include('admin.konsinyasi.modal.confirm_delete')
+@include('admin.konsinyasi.modal.lunasi_konsinyasi')
+@include('admin.konsinyasi.modal.create_konfirmasi_lunasi')
 
 <!-- bootstrap datepicker -->
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
@@ -83,13 +89,75 @@
 
   $(document).ready(function() {
 
-    $('#btnLunasi').on('click', function(){
+    $('.btnIyaLunasi').on('click', function(){
 
-      let id = $('#btnLunasi').attr('data-id');
-      let totalHutang = $('#btnLunasi').attr('data-total-hutang');
+      if($('#nomorNotaRetur').val() == "")
+      {
+        toastr.error("Harap isi nomor nota retur terlebih dahulu", "Gagal", toastrOptions);
+      }
+      else 
+      {
+        $('#modalLunasiKonsinyasi').modal('toggle');
+        $('#modalKonfimasiLunasiKonsinyasi').modal('toggle');
+
+      }
+
+    });
+
+    $('.btnIyaKonfirmasiLunasi').on('click', function() {
+
+      $('#formLunasi').submit();
+      
+      $('#modalKonfimasiLunasiKonsinyasi').modal('toggle');
+
+      $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+    });
+
+    $('.btnLunasi').on('click', function() {
+
+      const id = $(this).attr('data-id');
 
       $('#formLunasi').attr('action', '/admin/konsinyasi/lunasi/'+id);
 
+      $.ajax({
+        type: 'GET',
+        url: '/admin/konsinyasi/'+id,
+        beforeSend: function() {
+
+        },
+        success: function(data){
+
+          $('#nomorNotaKonsinyasi').val(data.nomor_nota);
+          $('#totalHutang').val(convertAngkaToRupiah(data.total_hutang));
+          // $('#totalKomisi').val(convertAngkaToRupiah(data.total_komisi));
+          // $('input[name=total_komisi]').val(data.total_komisi);
+          $('input[name=total_hutang]').val(data.total_hutang);
+
+          $('#arrDetailKonsinyasi').val(JSON.stringify(data.detail_konsinyasi));
+
+          if(data.show_nomor_nota_retur)
+          {
+            $('.divNomorNotaKonsinyasi').html(`<div class="p-2 ml-1">
+                                                  <p>Masih ada sisa barang konsinyasi. Harap isi nomor nota retur untuk simpan data retur barang konsinyasi.</p>
+                                               </div>
+                                               <label class="col-sm-4 col-form-label">Nomor Nota Retur</label>
+                                               <div class="col-sm-8">
+                                                  <input type="text" class="form-control" name="nomor_nota_retur" id="nomorNotaRetur">
+                                               </div>`);
+          }
+          else
+          {
+            $('.divNomorNotaKonsinyasi').html("");
+          }
+
+        }
+      });
+
+    });
+
+    let table = $('#dataTable').DataTable({
+      "order": [[ 1, 'asc' ], [2, 'asc']]
     });
 
     $('.btnHapusKonsinyasi').on('click', function() {

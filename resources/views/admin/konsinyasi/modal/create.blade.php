@@ -16,7 +16,7 @@
                   <label class="col-sm-4 col-form-label">Barang</label>
                   <div class="col-sm-8">
                     <select class="form-control" name="barang_id" id="selectBarangKonsinyasi" required>
-                      <option disabled selected>Pilih Barang Konsinyasi</option>
+                      <option disabled selected>Pilih barang konsinyasi</option>
                       @foreach($barang_konsinyasi as $item)
                           <option value="{{ $item->id }}" data-diskon="{{ $item->diskon_potongan_harga }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
                       @endforeach

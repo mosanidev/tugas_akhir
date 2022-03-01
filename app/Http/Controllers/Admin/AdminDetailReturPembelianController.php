@@ -93,31 +93,48 @@ class AdminDetailReturPembelianController extends Controller
                                         'subtotal' => null
                                     ]);
 
-            $kurangiStokBarangAsal = DB::table('barang_has_kadaluarsa')
+            $cariBarangAsal = DB::table('barang_has_kadaluarsa')
+                                        ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
+                                        ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                        ->get();
+
+            $qtyBrgAsal = $cariBarangAsal[0]->jumlah_stok_di_gudang;
+
+            if($qtyBrgAsal-$tukarBarang[$i]['kuantitas_barang_ganti'] == 0)
+            {
+                $hapusBarangAsal = DB::table('barang_has_kadaluarsa')
+                                        ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
+                                        ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                        ->delete();
+            }
+            else 
+            {
+                $kurangiStokBarangAsal = DB::table('barang_has_kadaluarsa')
                                         ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
                                         ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
                                         ->decrement('jumlah_stok_di_gudang',  $tukarBarang[$i]['kuantitas_barang_ganti']);
+            }
 
             $cariBarangygSama = DB::table('barang_has_kadaluarsa')
-                                    ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
-                                    ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                    ->where('barang_id', '=', $tukarBarang[$i]['barang_ganti_id'])
+                                    ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_ganti'])
                                     ->get();
 
             if(count($cariBarangygSama) > 0)
             {
                 $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
-                                        ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
-                                        ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
+                                        ->where('barang_id', '=', $tukarBarang[$i]['barang_ganti_id'])
+                                        ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_ganti'])
                                         ->increment('jumlah_stok_di_gudang', $tukarBarang[$i]['kuantitas_barang_ganti']);
             }
             else 
             {
-                $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
-                                    ->insert([
-                                        'barang_id' => $tukarBarang[$i]['barang_ganti_id'],
-                                        'tanggal_kadaluarsa' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
-                                        'jumlah_stok_di_gudang' => $tukarBarang[$i]['kuantitas_barang_ganti']
-                                    ]);
+                $tambahBarangGantiBaru = DB::table('barang_has_kadaluarsa')
+                                        ->insert([
+                                            'barang_id' => $tukarBarang[$i]['barang_ganti_id'],
+                                            'tanggal_kadaluarsa' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
+                                            'jumlah_stok_di_gudang' => $tukarBarang[$i]['kuantitas_barang_ganti']
+                                        ]);
             }
                                     
         }

@@ -24,7 +24,6 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                       <tr>
-                        <th style="width: 10px">No</th>
                         <th>Nama</th>
                         <th>Jenis Kelamin</th>
                         <th>Tanggal Lahir</th>
@@ -36,7 +35,6 @@
                     @php $num = 1; @endphp
                     @foreach($karyawan as $item)
                       <tr>
-                        <td style="width: 10px">{{ $num++ }}</td>
                         <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                         <td>{{ $item->jenis_kelamin }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal_lahir)->isoFormat('D MMMM Y') }}</td>

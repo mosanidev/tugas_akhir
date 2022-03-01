@@ -261,9 +261,10 @@
     $('#btnTambah').on('click', function() {
 
         $("#barang option").eq(0).prop('selected', true).change();
-        $("#harga_beli").val("");
-        $("#kuantitas").val("");
-        $('#subtotal').val("");
+        $("#harga_beli").val("0");
+        $("#kuantitas").val("1");
+        $('#subtotal').val("Rp 0");
+        $('#diskon_potongan_harga').val("0");
         $('#tanggal_kadaluarsa').val("");
 
     });

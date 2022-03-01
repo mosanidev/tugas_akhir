@@ -8,7 +8,7 @@
       <div class="col-sm-6">
         <h1>Retur Pembelian</h1>
       </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 <div class="container-fluid">
 
@@ -65,6 +65,7 @@
 </div>
 
 @include('admin.retur_pembelian.modal.create')
+@include('admin.retur_pembelian.modal.confirm_delete')
 
   <!-- Toastr -->
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
@@ -80,11 +81,17 @@
     toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
+  // let table = $('#dataTable').DataTable({
+  //     "order": [[ 1, 'desc' ]]
+  // });
+
   $('.btnHapus').on('click', function() {
 
+    $('#modalKonfirmasiHapusReturPembelian').modal('toggle');
     let id = $(this).attr('data-id');
-    // $('#formHapus').attr("action", '/admin/pembelian/'+id);
-    alert(id);
+    let nomorNota = $(this).attr('data-nomor-nota');
+    $('.nomorNotaRetur').html(nomorNota);
+    $('#formHapus').attr("action", '/admin/retur_pembelian/'+id);
 
   });
 

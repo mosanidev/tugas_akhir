@@ -29,10 +29,6 @@ class UserController extends Controller
 
         $newFileName = $foto[0]->foto != null ? $foto[0]->foto : null;
 
-        // $numFiles = count(Storage::disk('public')->allFiles("images/profil"));
-
-        // $newName = $numFiles+1;
-
         if($request->foto_baru != null)
         {
             $newFileName = "1.".$request->foto_baru->getClientOriginalExtension(); 
@@ -42,14 +38,12 @@ class UserController extends Controller
 
         $affected = DB::table('users')
                         ->where('id', auth()->user()->id)
-                        ->update(['nomor_telepon' => $request->nomor_telepon, 'foto' => $newFileName]);
+                        ->update(['nomor_telepon' => $request->nomor_telepon, 
+                                  'foto' => "/images/profil/".auth()->user()->id."/".$newFileName]);
 
         $user = DB::table('users')->select('*')->where('id', '=', auth()->user()->id)->get();
 
-        return redirect()->back()->with(['status', 'Data berhasil diubah']);
-        // $status = "Data berhasil diubah";
-
-        // return view('pelanggan.user_menu.user_menu', ['profil' => $user, 'status' => $status]);
+        return redirect()->back()->with(['success' => 'Data profil berhasil diubah']);
     }
 
     public function changePassword(Request $request)
@@ -60,7 +54,9 @@ class UserController extends Controller
 
         if(Hash::check($request->current_password, auth()->user()->password) == false)
         {
-            $status = "Maaf password saat ini yang anda isikan salah";
+            $status = "Password saat ini yang anda isikan salah";
+
+            return redirect()->back()->with(['error' => $status]);
         }
         else {
             if ($request->new_password == $request->re_new_password)
@@ -70,13 +66,15 @@ class UserController extends Controller
                         ->update(['password' => Hash::make($request->new_password)]);
                 
                 $status = "Password berhasil diubah";
+
+                return redirect()->back()->with(['success' => $status]);
             }
             else
             {
-                $status = "Maaf ulangi password baru yang anda isikan dengan benar";
+                $status = "Ulangi password baru yang anda isikan dengan benar";
+
+                return redirect()->back()->with(['error' => $status]);
             }
         }
-
-        return redirect()->back()->with(['profil' => $user, 'status' => $status]);
     }
 }

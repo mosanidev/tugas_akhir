@@ -57,6 +57,7 @@ use App\Http\Controllers\Admin\AdminPemesananController;
 use App\Http\Controllers\Admin\AdminPenerimaanPesananController;
 use App\Http\Controllers\Admin\AdminBackOrderController;
 use App\Http\Controllers\Admin\AdminTransferBarangController;
+use App\Http\Controllers\Admin\AdminProfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -237,6 +238,8 @@ Route::group(['prefix' => 'admin'], function() {
 
     Route::group(['middleware' => 'admin'], function() {
 
+        Route::get('/profil', [AdminProfilController::class, 'index'])->name('admin.profil');
+
         Route::get('/', [AdminHomeController::class, 'index']);
 
         Route::get('/home', [AdminHomeController::class, 'index'])->name('home_admin');
@@ -268,6 +271,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/barang_diskon', AdminBarangDiskonController::class);
 
         // Route::get('/pembelian/konfirmasi/{pembelian}', [AdminPembelianController::class, 'changeDraftToComplete'])->name('pembelian.konfirmasi');
+        Route::post('/pembelian/lunasi/{konsinyasi}', [AdminPembelianController::class, 'lunasi'])->name('pembelian.lunasi');
 
         Route::resource('/pembelian', AdminPembelianController::class);
 
@@ -284,7 +288,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::resource('/pembelian/barangdibeli', AdminDetailPembelianController::class);
 
         Route::resource('/konsinyasi', AdminKonsinyasiController::class);
-        Route::get('/konsinyasi/lunasi/{konsinyasi}', [AdminKonsinyasiController::class, 'lunasi'])->name('konsinyasi.lunasi');
+        Route::post('/konsinyasi/lunasi/{konsinyasi}', [AdminKonsinyasiController::class, 'lunasi'])->name('konsinyasi.lunasi');
         Route::get('/konsinyasi/barang/add/{konsinyasi}', [AdminKonsinyasiController::class, 'addBarangKonsinyasi'])->name('konsinyasi.add.barang');
         Route::post('/konsinyasi/barang/store', [AdminKonsinyasiController::class, 'storeBarangKonsinyasi'])->name('konsinyasi.store.barang');
 

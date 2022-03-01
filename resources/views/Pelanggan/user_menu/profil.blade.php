@@ -105,14 +105,13 @@
             readURL(this);
         });
 
-        // if($('#inputGantiFotoProfil').val() != '')
-        // {
-        //     $('#formUpdateFoto').submit();
-        // }
-
-        if("{{ session('status') }}" != "")
+        if("{{ session('success') }}" != "")
         {
-            toastr.error("{{ session('status') }}", "Error", toastrOptions);
+            toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
+        }
+        else if("{{ session('error') }}" != "")
+        {
+            toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
         }
 
     </script>

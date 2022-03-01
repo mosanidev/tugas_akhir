@@ -10,9 +10,10 @@
       </div>
   </div>
 </section>
+
 <div class="container-fluid">
 
-    <a href="{{ route('pembelian.create') }}" class="btn btn-success ml-2">Tambah</a>
+    <a href="{{ route('pembelian.create') }}" class="btn btn-success">Tambah</a>
 
     {{-- <div class="my-4">
       <p>Filter : </p>
@@ -57,8 +58,7 @@
             </select>
         </div>
       </div> --}}
-
-    </div>
+      
     <div class="card shadow my-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tabel Pembelian</h6>
@@ -92,12 +92,17 @@
                             {{ $item->status_bayar }}
                           </td>
                           <td>
-                            <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-secondary w-100 mb-1'>Lunasi</a>
-                            <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
                             
-                            @if($item->status_retur == "Tidak ada retur" && $item->status_bayar == "Belum lunas" || $item->status_bayar == "Lunas sebagian")
+                            @if($item->status_retur == "Tidak ada retur" && $item->status_bayar == "Belum lunas")
+                              <button class='btn btn-secondary btnLunasi w-100 mb-1' data-toggle="modal" data-target="#modalLunasiPembelian" data-id="{{ $item->id }}">Lunasi</button>
+                              <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
                               <a href="{{ route('pembelian.edit', ['pembelian'=>$item->id]) }}" class='btn btn-warning w-100 mb-1'>Ubah</a>
                               <button class='btn btn-danger btnHapus w-100' data-id="{{ $item->id }}" data-nomor-nota="{{ $item->nomor_nota_dari_supplier }}" data-toggle="modal" data-target="#modalKonfirmasiHapusPembelian">Hapus</button>
+                            @elseif($item->status_retur == "Ada retur" && $item->status_bayar == "Belum lunas")
+                              <button class='btn btn-secondary btnLunasi w-100 mb-1' data-toggle="modal" data-target="#modalLunasiPembelian" data-id="{{ $item->id }}">Lunasi</button>
+                              <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
+                            @elseif($item->status_bayar == "Sudah lunas")
+                              <a href="{{ route('pembelian.show', ['pembelian'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
                             @endif
 
                           </td>
@@ -114,6 +119,8 @@
 
 @include('admin.pembelian.modal.confirm_delete')
 @include('admin.pembelian.modal.info')
+@include('admin.pembelian.modal.lunasi')
+@include('admin.pembelian.modal.konfirmasi_lunasi')
 
 @if(session('errors'))
     <script type="text/javascript">
@@ -208,6 +215,44 @@
 
   });
 
+  $('.btnLunasi').on('click', function() {
+
+    const id = $(this).attr('data-id');
+    
+    $('#formLunasi').attr('action', '/admin/pembelian/lunasi/'+id);
+
+    $.ajax({
+      type: 'GET',
+      url: '/admin/pembelian/'+id,
+      success: function(data) {
+
+        $('input[name=nomor_pembelian]').val(data.pembelian[0].id);
+        $('input[name=nomor_nota_dari_supplier]').val(data.pembelian[0].nomor_nota_dari_supplier);
+        $('input[name=total_pembelian]').val(data.pembelian[0].total);
+        $('#totalPembelian').val(convertAngkaToRupiah(data.pembelian[0].total));
+
+        if(data.pembelian[0].total_retur)
+        {
+          $('.divPotonganDana').html(`<label class="col-sm-4 col-form-label">Potongan Dana Retur</label>
+                                      <div class="col-sm-8">
+                                        <input type="text" class="form-control" value="` + convertAngkaToRupiah(data.pembelian[0].total_retur) + `">
+                                      </div>`);
+
+          $('.divTotalAkhirPembelian').html(`<label class="col-sm-4 col-form-label">Total Pembelian setelah Dipotong Retur</label>
+                                              <div class="col-sm-8">
+                                                <input type="text" class="form-control" value="` + convertAngkaToRupiah(data.pembelian[0].total_retur-data.pembelian[0].total_retur) + `">
+                                              </div>`);
+        }
+        else
+        {
+          $('.divPotonganDana').html("");
+          $('.divTotalAkhirPembelian').html("");
+        }
+      }
+    });
+
+  });
+
   $('.btnUbah').on('click', function() {
 
       let pembelian_id = $(this).attr("data-id");
@@ -245,6 +290,24 @@
   {
     toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
+
+  $('.btnIyaLunasi').on('click', function() {
+
+    $('#modalLunasiPembelian').modal('toggle');
+
+    $('#modalKonfimasiLunasiPembelian').modal('toggle');
+
+  });
+
+  $('.btnIyaKonfirmasiLunasi').on('click', function(){
+
+    $('#modalKonfimasiLunasiPembelian').modal('toggle');
+
+    $('#formLunasi').submit();
+
+    $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+
+  });
 
   $('#rentangTanggalBuat').daterangepicker({
       startDate: moment().startOf('days'),

@@ -138,11 +138,34 @@ class AdminPembelianController extends Controller
 
     public function show(Request $request, $id)
     {
-        $pembelian = DB::table('pembelian')
+        $dataPembelian = DB::table('pembelian')
                         ->select('pembelian.*', 'supplier.nama as nama_supplier')
                         ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
                         ->where('pembelian.id', $id)
                         ->get();
+
+        if($dataPembelian[0]->status_retur == "Ada retur")
+        {
+            $pembelian = DB::table('pembelian')
+                        ->select('pembelian.*', 
+                                 'supplier.nama as nama_supplier', 
+                                 'retur_pembelian.id as retur_pembelian_id', 
+                                 'retur_pembelian.nomor_nota_retur',
+                                 'retur_pembelian.total_retur')
+                        ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                        ->where('pembelian.id', $id)
+                        ->join('retur_pembelian', 'pembelian.id', '=', 'retur_pembelian.pembelian_id')
+                        ->get();
+        }
+        else 
+        {
+            $pembelian = DB::table('pembelian')
+                        ->select('pembelian.*', 
+                                 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                        ->where('pembelian.id', $id)
+                        ->get();
+        }
 
         $detailPembelian = DB::table('detail_pembelian')
                             ->select('barang.kode', 'barang.nama', 'detail_pembelian.tanggal_kadaluarsa', 'detail_pembelian.harga_beli', 'detail_pembelian.diskon_potongan_harga', 'detail_pembelian.kuantitas', 'detail_pembelian.subtotal')
@@ -151,7 +174,15 @@ class AdminPembelianController extends Controller
                             ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
                             ->get();
 
-        return view('admin.pembelian.lihat', ['pembelian' => $pembelian, 'detail_pembelian' => $detailPembelian]);
+        if($request->ajax())
+        {
+            return response()->json(['pembelian' => $pembelian]);
+        }
+        else 
+        {
+            return view('admin.pembelian.lihat', ['pembelian' => $pembelian, 'detail_pembelian' => $detailPembelian]);
+        }
+
     }   
 
     /**
@@ -316,86 +347,19 @@ class AdminPembelianController extends Controller
                                             ]);
 
         }
-
-        // for($i = 0; $i < count(array($detailPembelian)); $i++)
-        // {
-        //     for ($x = 0; $x < count((array) $dataBarang); $x++)
-        //     {
-        //         $tglKadaluarsa = $dataBarang[$x]['tanggal_kadaluarsa'] != "Tidak ada" ? $dataBarang[$x]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
-
-        //         if($detailPembelian[$i]->barang_id == $dataBarang[$x]['barang_id'] && explode(" ", $detailPembelian[$i]->tanggal_kadaluarsa)[0] == $dataBarang[$x]['tanggal_kadaluarsa'])
-        //         {
-        //             if($dataBarang[$x]['kuantitas'] < $detailPembelian[$i]->kuantitas)
-        //             {
-        //                 $selisih = $detailPembelian[$i]->kuantitas - $dataBarang[$x]['kuantitas'];
-
-        //                 $updateBarangHasKadaluarsa = DB::table('barang_has_kadaluarsa')
-        //                                                 ->where('barang_id', '=', $dataBarang[$x]['barang_id'])
-        //                                                 ->where('tanggal_kadaluarsa', '=', $dataBarang[$x]['tanggal_kadaluarsa'])
-        //                                                 ->decrement('jumlah_stok', $selisih);
-
-        //                 $updateDetailPembelian = DB::table('detail_pembelian')
-        //                                             ->where('pembelian_id', '=', $id)
-        //                                             ->where('barang_id', '=', $dataBarang[$x]['barang_id'])
-        //                                             ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-        //                                             ->decrement('kuantitas', $selisih);
-
-        //                 $updateDetailPembelian = DB::table('detail_pembelian')
-        //                                             ->where('pembelian_id', '=', $id)
-        //                                             ->where('barang_id', '=', $dataBarang[$x]['barang_id'])
-        //                                             ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa) 
-        //                                             ->update([
-        //                                                 'subtotal' => $dataBarang[$x]['subtotal']
-        //                                             ]);
-                                                    
-        //             }
-        //             else if($dataBarang[$x]['kuantitas'] > $detailPembelian[$i]->kuantitas)
-        //             {
-        //                 $selisih = $dataBarang[$x]['kuantitas'] - $detailPembelian[$i]->kuantitas;
-
-        //                 $updateBarangHasKadaluarsa = DB::table('barang_has_kadaluarsa')
-        //                                                 ->where('barang_id', '=', $dataBarang[$x]['barang_id'])
-        //                                                 ->where('tanggal_kadaluarsa', '=', $dataBarang[$x]['tanggal_kadaluarsa'])
-        //                                                 ->increment('jumlah_stok', $selisih);
-
-        //                 $updateDetailPembelian = DB::table('detail_pembelian')
-        //                                             ->where('pembelian_id', '=', $id)
-        //                                             ->where('barang_id', '=', $dataBarang[$x]['barang_id'])
-        //                                             ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-        //                                             ->increment('kuantitas', $selisih);
-
-        //                 $updateDetailPembelian = DB::table('detail_pembelian')
-        //                                             ->where('pembelian_id', '=', $id)
-        //                                             ->where('barang_id', '=', $dataBarang[$x]['barang_id'])
-        //                                             ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-        //                                             ->update([
-        //                                                 'subtotal' => $dataBarang[$x]['subtotal']
-        //                                             ]);
-        //             }
-        //         }
-        //         else 
-        //         {
-        //             $insert = DB::table('barang_has_kadaluarsa')
-        //                         ->insert([
-        //                             'barang_id' => $dataBarang[$x]['barang_id'],
-        //                             'tanggal_kadaluarsa' => $dataBarang[$x]['tanggal_kadaluarsa'],
-        //                             'jumlah_stok' => $dataBarang[$x]['kuantitas']
-        //                         ]);
-
-        //             $insertDetailPembelian = DB::table('detail_pembelian')
-        //                                     ->insert([
-        //                                         'pembelian_id'          => $id,
-        //                                         'barang_id'             => $dataBarang[$x]['barang_id'],
-        //                                         'kuantitas'             => $dataBarang[$x]['kuantitas'],
-        //                                         'tanggal_kadaluarsa'    => $tglKadaluarsa,
-        //                                         'harga_beli'            => $dataBarang[$x]['harga_beli'],
-        //                                         'subtotal'              => $dataBarang[$x]['subtotal']
-        //                                     ]);
-        //         }  
-        //     }
-        // }
         
         return redirect()->route('pembelian.index')->with(['success'=>'Data pembelian berhasil diubah']);
+    }
+
+    public function lunasi(Request $request, $id)
+    {
+        $lunasi = DB::table('pembelian')
+                    ->where('id', '=', $id)
+                    ->update([
+                        'status_bayar' => 'Sudah lunas'
+                    ]);
+
+        return redirect()->back()->with(['success' => 'Pembelian berhasil dilunasi']);
     }
 
     /**

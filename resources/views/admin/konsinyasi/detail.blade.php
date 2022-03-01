@@ -49,9 +49,21 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-5 col-form-label">Status</label>
+            <label class="col-sm-5 col-form-label">Status Bayar</label>
             <div class="col-sm-7">
               <p class="mt-2">{{ $konsinyasi[0]->status_bayar }}</p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Total komisi</label>
+            <div class="col-sm-7">
+              <p class="mt-2">{{ "Rp " . number_format($total_komisi,0,',','.') }}</p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Total hutang ke penitip</label>
+            <div class="col-sm-7">
+              <p class="mt-2">{{ "Rp " . number_format($total_hutang,0,',','.') }}</p>
             </div>
           </div>
         </div>
@@ -74,7 +86,8 @@
                               <th>Terjual</th>
                               <th>Retur</th>
                               <th>Sisa</th>
-                              <th>Yang harus dibayar</th>
+                              <th>Jumlah komisi</th>
+                              <th>Jumlah hutang ke penitip</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +100,7 @@
                                   <td>{{ $item->terjual }}</td>
                                   <td>{{ $item->retur }}</td>
                                   <td>{{ $item->sisa }}</td>
+                                  <td>{{ "Rp " . number_format($item->subtotal_komisi,0,',','.') }}</td>
                                   <td class="subtotalHutang">{{ "Rp " . number_format($item->subtotal_hutang,0,',','.') }}</td>
                                 </tr>
                             @endforeach
@@ -99,92 +113,4 @@
 
 </div>
 
-@include('admin.konsinyasi.modal.confirm_lunasi')
-
-<script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
-
-@if(session('errors'))
-    <script type="text/javascript">
-      @foreach ($errors->all() as $error)
-          toastr.error("{{ $error }}", "Error", toastrOptions);
-      @endforeach
-    </script>
-@endif
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<!-- Select2 -->
-<script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
-
-<script type="text/javascript">
-
-  $(document).ready(function() {
-
-    $('#selectBarangKonsinyasi').select2({
-        dropdownParent: $("#modalTambahBarangKonsinyasi"),
-        theme: 'bootstrap4'
-    });
-
-    $('#selectSupplier').select2({
-        dropdownParent: $("#modalTambahBarangKonsinyasi"),
-        theme: 'bootstrap4'
-    });
-
-    $('#btnTambah').on('click', function() {
-
-      $('#konsinyasi_id').val("{{ $konsinyasi[0]->id   }}");
-
-    });
-
-    $('#btnTambahBarangKonsinyasi').on('click', function() {
-
-      let cariBarangSejenis = false;
-      for(let i = 0; i < $('.barangKonsinyasiDiTabel').length; i++)
-      {
-        if($('#selectBarangKonsinyasi :selected').text() == $('.barangKonsinyasiDiTabel')[i].innerText)
-        {
-          cariBarangSejenis = true;
-          break;
-        }
-      }
-
-      if(cariBarangSejenis)
-      {
-        alert("Sudah Ada barang yang sama di tabel");
-      }     
-      else 
-      {
-        $('#formTambah').submit();
-      }   
-
-
-    });
-
-
-    let totalHutang = 0;
-    $('.subtotalHutang').each(function( index ) {
-      totalHutang += parseInt(convertRupiahToAngka($('.subtotalHutang')[index].innerText));
-    });
-
-    $('#totalHutang').html(convertAngkaToRupiah(totalHutang));
-
-    $('#btnLunasi').on('click', function() {
-
-      let id = $('#konsinyasi_id').val();
-
-      $('#lunasiTotalHutang').val(totalHutang);
-
-      let arrDetailKonsinyasi  = <?php echo json_encode($detail_konsinyasi); ?>;
-
-      $('#arrLunasi').val(JSON.stringify(arrDetailKonsinyasi));
-
-      $('#formLunasi').attr('action', '/admin/konsinyasi/lunasi/'+id);
-
-
-    });
-
-  });
-
-
-</script>
 @endsection

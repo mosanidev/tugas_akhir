@@ -51,20 +51,6 @@
                   <p>{{ $konsinyasi[0]->status_bayar }}</p>
                 </div>
               </div>
-              {{-- <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Hutang</label>
-                <div class="col-sm-8">
-                  <input type="hidden" name="total_hutang" id="totalHutangAngka">
-                  <input type="text" class="form-control" id="totalHutangRupiah" readonly>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Komisi</label>
-                <div class="col-sm-8">
-                  <input type="hidden" name="total_komisi" id="totalKomisiAngka">
-                  <input type="text" class="form-control" id="totalKomisiRupiah" readonly>
-                </div>
-              </div> --}}
 
               <button type="button" class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahBarangKonsinyasi" id="btnTambah">Tambah</button>
 
@@ -112,15 +98,19 @@
           theme: 'bootstrap4'
         });
 
-        // jQuery.datetimepicker.setLocale('id');
+        $('#btnTambah').on('click', function() {
 
-        // $('#tglKadaluarsa').datetimepicker({
-        //     timepicker: true,
-        //     datepicker: true,
-        //     lang: 'id',
-        //     defaultTime: '00:00 AM',
-        //     format: 'Y-m-d H:i:00'
-        // });
+          $('#selectBarangKonsinyasi').val("Pilih barang konsinyasi").trigger('change.select2');
+          $('#hargaJual').val("");
+          $('#diskon').val("");
+          $('#hargaJualAkhir').val("");
+          $('#hutang').val("");
+          $('#inputJumlahTitip').val("");
+          $('#inputKomisi').val("");
+          $('#tglKadaluarsa').val("");
+          $('#checkTglKadaluarsaNull').prop('checked', false);
+
+        });
 
         $('#datepickerTglTitip').datepicker({
           format: 'yyyy-mm-dd',

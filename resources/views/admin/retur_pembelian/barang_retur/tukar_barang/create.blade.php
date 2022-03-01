@@ -27,7 +27,12 @@
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Asal</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" value="" id="tglKadaluarsaBarangAsal" readonly>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="" id="tglKadaluarsaBarangAsal" readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <br>
@@ -50,10 +55,16 @@
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Ganti</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa_barang_ganti" autocomplete="off" id="tglKadaluarsaBarangGanti" required>
-                                {{-- <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div> --}}
+                                <div class="input-group">
+                                    <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa_barang_ganti" autocomplete="off" id="tglKadaluarsaBarangGanti" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                <div class="custom-control custom-checkbox mt-2">
+                                    <input type="checkbox" class="custom-control-input" id="checkTglKadaluarsaNull">
+                                    <label class="custom-control-label" for="checkTglKadaluarsaNull">Tidak ada tanggal kadaluarsa</label>
+                                </div>
                             </div>
                         </div>
                         <br>
@@ -104,7 +115,8 @@
 
     $('#tglKadaluarsaBarangGanti').datepicker({
         format: 'yyyy-mm-dd',
-        autoclose: true
+        autoclose: true,
+        startDate: new Date()
     });
 
     
@@ -161,21 +173,82 @@
 
     $('#btnTambahDataTukarBarang').on('click', function() {
 
-        arrTukarBarang.push({
-            'barang_asal_id': $('#barangAsal :selected').val(),
-            'barang_ganti_id': $('#barangGanti').attr("data-id"),
-            "barang_asal": $('#barangAsal :selected').text(),
-            'barang_ganti': $('#barangGanti').val(),
-            "tanggal_kadaluarsa_asal": $('#tglKadaluarsaBarangAsal').val(),
-            "tanggal_kadaluarsa_ganti": $('#tglKadaluarsaBarangGanti').val(),
-            "kuantitas_barang_asal": $('#kuantitasBarangAsal').val(),
-            "kuantitas_barang_ganti": $('#kuantitasBarangGanti').val(),
-            "keterangan": $('#keterangan').val()
-        });
+        let maxJumlahRetur = parseInt($('#kuantitasBarangGanti').attr('max'));
 
-        $('#modalTukarBarang').modal('toggle');
+        if($('#tglKadaluarsaBarangGanti').val() == "" && $("#checkTglKadaluarsaNull")[0].checked == false)
+        {
+            toastr.error("Harap isi tanggal kadaluarsa dari barang pengganti terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#kuantitasBarangGanti').val() == "")
+        {
+            toastr.error("Harap isi kuantitas barang pengganti terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#keterangan').val() == "")
+        {
+            toastr.error("Harap isi keterangan terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else 
+        {
+            
+            let tglKadaluarsa = $('#tglKadaluarsaBarangGanti').val();
 
-        implementDataOnTable();
+            if($('#tglKadaluarsaBarangGanti').val() == "")
+            {
+                tglKadaluarsa = "9999-12-12";
+            }
+
+            arrTukarBarang.push({
+                'barang_asal_id': $('#barangAsal :selected').val(),
+                'barang_ganti_id': $('#barangGanti').attr("data-id"),
+                "barang_asal": $('#barangAsal :selected').text(),
+                'barang_ganti': $('#barangGanti').val(),
+                "tanggal_kadaluarsa_asal": $('#tglKadaluarsaBarangAsal').val(),
+                "tanggal_kadaluarsa_ganti": tglKadaluarsa,
+                "kuantitas_barang_asal": $('#kuantitasBarangAsal').val(),
+                "kuantitas_barang_ganti": $('#kuantitasBarangGanti').val(),
+                "keterangan": $('#keterangan').val()
+            });
+
+            let totalRetur = 0;
+
+            arrTukarBarang.forEach(function(item, index, arr) {
+
+                if(arrTukarBarang[index].barang_id == $('#barangGanti :selected').val() && arrTukarBarang[index].tanggal_kadaluarsa_ganti == tglKadaluarsa)
+                {
+                    totalRetur += parseInt(arrTukarBarang[index].kuantitas_barang_ganti);
+                }
+
+            });
+
+            if(totalRetur > maxJumlahRetur)
+            {
+                toastr.error("Jumlah barang yang ditukar tidak sesuai dengan yang dibeli atau yang tersedia di stok", "Gagal", toastrOptions);
+
+                arrTukarBarang.pop();          
+            }
+            else 
+            {
+                $('#modalTukarBarang').modal('toggle');
+
+                implementDataOnTable();
+            }
+
+        }
+
+
+    });
+
+    $('#checkTglKadaluarsaNull').on('change', function() {
+
+        if($("#checkTglKadaluarsaNull")[0].checked)
+        {
+            $('#tglKadaluarsaBarangGanti').val("");
+            $('#tglKadaluarsaBarangGanti').attr("readonly", true);
+        }
+        else 
+        {
+            $('#tglKadaluarsaBarangGanti').attr("readonly", false);
+        }
 
     });
     

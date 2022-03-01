@@ -16,7 +16,11 @@ class AdminKonsinyasiController extends Controller
      */
     public function index()
     {
-        $konsinyasi = DB::table('konsinyasi')->select('konsinyasi.*', 'supplier.nama as nama_supplier')->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')->get();
+        $konsinyasi = DB::table('konsinyasi')
+                        ->select('konsinyasi.*', 'supplier.nama as nama_supplier')
+                        ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
+                        ->get();
+        
         $supplier = DB::table('supplier')
                     ->where('jenis', '=', 'Individu')
                     ->get();
@@ -53,11 +57,17 @@ class AdminKonsinyasiController extends Controller
                     ->where('supplier_id', '=', $request->supplier_id)
                     ->get();
 
+        // $konsinyasiYgMirip = DB::table('konsinyasi')
+        //                 ->where('supplier_id', '=', $request->supplier_id)
+        //                 ->where('tanggal_titip', '<=', $request->tanggal_titip)
+        //                 ->where('tanggal_jatuh_tempo', '>=', $request->tanggal_jatuh_tempo)
+        //                 ->get();
+
         $konsinyasiYgMirip = DB::table('konsinyasi')
-                        ->where('supplier_id', '=', $request->supplier_id)
-                        ->where('tanggal_titip', '<=', $request->tanggal_titip)
-                        ->where('tanggal_jatuh_tempo', '>=', $request->tanggal_jatuh_tempo)
-                        ->get();
+                                ->where('supplier_id', '=', $request->supplier_id)
+                                ->whereBetween('tanggal_titip', [date($request->tanggal_titip), date($request->tanggal_jatuh_tempo)])
+                                ->get();
+
 
         if(count($barang) == 0)
         {
@@ -118,12 +128,19 @@ class AdminKonsinyasiController extends Controller
 
         $detailKonsinyasi = array();
 
+        $total_komisi = 0;
+        
+        $total_hutang = 0;
+
+        $total_sisa = 0;
+
         for($i = 0; $i < count($konsinyasi); $i++)
         {
             $penjualan = DB::table('detail_penjualan')
                             ->select('penjualan.tanggal', 'detail_penjualan.barang_id', DB::raw('sum(detail_penjualan.kuantitas) as kuantitas'))
                             ->where('barang_has_kadaluarsa.barang_id', '=', $konsinyasi[$i]->barang_id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '=', $konsinyasi[$i]->tanggal_kadaluarsa)
+                            ->where('penjualan.status_jual', '=', 'Pesanan sudah selesai')
                             ->whereBetween('penjualan.tanggal', [$konsinyasi[$i]->tanggal_titip, $konsinyasi[$i]->tanggal_jatuh_tempo])
                             ->join('penjualan', 'penjualan.id', '=', 'detail_penjualan.penjualan_id')
                             ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'detail_penjualan.barang_id')
@@ -212,11 +229,33 @@ class AdminKonsinyasiController extends Controller
                 }
             }
 
+            $total_komisi += $object->subtotal_komisi;
+
+            $total_hutang += $object->subtotal_hutang;
+
+            $total_sisa += $object->sisa;
+
             array_push($detailKonsinyasi, $object);
  
         }
 
-        return view('admin.konsinyasi.detail', ['konsinyasi' => $konsinyasi, 'detail_konsinyasi' => $detailKonsinyasi]);
+        $showNomorNotaRetur = false;
+
+        if($total_sisa > 0)
+        {
+            $showNomorNotaRetur = true;
+        }
+
+        if($request->ajax())
+        {
+            return response()->json(['total_komisi' => $total_komisi, 'total_hutang' => $total_hutang, 'nomor_nota' => $konsinyasi[0]->nomor_nota, 'show_nomor_nota_retur' => $showNomorNotaRetur, 'detail_konsinyasi' => $detailKonsinyasi]);
+        }
+        else
+        {
+            return view('admin.konsinyasi.detail', ['konsinyasi' => $konsinyasi, 'detail_konsinyasi' => $detailKonsinyasi, 'total_komisi' => $total_komisi, 'total_hutang' => $total_hutang]);
+        }
+
+
 
     }
 
@@ -245,40 +284,63 @@ class AdminKonsinyasiController extends Controller
 
     public function lunasi(Request $request, $id)
     {
-        $arrDetailKonsinyasi = json_decode($request->arrLunasi, true);
+        $arrDetailKonsinyasi = json_decode($request->detail_konsinyasi, true);
 
-        $idReturPembelian = DB::table('retur_pembelian')
+        if(isset($request->nomor_nota_retur))
+        {
+            $idReturPembelian = DB::table('retur_pembelian')
                                 ->insertGetId([
                                     'tanggal' => \Carbon\Carbon::now()->format('Y-m-d'),
-                                    'nomor_nota' => null,
+                                    'nomor_nota' => $request->nomor_nota_retur,
                                     'users_id' => auth()->user()->id,
                                     'konsinyasi_id' => $id,
-                                    'kebijakan_retur' => 'Retur Sisa Barang Konsinyasi',
+                                    'kebijakan_retur' => 'Retur barang konsinyasi',
                                     'total' => $request->total_hutang
                                 ]);
 
-        for($i = 0; $i < count($arrDetailKonsinyasi); $i++)
-        {
-            $updateStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+            for($i = 0; $i < count($arrDetailKonsinyasi); $i++)
+            {
+                if( $arrDetailKonsinyasi[$i]['sisa'] > 0)
+                {
+                    $barangKonsinyasi = DB::table('barang_has_kadaluarsa')
                                             ->where('barang_id', '=', $arrDetailKonsinyasi[$i]['barang_id'])
                                             ->where('tanggal_kadaluarsa', '=', $arrDetailKonsinyasi[$i]['barang_tanggal_kadaluarsa'])
-                                            ->decrement('jumlah_stok', $arrDetailKonsinyasi[$i]['sisa']);
+                                            ->get();
 
-            $insertDetailReturPembelian = DB::table('detail_retur_pembelian')
-                                            ->insert([
-                                                'retur_pembelian_id' => $idReturPembelian,
-                                                'barang_retur' => $arrDetailKonsinyasi[$i]['barang_id'],
-                                                'tanggal_kadaluarsa_barang_retur' => $arrDetailKonsinyasi[$i]['barang_tanggal_kadaluarsa'],
-                                                'kuantitas_barang_retur' => $arrDetailKonsinyasi[$i]['sisa'],
-                                                'subtotal' => $arrDetailKonsinyasi[$i]['subtotal_hutang'],
-                                                'keterangan' => 'Sisa jumlah barang konsinyasi'
-                                            ]);
+                    // $qty = $barangKonsinyasi[0]->jumlah_stok_di_gudang;
+
+                    // if($qty-$arrDetailKonsinyasi[$i]['sisa'] == 0)
+                    // {
+                    //     $hapusBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+                    //                                 ->where('barang_id', '=', $arrDetailKonsinyasi[$i]['barang_id'])
+                    //                                 ->where('tanggal_kadaluarsa', '=', $arrDetailKonsinyasi[$i]['barang_tanggal_kadaluarsa'])
+                    //                                 ->delete();
+                    // }
+                    // else 
+                    // {
+                    $kurangiStokBarangKonsinyasi = DB::table('barang_has_kadaluarsa')
+                                                        ->where('barang_id', '=', $arrDetailKonsinyasi[$i]['barang_id'])
+                                                        ->where('tanggal_kadaluarsa', '=', $arrDetailKonsinyasi[$i]['barang_tanggal_kadaluarsa'])
+                                                        ->decrement('jumlah_stok_di_gudang', $arrDetailKonsinyasi[$i]['sisa']);
+                    // }
+                            
+                    $insertDetailReturPembelian = DB::table('detail_retur_pembelian')
+                                                    ->insert([
+                                                        'retur_pembelian_id' => $idReturPembelian,
+                                                        'barang_retur' => $arrDetailKonsinyasi[$i]['barang_id'],
+                                                        'tanggal_kadaluarsa_barang_retur' => $arrDetailKonsinyasi[$i]['barang_tanggal_kadaluarsa'],
+                                                        'kuantitas_barang_retur' => $arrDetailKonsinyasi[$i]['sisa'],
+                                                        'subtotal' => $arrDetailKonsinyasi[$i]['subtotal_hutang'],
+                                                        'keterangan' => 'Sisa jumlah barang konsinyasi'
+                                                    ]);
+                }
+            }
         }
 
         $updateKonsinyasi = DB::table('konsinyasi')
                                 ->where('id', '=', $id)
                                 ->update([
-                                    'status_bayar' => 'Sudah Lunas'
+                                    'status_bayar' => 'Sudah lunas'
                                 ]);
         
         return redirect()->route('konsinyasi.index')->with(['success' => 'Konsinyasi berhasil dilunasi']);
@@ -343,7 +405,7 @@ class AdminKonsinyasiController extends Controller
                                     'jumlah_stok_di_gudang' => 0
                                 ]);
             
-                $qtyGudang -= $detailKonsinyasi[$i]->kuantitas;
+                $qtyGudang -= $detailKonsinyasi[$i]->jumlah_titip;
 
                 $kurangiStokRak = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $detailKonsinyasi[$i]->barang_id)

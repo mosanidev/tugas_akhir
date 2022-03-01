@@ -83,13 +83,13 @@
                 <h6 class="m-0 font-weight-bold text-primary">Tabel Barang Retur </h6>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="overflow-x: scroll;">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr>
-                                <th style="width: 70%;">Barang Retur</th>
+                            <tr style="min-width: 700px;">
+                                <th style="min-width: 200px;">Barang Retur</th>
                                 <th>Tanggal Kadaluarsa Barang Retur</th>
-                                <th class="d-none">Barang ID</th>
+                                <th  class="d-none">Barang ID</th>
                                 <th>Satuan</th>
                                 <th>Harga Beli</th>
                                 <th>Diskon Potongan Harga</th>
@@ -149,10 +149,17 @@
             {
                 total += parseInt(arrBarangRetur[i].subtotal);
 
+                let tglKadaluarsa = arrBarangRetur[i].tanggal_kadaluarsa;
+
+                if(arrBarangRetur[i].tanggal_kadaluarsa == "9999-12-12")
+                {
+                    tglKadaluarsa = "Tidak ada";
+                }
+
                 rowTable += `<tr>
                                 <td style="width: 70%;">` + arrBarangRetur[i].barang_kode + " - "  + arrBarangRetur[i].barang_nama + `</td>
                                 <td class="d-none">` + arrBarangRetur[i].barang_id + `</td>
-                                <td>` + arrBarangRetur[i].barang_tanggal_kadaluarsa + `</td>
+                                <td>` + tglKadaluarsa + `</td>
                                 <td>` + arrBarangRetur[i].barang_satuan + `</td>
                                 <td>` + convertAngkaToRupiah(arrBarangRetur[i].harga_beli) + `</td>
                                 <td>` + convertAngkaToRupiah(arrBarangRetur[i].diskon_beli) + `</td>

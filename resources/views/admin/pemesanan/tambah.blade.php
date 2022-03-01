@@ -157,12 +157,14 @@
 
         $('#datepickerTglPerkiraanTerima').datepicker({
             format: 'yyyy-mm-dd',
-            autoclose: true
+            autoclose: true,
+            startDate: new Date()
         });
 
         $('#datepickerTglJatuhTempo').datepicker({
             format: 'yyyy-mm-dd',
-            autoclose: true
+            autoclose: true,
+            startDate: new Date()
         });
 
         $('#tanggal_kadaluarsa').datepicker({

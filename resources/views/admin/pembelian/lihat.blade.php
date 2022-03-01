@@ -4,7 +4,7 @@
     
     <a href="{{ route('pembelian.index') }}" class="btn btn-link"><- Kembali ke daftar pembelian</a>
 
-    <h3>Data Pembelian</h3>
+    <h3>Pembelian</h3>
 
     <div class="px-2 py-3">
             {{-- <input type="hidden" id="data_barang" value="" name="barang"/> --}}

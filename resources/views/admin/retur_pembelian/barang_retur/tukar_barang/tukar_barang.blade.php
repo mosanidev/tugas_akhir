@@ -6,7 +6,7 @@
 
     <div class="px-2 py-3">
 
-        <form method="POST" action="{{ route('retur_pembelian.storeTukarBarang') }}">
+        <form method="POST" action="{{ route('retur_pembelian.storeTukarBarang') }}" id="formTambah">
         @csrf
 
         <input type="hidden" name="pembelian_id" value="{{ $detail_pembelian[0]->pembelian_id }}">
@@ -71,14 +71,13 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th style="width: 10px">No</th>
                                 <th>Tanggal Kadaluarsa Asal</th>
                                 <th class="d-none">ID Barang Asal</th>
-                                <th>Barang Asal</th>
+                                <th style="width: 60%;">Barang Asal</th>
                                 <th>Kuantitas Barang Asal</th>
                                 <th>Tanggal Kadaluarsa Ganti</th>
                                 <th class="d-none">ID Barang Ganti</th>
-                                <th>Barang Ganti</th>
+                                <th style="width: 60%;">Barang Ganti</th>
                                 <th>Kuantitas Barang Ganti</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
@@ -100,6 +99,8 @@
 </div>
 
   @include('admin.retur_pembelian.barang_retur.tukar_barang.create')
+  @include('admin.retur_pembelian.modal.confirm_add')
+  <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
   <script type="text/javascript">
 
@@ -115,15 +116,21 @@
             {
                 total += parseInt(arrTukarBarang[i].subtotal);
 
+                let tglKadaluarsa = arrTukarBarang[i].tanggal_kadaluarsa_ganti;
+
+                if(arrTukarBarang[i].tanggal_kadaluarsa_ganti == "9999-12-12")
+                {
+                    tglKadaluarsa = "Tidak ada";
+                }
+
                 rowTable += `<tr>
-                                <td>` + num + `</td>
                                 <td>` + arrTukarBarang[i].tanggal_kadaluarsa_asal + `</td>
                                 <td class="d-none">` + arrTukarBarang[i].barang_asal_id + `</td>
-                                <td>` + arrTukarBarang[i].barang_asal + `</td>
+                                <td style="width: 60%;">` + arrTukarBarang[i].barang_asal + `</td>
                                 <td>` + arrTukarBarang[i].kuantitas_barang_asal + `</td>
-                                <td>` + arrTukarBarang[i].tanggal_kadaluarsa_ganti + `</td>
+                                <td>` + tglKadaluarsa + `</td>
                                 <td class="d-none">` + arrTukarBarang[i].barang_ganti_id + `</td>
-                                <td>` + arrTukarBarang[i].barang_ganti + `</td>
+                                <td style="width: 60%;">` + arrTukarBarang[i].barang_ganti + `</td>
                                 <td>` + arrTukarBarang[i].kuantitas_barang_ganti + `</td>
                                 <td>` + arrTukarBarang[i].keterangan + `</td>
                                 <td><button type="button" class="btn btn-danger" onclick="hapusTukarBarang(` + i + `)">Hapus</button></td>
@@ -145,9 +152,23 @@
 
     $('#btnSimpan').on('click', function() {
 
+        if(arrTukarBarang.length == 0)
+        {
+            toastr.error("Harap isi barang yang ditukar terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else 
+        {
+            $('#modalKonfirmasiReturPembelian').modal('toggle');
+        }
+        
+
+    });
+
+    $('.btnIyaSubmit').on('click', function() {
+
+        $('#modalKonfirmasiReturPembelian').modal('toggle');
         $('#dataTukarBarang').val(JSON.stringify(arrTukarBarang));
-        $('#btnSimpan').attr("type", "submit");
-        $('#btnSimpan')[0].click();
+        $('#formTambah').submit();
 
     });
 

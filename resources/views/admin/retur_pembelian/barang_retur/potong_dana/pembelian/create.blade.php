@@ -25,7 +25,12 @@
                 <div class="form-group row" id="divTampungSelectBarangRetur">
                     <p class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Retur</p>
                     <div class="col-sm-8">
-                        <input type="text" id="tglKadaluarsaBarangRetur" class="form-control" readonly>
+                        <div class="input-group">
+                            <input type="text" id="tglKadaluarsaBarangRetur" class="form-control" readonly>
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -125,12 +130,20 @@
                 batasan = jumlahBeli;
             }
 
+            console.log(tglKadaluarsa);
+
             if(tglKadaluarsa == "9999-12-12 00:00:00")
             {
                 tglKadaluarsa = "Tidak ada";
+                $('#tglKadaluarsaBarangRetur').val("Tidak ada");
+
+            }
+            else 
+            {
+                $('#tglKadaluarsaBarangRetur').val(moment(tglKadaluarsa).format('Y-MM-DD'));
+
             }
 
-            $('#tglKadaluarsaBarangRetur').val(moment(tglKadaluarsa).format('Y-MM-DD'));
             $('#jumlahRetur').attr('max', batasan);
             $('#satuanBarangRetur').val(satuanBarangRetur);
             $('#jumlahBeli').val(jumlahBeli);
@@ -140,6 +153,7 @@
         }
 
     });
+
 
     $('#jumlahRetur').on('change', function(){
 
@@ -185,7 +199,7 @@
                 "barang_kode": $('#selectBarangRetur :selected').attr('data-kode'),
                 "barang_nama": $('#selectBarangRetur :selected').attr('data-nama'),
                 "barang_satuan": $('#satuanBarangRetur').val(),
-                "barang_tanggal_kadaluarsa" : $('#tglKadaluarsaBarangRetur').val(),
+                "barang_tanggal_kadaluarsa" : $('#selectBarangRetur :selected').attr('data-tanggal-kadaluarsa'),
                 "harga_beli": convertRupiahToAngka($('#hargaBeli').val()),
                 "diskon_beli": convertRupiahToAngka($('#hargaBeli').val()),
                 "jumlah_beli": $('#jumlahBeli').val(),
