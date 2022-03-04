@@ -11,19 +11,20 @@
           <form class="d-inline" action="" id="formLunasi" method="POST">
             @csrf
             <input type="hidden" id="arrDetailKonsinyasi" value="" name="detail_konsinyasi">
+
+            <div class="form-group row">
+              <p class="col-sm-4 col-form-label">Tanggal Pelunasan</p>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" name="tanggal_pelunasan" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly> 
+              </div>
+            </div>
+
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Nomor Nota Konsinyasi</label>
               <div class="col-sm-8">
                   <input type="text" class="form-control" name="nomor_nota" id="nomorNotaKonsinyasi" readonly>
               </div>
             </div>
-            {{-- <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Total Komisi</label>
-              <div class="col-sm-8">
-                  <input type="hidden" value="" name="total_komisi">
-                  <input type="text" class="form-control" id="totalKomisi" readonly>
-              </div>
-            </div> --}}
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Total Hutang ke Penitip</label>
               <div class="col-sm-8">

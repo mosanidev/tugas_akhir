@@ -144,7 +144,7 @@ class OrderController extends Controller
 
                 $dtBarang = DB::table('barang_has_kadaluarsa')
                                             ->where('barang_id', '=', $cart[$i]->barang_id)
-                                            ->where('jumlah_stok_di_gudang','>',0)
+                                            ->where('jumlah_stok','>',0)
                                             ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
                                             ->orderBy('tanggal_kadaluarsa','ASC')
                                             ->get();
@@ -155,7 +155,7 @@ class OrderController extends Controller
                 {
                     if ($qty>0)
                     {                        
-                        if ($qty>$dtBarang[$j]->jumlah_stok_di_gudang)
+                        if ($qty>$dtBarang[$j]->jumlah_stok)
                         {
                             $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
                             
@@ -163,11 +163,11 @@ class OrderController extends Controller
                                 'penjualan_id' => $id_penjualan,
                                 'barang_id' => $cart[$i]->barang_id,
                                 'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
-                                'kuantitas' => $dtBarang[$j]->jumlah_stok_di_gudang,
-                                'subtotal' => ($cart[$i]->harga_jual-$cart[$i]->diskon_potongan_harga)*$dtBarang[$j]->jumlah_stok_di_gudang
+                                'kuantitas' => $dtBarang[$j]->jumlah_stok,
+                                'subtotal' => ($cart[$i]->harga_jual-$cart[$i]->diskon_potongan_harga)*$dtBarang[$j]->jumlah_stok
                             ]);
 
-                            $qty = $qty-$dtBarang[$j]->jumlah_stok_di_gudang;
+                            $qty = $qty-$dtBarang[$j]->jumlah_stok;
                         }
                         else 
                         {
@@ -391,16 +391,56 @@ class OrderController extends Controller
 
             $insert_pengiriman = DB::table('multiple_pengiriman')->insert(['pengiriman_id'=>$id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id, 'total_tarif'=>$tarif]);
 
+            $total = 0;
             for($i = 0; $i < count($cart); $i++)
             {
-                $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
-                    'penjualan_id' => $id_penjualan,
-                    'barang_id' => $cart[$i]->barang_id,
-                    'kuantitas' => $cart[$i]->kuantitas,
-                    'subtotal' => $cart[$i]->subtotal,
-                    'pengiriman_id' => $id_pengiriman,
-                    'alamat_pengiriman_id' => $alamat_pengiriman_id
-                ]);
+                $qty= $cart[$i]->kuantitas*1;
+
+                $dtBarang = DB::table('barang_has_kadaluarsa')
+                                            ->where('barang_id', '=', $cart[$i]->barang_id)
+                                            ->where('jumlah_stok','>',0)
+                                            ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
+                                            ->orderBy('tanggal_kadaluarsa','ASC')
+                                            ->get();
+
+                $tglKadaluarsaBrg = "";
+
+                for ($j=0;$j<count($dtBarang);$j++)
+                {
+                    if ($qty>0)
+                    {                        
+                        if ($qty>$dtBarang[$j]->jumlah_stok)
+                        {
+                            $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
+                            
+                            $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                                'penjualan_id' => $id_penjualan,
+                                'barang_id' => $cart[$i]->barang_id,
+                                'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
+                                'kuantitas' => $dtBarang[$j]->jumlah_stok,
+                                'subtotal' => ($cart[$i]->harga_jual-$cart[$i]->diskon_potongan_harga)*$dtBarang[$j]->jumlah_stok,
+                                'pengiriman_id' => $id_pengiriman,
+                                'alamat_pengiriman_id' => $alamat_pengiriman_id
+                            ]);
+
+                            $qty = $qty-$dtBarang[$j]->jumlah_stok;
+                        }
+                        else 
+                        {
+                            $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
+
+                            $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                                'penjualan_id' => $id_penjualan,
+                                'barang_id' => $cart[$i]->barang_id,
+                                'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
+                                'kuantitas' => $qty,
+                                'subtotal' => ($cart[$i]->harga_jual-$cart[$i]->diskon_potongan_harga)*$qty,
+                                'pengiriman_id' => $id_pengiriman,
+                                'alamat_pengiriman_id' => $alamat_pengiriman_id
+                            ]);
+                        }
+                    }
+                }
 
                 $total = $cart[$i]->total;
             }
@@ -595,16 +635,57 @@ class OrderController extends Controller
 
                 for($x = 0; $x < count($data[$i]->rincian); $x++)
                 {
-                    $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
-                        'penjualan_id' => $id_penjualan,
-                        'barang_id' => $data[$i]->rincian[$x]->barang_id,
-                        'kuantitas' => $data[$i]->rincian[$x]->kuantitas,
-                        'subtotal' => $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas,
-                        'pengiriman_id' => $id_pengiriman,
-                        'alamat_pengiriman_id'=>$data[$i]->alamat_id
-                    ]);
+                    $qty= $data[$i]->rincian[$x]->kuantitas*1;
+
+                    $dtBarang = DB::table('barang_has_kadaluarsa')
+                                                ->where('barang_id', '=', $data[$i]->rincian[$x]->barang_id)
+                                                ->where('jumlah_stok','>',0)
+                                                ->whereRaw('tanggal_kadaluarsa >= SYSDATE()')
+                                                ->orderBy('tanggal_kadaluarsa','ASC')
+                                                ->get();
+
+                    $tglKadaluarsaBrg = "";
+
+                    for ($j=0;$j<count($dtBarang);$j++)
+                    {
+                        if ($qty>0)
+                        {                        
+                            if ($qty>$dtBarang[$j]->jumlah_stok)
+                            {
+                                $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
+                                
+                                $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                                    'penjualan_id' => $id_penjualan,
+                                    'barang_id' => $data[$i]->rincian[$x]->barang_id,
+                                    'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
+                                    'kuantitas' => $data[$i]->rincian[$x]->kuantitas,
+                                    'subtotal' => $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas,
+                                    'pengiriman_id' => $id_pengiriman,
+                                    'alamat_pengiriman_id'=>$data[$i]->alamat_id
+                                ]);
+
+                                $qty = $qty-$dtBarang[$j]->jumlah_stok;
+                            }
+                            else 
+                            {
+                                $tglKadaluarsaBrg = $dtBarang[$j]->tanggal_kadaluarsa;
+
+                                $insert_detail_penjualan = DB::table('detail_penjualan')->insert([
+                                    'penjualan_id' => $id_penjualan,
+                                    'barang_id' => $data[$i]->rincian[$x]->barang_id,
+                                    'tanggal_kadaluarsa' => $tglKadaluarsaBrg,
+                                    'kuantitas' => $data[$i]->rincian[$x]->kuantitas,
+                                    'subtotal' => $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas,
+                                    'pengiriman_id' => $id_pengiriman,
+                                    'alamat_pengiriman_id'=>$data[$i]->alamat_id
+                                ]);
+
+                            }
+                        }
+                    }
 
                     $total += $data[$i]->rincian[$x]->barang_harga*$data[$i]->rincian[$x]->kuantitas;
+                    
                 }
                 // $update_detail_penjualan = DB::table('detail_penjualan')->where('penjualan_id', $id_penjualan)->where('pengiriman_id', null)->update(['pengiriman_id' => $id_pengiriman, 'alamat_pengiriman_id'=>$alamat_pengiriman_id[$y]]);
             }
@@ -697,7 +778,7 @@ class OrderController extends Controller
     public function next()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->where('cart.users_id', '=', auth()->user()->id)
@@ -858,7 +939,7 @@ class OrderController extends Controller
         }
 
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
@@ -889,7 +970,7 @@ class OrderController extends Controller
     public function multipleShipment()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as barang_stok"), 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'alamat_pengiriman.*')
+                ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', DB::raw("sum(barang_has_kadaluarsa.jumlah_stok) as barang_stok"), 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'alamat_pengiriman.*')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('alamat_pengiriman', 'cart.alamat_pengiriman_id', '=', 'alamat_pengiriman.id')
@@ -913,7 +994,7 @@ class OrderController extends Controller
     public function pickInStore()
     {
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok_di_gudang as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
@@ -1000,12 +1081,12 @@ class OrderController extends Controller
                             ->get();
 
             $barang = DB::table('detail_penjualan')
-                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*', DB::raw('sum(detail_penjualan.kuantitas) as kuantitas'), DB::raw('sum(detail_penjualan.subtotal) as subtotal'))
+                        ->select('detail_penjualan.*', 'barang.*', 'pengiriman.*', 'alamat_pengiriman.*')
                         ->where('detail_penjualan.penjualan_id', '=', $id)
                         ->join('pengiriman', 'detail_penjualan.pengiriman_id','=','pengiriman.id')
                         ->join('alamat_pengiriman', 'detail_penjualan.alamat_pengiriman_id','=','alamat_pengiriman.id')
                         ->join('barang', 'detail_penjualan.barang_id', '=', 'barang.id')
-                        ->groupBy('barang.id')
+                        // ->groupBy('barang.id')
                         ->get();
 
             $riwayat_pengiriman = [];

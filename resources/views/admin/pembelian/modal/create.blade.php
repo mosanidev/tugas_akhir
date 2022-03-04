@@ -16,7 +16,7 @@
                     <p class="col-sm-4 col-form-label">Barang</p>
                     <div class="col-sm-8" id="divTambahBarangDibeli">
                       <select class="form-control select2 select2bs4" name="barang_id" id="barang" required>
-                          <option disabled selected>Barang</option>
+                          <option disabled selected>Pilih barang</option>
                           @foreach($barang as $item)
                               <option value="{{ $item->id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
                           @endforeach
@@ -30,7 +30,6 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <input type="text" id="tanggal_kadaluarsa" class="form-control pull-right" name="tanggal_kadaluarsa">
-                                {{-- <input type="text" class="form-control pull-right" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa') }}" autocomplete="off" id="datepicker"> --}}
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -136,7 +135,31 @@
 
     $('#btnTambahBarangDibeli').on('click', function(){
 
-        if(parseInt($('#harga_beli').val()) > parseInt($('#barang :selected').attr("data-harga-jual")))
+        if($('#barang')[0].selectedIndex == 0)
+        {
+            toastr.error("Pilih barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#tanggal_kadaluarsa').val() == "")
+        {
+            toastr.error("Harap isi tanggal kadaluarsa terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#harga_beli').val() == "")
+        {
+            toastr.error("Harap isi harga beli terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#diskon_potongan_harga').val() == "")
+        {
+            toastr.error("Harap isi diskon potongan harga terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#kuantitas').val() == "")
+        {
+            toastr.error("Harap isi kuantitas terlebih dahulu", "Gagal", toastrOptions);
+        }
+        else if($('#subtotal').val().includes("-") || $('#subtotal').val() == "Rp 0")
+        {
+            toastr.error("Subtotal tidak boleh kurang atau sama dengan 0", "Gagal", toastrOptions);
+        }
+        else if(parseInt($('#harga_beli').val()) > parseInt($('#barang :selected').attr("data-harga-jual")))
         {
             toastr.error("Mohon maaf harga beli " + $('#barang :selected').attr("data-nama") + " melebihi harga jual barang yaitu " + convertAngkaToRupiah($('#barang :selected').attr("data-harga-jual")), "Gagal", toastrOptions);
         }

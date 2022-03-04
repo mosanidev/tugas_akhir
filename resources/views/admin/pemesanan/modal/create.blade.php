@@ -16,7 +16,7 @@
                     <p class="col-sm-4 col-form-label">Barang</p>
                     <div class="col-sm-8" id="divTambahBarangDipesan">
                       <select class="form-control select2 select2bs4" name="barang_id" id="barang" required>
-                          <option disabled selected>Barang</option>
+                          <option disabled selected>Pilih barang</option>
                           @foreach($barang as $item)
                               <option value="{{ $item->id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
                           @endforeach
@@ -35,13 +35,6 @@
                     <p class="col-sm-4 col-form-label">Diskon Potongan Harga</p>
                     <div class="col-sm-8">
                         Rp   <input type="number" id="diskon_potongan_harga" class="form-control d-inline ml-1" style="width: 94.2%;" value="0" name="diskon_potongan_harga" step="100" min="0">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Harga Pesan Akhir</p>
-                    <div class="col-sm-8">
-                        <input type="text" id="harga_pesan_akhir" class="form-control d-inline ml-1" name="harga_pesan_akhir" value="Rp 0" readonly>
                     </div>
                 </div>
 
@@ -102,14 +95,8 @@
         let hargaPesan = parseInt($('#harga_pesan').val());
         let diskon = parseInt($('#diskon_potongan_harga').val());
         let kuantitas = parseInt($('#kuantitas').val());
-        let hargaPesanAkhir = parseInt(convertRupiahToAngka($('#harga_pesan_akhir').val()));
 
-        if(hargaPesanAkhir != "")
-        {
-            let kuantitas = parseInt($('#kuantitas').val());
-
-            $('#subtotal').val(convertAngkaToRupiah(hargaPesanAkhir*kuantitas));
-        }
+        $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
 
     });
 
@@ -119,11 +106,7 @@
         let diskon = parseInt($('#diskon_potongan_harga').val());
         let kuantitas = parseInt($('#kuantitas').val());
 
-        if(hargaPesan != "" || diskon != "" || kuantitas != "")
-        {
-            $('#harga_pesan_akhir').val(convertAngkaToRupiah(hargaPesan-diskon));
-            $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
-        }
+        $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
 
     });
 
@@ -133,12 +116,8 @@
         let diskon = parseInt($('#diskon_potongan_harga').val());
         let kuantitas = parseInt($('#kuantitas').val());
 
-        if(hargaPesan != "" || diskon != "" || kuantitas != "")
-        {
-            $('#harga_pesan_akhir').val(convertAngkaToRupiah(hargaPesan-diskon));
+        $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
 
-            $('#subtotal').val(convertAngkaToRupiah((hargaPesan-diskon)*kuantitas));
-        }
     });
 
     let barangDipesan = [];
@@ -156,10 +135,6 @@
         else if($('#kuantitas').val() <= 0)
         {
             toastr.error("Kuantitas barang tidak boleh kurang dari atau sama dengan 0", "Gagal", toastrOptions);
-        }
-        else if(convertRupiahToAngka($('#harga_pesan_akhir').val()) <= 0)
-        {
-            toastr.error("Harga pesan tidak boleh kurang dari atau sama dengan 0", "Gagal", toastrOptions);
         }
         else if(barangDipesan.filter(function(e) { return e.barang_id == $('#barang :selected').val() }).length > 0)
         {

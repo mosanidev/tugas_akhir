@@ -48,7 +48,7 @@
 
                             <div class="col-md-4 mb-3">
                                 <div class="card" style="">
-                                    <img class="card-img-top" src="{{ asset("".$barang[$i]->foto) }}" alt="Card image cap">
+                                    <img class="card-img-top" src="{{ asset("".$barang[$i]->foto) }}" height="150" style="object-fit: contain;" alt="Card image cap">
                                     <div class="card-body">
                                         <div style="height: 60px;">
                                             <p><b><a href="{{ route('detail', ['id' => $barang[$i]->id]) }}" class="text-dark">{{ $barang[$i]->nama }}</a></b></p>
@@ -110,7 +110,7 @@
                     },
                     success:function(data) {
 
-                        if(data.status == "Maaf jumlah barang yang ditambahkan melebihi jumlah stok")
+                        if(data.status == "Maaf jumlah produk yang ditambahkan melebihi jumlah stok")
                         {
                             toastr.error(data.status, "Gagal", toastrOptions);
                         }
@@ -121,7 +121,7 @@
 
                         let total_cart = $("#total_cart")[0].innerText;
 
-                        if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                        if (data.status == "Produk berhasil dimasukkan ke keranjang")
                         {
                             $("#total_cart")[0].innerText = parseInt(total_cart)+1;
                         } 

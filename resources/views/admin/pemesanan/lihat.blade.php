@@ -63,13 +63,6 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Ongkos Kirim</label>
-                <div class="col-sm-8">
-                    <p>{{ "Rp " . number_format($pemesanan[0]->ongkos_kirim,0,',','.') }}</p>
-                </div>
-            </div>
-
-            <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status bayar</label>
                 <div class="col-sm-8">
                   <p>{{ $pemesanan[0]->status_bayar }}</p>
@@ -84,31 +77,12 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir <br> ( total + ongkos kirim - (diskon + PPN))  </label>
+                <label class="col-sm-4 col-form-label">Total <br> Total - (Diskon Potongan Harga + PPN) </label>
                 <div class="col-sm-8">
-                    <p>{{ "Rp " . number_format(($pemesanan[0]->total+$pemesanan[0]->ongkos_kirim)-($pemesanan[0]->diskon+$pemesanan[0]->ppn),0,',','.') }}</p>
+                    <p>{{ "Rp " . number_format($pemesanan[0]->total-($pemesanan[0]->diskon+$pemesanan[0]->ppn),0,',','.') }}</p>
                 </div>
             </div>
 
-            
-            @if($pemesanan[0]->status_bayar == "Lunas sebagian")
-
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->total_terbayar,0,',','.') }}</p>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pemesanan[0]->sisa_belum_bayar,0,',','.') }}</p>
-                    </div>
-                </div>
-
-            @endif
 
             <div class="card shadow my-4">
                 <div class="card-header py-3">

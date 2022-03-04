@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <p class="col-sm-4 col-form-label">Estimasi Pesanan Tiba di Rumah Pelanggan</p>
+                    <p class="col-sm-4 col-form-label">Estimasi Pesanan Tiba di Lokasi Tujuan</p>
                     <div class="col-sm-8">
                         <div class="input-group">
                             <input type="text" name="estimasi_tiba" class="form-control" readonly>

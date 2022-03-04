@@ -22,6 +22,7 @@ class CreateKonsinyasiTable extends Migration
             $table->foreign('supplier_id')->references('id')->on('supplier')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal_titip');
             $table->date('tanggal_jatuh_tempo');
+            $table->date('tanggal_pelunasan')->nullable();
             $table->double('total_komisi');
             $table->double('total_hutang');
             $table->enum('metode_pembayaran', ['Tunai', 'Transfer Bank']);

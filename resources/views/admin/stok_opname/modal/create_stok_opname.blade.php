@@ -36,18 +36,6 @@
                         </div>   
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Lokasi Stok</label>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <select class="form-control" name="lokasi_stok" id="selectLokasiStok">
-                                <option value="Pilih Lokasi Barang" selected disabled>Pilih Lokasi Barang</option>
-                                <option value="Rak">Rak</option>
-                                <option value="Gudang">Gudang</option>
-                              </select>
-                        </div>   
-                    </div>
-                </div>
                 <div class="modal-footer">
                     <button type="button" id="btnSimpanStokOpname" class="btn btn-primary">Simpan</button>
                 </form>
@@ -64,7 +52,7 @@
 <script type="text/javascript">
 
     $('#datepickerTgl').datepicker({
-        format: 'yyyy-mm-dd',
+        format: 'dd-mm-yyyy',
         autoclose: true
     });
 

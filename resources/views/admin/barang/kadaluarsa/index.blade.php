@@ -28,6 +28,20 @@
 
   <div class="row">
     <div class="col-3">
+      <p class="mt-2 ml-2">Kategori</p> 
+    </div>
+    <div class="col-9 divFilterKategori">
+        <select class="form-control w-50 selectFilter" id="filterKategori">
+          <option selected>Semua</option>
+          @foreach($kategori_barang as $item)
+            <option value="{{ $item->kategori_barang }}">{{ $item->kategori_barang }}</option>
+          @endforeach
+        </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-3">
       <p class="mt-2 ml-2">Tipe Barang</p> 
     </div>
     <div class="col-9">
@@ -70,11 +84,11 @@
                       <tr>
                         <th style="width: 40%">Barang</th>
                         <th class="d-none">Tipe</th>
-                        <th style="width: 8%" class="d-none">Jenis</th>
+                        <th class="d-none">Jenis</th>
+                        <th class="d-none">Kategori</th>
                         <th style="width: 8%">Tanggal Kadaluarsa</th>
                         <th style="width: 8%">Masa Kadaluarsa</th>
-                        <th style="width: 8%">Jumlah Stok di Gudang</th>
-                        <th style="width: 8%">Jumlah Stok di Rak</th>
+                        <th style="width: 8%">Jumlah Stok</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -84,14 +98,14 @@
                         <td>{{ $item->kode." - ".$item->nama }}</td>
                         <td class="d-none">{{ $item->barang_konsinyasi }}</td>
                         <td class="d-none">{{ $item->jenis_barang }}</td>
+                        <td class="d-none">{{ $item->kategori_barang }}</td>
                         @if($item->barang_konsinyasi == "1")
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format("d M Y").", ".\Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format("H:m")." WIB" }}</td>
                         @else
                           <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format("d M Y") }}</td>
                         @endif
                         <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->diffInMonths(\Carbon\Carbon::now())." Bulan" }}</td>
-                        <td>{{ $item->jumlah_stok_di_gudang }}</td>
-                        <td>{{ $item->jumlah_stok_di_rak }}</td>
+                        <td>{{ $item->jumlah_stok }}</td>
                       </tr>
                     @endforeach
                   </tbody>
@@ -126,6 +140,11 @@
           theme: 'bootstrap4'
       });
 
+      $('#filterKategori').select2({
+          dropdownParent: $(".divFilterKategori"),
+          theme: 'bootstrap4'
+      });
+
       if("{{ session('success') }}" != "")
       {
         toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
@@ -137,6 +156,7 @@
 
       let filterTipe = $('#filterTipe').val();
       let filterJenis = $('#filterJenis').val();
+      let filterKategori = $('#filterKategori').val();
       let filterMasaKadaluarsa = $('#filterMasaKadaluarsa').val();
 
       var table = $('#dataTable').DataTable({});
@@ -152,19 +172,22 @@
             
             filterTipe = $('#filterTipe').val();
             filterJenis = $('#filterJenis').val();
+            filterKategori = $('#filterKategori').val();
             filterMasaKadaluarsa = $('#filterMasaKadaluarsa').val();
 
             let tipeBarang = data[1];
             let jenisBarang = data[2];
-            let tanggalKadaluarsa = data[3].split(", ")[0];
+            let kategoriBarang = data[3];
+            let tanggalKadaluarsa = data[4].split(", ")[0];
 
-            let masaKadaluarsa = data[4];
+            let masaKadaluarsa = data[5];
 
             var showTipeBarang = false;
             var showJenisBarang = false;
+            var showKategoriBarang = false;
             var showMasaKadaluarsa = false;
             
-            if (filterTipe == "Semua" || filterJenis == "Semua" || filterMasaKadaluarsa == "Semua") {
+            if (filterTipe == "Semua" || filterJenis == "Semua" || filterKategori == "Semua" || filterMasaKadaluarsa == "Semua") {
               $.fn.dataTable.ext.search.length == 0; 
             }
 
@@ -174,6 +197,10 @@
 
             if (filterJenis == "Semua" || filterJenis == jenisBarang) {
               showJenisBarang = true;
+            }
+
+            if (filterKategori == "Semua" || filterKategori == kategoriBarang) {
+              showKategoriBarang = true;
             }
 
             if (filterMasaKadaluarsa == "Semua" || filterMasaKadaluarsa == "Sudah lewat kadaluarsa" && moment() >= moment(tanggalKadaluarsa)) {
@@ -192,7 +219,7 @@
               showMasaKadaluarsa = true;
             }
 
-            return showTipeBarang && showJenisBarang && showMasaKadaluarsa;
+            return showTipeBarang && showKategoriBarang && showJenisBarang && showMasaKadaluarsa;
       });
 
     });

@@ -115,7 +115,7 @@
                                             <div class="col-md-3 mb-3">
                                                 <div class="card">
                                                     <div style="height: 150px;">
-                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" alt="Foto Produk">
+                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" height="150" alt="Foto Produk">
                                                     </div>
                                                     <div class="card-body">
                                                         <div style="height: 60px;">
@@ -144,7 +144,7 @@
                                             <div class="col-md-3 mb-3">
                                                 <div class="card">
                                                     <div style="height: 150px;">
-                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" alt="Foto Produk">
+                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" height="150" alt="Foto Produk">
                                                     </div>
                                                     <div class="card-body">
                                                         <div style="height: 60px;">
@@ -204,7 +204,7 @@
                                                 <div class="card">
                                                     <form method="POST" action="{{ route('addCart') }}">
                                                         <div style="height: 150px;">
-                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" alt="Foto Produk">
+                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" height="150" alt="Foto Produk">
                                                         </div>
                                                         <div class="card-body">
                                                             <div style="height: 60px;">
@@ -235,7 +235,7 @@
                                                 <div class="col-md-3 mb-3">
                                                     <div class="card">
                                                         <div style="height: 150px;">
-                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" alt="Foto Produk">
+                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" height="150" alt="Foto Produk">
                                                         </div>
                                                         <div class="card-body">
                                                             <div style="height: 60px;">
@@ -339,15 +339,15 @@
 
                 if($('#kuantitas-cart').val() == "")
                 {
-                    $('#message').text("Harap mengisikan jumlah barang");
+                    $('#message').text("Harap mengisikan jumlah produk");
                 }
                 else if($('#kuantitas-cart').val() < 1)
                 {
-                    $('#message').text("Minimal pembelian 1 barang");
+                    $('#message').text("Minimal pembelian 1 produk");
                 }
                 else if(parseInt($('#kuantitas-cart').val()) > parseInt($('#kuantitas-cart').attr('max')))
                 {
-                    $('#message').text("Maksimal pembelian " + $('#kuantitas-cart').attr('max') + " barang");
+                    $('#message').text("Maksimal pembelian " + $('#kuantitas-cart').attr('max') + " produk");
                 }
                 else 
                 {
@@ -397,7 +397,7 @@
                     data: { 'barang_id': $(this).attr('data-id'), 'qty': $('#kuantitas-cart').val() },
                     success:function(data) {
 
-                        if(data.status == "Maaf jumlah barang yang ditambahkan melebihi jumlah stok")
+                        if(data.status == "Maaf jumlah produk yang ditambahkan melebihi jumlah stok")
                         {
                             toastr.error(data.status, "Gagal", toastrOptions);
                         }
@@ -408,7 +408,7 @@
                         
                         let total_cart = $("#total_cart")[0].innerText;
 
-                        if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                        if (data.status == "Produk berhasil dimasukkan ke keranjang")
                         {
                             $("#total_cart")[0].innerText = parseInt(total_cart)+1;
                         } 

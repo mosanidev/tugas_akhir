@@ -21,6 +21,7 @@
 @endpush
 
 @section('content')
+
     <div class="container">
         <div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
 
@@ -360,6 +361,9 @@
                         } 
                     }   
                 });
+
+                toastr.success("Produk dihapus dari keranjang belanja", "", toastrOptions);
+
             });
 
 
@@ -378,11 +382,11 @@
 
         if("{{ session('success') }}" != "")
         {
-            toastr.success("{{ session('success') }}", "Success", toastrOptions);
+            toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
         }
         else if("{{ session('error') }}" != "")
         {
-            toastr.error("{{ session('error') }}", "Error", toastrOptions);
+            toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
         }
 
     </script>

@@ -17,8 +17,8 @@ class HomeController extends Controller
         $curDate = \Carbon\Carbon::now()->format("Y-m-d H:m:s");
 
         $barang_konsinyasi = DB::table('barang')
-                    ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
-                    ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
+                    ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                    ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                     ->where('barang_konsinyasi', '=', 1)
                     ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $curDate)
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
@@ -28,8 +28,8 @@ class HomeController extends Controller
         // DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok')
 
         $barang_promo = DB::table('barang')
-                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
-                            ->where('barang_has_kadaluarsa.jumlah_stok_di_gudang', '>', 0)
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                             // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->where('barang.diskon_potongan_harga', '>', 0)
                             ->where('periode_diskon.tanggal_dimulai', '<=', $curDate)

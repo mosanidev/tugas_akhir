@@ -81,12 +81,12 @@
         }
 
         $('#datepickerTgl').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true
         });
 
         $('#tanggalUbah').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true
         });
 

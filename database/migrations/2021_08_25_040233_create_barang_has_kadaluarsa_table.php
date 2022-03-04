@@ -20,9 +20,7 @@ class CreateBarangHasKadaluarsaTable extends Migration
             $table->unsignedInteger('barang_id');
             $table->foreign('barang_id')->references('id')->on('barang')->onUpdate('cascade')->onDelete('cascade');
             $table->datetime('tanggal_kadaluarsa');
-            $table->unsignedInteger('jumlah_stok_di_gudang');
-            $table->unsignedInteger('jumlah_stok_di_rak');
-            $table->unsignedInteger('jumlah_stok_di_gudang_retur');
+            $table->unsignedInteger('jumlah_stok');
         });
     }
 

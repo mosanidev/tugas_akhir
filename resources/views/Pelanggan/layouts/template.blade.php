@@ -201,11 +201,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone.min.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js" integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/scripts/helper.js') }}"></script>
     <script type="text/javascript">
+
+        // $(document).ready(function() {
+
+            
+
+        // });
 
         function pilih(nama)
         {
@@ -271,11 +276,11 @@
 
             if(skalaRating == "")
             {
-                toastr.error("Harap berikan penilaian dengan mengisi bintang terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap berikan penilaian dengan mengisi bintang terlebih dahulu", "Gagal", toastrOptions);
             }
-            else if($('textarea[name=testi]').text() == "")
+            else if($('#testi').val() == "")
             {
-                toastr.error("Harap isi testimoni terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap isi testimoni terlebih dahulu", "Gagal", toastrOptions);
             }
             else 
             {

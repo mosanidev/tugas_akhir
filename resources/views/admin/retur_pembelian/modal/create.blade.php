@@ -118,7 +118,7 @@
 <script type="text/javascript">
 
     $('#datepickerTglRetur').datepicker({
-        format: 'yyyy-mm-dd',
+        format: 'dd-mm-yyyy',
         autoclose: true
     });
 

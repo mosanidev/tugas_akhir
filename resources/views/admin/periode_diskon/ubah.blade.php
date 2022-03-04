@@ -160,13 +160,13 @@
       loadBarangDiskon();
 
       $('#datepickertglawal').datepicker({
-        format: 'yyyy-mm-dd',
+        format: 'dd-mm-yyyy',
         autoclose: true,
         enableOnReadonly: false
       });
 
       $('#datepickertglakhir').datepicker({
-        format: 'yyyy-mm-dd',
+        format: 'dd-mm-yyyy',
         autoclose: true
       });
 

@@ -113,13 +113,17 @@
                             <div class="row">
                                 <div class="col-4">
                                     <p>Harga Satuan</p>
-                                    <p>Subtotal</p>
                                 </div>
                                 <div class="col-8">
                                     @if($item->barang_diskon_potongan_harga > 0)
                                         <del class="d-inline mr-2">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del>    
                                     @endif
                                     <p class="barang_harga d-inline">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                </div>
+                                <div class="col-4">
+                                    <p>Subtotal</p>
+                                </div>
+                                <div class="col-8">
                                     <p>{{ "Rp " . number_format(($item->barang_harga-$item->barang_diskon_potongan_harga)*$item->kuantitas,0,',','.') }}</p>
                                 </div>
                             </div>
@@ -175,12 +179,6 @@
                 </div>
                 
                 <a class="btn btn-success text-light" id="pay">Beli</a><br>
-                
-                {{-- @if(auth()->user()->jenis == "Pelanggan")        
-                @else  
-                    anggota kopkar
-                    <button class="btn btn-success text-light" id="modalPayPotongGaji">Beli</button>
-                @endif --}}
 
             </div>
         </div>
@@ -264,6 +262,8 @@
 @push('script')
     {{-- End Pick Main Address Modal --}}
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-KVse50bzjErTjsM8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
     <script type="text/javascript">
 
@@ -276,7 +276,6 @@
         });
 
         $(document).ready(function() {
-            
             let total_pesanan = 0;
             let timer;
             let areaID = "Not Found";
@@ -379,7 +378,7 @@
                 return arrShippingAddress;
             }
 
-            let alamat = <?php echo json_encode($alamat) ?>;
+            let alamat = <?php echo json_encode($alamat); ?>
 
             if(alamat.length == 0)
             {
@@ -542,11 +541,11 @@
                                         durasi = arr.pricing[num].duration.replace(" Hours", "");
                                     }
                                     let roundUp = moment().second() || moment().millisecond() ? moment().add(1, 'hour').startOf('hour') : moment().startOf('hour'); // dibulatkan ke jam terdekat
-                                    infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm:ss'); 
+                                    infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm'); 
                                     $("#info-tiba").html(infoTiba + " WIB");
                                 }
                                 
-                                $('#estimasi_tiba').val(moment(infoTiba).format('YYYY-MM-DD HH:mm:ss'));
+                                $('#estimasi_tiba').val(moment(infoTiba).format('YYYY-MM-DD HH:mm'));
 
                                 total_pesanan = parseInt(convertRupiahToAngka($('#origin-total-pesanan').html()))+parseInt(convertRupiahToAngka($('#tarifOngkir').html()));
 
@@ -557,63 +556,6 @@
 
                     });
                 }   
-            });
-
-            $('#payPotongGaji').on('click', function() {
-
-                const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
-
-                let arrBarang = createArrBarang();
-
-                let arrShipment = createArrShippingAddress();
-
-                let nomor_nota = "{{ strtoupper(substr(md5(uniqid()), 10)) }}";
-
-                $('#arrBarang').val(JSON.stringify(arrBarang));
-
-                $('#totalPesanan').val(total_pesanan);
-
-                $('#nomorNota').val(nomor_nota);
-
-                $('#idAlamatPengiriman').val($('input[name=alamat_id]').val());
-
-                $('#metodeTransaksi').val("Dikirim ke alamat");
-
-                let num = $('#selectPengiriman').find(":selected").val();
-
-                // load input
-                $("#tarif_").val(arr.pricing[num].price);
-                $("#kodeShipper_").val(arr.pricing[num].courier_code);
-                $("#jenisPengiriman_").val(arr.pricing[num].courier_service_name);
-                $("#kodeJenisPengiriman_").val(arr.pricing[num].courier_service_code);
-                $("#totalBerat_").val($('#total_berat').val());
-
-                let estimasiTiba = moment($('#info-tiba').html()).format('Y-MM-DD HH:mm:ss');
-
-                $('#estimasiTiba_').val(estimasiTiba);
-
-                $('#modalBeliAnggotaKopkar').modal('toggle');
-
-                // loading . . .
-                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
-
-                $('#payPotongGaji').attr('type', 'submit');
-                $('#payPotongGaji')[0].click();
-
-            });
-
-            $('#modalPayPotongGaji').on('click', function() {
-
-                let selected = $('#selectPengiriman :selected').index();
-
-                if(selected == 0)
-                {
-                    alert("Harap pilih pengiriman terlebih dahulu");
-                }
-                else  
-                {
-                    $('#modalBeliAnggotaKopkar').modal('toggle');
-                }
             });
 
             $('#pay').on('click', function() {

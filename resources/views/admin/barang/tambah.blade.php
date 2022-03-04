@@ -93,11 +93,11 @@
                         </div> 
                     </div>
                 </div>
-                <div class="form-group row d-none divPenitip">
-                    <p class="col-sm-3 col-form-label">Penitip (konsinyi)</p>
+                <div class="form-group row">
+                    <p class="col-sm-3 col-form-label">Pemasok</p>
                     <div class="col-sm-9">
-                        <select class="form-control" name="penitip" required>
-                            <option disabled selected>Pilih penitip</option>
+                        <select class="form-control" name="supplier_id" required>
+                            <option disabled selected>Pilih pemasok</option>
                             @foreach($supplier as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 <div class="mx-auto">
-                    <button type="button" class="btn btn-info w-25 btnTambah">Simpan</button>
+                    <button type="button" class="btn btn-info btn-block mx-auto w-75 btnTambah">Simpan</button>
                 </div>
             </form>
             
@@ -164,7 +164,7 @@
     <!-- Moment  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-    {{-- ckeditor --}}
+    <!-- ckeditor -->
     <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 
     <script type="text/javascript">
@@ -186,15 +186,11 @@
                 {
                     $('#stok_minimum').val('0');     
                     $('#stok_minimum').attr("readonly", true);
-
-                    $(".divPenitip").toggleClass('d-none');
                 }
                 else 
                 {
                     $('#stok_minimum').val('');
                     $('#stok_minimum').attr("readonly", false);
-
-                    $(".divPenitip").toggleClass('d-none');
                 }
 
             });
@@ -208,8 +204,6 @@
                     $('#stok_minimum').val('0');     
                     $('#stok_minimum').attr("readonly", true);
 
-                    $(".divPenitip").toggleClass('d-none');
-
                 }
                 else 
                 {
@@ -222,7 +216,7 @@
             //Initialize Select2 Elements
             $('.select2').select2();
 
-            $('select[name=penitip]').select2({
+            $('select[name=supplier_id]').select2({
                 theme: 'bootstrap4'
             });
 
@@ -249,13 +243,13 @@
                 {
                     toastr.error("Harap pilih merek barang terlebih dahulu", "Gagal", toastrOptions);
                 }
-                else if($('select[name=merek_id]')[0].selectedIndex == 0)
-                {
-                    toastr.error("Harap pilih merek barang terlebih dahulu", "Gagal", toastrOptions);
-                }
                 else if($('input[name=kode]').val() == "")
                 {
                     toastr.error("Harap isi kode barang terlebih dahulu", "Gagal", toastrOptions);
+                }
+                else if($('input[name=nama]').val() == "")
+                {
+                    toastr.error("Harap isi nama barang terlebih dahulu", "Gagal", toastrOptions);
                 }
                 else if(CKEDITOR.instances.deskripsi.getData() == "")
                 {
@@ -265,13 +259,13 @@
                 {
                     toastr.error("Harap pilih satuan barang terlebih dahulu", "Gagal", toastrOptions);
                 }
+                else if($('select[name=supplier_id]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih pemasok barang terlebih dahulu", "Gagal", toastrOptions);
+                }
                 else if($('#harga_jual').val() == "")
                 {
                     toastr.error("Harap isi harga jual barang terlebih dahulu", "Gagal", toastrOptions);
-                }
-                else if($("input[name=barang_konsinyasi]").prop('checked') == true && $('select[name=penitip]')[0].selectedIndex == 0)
-                {
-                    toastr.error("Harap pilih penitip barang terlebih dahulu", "Gagal", toastrOptions);
                 }
                 else if($("input[name=barang_konsinyasi]").prop('checked') == false && $('#stok_minimum').val() == "")
                 {

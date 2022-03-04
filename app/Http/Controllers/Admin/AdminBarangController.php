@@ -50,7 +50,6 @@ class AdminBarangController extends Controller
         $merek = DB::table('merek_barang')->get();
 
         $supplier = DB::table('supplier')
-                        ->where('jenis', '=', 'Individu')
                         ->get();
 
         return view('admin.barang.tambah', ['jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek, 'supplier' => $supplier]);
@@ -87,11 +86,9 @@ class AdminBarangController extends Controller
 
         ];
 
-        $penitip = isset($request->penitip) ? $request->penitip : null;
         $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
         $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
 
-        
         if($barang_konsinyasi)
         {
             $barangYgSama = DB::table('barang')
@@ -127,11 +124,34 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi, 'supplier_id' => $penitip]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 
+                                                    'nama' => $request->nama, 
+                                                    'deskripsi' => $deskripsi, 
+                                                    'satuan'=>$request->satuan, 
+                                                    'harga_jual' => $request->harga_jual, 
+                                                    'batasan_stok_minimum' => $stok_minimum, 
+                                                    'berat' => $request->berat, 
+                                                    'foto' => "/images/barang/$request->kode/".$namaFoto, 
+                                                    'jenis_id' => $request->jenis_id, 
+                                                    'kategori_id' => $request->kategori_id, 
+                                                    'merek_id' => $request->merek_id, 
+                                                    'barang_konsinyasi'=>$barang_konsinyasi, 
+                                                    'supplier_id' => $request->supplier_id]);
         }
         else 
         {
-            $insert = DB::table('barang')->insert(['kode' => $request->kode, 'nama' => $request->nama, 'deskripsi' => $deskripsi, 'satuan'=>$request->satuan, 'harga_jual' => $request->harga_jual, 'batasan_stok_minimum' => $stok_minimum, 'berat' => $request->berat, 'jenis_id' => $request->jenis_id, 'kategori_id' => $request->kategori_id, 'merek_id' => $request->merek_id, 'barang_konsinyasi'=>$barang_konsinyasi, 'supplier_id' => $penitip]);
+            $insert = DB::table('barang')->insert(['kode' => $request->kode, 
+                                                    'nama' => $request->nama, 
+                                                    'deskripsi' => $deskripsi, 
+                                                    'satuan'=>$request->satuan, 
+                                                    'harga_jual' => $request->harga_jual, 
+                                                    'batasan_stok_minimum' => $stok_minimum, 
+                                                    'berat' => $request->berat, 
+                                                    'jenis_id' => $request->jenis_id, 
+                                                    'kategori_id' => $request->kategori_id, 
+                                                    'merek_id' => $request->merek_id, 
+                                                    'barang_konsinyasi'=>$barang_konsinyasi,
+                                                    'supplier_id' => $request->supplier_id]);
         }
         
         // kembali ke daftar barang
@@ -180,11 +200,12 @@ class AdminBarangController extends Controller
         $jenis = DB::table('jenis_barang')->get();
         $kategori = DB::table('kategori_barang')->get();
         $merek = DB::table('merek_barang')->get();
+        $supplier = DB::table('supplier')->get();
         $barang = DB::table('barang')->select('barang.*', 'jenis_barang.jenis_barang', 'kategori_barang.kategori_barang', 'merek_barang.merek_barang')->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')->where('barang.id', '=', $id)->get();
 
         $files = Storage::disk('public')->allFiles("images/barang/".$barang[0]->kode);
 
-        return view('admin.barang.ubah', ['barang' => $barang, 'jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek, 'id' => $barang[0]->id, 'files' => $files]);
+        return view('admin.barang.ubah', ['barang' => $barang, 'jenis' => $jenis, 'kategori' => $kategori, 'merek' => $merek, 'id' => $barang[0]->id, 'files' => $files, 'supplier' => $supplier]);
     }
 
     /**
@@ -234,11 +255,56 @@ class AdminBarangController extends Controller
             
             $namaFoto = $request->kode.".".$request->foto->getClientOriginalExtension();
             
-            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'barang_konsinyasi' => $barang_konsinyasi, 'batasan_stok_minimum' => $stok_minimum, 'harga_jual'=>$request->harga_jual, 'foto' => "/images/barang/$request->kode/".$namaFoto, 'berat'=>$request->berat]);
+            $update = DB::table('barang')
+                        ->where('id', '=', $id)
+                        ->update(['jenis_id'=>$request->jenis_id, 
+                                  'kategori_id'=>$request->kategori_id, 
+                                  'merek_id'=>$request->merek_id, 
+                                  'kode'=>$request->kode, 
+                                  'satuan'=>$request->satuan, 
+                                  'nama'=>$request->nama, 
+                                  'deskripsi'=>$request->deskripsi, 
+                                  'barang_konsinyasi' => $barang_konsinyasi, 
+                                  'batasan_stok_minimum' => $stok_minimum, 
+                                  'harga_jual'=>$request->harga_jual, 
+                                  'foto' => "/images/barang/$request->kode/".$namaFoto, 
+                                  'berat'=>$request->berat,
+                                  'supplier_id' => $request->supplier_id]);
+        }
+        else if( $request->keterangan_foto == "Foto dihapus" ) 
+        {
+            $update = DB::table('barang')
+                        ->where('id', '=', $id)
+                        ->update(['jenis_id'=>$request->jenis_id, 
+                                  'kategori_id'=>$request->kategori_id, 
+                                  'merek_id'=>$request->merek_id, 
+                                  'kode'=>$request->kode, 
+                                  'satuan'=>$request->satuan, 
+                                  'nama'=>$request->nama, 
+                                  'deskripsi'=>$request->deskripsi, 
+                                  'barang_konsinyasi' => $barang_konsinyasi, 
+                                  'batasan_stok_minimum' => $stok_minimum, 
+                                  'harga_jual'=>$request->harga_jual,
+                                  'foto' => '/images/barang/barang_null.png', 
+                                  'berat'=>$request->berat,
+                                  'supplier_id' => $request->supplier_id]);
         }
         else 
         {
-            $update = DB::table('barang')->where('id', '=', $id)->update(['jenis_id'=>$request->jenis_id, 'kategori_id'=>$request->kategori_id, 'merek_id'=>$request->merek_id, 'kode'=>$request->kode, 'satuan'=>$request->satuan, 'nama'=>$request->nama, 'deskripsi'=>$request->deskripsi, 'barang_konsinyasi' => $barang_konsinyasi, 'batasan_stok_minimum' => $stok_minimum, 'harga_jual'=>$request->harga_jual, 'berat'=>$request->berat]);
+            $update = DB::table('barang')
+                        ->where('id', '=', $id)
+                        ->update(['jenis_id'=>$request->jenis_id, 
+                                  'kategori_id'=>$request->kategori_id, 
+                                  'merek_id'=>$request->merek_id, 
+                                  'kode'=>$request->kode, 
+                                  'satuan'=>$request->satuan, 
+                                  'nama'=>$request->nama, 
+                                  'deskripsi'=>$request->deskripsi, 
+                                  'barang_konsinyasi' => $barang_konsinyasi, 
+                                  'batasan_stok_minimum' => $stok_minimum, 
+                                  'harga_jual'=>$request->harga_jual, 
+                                  'berat'=>$request->berat,
+                                  'supplier_id' => $request->supplier_id]);
         }
 
         // kembali ke daftar barang
@@ -287,40 +353,24 @@ class AdminBarangController extends Controller
                                 'jenis_barang.jenis_barang as nama_jenis',  
                                 'barang.batasan_stok_minimum', 
                                 'barang.barang_konsinyasi', 
-                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok_di_gudang'),
-                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok_di_rak'),
+                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'),
                                 'barang_has_kadaluarsa.tanggal_kadaluarsa'
                                 )
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-                        // ->whereRaw('barang_has_kadaluarsa.tanggal_kadaluarsa >= SYSDATE()')
                         ->groupBy('barang.id')
                         ->orderBy('barang.kode')
                         ->get();
 
-        // $barangStok = DB::table('barang')
-        //                 ->select('barang.id as barang_id',
-        //                         'barang.kode', 
-        //                         'barang.nama', 
-        //                         'barang.satuan', 
-        //                         'jenis_barang.jenis_barang as nama_jenis',  
-        //                         'barang.batasan_stok_minimum', 
-        //                         'barang.barang_konsinyasi', 
-        //                         'barang_has_kadaluarsa.jumlah_stok_di_gudang',
-        //                         'barang_has_kadaluarsa.jumlah_stok_di_rak',
-        //                         'barang_has_kadaluarsa.tanggal_kadaluarsa'
-        //                         )
-        //                 ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
-        //                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
-        //                 ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
-        //                 ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
-        //                 ->orderBy('barang.kode')
-        //                 ->get();
-
         $stokBarang = DB::table('barang')
-                        ->select('barang.id as barang_id', DB::raw("CONCAT(barang.kode, ' - ', barang.nama) as nama"), 'jenis_barang.jenis_barang as nama_jenis', 'kategori_barang.kategori_barang as nama_kategori', 'merek_barang.merek_barang as nama_merek', 'barang.batasan_stok_minimum', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang)+sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok'))
+                        ->select('barang.id as barang_id', 
+                                 DB::raw("CONCAT(barang.kode, ' - ', barang.nama) as nama"), 
+                                 'jenis_barang.jenis_barang as nama_jenis', 
+                                 'kategori_barang.kategori_barang as nama_kategori', 
+                                 'merek_barang.merek_barang as nama_merek', 
+                                 'barang.batasan_stok_minimum')
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
                         ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id', '=', 'merek_barang.id')
@@ -370,8 +420,7 @@ class AdminBarangController extends Controller
                                 'jenis_barang.jenis_barang as nama_jenis',  
                                 'barang.batasan_stok_minimum', 
                                 'barang.barang_konsinyasi', 
-                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok_di_gudang'),
-                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_rak) as jumlah_stok_di_rak'),
+                                DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'),
                                 'barang_has_kadaluarsa.tanggal_kadaluarsa'
                                 )
                         ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
@@ -406,8 +455,7 @@ class AdminBarangController extends Controller
                                          'merek_barang.merek_barang as nama_merek',
                                          'barang.batasan_stok_minimum',
                                          'barang_has_kadaluarsa.tanggal_kadaluarsa', 
-                                         'barang_has_kadaluarsa.jumlah_stok_di_gudang', 
-                                         'barang_has_kadaluarsa.jumlah_stok_di_rak', 
+                                         'barang_has_kadaluarsa.jumlah_stok', 
                                          'barang.barang_konsinyasi')
                                 ->where('barang_has_kadaluarsa.barang_id', '=', $id)
                                 ->join('barang', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
@@ -424,20 +472,24 @@ class AdminBarangController extends Controller
         $barang = DB::table('barang')
                     ->select('barang.id as barang_id',
                              'barang_has_kadaluarsa.tanggal_kadaluarsa',
-                             'barang_has_kadaluarsa.jumlah_stok_di_gudang',
-                             'barang_has_kadaluarsa.jumlah_stok_di_rak',
+                             'barang_has_kadaluarsa.jumlah_stok',
                              'jenis_barang.jenis_barang',
+                             'kategori_barang.kategori_barang',
                              'barang.kode',
                              'barang.satuan',
                              'barang.nama',
                              'barang.barang_konsinyasi')
                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
                     ->join('jenis_barang', 'jenis_barang.id', '=', 'barang.jenis_id')
+                    ->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')
                     ->get();
 
         $jenis_barang = DB::table('jenis_barang')
                             ->get();
 
-        return view('admin.barang.kadaluarsa.index', ['barang' => $barang, 'jenis_barang' => $jenis_barang]);
+        $kategori_barang = DB::table('kategori_barang')
+                            ->get();
+
+        return view('admin.barang.kadaluarsa.index', ['barang' => $barang, 'jenis_barang' => $jenis_barang, 'kategori_barang' => $kategori_barang]);
     }
 }

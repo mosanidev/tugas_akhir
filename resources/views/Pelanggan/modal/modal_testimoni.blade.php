@@ -30,9 +30,7 @@
               <br>
               <p>Ceritakan pengalamanmu : </p>
             
-              <textarea name="testi" id="" class="form-control" cols="30" rows="3">
-
-              </textarea>
+              <textarea name="testi" id="testi" class="form-control" rows="3"></textarea>
           </div>
           <div class="modal-footer">
             <button class="btn btn-sm btn-info float-right" type="button" id="btnSimpanTesti">Beri testimoni</button>

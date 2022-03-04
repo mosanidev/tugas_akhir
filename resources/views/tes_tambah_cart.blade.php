@@ -9,7 +9,8 @@
 <body>
     <form method="POST" action="{{ route('addCart') }}">
         @csrf
-        <input type="text" name="barang_id" value="2">
+        <input type="text" name="barang_id" value="15">
+        <input type="text" name="qty" value="2">
         <button type="submit">submit</button>
     </form>
 </body>

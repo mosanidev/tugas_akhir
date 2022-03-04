@@ -18,7 +18,7 @@
                                 <select class="form-control" name="barang_asal" id="barangAsal">
                                     <option selected disabled>Pilih Barang Asal</option>
                                     @foreach($detail_pembelian as $item)
-                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}" data-jumlah-stok="{{ $item->jumlah_stok_di_gudang }}">{{ $item->kode." - ".$item->nama }}</option>
+                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}" data-jumlah-stok="{{ $item->jumlah_stok }}">{{ $item->kode." - ".$item->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>

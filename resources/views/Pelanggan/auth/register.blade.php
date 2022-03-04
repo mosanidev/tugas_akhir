@@ -97,7 +97,7 @@
 
     <script>
         $("#tanggal_lahir").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true
         });
 

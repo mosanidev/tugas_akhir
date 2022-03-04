@@ -149,7 +149,7 @@
             {
                 total += parseInt(arrBarangRetur[i].subtotal);
 
-                let tglKadaluarsa = arrBarangRetur[i].tanggal_kadaluarsa;
+                let tglKadaluarsa = arrBarangRetur[i].barang_tanggal_kadaluarsa;
 
                 if(arrBarangRetur[i].tanggal_kadaluarsa == "9999-12-12")
                 {

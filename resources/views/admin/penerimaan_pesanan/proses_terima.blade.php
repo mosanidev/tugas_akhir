@@ -96,37 +96,11 @@
                   Rp <input type="number" class="form-control d-inline ml-1" name="ppn" value="{{ $pemesanan[0]->ppn }}" id="inputPPN" min="0" step="100" style="width: 95.8%;" required>
                 </div>
               </div>
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Ongkos Kirim</label>
-                <div class="col-sm-8">
-                  Rp <input type="number" class="form-control d-inline ml-1" name="ongkos_kirim" value="{{ $pemesanan[0]->ongkos_kirim }}" id="inputOngkosKirim" min="0" step="100" style="width: 95.8%;" required>
-                </div>
-              </div>
           <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total + Ongkos Kirim - (Diskon Potongan Harga + PPN)) </label>
+              <label class="col-sm-4 col-form-label">Total <br> Total - (Diskon Potongan Harga + PPN) </label>
               <div class="col-sm-8">
                   <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
                   <input type="text" class="form-control" id="totalAkhirRupiah" value="Rp 0" readonly>
-              </div>
-          </div>
-          <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Uang muka</label>
-              <div class="col-sm-8">
-                  Rp <input type="number" class="form-control d-inline ml-1" name="uang_muka" id="uangMuka" value="0" min="0" step="100" style="width: 95.8%;" required>
-              </div>
-          </div>
-          <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Total terbayar</label>
-              <div class="col-sm-8">
-                  <input type="hidden" class="form-control" id="totalTerbayar" name="total_terbayar" value="0" readonly>
-                  <input type="text" class="form-control" id="totalTerbayarRupiah" value="Rp 0" readonly>
-              </div>
-          </div>
-          <div class="form-group row">
-              <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
-              <div class="col-sm-8">
-                  <input type="hidden" class="form-control" id="sisaBelumBayar" name="sisa_belum_bayar" value="0" readonly>
-                  <input type="text" class="form-control" id="sisaBelumBayarRupiah" value="Rp 0" readonly>
               </div>
           </div>
 
@@ -141,7 +115,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                  <th>Barang</th>
+                                  <th class="w-50">Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Pesan</th>
                                   <th>Diskon Potongan Harga</th>
@@ -212,12 +186,12 @@
         }
 
         $('#datepickerTglTerima').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true
         });
 
         $('#datepickerTglJatuhTempo').datepicker({
-          format: 'yyyy-mm-dd',
+          format: 'dd-mm-yyyy',
           autoclose: true
         });
 
@@ -252,10 +226,6 @@
             {
               toastr.error("Harap isi PPN terlebih dahulu", "Error", toastrOptions);
             }
-            else if($('#inputOngkosKirim').val() == "")
-            {
-              toastr.error("Harap isi ongkos kirim terlebih dahulu", "Error", toastrOptions);
-            }
             else if($('#uangMuka').val() == "")
             {
               toastr.error("Harap isi uang muka terlebih dahulu", "Error", toastrOptions);
@@ -277,16 +247,7 @@
 
             $('#dataBarangDiterima').val(JSON.stringify(barangDiterima));
 
-            // barangTidakDiterima.forEach(function(item, index, arr){
-            //     if(barangTidakDiterima[index]['kuantitas'] == 0)
-            //     {
-            //       delete barangTidakDiterima[index]; 
-            //     }
-            // });
-
             $('#dataDetailPenerimaan').val(JSON.stringify(loadDetailPenerimaaan()));
-
-            // $('#dataBarangTidakDiterima').val(JSON.stringify(barangTidakDiterima));
 
             $('#formTambah').submit();
 
@@ -319,7 +280,7 @@
         {
           for(let i = 0; i < barangDiterima.length; i++)
           {
-            if(barangDiterima[i].tanggal_kadaluarsa != "") 
+            if(barangDiterima[i].tanggal_kadaluarsa != "9999-12-12") 
             {
               tglKadaluarsa = barangDiterima[i].tanggal_kadaluarsa;
             }
@@ -368,29 +329,12 @@
         let total = parseInt($('#total').val());
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let ongkosKirim = parseInt($('#inputOngkosKirim').val());
         let uangMuka = parseInt($('#uangMuka').val());
 
-        let totalAkhir = (total + ongkosKirim) - (diskon + ppn);
+        let totalAkhir = total - (diskon + ppn);
 
         $('#totalAkhir').val(totalAkhir);
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
-        
-        if(uangMuka == 0)
-        {
-            $('#totalTerbayar').val(0);  
-            $('#totalTerbayarRupiah').val(convertAngkaToRupiah(0));
-        }
-        else 
-        {
-            let totalTerbayar =  uangMuka;
-            let sisaBelumBayar = totalAkhir - uangMuka;
-
-            $('#sisaBelumBayar').val(sisaBelumBayar);
-            $('#totalTerbayar').val(totalTerbayar);
-            $('#sisaBelumBayarRupiah').val(convertAngkaToRupiah(sisaBelumBayar));  
-            $('#totalTerbayarRupiah').val(convertAngkaToRupiah(totalTerbayar));
-        }
 
     }
 
@@ -492,20 +436,6 @@
       {
           toastr.error("Harap menambahkan barang yang telah diterima terlebih dahulu", "Gagal", toastrOptions);
           $('#inputDiskon').val(0);
-      }
-      else
-      {
-          calculate();
-      }
-
-    });
-
-    $('#inputOngkosKirim').on('change', function() {
-
-      if(barangDiterima.length == 0)
-      {
-          toastr.error("Harap menambahkan barang yang telah diterima terlebih dahulu", "Gagal", toastrOptions);
-          $('#inputOngkosKirim').val(0);
       }
       else
       {

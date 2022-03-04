@@ -20,10 +20,24 @@ class AdminPembelianController extends Controller
                         ->select('pembelian.*', 'supplier.nama as nama_supplier')
                         ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
                         ->get();
-                        
-        $supplier = DB::table('supplier')->get();
 
-        return view('admin.pembelian.index', ['pembelian'=>$pembelian, 'supplier'=>$supplier]);
+        $cariNomorNota = DB::table('pembelian')
+                            ->select(DB::raw('max(pembelian.id) as nomor_nota'))
+                            ->get();
+
+        $nomorNota = $cariNomorNota[0]->nomor_nota;
+
+        if($nomorNota == null)
+        {
+            $nomorNota = 1;
+        }
+        else{
+            $nomorNota += 1;
+        }
+
+        $supplier = DB::table('supplier')->where('jenis', '=', 'Perusahaan')->get();
+                        
+        return view('admin.pembelian.index', ['pembelian'=>$pembelian, 'supplier'=>$supplier, 'nomor_nota'=>$nomorNota]);
     }
 
     /**
@@ -61,24 +75,98 @@ class AdminPembelianController extends Controller
      */
     public function store(Request $request)
     {
-        $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
-
         $idPembelian = DB::table('pembelian')
                         ->insertGetId([
                             'id' => $request->id,
                             'nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier,
                             'supplier_id' => $request->supplier_id,
-                            'tanggal' => $request->tanggalBuat,
+                            'tanggal' => \Carbon\Carbon::parse($request->tanggalBuat)->format('Y-m-d'),
+                            'metode_pembayaran' => $request->metodePembayaran,
+                            'status_bayar' => 'Belum lunas',
+                            'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($request->tanggalJatuhTempo)->format('Y-m-d')
+                        ]);
+
+        return redirect()->route('pembelian.addBarang', ['pembelian'=>$idPembelian])->with(['success' => 'Data pembelian berhasil ditambah']);
+    }
+
+    public function addBarang($id)
+    {
+        $pembelian = DB::table('pembelian')
+                        ->select('pembelian.*', 'supplier.nama as nama_supplier')
+                        ->where('pembelian.id', '=', $id)
+                        ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
+                        ->get();
+
+        $barang = DB::table('barang')
+                    ->where('supplier_id', '=', $pembelian[0]->supplier_id)
+                    ->get(); 
+
+        return view('admin.pembelian.tambah_barang_dibeli',['pembelian' => $pembelian, 'barang'=> $barang]);
+    }
+
+    public function storeFull(Request $request)
+    {
+        $dataBarang = json_decode($request->barang, true);
+
+        for ($i = 0; $i < count((array) $dataBarang); $i++)
+        {
+            $tglKadaluarsa = $dataBarang[$i]['tanggal_kadaluarsa'] != "Tidak ada" ? $dataBarang[$i]['tanggal_kadaluarsa'] : '9999-12-12 00:00:00';
+
+            $selectBarang = DB::table('barang_has_kadaluarsa')
+                            ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                            ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
+                            ->get();
+
+            if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
+            {
+                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->insert([
+                                        'barang_id' => $dataBarang[$i]['barang_id'],
+                                        'tanggal_kadaluarsa' => $tglKadaluarsa,
+                                        'jumlah_stok' => $dataBarang[$i]['kuantitas']
+                                    ]);
+                 
+            }
+            else // jika ada barang yang sama maka tambah kuantitas
+            {
+                $addStokBarang = DB::table('barang_has_kadaluarsa')
+                                    ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
+                                    ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
+                                    ->increment('jumlah_stok', $dataBarang[$i]['kuantitas']);  
+
+            }
+
+            $insertDetailPembelian = DB::table('detail_pembelian')
+                                            ->insert([
+                                                'pembelian_id'          => $request->id,
+                                                'barang_id'             => $dataBarang[$i]['barang_id'],
+                                                'kuantitas'             => $dataBarang[$i]['kuantitas'],
+                                                'tanggal_kadaluarsa'    => $tglKadaluarsa,
+                                                'harga_beli'            => $dataBarang[$i]['harga_beli'],
+                                                'diskon_potongan_harga' => $dataBarang[$i]['diskon_potongan_harga'],
+                                                'subtotal'              => $dataBarang[$i]['subtotal']
+                                            ]);
+
+        }
+
+        return redirect()->route('pembelian.index')->with(['success'=>'Data pembelian berhasil ditambah']);
+    }
+
+
+    public function storeOld(Request $request)
+    {
+        $idPembelian = DB::table('pembelian')
+                        ->insertGetId([
+                            'id' => $request->id,
+                            'nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier,
+                            'supplier_id' => $request->supplier_id,
+                            'tanggal' => \Carbon\Carbon::parse($request->tanggalBuat)->format('Y-m-d'),
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
-                            'ongkos_kirim' => $request->ongkos_kirim,
                             'metode_pembayaran' => $request->metodePembayaran,
-                            'status_bayar' => $status_bayar,
-                            'tanggal_jatuh_tempo' => $request->tanggalJatuhTempo,
-                            'sisa_belum_bayar' => $request->sisa_belum_bayar,
+                            'status_bayar' => 'Belum lunas',
+                            'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($request->tanggalJatuhTempo)->format('Y-m-d'),
                             'total' => $request->total,
-                            'uang_muka' => $request->uang_muka,
-                            'total_terbayar' => $request->total_terbayar,
                             'users_id' => auth()->user()->id
                         ]);
 
@@ -95,21 +183,20 @@ class AdminPembelianController extends Controller
 
             if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
             {
-
                 $insertStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->insert([
                                         'barang_id' => $dataBarang[$i]['barang_id'],
                                         'tanggal_kadaluarsa' => $tglKadaluarsa,
-                                        'jumlah_stok_di_gudang' => $dataBarang[$i]['kuantitas']
+                                        'jumlah_stok' => $dataBarang[$i]['kuantitas']
                                     ]);
                  
             }
             else // jika ada barang yang sama maka tambah kuantitas
             {
-                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                $addStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
                                     ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                    ->increment('jumlah_stok_di_gudang', $dataBarang[$i]['kuantitas']);  
+                                    ->increment('jumlah_stok', $dataBarang[$i]['kuantitas']);  
 
             }
 
@@ -126,7 +213,7 @@ class AdminPembelianController extends Controller
 
         }
 
-        return redirect()->route('pembelian.index')->with(['success'=>'Data berhasil ditambah']);
+        return redirect()->route('pembelian.index')->with(['success'=>'Data pembelian berhasil ditambah']);
     }
 
     /**
@@ -150,8 +237,8 @@ class AdminPembelianController extends Controller
                         ->select('pembelian.*', 
                                  'supplier.nama as nama_supplier', 
                                  'retur_pembelian.id as retur_pembelian_id', 
-                                 'retur_pembelian.nomor_nota_retur',
-                                 'retur_pembelian.total_retur')
+                                 'retur_pembelian.nomor_nota as nomor_nota_retur',
+                                 'retur_pembelian.total as total_retur')
                         ->join('supplier', 'pembelian.supplier_id', '=', 'supplier.id')
                         ->where('pembelian.id', $id)
                         ->join('retur_pembelian', 'pembelian.id', '=', 'retur_pembelian.pembelian_id')
@@ -168,7 +255,14 @@ class AdminPembelianController extends Controller
         }
 
         $detailPembelian = DB::table('detail_pembelian')
-                            ->select('barang.kode', 'barang.nama', 'detail_pembelian.tanggal_kadaluarsa', 'detail_pembelian.harga_beli', 'detail_pembelian.diskon_potongan_harga', 'detail_pembelian.kuantitas', 'detail_pembelian.subtotal')
+                            ->select('barang.kode', 
+                                     'barang.nama', 
+                                     'detail_pembelian.tanggal_kadaluarsa', 
+                                     'detail_pembelian.harga_beli', 
+                                     'detail_pembelian.diskon_potongan_harga', 
+                                     'detail_pembelian.kuantitas', 
+                                     'detail_pembelian.subtotal',
+                                     'barang.barang_konsinyasi')
                             ->where('pembelian.id', $id)
                             ->join('pembelian', 'pembelian.id', '=', 'detail_pembelian.pembelian_id')
                             ->join('barang', 'barang.id', '=', 'detail_pembelian.barang_id')
@@ -206,7 +300,11 @@ class AdminPembelianController extends Controller
         }
 
         $supplier = DB::table('supplier')->where('jenis', '=', 'Perusahaan')->get();
-        $barang = DB::table('barang')->where('barang_konsinyasi', '=', 0)->get();
+        $barang = DB::table('barang')
+                    ->where('barang_konsinyasi', '=', 0)
+                    ->where('supplier_id', '=', $pembelian[0]->supplier_id)
+                    ->get();
+                    
         $detail_pembelian = DB::table('detail_pembelian')
                             ->select('detail_pembelian.barang_id',
                                      'barang.kode as barang_kode',
@@ -229,53 +327,33 @@ class AdminPembelianController extends Controller
                             ->where('pembelian_id', '=', $id)
                             ->get();
 
-        for($i = 0; $i < count(array($detailPembelian)); $i++)
+        for($i = 0; $i < count($detailPembelian); $i++)
         {
-            $stokDiGudang = DB::table('barang_has_kadaluarsa')
-                            ->select('jumlah_stok_di_gudang')
+            $stok = DB::table('barang_has_kadaluarsa')
+                            ->select('jumlah_stok')
                             ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
                             ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
                             ->get();
 
-            $stokDiRak = DB::table('barang_has_kadaluarsa')
-                            ->select('jumlah_stok_di_rak')
-                            ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
-                            ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
-                            ->get();
+            $qtyStok = $stok[0]->jumlah_stok;
 
-            $qtyGudang = $stokDiGudang[0]->jumlah_stok_di_gudang;
-
-            if($detailPembelian[$i]->kuantitas > $qtyGudang)
+            if($qtyStok-$detailPembelian[$i]->kuantitas < 0)
             {
-                $kurangiStokGudang = DB::table('barang_has_kadaluarsa')
+                $ubahStok = DB::table('barang_has_kadaluarsa')
                                 ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
                                 ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
                                 ->update([
-                                    'jumlah_stok_di_gudang' => 0
-                                ]);
-            
-                $qtyGudang -= $detailPembelian[$i]->kuantitas;
-
-                $kurangiStokRak = DB::table('barang_has_kadaluarsa')
-                                    ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
-                                    ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
-                                    ->update([
-                                        'jumlah_stok_di_rak' => $qtyGudang
-                                    ]);
+                                    'jumlah_stok' => 0
+                                ]);    
             }
             else 
             {
-                $kurangiStokGudang = DB::table('barang_has_kadaluarsa')
+                $kurangiStok = DB::table('barang_has_kadaluarsa')
                                 ->where('barang_id', '=', $detailPembelian[$i]->barang_id)
                                 ->where('tanggal_kadaluarsa', '=', $detailPembelian[$i]->tanggal_kadaluarsa)
-                                ->decrement('jumlah_stok_di_gudang', $detailPembelian[$i]->kuantitas);
-
+                                ->decrement('jumlah_stok', $detailPembelian[$i]->kuantitas);
             }
         }
-
-        $deleteDetailPembelian = DB::table('detail_pembelian')
-                                        ->where('pembelian_id', '=', $id)
-                                        ->delete();
     }
 
     /**
@@ -289,20 +367,21 @@ class AdminPembelianController extends Controller
     {
         $this->reset($id);
 
-        $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
+        $deleteDetailPembelian = DB::table('detail_pembelian')
+                                        ->where('pembelian_id', '=', $id)
+                                        ->delete();
 
-        $update = DB::table('pembelian')->where('id', $id)
+        $update = DB::table('pembelian')
+                        ->where('id', $id)
                         ->update(['nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier, 
                                   'tanggal'=>$request->tanggal_buat, 
                                   'tanggal_jatuh_tempo'=> $request->tanggal_jatuh_tempo, 
                                   'metode_pembayaran' => $request->metode_pembayaran,
                                   'diskon' => $request->diskon,             
                                   'ppn' => $request->ppn, 
-                                  'supplier_id'=>$request->supplier_id,
-                                  'status_bayar' => $status_bayar,
-                                  'total' => $request->total,
-                                  'uang_muka' => $request->uang_muka,
-                                  'total_terbayar' => $request->total_terbayar,]);
+                                  'status_bayar' => 'Belum lunas',
+                                  'total' => $request->total
+                                ]);
 
         $dataBarang = json_decode($request->barang, true);
 
@@ -312,26 +391,25 @@ class AdminPembelianController extends Controller
 
             $selectBarang = DB::table('barang_has_kadaluarsa')
                             ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
-                            ->where('tanggal_kadaluarsa', '=', $dataBarang[$i]['tanggal_kadaluarsa'])
+                            ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
                             ->get();
 
             if (count($selectBarang) == 0) // jika tidak ada barang yang sama maka tambah baru
             {
-
                 $insertStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->insert([
                                         'barang_id' => $dataBarang[$i]['barang_id'],
                                         'tanggal_kadaluarsa' => $tglKadaluarsa,
-                                        'jumlah_stok_di_gudang' => $dataBarang[$i]['kuantitas']
+                                        'jumlah_stok' => $dataBarang[$i]['kuantitas']
                                     ]);
                  
             }
             else // jika ada barang yang sama maka tambah kuantitas
             {
-                $insertStokBarang = DB::table('barang_has_kadaluarsa')
+                $addStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $dataBarang[$i]['barang_id'])
                                     ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                    ->increment('jumlah_stok_di_gudang', $dataBarang[$i]['kuantitas']);  
+                                    ->increment('jumlah_stok', $dataBarang[$i]['kuantitas']);  
 
             }
 
@@ -356,7 +434,8 @@ class AdminPembelianController extends Controller
         $lunasi = DB::table('pembelian')
                     ->where('id', '=', $id)
                     ->update([
-                        'status_bayar' => 'Sudah lunas'
+                        'status_bayar' => 'Sudah lunas',
+                        'tanggal_pelunasan' => \Carbon\Carbon::parse($request->tanggal_pelunasan)->format('Y-m-d')
                     ]);
 
         return redirect()->back()->with(['success' => 'Pembelian berhasil dilunasi']);

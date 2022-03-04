@@ -61,7 +61,7 @@ class AdminDetailReturPembelianController extends Controller
             $updateStokBarang = DB::table('barang_has_kadaluarsa')
                                     ->where('barang_id', '=', $barangRetur[$i]['barang_id'])
                                     ->where('tanggal_kadaluarsa', '=', $tglKadaluarsa)
-                                    ->decrement('jumlah_stok_di_gudang',  $barangRetur[$i]['jumlah_retur']);
+                                    ->decrement('jumlah_stok',  $barangRetur[$i]['jumlah_retur']);
         }
 
         $updatePembelian = DB::table('pembelian')
@@ -98,7 +98,7 @@ class AdminDetailReturPembelianController extends Controller
                                         ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
                                         ->get();
 
-            $qtyBrgAsal = $cariBarangAsal[0]->jumlah_stok_di_gudang;
+            $qtyBrgAsal = $cariBarangAsal[0]->jumlah_stok;
 
             if($qtyBrgAsal-$tukarBarang[$i]['kuantitas_barang_ganti'] == 0)
             {
@@ -112,7 +112,7 @@ class AdminDetailReturPembelianController extends Controller
                 $kurangiStokBarangAsal = DB::table('barang_has_kadaluarsa')
                                         ->where('barang_id', '=', $tukarBarang[$i]['barang_asal_id'])
                                         ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_asal'])
-                                        ->decrement('jumlah_stok_di_gudang',  $tukarBarang[$i]['kuantitas_barang_ganti']);
+                                        ->decrement('jumlah_stok',  $tukarBarang[$i]['kuantitas_barang_ganti']);
             }
 
             $cariBarangygSama = DB::table('barang_has_kadaluarsa')
@@ -125,7 +125,7 @@ class AdminDetailReturPembelianController extends Controller
                 $tambahBarangGanti = DB::table('barang_has_kadaluarsa')
                                         ->where('barang_id', '=', $tukarBarang[$i]['barang_ganti_id'])
                                         ->where('tanggal_kadaluarsa', '=', $tukarBarang[$i]['tanggal_kadaluarsa_ganti'])
-                                        ->increment('jumlah_stok_di_gudang', $tukarBarang[$i]['kuantitas_barang_ganti']);
+                                        ->increment('jumlah_stok', $tukarBarang[$i]['kuantitas_barang_ganti']);
             }
             else 
             {
@@ -133,7 +133,7 @@ class AdminDetailReturPembelianController extends Controller
                                         ->insert([
                                             'barang_id' => $tukarBarang[$i]['barang_ganti_id'],
                                             'tanggal_kadaluarsa' => $tukarBarang[$i]['tanggal_kadaluarsa_ganti'],
-                                            'jumlah_stok_di_gudang' => $tukarBarang[$i]['kuantitas_barang_ganti']
+                                            'jumlah_stok' => $tukarBarang[$i]['kuantitas_barang_ganti']
                                         ]);
             }
                                     

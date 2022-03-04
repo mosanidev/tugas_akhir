@@ -11,6 +11,14 @@
           <div class="modal-body">
             <form method="POST" action="" id="formLunasi"> 
                 @csrf
+
+                <div class="form-group row">
+                  <p class="col-sm-4 col-form-label">Tanggal Pelunasan</p>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name="tanggal_pelunasan" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly> 
+                  </div>
+                </div>
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Nomor Pembelian</p>
                     <div class="col-sm-8">

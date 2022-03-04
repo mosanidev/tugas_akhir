@@ -108,22 +108,22 @@
   });
 
   $('#datepickerTgl').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
   $('#datepickerTglJatuhTempo').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
   $('#datepickerTglJatuhTempoUbah').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
   $('#datepickerTglUbah').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
@@ -213,7 +213,9 @@
 
   $(document).ready(function() {
 
-    let table = $('#dataTable').DataTable({});
+    let table = $('#dataTable').DataTable({
+      'order': [[1, 'desc']]
+    });
 
     let filter = $('.selectFilter :selected').val();
 

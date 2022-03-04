@@ -335,7 +335,7 @@ class AdminPengirimanController extends Controller
                 $kurangiStok = DB::table('barang_has_kadaluarsa')
                                 ->where('barang_id', '=', $item->barang_id)
                                 ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
-                                ->decrement('jumlah_stok_di_gudang', $item->kuantitas);
+                                ->decrement('jumlah_stok', $item->kuantitas);
             }
         }
 

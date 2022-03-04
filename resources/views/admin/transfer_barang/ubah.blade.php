@@ -100,10 +100,6 @@
 
     <script type="text/javascript">
 
-        // $('#datepickerTgl').datepicker({
-        //     format: 'yyyy-mm-dd',
-        //     autoclose: true
-        // });
         $('#btnTambahBarangDipindah').on('click', function() {
 
             $('#selectBarang').val("Pilih barang").change();

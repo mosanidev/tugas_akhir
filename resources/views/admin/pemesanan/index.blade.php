@@ -109,22 +109,22 @@
   });
 
   $('#datepickerTgl').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
   $('#datepickerTglJatuhTempo').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
   $('#datepickerTglJatuhTempoUbah').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 
   $('#datepickerTglUbah').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
   });
 

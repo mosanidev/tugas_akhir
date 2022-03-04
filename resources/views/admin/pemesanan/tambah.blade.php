@@ -41,7 +41,7 @@
               </div>
 
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Bayar</label>
+                <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
                       <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
@@ -87,20 +87,14 @@
                   Rp <input type="number" class="form-control d-inline ml-1" name="diskon" value="0" id="inputDiskon" min="0" step="100" style="width: 95.8%;" required>
                 </div>
               </div>
-              <div class="form-group row">
+            <div class="form-group row">
                 <label class="col-sm-4 col-form-label">PPN</label>
                 <div class="col-sm-8">
-                  Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="0" min="0" step="100" style="width: 95.8%;" required>
+                    Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="0" min="0" step="100" style="width: 95.8%;" required>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Ongkos Kirim</label>
-                <div class="col-sm-8">
-                  Rp <input type="number" class="form-control d-inline ml-1" name="ongkos_kirim" id="inputOngkosKirim" value="0" min="0" step="100" style="width: 95.8%;" required>
-                </div>
-              </div>
+            </div>
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total + Ongkos Kirim - (Diskon Potongan Harga + PPN)) </label>
+                <label class="col-sm-4 col-form-label">Total <br> Total - (Diskon Potongan Harga + PPN) </label>
                 <div class="col-sm-8">
                     <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
                     <input type="text" class="form-control" id="totalAkhirRupiah" value="Rp 0" readonly>
@@ -119,10 +113,9 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                  <th style="width: 10px">No</th>
-                                  <th>Barang</th>
+                                  <th class="w-50">Barang</th>
                                   <th>Harga Beli</th>
-                                  <th>Potongan Harga</th>
+                                  <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
                                   <th>Subtotal</th>
                                   <th>Aksi</th>
@@ -151,24 +144,24 @@
     $(document).ready(function() {
 
         $('#datePickerTgl').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true
         });
 
         $('#datepickerTglPerkiraanTerima').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true,
             startDate: new Date()
         });
 
         $('#datepickerTglJatuhTempo').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true,
             startDate: new Date()
         });
 
         $('#tanggal_kadaluarsa').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true,
             enableOnReadonly: false 
         }); 
@@ -251,12 +244,12 @@
 
     $('#btnTambah').on('click', function() {
 
-        $("#barang option").eq(0).prop('selected', true).change();
+        $('#barang').val("Pilih barang").trigger("change");
         $("#harga_pesan").val("0");
         $("#diskon_potongan_harga").val("0");
         $("#harga_pesan_akhir").val("Rp 0");
         $("#kuantitas").val("1");
-        $('#subtotal').val("");
+        $('#subtotal').val("Rp 0");
         $('#tanggal_kadaluarsa').val("");
 
     });
@@ -274,7 +267,6 @@
                 num += 1;
                 total += barangDipesan[i].subtotal;
                 rowTable += `<tr>    
-                                <td>` + num +  `</td>
                                 <td>` + barangDipesan[i].barang_kode + " - " + barangDipesan[i].barang_nama + `</td>
                                 <td>` + convertAngkaToRupiah(barangDipesan[i].harga_pesan) +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDipesan[i].diskon_potongan_harga) +  `</td>
@@ -324,28 +316,13 @@
 
     });
 
-    $('#inputOngkosKirim').on('change', function() {
-
-        if(barangDipesan.length == 0)
-        {
-            toastr.error("Harap menambahkan barang yang dipesan terlebih dahulu", "Gagal", toastrOptions);
-            $('#inputOngkosKirim').val(0);
-        }
-        else 
-        {
-            calculate();
-        }
-
-    });
-
     function calculate()
     {
         let total = parseInt($('#total').val());
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let ongkosKirim = parseInt($('#inputOngkosKirim').val());
 
-        let totalAkhir = (total + ongkosKirim) - (diskon + ppn);
+        let totalAkhir = total - (diskon + ppn);
 
         $('#totalAkhir').val(totalAkhir);
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
@@ -365,25 +342,6 @@
         }
 
     });
-
-    $('#selectStatusBayar').on('change', function() {
-
-        const statusBayar = $(this).val();
-        
-        if(statusBayar == "Lunas sebagian")
-        {
-            $(".divTotalSudahDibayar").toggleClass('d-none');
-        }
-        else if(statusBayar != "Lunas sebagian")
-        {
-            if(!$(".divTotalSudahDibayar").hasClass("d-none"))
-            {
-                $(".divTotalSudahDibayar").toggleClass('d-none');
-            }
-        }
-
-    });
-
     
 </script>
 @endsection

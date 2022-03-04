@@ -26,7 +26,7 @@
                 <label class="mt-1">Tanggal</label>
             </div>
             <div class="col-8">
-                <input type="text" name="tanggal" class="form form-control" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" readonly>                
+                <input type="text" name="tanggal" class="form form-control" value="{{ Carbon\Carbon::now()->format('d-m-Y') }}" readonly>                
             </div>
         </div>
         <br>

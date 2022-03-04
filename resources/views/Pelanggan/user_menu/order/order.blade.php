@@ -85,6 +85,7 @@
 
 
 @push('script_user_menu')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script type="text/javascript">
 
@@ -242,7 +243,7 @@
                                                         Tanggal
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") +` WIB</p>
+                                                        <p>`+ moment(data.transaksi[0].tanggal).format("DD MMMM YYYY HH:mm") +` WIB</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -275,7 +276,7 @@
                                                     <div class="col-7">
                                                         <p>` + data.transaksi[0].status_jual + `</p>\n
                                                         <p>Harap ambil pesanan anda di toko</p>\n
-                                                        <p>Jika pesanan belum diambil hingga ` + moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').add(3, 'days').format("DD MMMM YYYY") + ` ` + moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').add(3, 'days').format("HH:mm") + `, maka bukan tanggung jawab dari toko</p>
+                                                        <p>Jika pesanan belum diambil hingga ` + moment(data.transaksi[0].tanggal).add(3, 'days').format("DD MMMM YYYY") + ` ` + moment(data.transaksi[0].tanggal).add(3, 'days').format("HH:mm") + `, maka bukan tanggung jawab dari toko</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -291,7 +292,7 @@
                                                         Waktu Lunas
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>` + moment(data.transaksi[0].waktu_lunas).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") + ` WIB</p>
+                                                        <p>` + moment(data.transaksi[0].waktu_lunas).format("DD MMMM YYYY HH:mm") + ` WIB</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -323,7 +324,7 @@
                                                         Tanggal
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") +` WIB</p>
+                                                        <p>`+ moment(data.transaksi[0].tanggal).format("DD MMMM YYYY HH:mm") +` WIB</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -356,7 +357,7 @@
                                                         Waktu Lunas
                                                     </div>
                                                     <div class="col-7">
-                                                        <p>` + moment(data.transaksi[0].waktu_lunas).tz('Asia/Jakarta').format("DD MMMM YYYY HH:mm:ss") + ` WIB</p>
+                                                        <p>` + moment(data.transaksi[0].waktu_lunas).format("DD MMMM YYYY HH:mm") + ` WIB</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -392,7 +393,7 @@
                                                             Tanggal
                                                         </div>
                                                         <div class="col-5">
-                                                            <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                            <p>`+ moment(data.transaksi[0].tanggal).format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).format("HH:mm") +` WIB </p>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -461,7 +462,7 @@
                                                                             Batasan Waktu Pembayaran
                                                                         </div>
                                                                         <div class="col-5">
-                                                                            <p>` + moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                                            <p>` + moment(data.transaksi[0].batasan_waktu).format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].batasan_waktu).format("HH:mm") +` WIB </p>
                                                                         </div>
                                                                     </div>`;
                             }
@@ -472,7 +473,7 @@
                                                         Tanggal
                                                     </div>
                                                     <div class="col-5">
-                                                        <p>`+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                        <p>`+ moment(data.transaksi[0].tanggal).format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].tanggal).format("HH:mm") +` WIB </p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -526,7 +527,7 @@
                                                                         Batasan Waktu Pembayaran
                                                                     </div>
                                                                     <div class="col-5">
-                                                                        <p>` + moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].batasan_waktu).tz('Asia/Jakarta').format("HH:mm") +` WIB </p>
+                                                                        <p>` + moment(data.transaksi[0].batasan_waktu).format("DD MMMM YYYY") + ` `+ moment(data.transaksi[0].batasan_waktu).format("HH:mm") +` WIB </p>
                                                                     </div>
                                                                 </div>`;
                             }
@@ -576,7 +577,7 @@
 
                             if(data.pengiriman[0].nama_shipper == 'Gojek' || data.pengiriman[0].nama_shipper == 'Grab')
                             {
-                                estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
+                                estimasiTiba = moment(data.pengiriman[0].estimasi_tiba).format("DD MMMM YYYY HH:mm") + " WIB";
                             }
                             else 
                             {
@@ -634,7 +635,7 @@
                             {
                                 if(data.pengiriman[i].nama_shipper == 'Gojek' ||data.pengiriman[i].nama_shipper == 'Grab')
                                 {
-                                    estimasiTiba = moment(data.pengiriman[i].estimasi_tiba).format("DD MMMM YYYY HH:mm:ss") + " WIB";
+                                    estimasiTiba = moment(data.pengiriman[i].estimasi_tiba).format("DD MMMM YYYY HH:mm") + " WIB";
                                 }
                                 else 
                                 {
@@ -674,6 +675,7 @@
                                     }
                                 }
 
+                                console.log(data);
                                 subTotalProduk += data.barang[i].subtotal;
 
                                 $('.rowPengiriman').append(`<h5>Pengiriman</h5>

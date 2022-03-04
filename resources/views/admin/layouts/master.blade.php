@@ -109,13 +109,13 @@
                         <a class="collapse-item" href="{{ route('periode_diskon.index') }}">Periode Diskon</a>
                         <a class="collapse-item" href="{{ route('stok.barang.index') }}">Stok</a>
                         <a class="collapse-item" href="{{ route('stok_opname.index') }}">Stok Opname</a>
-                        <a class="collapse-item" href="{{ route('transfer_barang.index') }}">Transfer Barang</a>
+                        <a class="collapse-item d-none" href="{{ route('transfer_barang.index') }}">Transfer Barang</a>
                         <a class="collapse-item" href="{{ route('kadaluarsa.barang.index') }}">Kadaluarsa Barang</a>
                     </div>
                 </div>
             </li>
 
-            <li class="nav-item d-none">
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePenjualan"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-solid fa-circle"></i>
@@ -132,11 +132,11 @@
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link" href="{{ route('penjualan.index') }}">
                 <i class="fas fa-solid fa-circle"></i>
                 <span>Penjualan Online</span></a>
-            </li>
+            </li> --}}
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
@@ -299,8 +299,8 @@
                 </div>
                 <div class="modal-body">Apakah anda yakin ingin logout ?</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="{{ route('admin.logout') }}">Logout</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tidak</button>
+                    <a class="btn btn-primary" href="{{ route('admin.logout') }}">Iya</a>
                 </div>
             </div>
         </div>

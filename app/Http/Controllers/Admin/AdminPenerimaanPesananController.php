@@ -30,7 +30,6 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function create(Request $request)
     {
-        dd($request);
     }
 
     public function prosesTerima($id)
@@ -50,26 +49,6 @@ class AdminPenerimaanPesananController extends Controller
         return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
     }
 
-    // public function prosesTerimaSebagian($id)
-    // {
-    //     $pemesanan = DB::table('pemesanan')
-    //                     ->select('pemesanan.*', 'supplier.nama as nama_supplier')
-    //                     ->where('pemesanan.id', '=', $id)
-    //                     ->join('supplier', 'pemesanan.supplier_id', '=', 'supplier.id')
-    //                     ->get();
-
-    //     $detail_pemesanan = DB::table('detail_back_order')
-    //                             ->select('detail_back_order.*', 'back_order.pemesanan_id', 'barang.id', 'barang.kode', 'barang.nama', 'barang.harga_jual')
-    //                             ->where('back_order.pemesanan_id', '=', $id)
-    //                             ->join('barang', 'detail_back_order.barang_id', '=', 'barang.id')
-    //                             ->join('back_order', 'detail_back_order.back_order_id', '=', 'back_order.id')
-    //                             ->whereRaw('detail_back_order.back_order_id = (select max(`back_order_id`) from detail_back_order)')
-    //                             ->get(); 
-
-    //     return view('admin.penerimaan_pesanan.proses_terima', ['pemesanan' => $pemesanan, 'detail_pemesanan' => $detail_pemesanan]);
-
-    // }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -78,8 +57,6 @@ class AdminPenerimaanPesananController extends Controller
      */
     public function store(Request $request)
     {
-        $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
-
         $penerimaan_pesanan_id = DB::table('penerimaan_pemesanan')
                                         ->insertGetId([
                                             'pemesanan_id' => $request->pemesanan_id,
@@ -94,15 +71,11 @@ class AdminPenerimaanPesananController extends Controller
                             'tanggal' => $request->tanggal_terima,
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
-                            'ongkos_kirim' => $request->ongkos_kirim,
                             'metode_pembayaran' => $request->metode_pembayaran,
-                            'status_bayar' => $status_bayar,
+                            'status_bayar' => 'Belum lunas',
                             'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
-                            'sisa_belum_bayar' => $request->sisa_belum_bayar,
                             'total' => $request->total,
                             'status_retur' => 'Tidak ada retur',
-                            'uang_muka' => $request->uang_muka,
-                            'total_terbayar' => $request->total_terbayar,
                             'users_id' => auth()->user()->id
                         ]);
                                         
@@ -147,7 +120,7 @@ class AdminPenerimaanPesananController extends Controller
             {
                 $updateBarang = DB::table('barang_has_kadaluarsa')
                                 ->where('id', '=', $cariBarang[0]->id)
-                                ->increment('jumlah_stok_di_gudang', $barang_diterima[$x]['kuantitas_terima']);
+                                ->increment('jumlah_stok', $barang_diterima[$x]['kuantitas_terima']);
             }
             else 
             {
@@ -155,7 +128,7 @@ class AdminPenerimaanPesananController extends Controller
                                 ->insert([
                                     'barang_id' => $barang_diterima[$x]['barang_id'],
                                     'tanggal_kadaluarsa' => $barang_diterima[$x]['tanggal_kadaluarsa'],
-                                    'jumlah_stok_di_gudang' => $barang_diterima[$x]['kuantitas_terima']
+                                    'jumlah_stok' => $barang_diterima[$x]['kuantitas_terima']
                                 ]);
             }
             
@@ -167,7 +140,7 @@ class AdminPenerimaanPesananController extends Controller
                                 'status' => 'Telah diterima di gudang',
                              ]);
     
-        return redirect()->route('penerimaan_pesanan.index')->with(['success' => 'Data berhasil diproses']);
+        return redirect()->route('penerimaan_pesanan.index')->with(['success' => 'Data pemesanan berhasil diproses']);
     }
 
     /**

@@ -14,7 +14,7 @@ class CartController extends Controller
     {
         // ambil data barang dari db
         $barang = DB::table('barang')
-                    ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                    ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->where('barang.id', '=', $request->barang_id)
                     ->get();
@@ -125,8 +125,6 @@ class CartController extends Controller
             session()->put('cart', $cart);
 
         }
-
-        return response()->json(['status'=> 'Data berhasil dihapus']);
     }
 
     public function show()
@@ -136,7 +134,7 @@ class CartController extends Controller
         if(Auth::check())
         {
             $cart = DB::table('cart')
-                    ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as barang_stok'))
+                    ->select('cart.*', 'barang.nama as barang_nama', 'barang.foto as barang_foto', 'barang.harga_jual as barang_harga', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as barang_stok'))
                     ->join('barang', 'cart.barang_id', '=', 'barang.id')
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->where('cart.users_id', '=', auth()->user()->id)
@@ -158,7 +156,7 @@ class CartController extends Controller
     {
         // ambil data barang dari db
         $barang = DB::table('barang')
-                    ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok_di_gudang) as jumlah_stok'))
+                    ->select('barang.id', 'barang.nama', 'barang.foto', 'barang.harga_jual', 'barang.diskon_potongan_harga', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                     ->where('barang.id', '=', $request->barang_id)
@@ -168,8 +166,8 @@ class CartController extends Controller
         $status = "";
 
         $qty = isset($request->qty) ? $request->qty : 1;
-
         $total_cart = 0;
+        $total = 0;
 
         if(Auth::check()) // jika sudah login, masukkan data barang dan keranjang belanja langsung ke database
         {
@@ -183,16 +181,21 @@ class CartController extends Controller
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('users_id', '=', auth()->user()->id)->get();
     
             // query untuk memperoleh total harga di keranjang belanja milik user yang login
-            $total = DB::table('cart')->select(DB::raw('SUM(subtotal) as total'))->where('users_id', '=', auth()->user()->id)->get();
-    
-            // total harga di keranjang belanja ditambahkan dengan harga jual dari barang yang baru ditambahkan
-            $total[0]->total += $barang[0]->harga_jual-$barang[0]->diskon_potongan_harga; 
+            $total = DB::table('cart')
+                        ->select(DB::raw('SUM(subtotal) as total'))
+                        ->where('users_id', '=', auth()->user()->id)
+                        ->get();
     
             // jika total harga di keranjang belanja masih belum ada
             if($total[0]->total == null)
             {
-                $total[0]->total = $barang[0]->harga_jual-$barang[0]->diskon_potongan_harga;
+                $total = ($barang[0]->harga_jual-$barang[0]->diskon_potongan_harga)*$qty;
             } 
+            else 
+            {
+                // total harga di keranjang belanja ditambahkan dengan harga jual dari barang yang baru ditambahkan
+                $total = $total[0]->total + ($barang[0]->harga_jual-$barang[0]->diskon_potongan_harga)*$qty;
+            }
     
             // jika data keranjang belanja dengan data barang tersebut masih kosong
             if (count($cart) == 0)
@@ -200,18 +203,18 @@ class CartController extends Controller
                 $cart = DB::table('cart')->insert([
                     'barang_id'     => $request->barang_id,
                     'kuantitas'     => $qty,
-                    'subtotal'      => $barang[0]->harga_jual-$barang[0]->diskon_potongan_harga,
-                    'total'         => $total[0]->total,
+                    'subtotal'      => ($barang[0]->harga_jual-$barang[0]->diskon_potongan_harga)*$qty,
+                    'total'         => $total,
                     'users_id'      => auth()->user()->id
                 ]);
 
                 $update = DB::table('cart')
                 ->where('users_id', auth()->user()->id)
                 ->update([
-                    'total'         => $total[0]->total,
+                    'total'         => $total,
                 ]);
 
-                $status = "Barang berhasil dimasukkan ke keranjang";
+                $status = "Produk berhasil dimasukkan ke keranjang";
 
             } 
             else
@@ -229,15 +232,15 @@ class CartController extends Controller
                     $cart = DB::table('cart')
                     ->where('users_id', auth()->user()->id)
                     ->update([
-                        'total' => $total[0]->total
+                        'total' => $total
                     ]);
     
-                    $status = "Jumlah barang berhasil ditambahkan di keranjang";
+                    $status = "Jumlah produk berhasil ditambahkan di keranjang";
     
                 }
                 else 
                 {
-                    $status = "Maaf jumlah barang yang ditambahkan melebihi jumlah stok";
+                    $status = "Maaf jumlah produk yang ditambahkan melebihi jumlah stok";
     
                 }
             } 
@@ -265,7 +268,7 @@ class CartController extends Controller
                     "total" => 0
                 ];
 
-                $status = "Barang berhasil dimasukkan ke keranjang";
+                $status = "Produk berhasil dimasukkan ke keranjang";
                 
             } 
             else
@@ -286,7 +289,7 @@ class CartController extends Controller
 
                             $item->subtotal = $barang[0]->harga_jual*$item->kuantitas;
                             
-                            $status = "Maaf jumlah barang yang ditambahkan melebihi jumlah stok";
+                            $status = "Maaf jumlah produk yang ditambahkan melebihi jumlah stok";
                         } 
                         else
                         {
@@ -294,7 +297,7 @@ class CartController extends Controller
 
                             $item->kuantitas+=$qty;
 
-                            $status = "Jumlah barang berhasil ditambahkan di keranjang";
+                            $status = "Jumlah produk berhasil ditambahkan di keranjang";
                         }
 
                         break;
@@ -317,7 +320,7 @@ class CartController extends Controller
                         "total" => 0
                     ];
 
-                    $status = "Barang berhasil dimasukkan ke keranjang";
+                    $status = "Produk berhasil dimasukkan ke keranjang";
 
                 }
             }

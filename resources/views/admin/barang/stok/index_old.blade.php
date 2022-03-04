@@ -135,7 +135,7 @@
                             <td class="d-none">{{$item->barang_konsinyasi}}</td>
                             <td>{{$item->satuan}}</td>
                             <td>{{ $item->tanggal_kadaluarsa }}</td>
-                            <td>{{  $item->jumlah_stok_di_gudang }}</td>
+                            <td>{{  $item->jumlah_stok }}</td>
                             <td>{{ $item->jumlah_stok_di_rak }}</td>
                             <td>{{ $item->batasan_stok_minimum }}</td>
                         </tr>

@@ -233,7 +233,7 @@
       startDate: moment().startOf('days'),
       endDate: moment().startOf('days'),
       locale: {
-        format: 'YYYY-MM-DD'
+        format: 'DD-MM-YYYY'
       }
     });
 

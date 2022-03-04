@@ -150,6 +150,8 @@
 
 @push('script')
 
+    <!-- ckeditor -->
+    <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
     <script type="text/javascript">
 
         $.ajaxSetup({
@@ -160,7 +162,6 @@
 
         $(document).ready(function() {
 
-            console.log("{{ $show_modal_testimoni }}");
             if("{{ $show_modal_testimoni }}")
             {
                 $('#modalTestimoni').modal('toggle');

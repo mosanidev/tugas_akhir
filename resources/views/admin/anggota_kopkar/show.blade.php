@@ -60,12 +60,12 @@
   $(document).ready(function() {
     
     $('#filter_tanggal_awal').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
     });
 
     $('#filter_tanggal_akhir').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
     });
 

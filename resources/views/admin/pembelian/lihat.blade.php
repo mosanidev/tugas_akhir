@@ -10,97 +10,92 @@
             {{-- <input type="hidden" id="data_barang" value="" name="barang"/> --}}
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Nomor Pembelian</label>
-              <div class="col-sm-8">
+              <div class="col-sm-8 mt-2">
                 <p>{{ $pembelian[0]->id }}</p>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Nomor Nota dari Pemasok</label>
-              <div class="col-sm-8">
+              <div class="col-sm-8 mt-2">
                 <p>{{ $pembelian[0]->nomor_nota_dari_supplier }}</p>
               </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Buat</label>
-                <div class="col-sm-8">
-                  <p>{{ \Carbon\Carbon::parse($pembelian[0]->tanggal)->isoFormat('D MMMM Y') }}</p>
+                <div class="col-sm-8 mt-2">
+                  <p>{{ \Carbon\Carbon::parse($pembelian[0]->tanggal)->isoFormat('DD-MM-Y') }}</p>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
-                <div class="col-sm-8">
-                  <p>{{ \Carbon\Carbon::parse($pembelian[0]->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</p> 
+                <div class="col-sm-8 mt-2">
+                  <p>{{ \Carbon\Carbon::parse($pembelian[0]->tanggal_jatuh_tempo)->isoFormat('DD-MM-Y') }}</p> 
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Supplier</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                   <p>{{ $pembelian[0]->nama_supplier }}</p>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                   <p>{{ $pembelian[0]->metode_pembayaran }}</p>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Diskon Potongan Harga</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                   <p>{{ "Rp " . number_format($pembelian[0]->diskon,0,',','.') }}</p>             
                  </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">PPN</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                   <p>{{ "Rp " . number_format($pembelian[0]->ppn,0,',','.') }}</p>   
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status Bayar</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                   <p>{{ $pembelian[0]->status_bayar }}</p>   
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Status Retur</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                   <p>{{ $pembelian[0]->status_retur }}</p>   
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                     <p>{{ "Rp " . number_format($pembelian[0]->total,0,',','.') }}</p>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total + Ongkos Kirim - (Diskon Potongan Harga + PPN))  </label>
-                <div class="col-sm-8">
-                    <p>{{ "Rp " . number_format(($pembelian[0]->total+$pembelian[0]->ongkos_kirim)-($pembelian[0]->diskon+$pembelian[0]->ppn),0,',','.') }}</p>
+                <label class="col-sm-4 col-form-label">Total - (Diskon Potongan Harga + PPN)</label>
+                <div class="col-sm-8 mt-2">
+                    <p>{{ "Rp " . number_format($pembelian[0]->total-($pembelian[0]->diskon+$pembelian[0]->ppn),0,',','.') }}</p>
                 </div>
             </div>
 
-            
-            @if($pembelian[0]->status_bayar == "Lunas sebagian")
-
-
+            @if($pembelian[0]->status_retur == "Ada retur")
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Total sudah dibayar</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->total_terbayar,0,',','.') }}</p>
+                    <label class="col-sm-4 col-form-label">Nomor Nota Retur</label>
+                    <div class="col-sm-8 mt-2">
+                        <p>{{ $pembelian[0]->nomor_nota_retur }}</p>
                     </div>
                 </div>
-
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
-                    <div class="col-sm-8">
-                        <p>{{ "Rp " . number_format($pembelian[0]->sisa_belum_bayar,0,',','.') }}</p>
+                    <label class="col-sm-4 col-form-label">Total Pembelian setelah Dipotong Retur</label>
+                    <div class="col-sm-8 mt-2">
+                        <p>{{ "Rp " . number_format(($pembelian[0]->total-($pembelian[0]->diskon+$pembelian[0]->ppn) - $pembelian[0]->total_retur),0,',','.') }}</p>
                     </div>
                 </div>
-
             @endif
 
             <div class="card shadow my-4">
@@ -126,8 +121,12 @@
                                     <td>{{ $item->kode." - ".$item->nama }}</td>
                                     @if($item->tanggal_kadaluarsa == "9999-12-12 00:00:00")
                                       <td>{{ "Tidak ada" }}</td>
-                                    @else 
-                                      <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('D MMMM Y') }}</td>
+                                    @else
+                                      @if($item->barang_konsinyasi)
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('Y-MM-DD HH:mm')." WIB" }}</td>
+                                      @else 
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->isoFormat('Y-MM-DD') }}</td>
+                                      @endif
                                     @endif
                                     <td>{{ "Rp " . number_format($item->harga_beli,0,',','.') }}</td>
                                     <td>{{ "Rp " . number_format($item->diskon_potongan_harga,0,',','.') }}</td>

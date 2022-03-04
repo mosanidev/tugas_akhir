@@ -7,39 +7,23 @@
     <h3>Tambah Stok Opname</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('stok_opname.storeDetailStokOpname') }}" id="formTambah">
+        <form method="POST" action="{{ route('stok_opname.store') }}" id="formTambah">
             @csrf
             <input type="hidden" id="data_barang" value="" name="barang"/>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Nomor Nota</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="stok_opname_id" value="{{ $stok_opname[0]->id }}" readonly>
+                  <input type="text" class="form-control" name="nomor_nota" value="{{ $nomor_stok_opname }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTgl" value="{{ $stok_opname[0]->tanggal }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTgl" value="">
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
-                  </div>   
-                </div>
-              </div>
-              {{-- <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Pembuat</label>
-                <div class="col-sm-8">
-                  <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="nama_pembuat" autocomplete="off" value="{{ $stok_opname[0]->users_id.' - '.$stok_opname[0]->nama_depan.' '.$stok_opname[0]->nama_belakang }}" readonly>
-                  </div>   
-                </div>
-              </div> --}}
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Lokasi Stok</label>
-                <div class="col-sm-8">
-                  <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="lokasi_stok" autocomplete="off" value="{{ $stok_opname[0]->lokasi_stok }}" readonly>
                   </div>   
                 </div>
               </div>
@@ -55,7 +39,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                  <th>Barang</th>
+                                  <th class="w-50">Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Stok di Sistem</th>
                                   <th>Stok di Toko</th>
@@ -82,10 +66,11 @@
 
 <script type="text/javascript">
 
-    // $('#datepickerTgl').datepicker({
-    //   format: 'yyyy-mm-dd',
-    //   autoclose: true
-    // });
+    $('#datepickerTgl').datepicker({
+      format: 'dd-mm-yyyy',
+      autoclose: true,
+      startDate: new Date
+    });
 
     $('#btnTambah').on('click', function() {
 
@@ -108,7 +93,7 @@
           {
             rowTable += `<tr>
                           <td>` + arrStokOpname[i].barang_kode+" - "+arrStokOpname[i].barang_nama +  `</td>
-                          <td>` + arrStokOpname[i].barang_tanggal_kadaluarsa + `</td>
+                          <td>` + moment(arrStokOpname[i].barang_tanggal_kadaluarsa).format('Y-MM-DD') + `</td>
                           <td>` + arrStokOpname[i].stok_di_sistem + `</td>
                           <td>` + arrStokOpname[i].stok_di_toko + `</td>
                           <td>` + arrStokOpname[i].selisih + `</td>
@@ -136,7 +121,18 @@
 
     $('#btnSimpan').on('click', function() {
 
+      if($('#datepickerTgl').val() == "")
+      {
+        toastr.error("Harap isi tanggal terlebih dahulu", "Gagal", toastrOptions);
+      }
+      else if(arrStokOpname.length == 0)
+      {
+        toastr.error("Harap isi barang yang dilakukan proses opname terlebih dahulu", "Gagal", toastrOptions);
+      }
+      else 
+      {
         $('#modalKonfirmasiStokOpname').modal('toggle');
+      }
 
     });
 

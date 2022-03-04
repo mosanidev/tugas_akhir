@@ -4,93 +4,73 @@
     
     <a href="{{ route('pembelian.index') }}" class="btn btn-link"><- Kembali ke daftar pembelian</a>
 
-    <h3>Ubah Pembelian</h3>
+    <h3>Tambah Pembelian</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('pembelian.update', ['pembelian' => $pembelian[0]->id]) }}" id="formUbah">
+        <form method="POST" action="{{ route('pembelian.storeFull') }}" id="formTambah">
             @csrf
-            @method('PUT')
             <input type="hidden" id="data_barang" value="" name="barang"/>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Nomor Pembelian</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" name="id" value="{{ $pembelian[0]->id }}" readonly>
+                  <p>{{$pembelian[0]->id}}</p>
+                  <input type="hidden" class="form-control" name="id" value="{{ $pembelian[0]->id }}" readonly>
                 </div>
               </div>
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Nomor Nota dari Pemasok</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" name="nomor_nota_dari_supplier" value="{{ $pembelian[0]->nomor_nota_dari_supplier }}" id="inputNomorNota" required>
+                <p>{{$pembelian[0]->nomor_nota_dari_supplier}}</p>
               </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Buat</label>
                 <div class="col-sm-8">
-                  <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_buat" autocomplete="off" id="datepickerTgl" value="{{ $pembelian[0]->tanggal }}" readonly>
-                      <div class="input-group-append">
-                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
-                  </div>   
+                    <p>{{\Carbon\Carbon::parse($pembelian[0]->tanggal)->format('d-m-Y')}}</p>  
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                 <div class="col-sm-8">
-                  <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" value="{{ $pembelian[0]->tanggal_jatuh_tempo }}" required>
-                      <div class="input-group-append">
-                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                      </div>
-                  </div>   
+                    <p>{{\Carbon\Carbon::parse($pembelian[0]->tanggal_jatuh_tempo)->format('d-m-Y')}}</p> 
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Supplier</label>
+                <label class="col-sm-4 col-form-label">Pemasok</label>
                 <div class="col-sm-8">
-                  {{-- <select class="form-control" name="supplier_id" id="selectSupplier" required>
-                      <option disabled selected>Supplier</option>
-                      @foreach($supplier as $item)
-                          <option value="{{ $item->id }}" @if($pembelian[0]->supplier_id == $item->id) disabled selected @endif>{{$item->nama}}</option>
-                      @endforeach
-                  </select>  --}}
-                  <input type="text" value="{{$pembelian[0]->nama_supplier}}" class="form-control" readonly>
+                    <p>{{$pembelian[0]->nama_supplier}}</p>  
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                 <div class="col-sm-8">
-                  <select class="form-control" name="metode_pembayaran" id="selectMetodePembayaran" required>
-                      <option disabled selected>Metode Pembayaran</option>
-                      <option value="Transfer bank" @if($pembelian[0]->metode_pembayaran == "Transfer bank") selected @endif>Transfer Bank</option>
-                      <option value="Tunai" @if($pembelian[0]->metode_pembayaran == "Tunai") selected @endif>Tunai</option>
-                  </select> 
+                    <p>{{$pembelian[0]->metode_pembayaran}}</p> 
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Total</label>
                 <div class="col-sm-8">
-                    <input type="hidden" class="form-control d-inline ml-1" value="{{ $pembelian[0]->total }}" min="500" id="total" name="total" readonly/>
-                    <input type="text" class="form-control" value="{{ "Rp " . number_format($pembelian[0]->total,0,',','.') }}" id="totalRupiah" readonly>
+                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="total" name="total" readonly/>
+                    <input type="text" class="form-control" value="Rp 0" id="totalRupiah" readonly>
                 </div>
-                </div>
+            </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Diskon Potongan Harga</label>
                 <div class="col-sm-8">
-                  Rp <input type="number" class="form-control d-inline ml-1" name="diskon" value="{{ $pembelian[0]->diskon }}" id="inputDiskon" min="0" step="100" style="width: 95.8%;" required>
+                  Rp <input type="number" class="form-control d-inline ml-1" name="diskon" value="0" id="inputDiskon" min="0" step="100" style="width: 95.8%;" required>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">PPN</label>
                 <div class="col-sm-8">
-                    Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="{{ $pembelian[0]->ppn }}" min="0" step="100" style="width: 95.8%;" required>
+                    Rp <input type="number" class="form-control d-inline ml-1" name="ppn" id="inputPPN" value="0" min="0" step="100" style="width: 95.8%;" required>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total - (Diskon Potongan Harga + PPN)) </label>
+                <label class="col-sm-4 col-form-label">Total  <br> Total - (Diskon Potongan Harga + PPN) </label>
                 <div class="col-sm-8">
-                    <input type="hidden" class="form-control d-inline ml-1" value="{{ $pembelian[0]->total-($pembelian[0]->diskon+$pembelian[0]->ppn) }}" min="500" id="totalAkhir" name="total_akhir" readonly/>
-                    <input type="text" class="form-control" id="totalAkhirRupiah" value="{{ "Rp " . number_format($pembelian[0]->total-($pembelian[0]->diskon+$pembelian[0]->ppn),0,',','.') }}" readonly>
+                    <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
+                    <input type="text" class="form-control" id="totalAkhirRupiah" value="Rp 0" readonly>
                 </div>
             </div>
 
@@ -105,7 +85,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                  <th>Barang</th>
+                                  <th style="width: 50%;">Barang</th>
                                   <th>Tanggal Kadaluarsa</th>
                                   <th>Harga Beli</th>
                                   <th>Diskon Potongan Harga</th>
@@ -126,55 +106,21 @@
     </div>
     
 @include('admin.pembelian.modal.create')
-@include('admin.pembelian.modal.confirm_update')
+@include('admin.pembelian.modal.confirm_add')
 
 <script src="{{ asset('/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script type="text/javascript">
 
     $(document).ready(function() {
 
-        let detailPembelian = <?php echo $detail_pembelian; ?>;
-
-        function loadBarangDibeli()
-        {
-            detailPembelian.forEach(function(item, index, arr) {
-                barangDibeli.push({
-                    "barang_id": detailPembelian[index].barang_id,
-                    "barang_kode": detailPembelian[index].barang_kode,
-                    "barang_nama": detailPembelian[index].barang_nama,
-                    "harga_beli": detailPembelian[index].harga_beli,
-                    "diskon_potongan_harga": detailPembelian[index].diskon_potongan_harga,
-                    "kuantitas": detailPembelian[index].kuantitas,
-                    "subtotal": detailPembelian[index].subtotal,
-                    "tanggal_kadaluarsa": moment(detailPembelian[index].tanggal_kadaluarsa).format("YYYY-MM-DD")
-                });
-            });
-
-            implementDataOnTable();
-        }
-
-        loadBarangDibeli();
-
-        implementDataOnTable();
-
-        $('#datepickerTgl').datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
-        });
-
-        $('#datepickerTglJatuhTempo').datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
-        });
-
         $('#tanggal_kadaluarsa').datepicker({
-            format: 'dd-mm-yyyy',
+            format: 'yyyy-mm-dd',
             autoclose: true,
-            enableOnReadonly: false 
+            enableOnReadonly: false,
+            startDate: new Date()
         }); 
 
         $('#barang').select2({
@@ -189,10 +135,10 @@
 
             if(tglJatuhTempo != "")
             {
-                if(tglJatuhTempo <= tglBuat)
+                if(tglJatuhTempo < tglBuat)
                 {
                     $('#datepickerTglJatuhTempo').val("");
-                    toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+                    toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Gagal", toastrOptions);
                 }
             }
 
@@ -200,33 +146,21 @@
 
         $('#btnSimpan').on('click', function() {
 
-            if($('#inputNomorNota').val() == "")
-            {
-                toastr.error("Harap isi nomor nota terlebih dahulu", "Gagal", toastrOptions);
-            }
-            else if($('#datepickerTglJatuhTempo').val() == "")
-            {
-                toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Gagal", toastrOptions);
-            }
-            else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
-            {
-                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Gagal", toastrOptions);
-            }
-            else if(barangDibeli.length == 0)
+            if(barangDibeli.length == 0)
             {
                 toastr.error("Harap pilih barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
             }
             else if(parseInt($('#total').val()) <= 0)
             {
-                toastr.error("Total pembelian tidak boleh kurang atau sama dengan 0", "Gagal", toastrOptions);
+                toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
             }
             else if(parseInt($('#totalAkhir').val()) <= 0)
             {
-                toastr.error("Total pembelian tidak boleh kurang atau sama dengan 0", "Gagal", toastrOptions);
+                toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
             }
             else 
             {
-                $('#modalKonfirmasiUbahPembelian').modal('toggle');
+                $('#modalKonfirmasiPembelian').modal('toggle');
 
             }
 
@@ -234,16 +168,14 @@
 
         $('.btnIyaSubmit').on('click', function() {
 
-            $('#modalKonfirmasiUbahPembelian').modal('toggle');
+            $('#modalKonfirmasiPembelian').modal('toggle');
 
             $('#data_barang').val(JSON.stringify(barangDibeli));
 
-            $('#btnSimpan').attr("type", "submit");
-            $('#btnSimpan')[0].click();
+            $('#formTambah').submit();
 
             $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
         });
-
 
     });
 
@@ -261,15 +193,17 @@
     function implementDataOnTable()
     {
         let rowTable = "";
+        let num = 0;
         let total = 0;
 
         if(barangDibeli.length > 0)
         {
             for(let i = 0; i < barangDibeli.length; i++)
             {
+                num += 1;
                 total += barangDibeli[i].subtotal;
                 rowTable += `<tr>    
-                                <td>` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
+                                <td style="width: 50%;">` + barangDibeli[i].barang_kode + " - " + barangDibeli[i].barang_nama + `</td>
                                 <td>` + barangDibeli[i].tanggal_kadaluarsa + `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].diskon_potongan_harga) +  `</td>
@@ -286,11 +220,10 @@
                         </tr>`;
         }
 
-        let diskon = parseInt($('#inputDiskon').val());
-        let ppn = parseInt($('#inputPPN').val());
-        let totalAkhir = total-diskon-ppn;
-        $('#totalAkhir').val(totalAkhir);
         $('#total').val(total);
+        $('#totalRupiah').val(convertAngkaToRupiah(total));
+
+        calculate();
 
         $('#contentTable').html(rowTable);
 
@@ -313,6 +246,7 @@
 
         $('#totalAkhir').val(totalAkhir);
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
+
     }
 
     $('#inputDiskon').on('change', function() {
@@ -342,7 +276,6 @@
         }
 
     });
-
     
 </script>
 @endsection

@@ -26,7 +26,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Buat</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggalBuat" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggalBuat" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -85,36 +85,10 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Ongkos Kirim</label>
-                <div class="col-sm-8">
-                  Rp <input type="number" class="form-control d-inline ml-1" name="ongkos_kirim" id="inputOngkosKirim" value="0" min="0" step="100" style="width: 95.8%;" required>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total Akhir <br> ( Total + Ongkos Kirim - (Diskon Potongan Harga + PPN)) </label>
+                <label class="col-sm-4 col-form-label">Total  <br> Total - (Diskon Potongan Harga + PPN) </label>
                 <div class="col-sm-8">
                     <input type="hidden" class="form-control d-inline ml-1" value="0" min="500" id="totalAkhir" name="total_akhir" readonly/>
                     <input type="text" class="form-control" id="totalAkhirRupiah" value="Rp 0" readonly>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Uang muka</label>
-                <div class="col-sm-8">
-                    Rp <input type="number" class="form-control d-inline ml-1" name="uang_muka" id="uangMuka" value="0" min="0" step="100" style="width: 95.8%;" required>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Total terbayar</label>
-                <div class="col-sm-8">
-                    <input type="hidden" class="form-control" id="totalTerbayar" name="total_terbayar" value="0" readonly>
-                    <input type="text" class="form-control" id="totalTerbayarRupiah" value="Rp 0" readonly>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Sisa belum bayar</label>
-                <div class="col-sm-8">
-                    <input type="hidden" class="form-control" id="sisaBelumBayar" name="sisa_belum_bayar" value="0" readonly>
-                    <input type="text" class="form-control" id="sisaBelumBayarRupiah" value="Rp 0" readonly>
                 </div>
             </div>
 
@@ -161,12 +135,13 @@
     $(document).ready(function() {
 
         $('#datePickerTgl').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            startDate: new Date()
         });
 
         $('#datepickerTglJatuhTempo').datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             autoclose: true,
             startDate: new Date()
         });
@@ -174,7 +149,8 @@
         $('#tanggal_kadaluarsa').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true,
-            enableOnReadonly: false 
+            enableOnReadonly: false,
+            startDate: new Date()
         }); 
 
         $('#selectSupplier').select2({
@@ -211,11 +187,11 @@
             }
             else if($('#datepickerTglJatuhTempo').val() == "")
             {
-                toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Gagal", toastrOptions);
+                toastr.error("Harap isi tanggal jatuh tempo pelunasan terlebih dahulu", "Gagal", toastrOptions);
             }
             else if($('#selectSupplier')[0].selectedIndex == 0)
             {
-                toastr.error("Harap pilih supplier terlebih dahulu", "Gagal", toastrOptions);
+                toastr.error("Harap pilih pemasok terlebih dahulu", "Gagal", toastrOptions);
             }
             else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
             {
@@ -232,10 +208,6 @@
             else if(parseInt($('#totalAkhir').val()) <= 0)
             {
                 toastr.error("Total pemesanan tidak boleh kurang atau sama dengan 0", "Error", toastrOptions);
-            }
-            else if(parseInt($('#uangMuka').val()) >= parseInt($('#totalAkhir').val()) )
-            {
-                toastr.error("Uang muka tidak boleh melebihi atau sama dengan total pemesanan", "Error", toastrOptions);
             }
             else 
             {
@@ -260,60 +232,13 @@
 
     $('#btnTambah').on('click', function() {
 
-        $("#barang option").eq(0).prop('selected', true).change();
+        $('#barang').val("Pilih barang").trigger("change");
         $("#harga_beli").val("0");
         $("#kuantitas").val("1");
         $('#subtotal').val("Rp 0");
         $('#diskon_potongan_harga').val("0");
         $('#tanggal_kadaluarsa').val("");
 
-    });
-
-    $('#selectStatusBayar').on('change', function() {
-
-        const statusBayar = $(this).val();
-
-        if(statusBayar == "Lunas sebagian")
-        {
-            $(".divTotalSudahDibayar").toggleClass('d-none');
-        }
-        else if(statusBayar != "Lunas sebagian")
-        {
-            if(!$(".divTotalSudahDibayar").hasClass("d-none"))
-            {
-                $(".divTotalSudahDibayar").toggleClass('d-none');
-            }
-        }
-
-    });
-
-    $('#totalSudahDibayar').on('change', function() {
-
-        let totalSudahDibayar = parseInt($('#totalSudahDibayar').val());
-        let total = parseInt($('#total').val());
-        let diskon = $('#inputDiskon').val();
-        let ppn = $('#inputDiskon').val();
-        let totalAwal = parseInt($('#totalAwal').val());
-
-        // if(totalBelumDibayarRupiah == "Rp 0" && totalAkhirRupiah == "Rp 0")
-        // {
-        //     toastr.error("Harap memilih barang yang dipesan terlebih dahulu", "Gagal", toastrOptions);
-        //     $('#totalSudahDibayar').val("");
-        // }
-        // else 
-        // {
-            let hasil1 = totalAwal - totalSudahDibayar;
-            let hasil2 = (totalAwal-diskon-ppn) - totalSudahDibayar;
-            
-            $('#totalBelumDibayar').val(hasil1);
-            $('#totalAkhir').val(hasil2);
-
-            let totalBelumDibayarRupiah = convertAngkaToRupiah(hasil1);
-            let totalAkhirRupiah = convertAngkaToRupiah(hasil2);
-
-            $('#totalBelumDibayarRupiah').val(totalBelumDibayarRupiah);
-            $('#totalAkhirRupiah').val(totalAkhirRupiah)
-        // }
     });
 
     function implementDataOnTable()
@@ -346,16 +271,6 @@
                         </tr>`;
         }
 
-        // let diskon = parseInt($('#inputDiskon').val());
-        // let ppn = parseInt($('#inputPPN').val());
-        // let totalAkhir = total-diskon-ppn;
-        // $('#totalAkhir').val(totalAkhir);
-        // $('#total').val(total);
-        // $('#totalAwal').val(total);
-
-        // $('#totalRupiah').val(convertAngkaToRupiah(total));
-        // $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
-
         $('#total').val(total);
         $('#totalRupiah').val(convertAngkaToRupiah(total));
 
@@ -377,47 +292,13 @@
         let total = parseInt($('#total').val());
         let diskon = parseInt($('#inputDiskon').val());
         let ppn = parseInt($('#inputPPN').val());
-        let ongkosKirim = parseInt($('#inputOngkosKirim').val());
-        let uangMuka = parseInt($('#uangMuka').val());
 
-        let totalAkhir = (total + ongkosKirim) - (diskon + ppn);
+        let totalAkhir = total - (diskon + ppn);
 
-        $('#sisaBelumBayar').val(totalAkhir);
-        $('#sisaBelumBayarRupiah').val(convertAngkaToRupiah(totalAkhir));
         $('#totalAkhir').val(totalAkhir);
         $('#totalAkhirRupiah').val(convertAngkaToRupiah(totalAkhir));
 
-        if(uangMuka == 0)
-        {
-            $('#totalTerbayar').val(0);  
-            $('#totalTerbayarRupiah').val(convertAngkaToRupiah(0));
-        }
-        else 
-        {
-            let totalTerbayar =  uangMuka;
-            let sisaBelumBayar = totalAkhir - uangMuka;
-
-            $('#sisaBelumBayar').val(sisaBelumBayar);
-            $('#totalTerbayar').val(totalTerbayar);
-            $('#sisaBelumBayarRupiah').val(convertAngkaToRupiah(sisaBelumBayar));  
-            $('#totalTerbayarRupiah').val(convertAngkaToRupiah(totalTerbayar));
-        }
-
     }
-
-    $('#uangMuka').on('change', function() {
-
-        if(barangDibeli.length == 0)
-        {
-            toastr.error("Harap menambahkan barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
-            $('#uangMuka').val(0);
-        }
-        else 
-        {
-            calculate();
-        }
-
-    });
 
     $('#inputDiskon').on('change', function() {
 
@@ -446,21 +327,6 @@
         }
 
     });
-
-    $('#inputOngkosKirim').on('change', function() {
-
-        if(barangDibeli.length == 0)
-        {
-            toastr.error("Harap menambahkan barang yang dibeli terlebih dahulu", "Gagal", toastrOptions);
-            $('#inputOngkosKirim').val(0);
-        }
-        else 
-        {
-            calculate();
-        }
-
-    });
-
     
 </script>
 @endsection

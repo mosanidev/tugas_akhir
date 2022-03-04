@@ -53,7 +53,7 @@
                         @foreach($pengiriman as $item)
                           <tr>
                             <td>{{ $item->nomor_nota }}</td>
-                            <td>{{ $item->tanggal_penjualan }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_penjualan)->format('d-m-Y H:m')." WIB" }}</td>
                             <td>@if($item->nomor_resi == null) {{ "-" }} @else {{ $item->nomor_resi }} @endif</td>
                             <td> {{ $item->status_pengiriman }} </td>
                             <td>{{ "Rp " . number_format($item->tarif_pengiriman,0,',','.') }}</td>
@@ -68,8 +68,6 @@
 
                                   <button type="button" class="btn btn-warning btnUbahProsesKirim w-100" data-toggle="modal" data-target="#modalUbahProsesKirim" data-id="{{$item->pengiriman_id}}">Ubah</button>
                                   
-                                  {{-- <button type="button" class="btn btn-danger btnResetProsesKirim" data-toggle="modal" data-target="#modalConfirmReset" data-id="{{$item->pengiriman_id}}">Reset</button> --}}
-
                                 @endif
                             </td>
                           </tr>
@@ -112,7 +110,7 @@
 
           $('.nomor_resi').val(pengiriman.nomor_resi);
           $('input[name=estimasi_tiba]').val(pengiriman.estimasi_tiba);
-          $('.tanggal_diserahkan_ke_pengirim').val(moment().format("Y-MM-D H:m:s"));
+          $('.tanggal_diserahkan_ke_pengirim').val(moment().format("DD-MM-Y H:m:s"));
           $('input[name=shipper]').val(pengiriman.nama_shipper);
           $('input[name=jenis_pengiriman]').val(pengiriman.jenis_pengiriman);
           $('input[name=kota_kabupaten]').val(pengiriman.kota_kabupaten + ", " + pengiriman.provinsi);
@@ -169,11 +167,11 @@
 
     if(tglDiserahkan == "")
     {
-      toastr.error("Mohon isi tanggal diserahkan ke pengirim terlebih dahulu", "Error", toastrOptions);
+      toastr.error("Mohon isi tanggal diserahkan ke pengirim terlebih dahulu", "Gagal", toastrOptions);
     }
     else if (nomor_resi == "")
     {
-      toastr.error("Mohon isi nomor resi terlebih dahulu", "Error", toastrOptions);
+      toastr.error("Mohon isi nomor resi terlebih dahulu", "Gagal", toastrOptions);
     }
     else 
     {
@@ -194,7 +192,7 @@
       timepicker: true,
       datepicker: true,
       lang: 'id',
-      format: 'Y-m-d H:i:s'
+      format: 'd-m-Y H:i:s'
   });
 
   $('#btnUbah').on('click', function() {

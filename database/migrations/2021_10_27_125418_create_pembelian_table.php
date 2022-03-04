@@ -24,16 +24,13 @@ class CreatePembelianTable extends Migration
             $table->unsignedInteger('users_id')->nullable();
             $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal_jatuh_tempo');
+            $table->date('tanggal_pelunasan')->nullable();
             $table->double('diskon')->default(0);
             $table->double('ppn')->default(0);
             $table->enum('metode_pembayaran', ['Transfer bank', 'Tunai']);
-            $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas', 'Lunas sebagian']);
+            $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas']);
             $table->enum('status_retur', ['Tidak ada retur', 'Ada retur'])->default('Tidak ada retur');
             $table->double('total');
-            $table->double('uang_muka')->default(0);
-            $table->double('ongkos_kirim')->default(0);
-            $table->double('total_terbayar')->default(0);
-            $table->double('sisa_belum_bayar')->default(0);
 
         });
     }

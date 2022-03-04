@@ -8,7 +8,7 @@
             <div class="col-sm-6">
             <h1>Ubah Barang</h1>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
 
     <div class="container-fluid">
@@ -100,6 +100,17 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <p class="col-sm-3 col-form-label">Pemasok</p>
+                    <div class="col-sm-9">
+                        <select class="form-control" name="supplier_id" id="supplier_id" required>
+                            <option disabled selected>Pilih pemasok</option>
+                            @foreach($supplier as $item)
+                                <option value="{{$item->id}}" @if($item->id == $barang[0]->supplier_id) selected @endif)>{{$item->nama}}</option>
+                            @endforeach
+                        </select>                 
+                    </div>
+                </div>
+                <div class="form-group row">
                     <p class="col-sm-3 col-form-label">Stok Minimum</p>
                     <div class="col-sm-9">
                         <input type="number" class="form-control d-inline" min="1" name="stok_minimum" id="stok_minimum" @if($barang[0]->barang_konsinyasi) value="0" readonly @else value="{{ $barang[0]->batasan_stok_minimum }}" @endif required>
@@ -139,8 +150,10 @@
                     </div>
                 </div>
 
+                <input type="hidden" id="keteranganFoto" name="keterangan_foto">
+
                 <div class="mx-auto">
-                    <button type="button" class="btn btn-info w-25" id="btn_simpan">Simpan</button>
+                    <button type="button" class="btn btn-info btn-block mx-auto w-50" id="btn_simpan">Simpan</button>
                 </div>
             </form>
             
@@ -205,11 +218,15 @@
                 {
                     toastr.error("Harap pilih satuan barang terlebih dahulu", "Gagal", toastrOptions);
                 }
+                else if($('select[name=supplier_id]')[0].selectedIndex == 0)
+                {
+                    toastr.error("Harap pilih pemasok barang terlebih dahulu", "Gagal", toastrOptions);
+                }
                 else if($('#harga_jual').val() == "")
                 {
                     toastr.error("Harap isi harga jual barang terlebih dahulu", "Gagal", toastrOptions);
                 }
-                else if($('#harga_jual').val() < $('#harga_jual').attr('min')  == "")
+                else if(parseInt($('#harga_jual').val()) < parseInt($('#harga_jual').attr('min')))
                 {
                     toastr.error("Harap isi harga jual barang dengan nominal lebih atau sama dengan 500", "Gagal", toastrOptions);
                 }
@@ -221,7 +238,7 @@
                 {
                     toastr.error("Harap isi berat barang terlebih dahulu", "Gagal", toastrOptions);
                 }
-                else if($('#berat').val() < $('#berat').attr('min'))
+                else if(parseInt($('#berat').val()) < parseInt($('#berat').attr('min')))
                 {
                     toastr.error("Harap isi berat barang dengan berat lebih atau sama dengan 0.1 gram", "Gagal", toastrOptions);
                 }
@@ -256,24 +273,15 @@
 
             });
 
-            //Date picker
-            //Initialize Select2 Elements
             $('.select2').select2();
 
-            //Initialize Select2 Elements
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
             });
 
-            // jQuery.datetimepicker.setLocale('id');
-
-            // $('#datepicker').datetimepicker({
-            //     timepicker: true,
-            //     datepicker: true,
-            //     lang: 'id',
-            //     defaultTime: '00:00 AM',
-            //     format: 'Y-m-d H:i:00'
-            // });
+            $('#supplier_id').select2({
+                theme: 'bootstrap4'
+            });
 
             CKEDITOR.disableAutoInline = true;
 
@@ -329,10 +337,14 @@
                                                                 <button type="button" class="btn btn-danger" onclick="delete_image()">X</button>
                                                               </div>`;
 
+            $('#keteranganFoto').val("Foto ditambah");
+
         }
 
         function delete_image() 
         {
+            $('#keteranganFoto').val("Foto dihapus");
+
             document.getElementById('image_upload').value = "";
 
             document.getElementById('container').innerHTML = "";

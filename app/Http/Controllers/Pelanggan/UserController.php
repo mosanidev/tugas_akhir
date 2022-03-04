@@ -28,21 +28,35 @@ class UserController extends Controller
         $foto = DB::table('users')->select('foto')->where('id', auth()->user()->id)->get();
 
         $newFileName = $foto[0]->foto != null ? $foto[0]->foto : null;
-        $newFilePath = "/images/profil/user_null.png";
 
-        if($request->foto_baru != null)
+        if(isset($request->foto_baru))
         {
             $newFileName = "1.".$request->foto_baru->getClientOriginalExtension(); 
 
             $request->foto_baru->storeAs('public/images/profil/'.auth()->user()->id, $newFileName);
 
             $newFilePath = "/images/profil/".auth()->user()->id."/".$newFileName;
-        }
 
-        $affected = DB::table('users')
+            $affected = DB::table('users')
                         ->where('id', auth()->user()->id)
                         ->update(['nomor_telepon' => $request->nomor_telepon, 
                                   'foto' => $newFilePath]);
+        }
+        else if($request->keterangan_foto == "Foto dihapus")
+        {
+            $newFilePath = "/images/profil/user_null.png";
+
+            $affected = DB::table('users')
+                            ->where('id', auth()->user()->id)
+                            ->update(['nomor_telepon' => $request->nomor_telepon, 
+                                    'foto' => $newFilePath]);
+        }
+        else 
+        {
+            $affected = DB::table('users')
+                        ->where('id', auth()->user()->id)
+                        ->update(['nomor_telepon' => $request->nomor_telepon]); 
+        }
 
         $user = DB::table('users')->select('*')->where('id', '=', auth()->user()->id)->get();
 

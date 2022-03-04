@@ -14,6 +14,7 @@
                 <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Email</p><p class="d-inline">{{ $profil[0]->email }}</p><br>
                 <p class="d-inline-block mr-5" style="width: 30%; height:15px;">Nomor Telepon</p><p class="d-inline"><input type="tel" value="{{ $profil[0]->nomor_telepon }}" name="nomor_telepon"></p><br>
                 <button class="btn btn-info p-2 my-3 mr-3" href="">Simpan</button>
+                <input type="hidden" value="" id="keteranganFoto" name="keterangan_foto">
                 <button type="button" class="btn btn-info p-2 my-3 d-inline" href="" data-toggle="modal" data-target="#exampleModal">Ubah Password</button>
             </div>
             </div>
@@ -106,10 +107,13 @@
         
         $("#inputGantiFotoProfil").change(function(){
             readURL(this);
+            $('#keteranganFoto').val("Foto ditambah");
         });
 
         $('#hapusFotoProfil').on('click', function() {
             
+            $('#keteranganFoto').val("Foto dihapus");
+
             $('#inputGantiFotoProfil').val("");
             
             $('#img-profil').attr("src", "{{ asset('/images/profil/user_null.png') }}");

@@ -53,20 +53,17 @@ class AdminPemesananController extends Controller
      */
     public function store(Request $request)
     {
-        // $status_bayar = $request->uang_muka > 0 ? "Lunas sebagian" : "Belum lunas";
-
         $idPemesanan = DB::table('pemesanan')
                         ->insertGetId([
                             'nomor_nota' => $request->nomor_nota,
                             'supplier_id' => $request->supplier_id,
-                            'tanggal' => $request->tanggal_pemesanan,
-                            'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
+                            'tanggal' => \Carbon\Carbon::parse($request->tanggal_pemesanan)->format('Y-m-d'),
+                            'perkiraan_tanggal_terima' => \Carbon\Carbon::parse($request->tanggalPerkiraanTerima)->format('Y-m-d'),
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
-                            'ongkos_kirim' => $request->ongkos_kirim,
                             'metode_pembayaran' => $request->metodePembayaran,
                             'status_bayar' => 'Belum lunas',
-                            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                            'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($request->tanggal_jatuh_tempo)->format('Y-m-d'),
                             'status' => 'Belum diterima di gudang',
                             'total' => $request->total,
                             'users_id' => auth()->user()->id
@@ -171,7 +168,6 @@ class AdminPemesananController extends Controller
                             'perkiraan_tanggal_terima' => $request->tanggalPerkiraanTerima,
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
-                            'ongkos_kirim' => $request->ongkos_kirim,
                             'metode_pembayaran' => $request->metodePembayaran,
                             'status_bayar' => 'Belum lunas',
                             'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
