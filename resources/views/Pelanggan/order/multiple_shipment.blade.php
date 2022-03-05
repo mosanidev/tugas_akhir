@@ -18,7 +18,7 @@
                 
                     <div class="row">
                         <div class="col-2">
-                            <img src="{{ asset($cart[$i]->barang_foto) }}" class="rounded mr-2" alt="Foto Produk" width="150" height="140">
+                            <img src="{{ asset($cart[$i]->barang_foto) }}" class="rounded mr-2" style="object-fit: contain" alt="Foto Produk" width="150" height="140">
                         </div>
                         <div class="col-10">
                             <input type="hidden" value="{{ $cart[$i]->barang_id }}" class="barang_id" name="barang_id[]">

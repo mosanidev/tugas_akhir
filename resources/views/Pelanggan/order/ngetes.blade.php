@@ -47,7 +47,7 @@
                     <div class="bg-light border border-4 p-3 mb-3 barang">
                         <div class="row">
                             <div class="col-2">
-                                <img src="{{ asset($data[$i]->rincian[$x]->barang_foto)  }}" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
+                                <img src="{{ asset($data[$i]->rincian[$x]->barang_foto)  }}" class="rounded mr-2" alt="Foto Produk" style="object-fit: contain" width="80" height="80">
                             </div>
                             <div class="col-10">
                                 <p class="barang_id d-none">{{$data[$i]->rincian[$x]->barang_id}}</p>

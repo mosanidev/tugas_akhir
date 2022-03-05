@@ -33,7 +33,7 @@
                         <div class="bg-light border border-4 p-3 mb-3">
                             <div class="row">
                                 <div class="col-2">
-                                    <img src="{{ asset($item->barang_foto) }}" class="rounded mr-2" alt="Foto Produk" width="80" height="80">
+                                    <img src="{{ asset($item->barang_foto) }}" class="rounded mr-2" alt="Foto Produk" style="object-fit: contain" width="80" height="80">
                                 </div>
                                 <div class="col-10">
                                     <p class="barang_id d-none">{{ $item->barang_id }}</p>
@@ -44,7 +44,7 @@
                                         </div>
                                         <div class="col-8">
                                             @if($item->barang_diskon_potongan_harga > 0)
-                                                <del class="d-inline mr-2 barang_harga">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del><p class="d-inline">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
+                                                <del class="d-inline mr-2">{{ "Rp " . number_format($item->barang_harga,0,',','.') }}</del><p class="d-inline barang_harga">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
                                             @else
                                                 <p class="d-inline barang_harga">{{ "Rp " . number_format($item->barang_harga-$item->barang_diskon_potongan_harga,0,',','.') }}</p>
                                             @endif
@@ -156,6 +156,8 @@
         $(document).ready(function() {
 
             const total_pesanan = convertRupiahToAngka($("#total-pesanan").html());
+
+            console.log(total_pesanan);
 
             let arrBarang = createArrBarang();
 

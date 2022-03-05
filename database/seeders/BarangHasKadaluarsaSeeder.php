@@ -36,7 +36,7 @@ class BarangHasKadaluarsaSeeder extends Seeder
 
         DB::table('barang_has_kadaluarsa')->insert([
             'barang_id'                 => 4,  
-            'tanggal_kadaluarsa'        => '2022-02-26 00:00:00',
+            'tanggal_kadaluarsa'        => '2022-04-10 00:00:00',
             'jumlah_stok'               => 8
         ]);
 

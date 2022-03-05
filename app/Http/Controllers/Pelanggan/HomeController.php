@@ -12,15 +12,11 @@ class HomeController extends Controller
 {
     public function showHome()
     {
-        $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
-        $curDate = \Carbon\Carbon::now()->format("Y-m-d H:m:s");
-
         $barang_konsinyasi = DB::table('barang')
                     ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                     ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                     ->where('barang_konsinyasi', '=', 1)
-                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , $curDate)
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , \Carbon\Carbon::now())
                     ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->inRandomOrder()->limit(16)->get(); 
 
@@ -30,10 +26,10 @@ class HomeController extends Controller
         $barang_promo = DB::table('barang')
                             ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
                             ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
-                            // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                             ->where('barang.diskon_potongan_harga', '>', 0)
-                            ->where('periode_diskon.tanggal_dimulai', '<=', $curDate)
-                            ->where('periode_diskon.tanggal_berakhir', '>=', $curDate)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>' , \Carbon\Carbon::now())
+                            ->where('periode_diskon.tanggal_dimulai', '<=', \Carbon\Carbon::now())
+                            ->where('periode_diskon.tanggal_berakhir', '>=', \Carbon\Carbon::now())
                             ->join('periode_diskon', 'barang.periode_diskon_id','=','periode_diskon.id')
                             ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                             ->inRandomOrder()

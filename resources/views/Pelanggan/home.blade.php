@@ -175,20 +175,13 @@
                     type: 'POST',
                     url: '{{ route('addCart') }}',
                     data: { 'barang_id':event.target.getAttribute('data-id') },
-                    beforeSend: function() {
-                        toastr.remove();
-                        $('#modalLoading').modal('toggle');
-                        
-                    },
                     success:function(data) {
-
-                        // $('#modalLoading').modal('toggle');
 
                         toastr.success(data.status, "Sukses", toastrOptions);
 
                         let total_cart = $("#total_cart")[0].innerText;
 
-                        if (data.status == "Barang berhasil dimasukkan ke keranjang")
+                        if (data.status == "Produk berhasil dimasukkan ke keranjang")
                         {
                             $("#total_cart")[0].innerText = parseInt(total_cart)+1;
                         } 
