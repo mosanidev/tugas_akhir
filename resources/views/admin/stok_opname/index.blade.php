@@ -15,8 +15,6 @@
 
         <a href="{{ route('stok_opname.create') }}" class="btn btn-success ml-2" >Tambah</a>
 
-        {{-- <button class="btn btn-success ml-2" data-toggle="modal" data-target="#modalTambahStokOpname">Tambah</button> --}}
-
         <div class="card shadow my-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Tabel Stok Opname</h6>
@@ -29,21 +27,18 @@
                               <th style="width: 20%;">Nomor Stok Opname</th>
                               <th>Tanggal</th>
                               <th>Pembuat</th>
-                              <th>Lokasi Stok</th>
                               <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($stok_opname as $item)
                              <tr>
-                                 <td>{{ sprintf("%04d", $item->nomor) }}</td>
-                                 <td>{{ $item->tanggal }}</td>
+                                {{-- sprintf("%04d", $item->nomor) --}}
+                                 <td>{{ $item->nomor_nota }}</td>
+                                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                                  <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
-                                 <td>{{ $item->lokasi_stok }}</td>
                                  <td>
-                                    <a href="{{ route('stok_opname.show', ['stok_opname' => $item->nomor]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
-                                    {{-- <button type="button" class="btn btn-warning btn-ubah" data-id="{{$item->nomor}}" data-toggle="modal" data-target="#modalUbahStokOpname"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="btn btn-danger btn-hapus" data-id="{{$item->nomor}}" data-lokasi-stok="{{$item->lokasi_stok}}" data-toggle="modal" data-target="#modalKonfirmasiHapusStokOpname"><i class="fas fa-trash"></i></button> --}}
+                                    <a href="{{ route('stok_opname.show', ['stok_opname' => $item->id]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>
                                  </td>
                              </tr>
                             @endforeach

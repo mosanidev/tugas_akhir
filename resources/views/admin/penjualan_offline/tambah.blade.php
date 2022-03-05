@@ -21,7 +21,7 @@
                     <label class="col-sm-4 col-form-label">Tanggal</label>
                     <div class="col-sm-8">
                         <div class="input-group">
-                            <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" value="{{ \Carbon\Carbon::now() }}" id="datepickerTgl" required>
+                            <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" value="{{ \Carbon\Carbon::now()->format('d-m-Y H:m:s') }}" id="datepickerTgl" required>
                             <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -131,7 +131,7 @@
             timepicker: true,
             datepicker: true,
             lang: 'id',
-            format: 'Y-m-d H:i:00'
+            format: 'd-m-Y H:i:00'
         });
 
         $('#btnKosongiInputAnggotaKopkar').on('click', function(){
@@ -212,36 +212,36 @@
 
             if($('#inputNomorNota').val() == "")
             {
-                toastr.error("Harap isi nomor nota terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap isi nomor nota terlebih dahulu", "Gagal", toastrOptions);
             }
             else if ($('#datepickerTgl').val() == "")
             {
-                toastr.error("Harap isi tanggal terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap isi tanggal terlebih dahulu", "Gagal", toastrOptions);
             }
             else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
             {
-                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Gagal", toastrOptions);
             }
             else if (arrBarangDijual.length == 0)
             {
-                toastr.error("Harap pilih tambah barang yang dijual terlebih dahulu", "Error", toastrOptions);
+                toastr.error("Harap pilih tambah barang yang dijual terlebih dahulu", "Gagal", toastrOptions);
             }
             else 
             {
                 $('#modalKonfirmasiPenjualanOffline').modal('toggle');
             }
 
-            $('.btnIyaSubmit').on('click', function() {
+        });
 
-                $('#modalKonfirmasiPenjualanOffline').modal('toggle');
+        $('.btnIyaSubmit').on('click', function() {
 
-                $('#dataBarangDijual').val(JSON.stringify(arrBarangDijual));
+            $('#modalKonfirmasiPenjualanOffline').modal('toggle');
 
-                $('#formTambah').submit();
+            $('#dataBarangDijual').val(JSON.stringify(arrBarangDijual));
 
-                $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
+            $('#formTambah').submit();
 
-            });
+            $('#modalLoading').modal({backdrop: 'static', keyboard: false}, 'toggle');
 
         });
     

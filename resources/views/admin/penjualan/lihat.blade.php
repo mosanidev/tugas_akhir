@@ -16,7 +16,9 @@
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Tanggal</label>
               <div class="col-sm-10">
-                  <p class="mt-2">{{ \Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('D MMMM Y').", jam ".\Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('H:m:s')." WIB" }}</p>
+                  <p class="mt-2">{{ \Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('DD-MM-Y')." ".\Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('H:m')." WIB" }}</p>
+
+                  {{-- <p class="mt-2">{{ \Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('D MMMM Y').", jam ".\Carbon\Carbon::parse($penjualan[0]->tanggal)->isoFormat('H:m:s')." WIB" }}</p> --}}
               </div>
             </div>
             <div class="form-group row">

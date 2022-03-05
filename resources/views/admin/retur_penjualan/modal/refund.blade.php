@@ -31,10 +31,11 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Total dana yang harus dikembalikan</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" name="total_refund" value="" readonly>
+                    Rp <input type="number" class="form-control d-inline ml-1" name="total_refund" value="" step="100" style="width: 90%;">
+                    {{-- <input type="text" class="form-control" name="total_refund" value="" readonly> --}}
                   </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row d-none">
                   <label class="col-sm-4 col-form-label">Bukti pengembalian dana</label>
                   <div class="col-sm-8">
                     <input type="file" name="foto_bayar" accept="image/png, image/jpg, image/jpeg" id="image_upload" onchange="image_select()">

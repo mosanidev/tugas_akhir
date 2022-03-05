@@ -37,16 +37,18 @@
                         @foreach($konsinyasi as $item)
                           <tr>
                             <td>{{ $item->nomor_nota }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('D MMMM Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('D MMMM Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_titip)->isoFormat('DD-MM-Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->isoFormat('DD-MM-Y') }}</td>
                             <td>{{ $item->nama_supplier }}</td>
                             <td>{{ $item->status_bayar }}</td>
                             <td>
 
                               @if($item->status_bayar == "Sudah lunas")
-                                <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
+                                  <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
                               @else
-                                <button type="button" class="btn btn-secondary w-100 mb-1 btnLunasi" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalLunasiKonsinyasi">Lunasi</button>
+                                @if(auth()->user()->jenis == "Manajer")
+                                  <button type="button" class="btn btn-secondary w-100 mb-1 btnLunasi" data-id="{{$item->id}}" data-toggle="modal" data-target="#modalLunasiKonsinyasi">Lunasi</button>
+                                @endif
                                 <a href="{{ route('konsinyasi.show', ['konsinyasi'=>$item->id]) }}" class='btn btn-info w-100 mb-1'>Lihat</a>
                                 <a href="{{ route('konsinyasi.edit', ['konsinyasi' => $item->id]) }}" class='btn btn-warning w-100 mb-1'>Ubah</a>
                                 <button type="button" class="btn btn-danger btnHapusKonsinyasi w-100 mb-1" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}" data-toggle="modal" data-target="#modalHapusKonsinyasi">Hapus</button>

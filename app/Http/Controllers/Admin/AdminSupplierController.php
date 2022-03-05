@@ -60,7 +60,7 @@ class AdminSupplierController extends Controller
             'nomor_telepon' => $request->nomor_telepon
         ]);
 
-        return redirect()->back()->with('success', 'Data berhasil ditambah');
+        return redirect()->back()->with('success', 'Data pemasok berhasil ditambah');
     }
 
     /**
@@ -103,7 +103,7 @@ class AdminSupplierController extends Controller
                                             'jenis' => $request->jenis
                                         ]);
 
-        return redirect()->back()->with(['success' => 'Data supplier berhasil diubah']);
+        return redirect()->back()->with(['success' => 'Data pemasok berhasil diubah']);
     }
 
     /**
@@ -116,6 +116,6 @@ class AdminSupplierController extends Controller
     {
         $delete = DB::table('supplier')->where('id', '=', $id)->delete();
 
-        return redirect()->back()->with('success', 'Data berhasil dihapus');
+        return redirect()->back()->with('success', 'Data pemasok berhasil dihapus');
     }
 }

@@ -17,14 +17,14 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Pemesanan</label>
                 <div class="col-sm-8">
-                    <p class="mt-2">{{ \Carbon\Carbon::parse($pemesanan[0]->tanggal)->isoFormat('D MMMM Y') }}</p> 
+                    <p class="mt-2">{{ \Carbon\Carbon::parse($pemesanan[0]->tanggal)->isoFormat('DD-MM-Y') }}</p> 
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Terima Pesanan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <p class="mt-2">{{ \Carbon\Carbon::parse($penerimaan_pesanan[0]->tanggal)->isoFormat('D MMMM Y') }}</p>
+                      <p class="mt-2">{{ \Carbon\Carbon::parse($penerimaan_pesanan[0]->tanggal)->isoFormat('DD-MM-Y') }}</p>
                   </div>   
                 </div>
             </div>

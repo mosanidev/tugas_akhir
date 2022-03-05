@@ -81,8 +81,8 @@ class AdminKonsinyasiController extends Controller
         $konsinyasi = DB::table('konsinyasi')
                         ->insertGetId([
                             'nomor_nota' => $request->nomor_nota,
-                            'tanggal_titip' => $request->tanggal_titip,
-                            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                            'tanggal_titip' => \Carbon\Carbon::parse($request->tanggal_titip)->format('Y-m-d'),
+                            'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($request->tanggal_jatuh_tempo)->format('Y-m-d'),
                             'supplier_id' => $request->supplier_id,
                             'metode_pembayaran' => $request->metode_pembayaran
                         ]);
@@ -353,6 +353,7 @@ class AdminKonsinyasiController extends Controller
                                 ->where('konsinyasi_id', '=', $id)
                                 ->join('barang_has_kadaluarsa', 'detail_konsinyasi.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                                 ->join('barang', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
+                                ->groupBy('detail_konsinyasi.barang_id', 'detail_konsinyasi.tanggal_kadaluarsa')
                                 ->get();
 
         $supplier = DB::table('supplier')->where('jenis', '=', 'Individu')->get();
@@ -430,8 +431,8 @@ class AdminKonsinyasiController extends Controller
                     ->update([
                         'nomor_nota' => $request->nomor_nota,
                         'supplier_id' => $request->supplier_id,
-                        'tanggal_titip' => $request->tanggal_titip,
-                        'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+                        'tanggal_titip' => \Carbon\Carbon::parse($request->tanggal_titip)->format('Y-m-d'),
+                        'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($request->tanggal_jatuh_tempo)->format('Y-m-d'),
                         'metode_pembayaran' => $request->metode_pembayaran
                     ]);
 

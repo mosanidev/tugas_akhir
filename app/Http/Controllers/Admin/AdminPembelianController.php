@@ -107,6 +107,7 @@ class AdminPembelianController extends Controller
     public function storeFull(Request $request)
     {
         $dataBarang = json_decode($request->barang, true);
+        $total = 0;
 
         for ($i = 0; $i < count((array) $dataBarang); $i++)
         {
@@ -147,7 +148,15 @@ class AdminPembelianController extends Controller
                                                 'subtotal'              => $dataBarang[$i]['subtotal']
                                             ]);
 
+            $total += $dataBarang[$i]['subtotal'];
+
         }
+
+        $updatePembelian = DB::table('pembelian')
+                            ->where('id', '=', $request->id)
+                            ->update([
+                                'total' => $total
+                            ]);
 
         return redirect()->route('pembelian.index')->with(['success'=>'Data pembelian berhasil ditambah']);
     }
@@ -374,8 +383,8 @@ class AdminPembelianController extends Controller
         $update = DB::table('pembelian')
                         ->where('id', $id)
                         ->update(['nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier, 
-                                  'tanggal'=>$request->tanggal_buat, 
-                                  'tanggal_jatuh_tempo'=> $request->tanggal_jatuh_tempo, 
+                                  'tanggal'=> \Carbon\Carbon::parse($request->tanggal_buat)->format('Y-m-d'), 
+                                  'tanggal_jatuh_tempo'=> \Carbon\Carbon::parse($request->tanggal_jatuh_tempo)->format('Y-m-d'), 
                                   'metode_pembayaran' => $request->metode_pembayaran,
                                   'diskon' => $request->diskon,             
                                   'ppn' => $request->ppn, 

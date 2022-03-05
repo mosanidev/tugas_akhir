@@ -17,7 +17,7 @@
                         <select class="form-control" id="selectNotaBeli" name="id_pembelian" required>
                             <option disabled selected>Pilih nomor nota</option>
                             @foreach($pembelian as $item)
-                                <option value="{{ $item->id }}" data-tanggal="{{ $item->tanggal }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ $item->tanggal_jatuh_tempo }}" data-status-pembelian="{{ $item->status_bayar }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota_dari_supplier }}</option>
+                                <option value="{{ $item->id }}" data-tanggal="{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}" data-id-supplier="{{ $item->supplier_id }}" data-supplier="{{ $item->nama_supplier }}" data-jatuh-tempo="{{ \Carbon\Carbon::parse($item->tanggal_jatuh_tempo)->format('d-m-Y') }}" data-status-pembelian="{{ $item->status_bayar }}" data-jenis-supplier="{{ $item->jenis_supplier }}">{{ $item->nomor_nota_dari_supplier }}</option>
                             @endforeach
                         </select>    
                     </div>
@@ -60,7 +60,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglRetur" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
+                                <input type="text" class="form-control pull-right" name="tanggal" autocomplete="off" id="datepickerTglRetur" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -137,12 +137,21 @@
         {
             toastr.error("Harap isi nomor nota retur terlebih dahulu", "Gagal", toastrOptions);
         }
-        else if(moment($('#datepickerTglRetur').val()).isBetween($('#datepickerTglBeli').val(), $('#datepickerTglJatuhTempoNotaBeli').val(), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Potong dana pembelian" || 
-                moment($('#datepickerTglRetur').val()).isBetween($('#datepickerTglBeli').val(), $('#datepickerTglJatuhTempoNotaBeli').val(), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Retur barang konsinyasi" ||
-                $('#statusPembelian').val() == "Sudah lunas" && $('#selectKebijakanRetur').val() == "Potong dana pembelian" ||
-                $('#selectKebijakanRetur').val() == "Retur barang konsinyasi")
+        else if(moment($('#datepickerTglRetur').val()).isBetween(moment($('#datepickerTglBeli').val()), moment($('#datepickerTglJatuhTempoNotaBeli').val()), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Potong dana pembelian")
         {
-            toastr.error("Mohon maaf pembelian atau konsinyasi tidak dapat diretur", "Gagal", toastrOptions);
+            toastr.error("Mohon maaf pembelian tidak bisa diretur karena tanggal retur sudah melewati tanggal pembelian dan tanggal jatuh tempo pelunasan", "Gagal", toastrOptions);
+        }
+        else if(moment($('#datepickerTglRetur').val()).isBetween(moment($('#datepickerTglBeli').val()), moment($('#datepickerTglJatuhTempoNotaBeli').val()), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Retur barang konsinyasi")
+        {
+            toastr.error("Mohon maaf konsinyasi tidak bisa diretur karena tanggal retur sudah melewati tanggal konsinyasi dan tanggal jatuh tempo pelunasan", "Gagal", toastrOptions);
+        }
+        else if($('#statusPembelian').val() == "Sudah lunas" && $('#selectKebijakanRetur').val() == "Potong dana pembelian")
+        {
+            toastr.error("Mohon maaf pembelian tidak bisa diretur karena sudah lunas", "Gagal", toastrOptions);
+        }
+        else if($('#statusPembelian').val() == "Sudah lunas" && $('#selectKebijakanRetur').val() == "Retur barang konsinyasi")
+        {
+            toastr.error("Mohon maaf konsinyasi tidak bisa diretur karena sudah lunas", "Gagal", toastrOptions);
         }
         else if($('#selectKebijakanRetur')[0].selectedIndex == 0)
         {

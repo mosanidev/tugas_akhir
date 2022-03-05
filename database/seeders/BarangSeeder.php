@@ -21,7 +21,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 1,  
                 'kode'                      => 'B0081',
-                'nama'                      => 'Golda Coffee Dolce Latte 200Ml',
+                'nama'                      => 'Golda Coffee Dolce Latte',
                 'deskripsi'                 => '<p>Diracik dari biji kopi berstandar tertinggi (gold),&nbsp;<strong>GOLDA</strong>&nbsp;Coffee memberikan sensasi tekstur yang lembut, rendah asam, disertai aroma kacang, dan mengandung rasa manis coklat atau karamel.</p>
 
                 <p><strong>CARA PENGGUNAAN :</strong><br />
@@ -65,7 +65,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 2,  
                 'kode'                      => 'B0082',
-                'nama'                      => 'YOU C-1000 Orange Water 500Ml',
+                'nama'                      => 'YOU C-1000 Orange Water',
                 'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;Deskripsi&lt;/strong&gt;&lt;/p&gt;
 
                 &lt;p&gt;YOU-C 1000 ORANGE merupakan minuman rasa jeruk. Kandungan Vitamin C 1000 mg yang terdapat didalamnya membantu memelihara daya tahan tubuh.&lt;/p&gt;
@@ -88,7 +88,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 3,  
                 'kode'                      => 'B0083',
-                'nama'                      => 'Good Day Funtastic Mocacinno Coffee 250Ml',
+                'nama'                      => 'Good Day Funtastic Mocacinno Coffee',
                 'deskripsi'                 => '<p>Minuman kopi dalam kemasan botol dengan perpaduan rasa dan aroma kopi yang lembut dan istimewa.</p>
 
                 <p><strong>CARA PENGGUNAAN :</strong><br />
@@ -124,7 +124,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 4,  
                 'kode'                      => 'B0084',
-                'nama'                      => 'Pocari Sweat 350Ml',
+                'nama'                      => 'Pocari Sweat',
                 'deskripsi'                 => '<p>Pocari sweat adalah minuman isotonik yang dapat diserap tubuh karena osmolaritasnya yang baik dan terdiri dari elekrolit-elektrolit.<br />
                 &nbsp;</p>
                 
@@ -166,7 +166,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 5,  
                 'kode'                      => 'B0085',
-                'nama'                      => 'Teh Pucuk Harum Teh Melati 350 Ml',
+                'nama'                      => 'Teh Pucuk Harum Teh Melati',
                 'deskripsi'                 => '<p>Teh pucuk harum minuman teh beraroma melati dibuat dengan pucuk daun teh pilihan dengan ekstrak melati yang menyegarkan.<br />
                 &nbsp;</p>
                 
@@ -203,7 +203,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 6,  
                 'kode'                      => 'B0086',
-                'nama'                      => 'Gangsar Kacang Atom 140G',
+                'nama'                      => 'Gangsar Kacang Atom',
                 'deskripsi'                 => '<p>Kacang atom Gangsar cocok untuk pendamping menu bakso, mie ayam ataupun pengganti krupuk</p>',
                 'harga_jual'                => 7500, 
                 'diskon_potongan_harga'     => 0,
@@ -220,7 +220,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 7,  
                 'kode'                      => 'B0087',
-                'nama'                      => 'Japota Potato Chips Ayam Bawang 68G',
+                'nama'                      => 'Japota Potato Chips Ayam Bawang',
                 'deskripsi'                 => '<p>Japota Ayam Bawang, dibuat dengan kentang asli dan diolah menggunakan thin-cut technology, chipsnya tipis dengan taburan bits bawang goreng aslinya memberikan sensasi rasa yang lebih enak dan bikin gak cukup satu!</p>',
                 'harga_jual'                => 10300, 
                 'diskon_potongan_harga'     => 0,
@@ -238,7 +238,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 8,  
                 'kode'                      => 'B0088',
-                'nama'                      => 'Japota Potato Chips Madu Mentega 68G',
+                'nama'                      => 'Japota Potato Chips Madu Mentega',
                 'deskripsi'                 => '<p>Makanan ringan yang terbuat dari kentang pilihan dengan rasa madu mentega yang enak.<br />
                 &nbsp;</p>
                 
@@ -272,7 +272,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 9,  
                 'kode'                      => 'B0089',
-                'nama'                      => 'Potabee Snack Potato Chips Bbq 68G',
+                'nama'                      => 'Potabee Snack Potato Chips Bbq',
                 'deskripsi'                 => "<p>Potabee terbuat dari kentang asli dan diolah menggunakan V-Cut Technology yang bikinkriuknya pecah dan dapat mengunci rasa lebih banyak . Potabee Beef BBQ dilengkapi dengan taburan bits BBQ asli yang bikin ketagihan. Potabee Grilled Seaweed dilengkapi dengan taburan bits rumput laut asli yang bikin ketagihan.<br />
                 <br />
                 <strong>KOMPOSISI :</strong><br />
@@ -292,7 +292,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 10,  
                 'kode'                      => 'B0090',
-                'nama'                      => 'Soyjoy Fruit Soy Bar Raisin Almond 30G',
+                'nama'                      => 'Soyjoy Fruit Soy Bar Raisin Almond',
                 'deskripsi'                 => '<p>Kedelai mengandung nutrisi penting seperti protein, serat, vitamin dan mineral. SOY JOY dibuat dengan tepung kedelai dipadu dengan buah-buahan yang dikeringkan, untuk menemani aktivitas sehari-hari.<br />
                 &nbsp;</p>
                 
@@ -333,7 +333,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 11,  
                 'kode'                      => 'B0091',
-                'nama'                      => 'Nabati Siip Keju 50G',
+                'nama'                      => 'Nabati Siip Keju',
                 'deskripsi'                 => '<p>Makanan ringan berbahan dasar jagung berbentuk bite size, dipadukan dengan bumbu berlimpah sehingga menghasilkan produk yang nikmat dengan harga terjangkau. SIIP emang bikin nagih!<br />
                 <br />
                 <br />
@@ -354,7 +354,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 12,  
                 'kode'                      => 'B0092',
-                'nama'                      => 'Nasi Ayam & Mie 450G',
+                'nama'                      => 'Nasi Ayam & Mie',
                 'deskripsi'                 => '<p>Yuk dimakan pasti bikin nagih dan kenyang loooh...</p>',
                 'harga_jual'                => 14000, 
                 'diskon_potongan_harga'     => 0,
@@ -372,7 +372,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 13,  
                 'kode'                      => 'B0093',
-                'nama'                      => 'Chiki Stick Keju 150G',
+                'nama'                      => 'Chiki Stick Keju',
                 'deskripsi'                 => '<p>Chiki stik keju,makanan ringan yang sangat digemari banyak orang Kaya akan rasa kejunya dan cocok untuk menemani kalian bersantai dan traveling bersama keluarga</p>',
                 'harga_jual'                => 12000, 
                 'diskon_potongan_harga'     => 0,
@@ -390,7 +390,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 14,  
                 'kode'                      => 'B0094',
-                'nama'                      => 'Potabee Potato Chips Wagyu Beef Steak 68G',
+                'nama'                      => 'Potabee Potato Chips Wagyu Beef Steak',
                 'deskripsi'                 => '<p>POTABEE WAGYU BEEF PERPADUAN KENTANG ASLI YANG DIPOTONG DENGAN V-CUT TECHNOLOGY BERTABUR BITS WAGYU ASLI YANG GURIH. AROMA DAN RASA WAGYU YANG TASTY DIJAMIN BIKIN KAMU KETAGIHAN SAMA POTABEE WAGYU BEEF STEAK<br />
                 <br />
                 <br />
@@ -414,7 +414,7 @@ class BarangSeeder extends Seeder
             [   
                 'id'                        => 15,  
                 'kode'                      => 'B0095',
-                'nama'                      => 'Japota Potato Chips Umami Japanese Seaweed 68G',
+                'nama'                      => 'Japota Potato Chips Umami Japanese Seaweed',
                 'deskripsi'                 => '<p>Makanan ringan yang terbuat dari kentang pilihan dengan rasa rumput laut yang enak.<br />
                 &nbsp;</p>
                 

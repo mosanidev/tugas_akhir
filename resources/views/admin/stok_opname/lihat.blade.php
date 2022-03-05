@@ -20,7 +20,7 @@
             <p>Nomor Stok Opname</p>
         </div>
         <div class="col-10">
-            <p class="text-left">{{ sprintf("%04d", $stok_opname[0]->nomor) }}</p>
+            <p class="text-left">{{ $stok_opname[0]->nomor_nota }}</p>
         </div>
       </div>
       <div class="row">
@@ -37,14 +37,6 @@
         </div>
         <div class="col-10">
             <p class="text-left">{{ $stok_opname[0]->nama_depan." ".$stok_opname[0]->nama_belakang }}</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-2">
-            <p>Lokasi Stok</p>
-        </div>
-        <div class="col-10">
-            <p class="text-left">{{ $stok_opname[0]->lokasi_stok }}</p>
         </div>
       </div>
   </div>
@@ -71,7 +63,11 @@
                       @foreach ($detail_stok_opname as $item)
                         <tr>
                           <td>{{ $item->kode." - ".$item->nama }}</td>
-                          <td>{{ $item->tanggal_kadaluarsa }}</td>
+                          @if($item->barang_konsinyasi)
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d H:m:s') }}</td>
+                          @else
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}</td>
+                          @endif
                           <td>{{ $item->stok_di_sistem }}</td>
                           <td>{{ $item->stok_di_toko }}</td>
                           @if($item->jumlah_selisih > 0)

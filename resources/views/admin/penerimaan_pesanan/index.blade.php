@@ -54,7 +54,7 @@
                       @foreach($pemesanan as $item)
                         <tr class="rowPembelian">
                           <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y') }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('DD-MM-Y') }}</td>
                           <td>{{ $item->nama_supplier }}</td>
                           <td>{{ "Rp " . number_format($item->total-$item->diskon-$item->ppn ,0,',','.') }}</td>
                           <td>{{ $item->status }}</td>

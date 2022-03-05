@@ -20,7 +20,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Pemesanan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_pemesanan" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggal_pemesanan" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -178,17 +178,17 @@
 
         $('#datepickerTglJatuhTempo').on('change', function() {
 
-            let tglBuat = new Date($('#datepickerTgl').val());
-            let tglJatuhTempo = new Date($('#datepickerTglJatuhTempo').val());
+            // let tglBuat = new Date($('#datepickerTgl').val());
+            // let tglJatuhTempo = new Date($('#datepickerTglJatuhTempo').val());
 
-            if(tglJatuhTempo != "")
-            {
-                if(tglJatuhTempo < tglBuat)
-                {
-                    $('#datepickerTglJatuhTempo').val("");
-                    toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
-                }
-            }
+            // if(tglJatuhTempo != "")
+            // {
+            //     if(tglJatuhTempo > tglBuat)
+            //     {
+                    // $('#datepickerTglJatuhTempo').val("");
+                    // toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+            //     }
+            // }
 
         });
 

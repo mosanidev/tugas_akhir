@@ -68,7 +68,7 @@ class AdminPenerimaanPesananController extends Controller
                         ->insertGetId([
                             'nomor_nota_dari_supplier' => $request->nomor_nota_dari_supplier,
                             'supplier_id' => $request->supplier_id,
-                            'tanggal' => $request->tanggal_terima,
+                            'tanggal' => \Carbon\Carbon::parse($request->tanggal_terima)->format('Y-m-d'),
                             'diskon' => $request->diskon,
                             'ppn' => $request->ppn,
                             'metode_pembayaran' => $request->metode_pembayaran,

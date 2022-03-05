@@ -40,11 +40,11 @@
                               <td>{{ $item->nomor_nota }}</td>
                               <td>{{ $item->jenis_retur }}</td>
                               <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
-                              <td>{{ \Carbon\Carbon::parse($item->tanggal_jual)->isoFormat('D MMMM Y') }}</td>
-                              <td>{{ \Carbon\Carbon::parse($item->tanggal_retur)->isoFormat('D MMMM Y') }}</td>
+                              <td>{{ \Carbon\Carbon::parse($item->tanggal_jual)->isoFormat('DD-MM-Y') }}</td>
+                              <td>{{ \Carbon\Carbon::parse($item->tanggal_retur)->isoFormat('DD-MM-Y') }}</td>
                               <td>{{ $item->status }}</td>
                               <td>
-                                <a href="#lihat" class='btn btn-info w-100 mb-2'>Lihat</a>
+                                <a href="{{ route('retur_penjualan.show', ['retur_penjualan' => $item->id]) }}" class='btn btn-info w-100 mb-2'>Lihat</a>
                                 @if($item->status == "Harap tunggu pengembalian dana dari admin")
                                   <button class="btn btn-info w-100 btnLunasiRefund" data-toggle="modal" data-target="#modalLunasiRefund" data-id="{{ $item->id }}" data-status="{{ $item->status }}">Kembalikan dana</button>
                                 @elseif($item->status != "Pengembalian dana telah dilakukan") 
@@ -164,8 +164,16 @@
 
   $('.btnSimpanLunasi').on('click', function(){ 
 
-    $('#modalLunasiRefund').modal('toggle');
-    $('#modalKonfirmasiLunasi').modal('toggle');
+    if($('input[name=total_refund]').val() == "")
+    {
+      toastr.error("Harap isi pengembalian dana terlebih dahulu", "Error", toastrOptions);
+    }
+    else 
+    {
+      $('#modalLunasiRefund').modal('toggle');
+      $('#modalKonfirmasiLunasi').modal('toggle');
+    }
+    
 
   });
 

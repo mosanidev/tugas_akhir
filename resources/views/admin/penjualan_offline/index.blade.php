@@ -34,13 +34,12 @@
                       @foreach($penjualan as $item)
                         <tr>
                           <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm:ss')." WIB" }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('DD-MM-Y HH:mm:ss') }}</td>
                           <td>{{ $item->metode_pembayaran }}</td>
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>
                           <td>
                             <a href="{{ route('penjualanoffline.show', ['penjualanoffline'=>$item->id]) }}" class='btn btn-info'><i class="fas fa-info-circle"></i></a> 
-                            {{-- <a href="{{ route('penjualanoffline.edit', ['penjualanoffline'=>$item->id]) }}" class='btn btn-warning'><i class="fas fa-edit"></i></a>  --}}
-                            <button class="btn btn-warning btnUbah" data-toggle="modal" data-target="#modalKonfirmasiUbahPenjualanOffline" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}"><i class="fas fa-edit"></i></button>
+                            {{-- <button class="btn btn-warning btnUbah" data-toggle="modal" data-target="#modalKonfirmasiUbahPenjualanOffline" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}"><i class="fas fa-edit"></i></button> --}}
                             <button class="btn btn-danger btnHapus" data-toggle="modal" data-target="#modalKonfirmasiHapusPenjualanOffline" data-id="{{$item->id}}" data-nomor-nota="{{ $item->nomor_nota }}"><i class="fas fa-trash"></i></button>
                           </td>
                         </tr>
@@ -62,11 +61,11 @@
 
   if("{{ session('success') }}" != "")
   {
-    toastr.success("{{ session('success') }}", "Success", toastrOptions);
+    toastr.success("{{ session('success') }}", "Sukses", toastrOptions);
   }
   else if("{{ session('error') }}" != "")
   {
-    toastr.error("{{ session('error') }}", "Error", toastrOptions);
+    toastr.error("{{ session('error') }}", "Gagal", toastrOptions);
   }
 
   $('.btnHapus').on('click', function() {

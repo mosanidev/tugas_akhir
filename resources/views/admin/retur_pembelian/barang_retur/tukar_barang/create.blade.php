@@ -23,7 +23,20 @@
                                 </select>
                             </div>
                         </div>
-                        <br>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">Barang Ganti</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="barangGanti" value="" data-id="" readonly>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-6">
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Asal</label>
                             <div class="col-sm-8">
@@ -35,23 +48,8 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
-                        <div class="row">
-                            <label class="col-sm-4 col-form-label">Kuantitas Barang Asal</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="kuantitasBarangAsal" value="" readonly>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-6">
-                        <div class="row">
-                            <label class="col-sm-4 col-form-label">Barang Ganti</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="barangGanti" value="" data-id="" readonly>
-                                
-                            </div>
-                        </div>
-                        <br>
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa Barang Ganti</label>
                             <div class="col-sm-8">
@@ -67,21 +65,38 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">Kuantitas Barang Asal</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="kuantitasBarangAsal" value="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Kuantitas Barang Ganti</label>
                             <div class="col-sm-8">
                                 <input type="number" class="form-control" name="kuantitas_barang_ganti" min="1" id="kuantitasBarangGanti" value="">
                             </div>
                         </div>
-                        <br>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-6">
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Jumlah Stok Barang yang Dapat Diretur</label>
                             <div class="col-sm-8">
                                 <input type="number" class="form-control" min="0" id="jumlahStokBarang" readonly>
                             </div>
                         </div>
-                        <br>
+                    </div>
+                    <div class="col-6">
                         <div class="row">
                             <label class="col-sm-4 col-form-label">Keterangan</label>
                             <div class="col-sm-8">

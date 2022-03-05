@@ -21,7 +21,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Pemesanan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_pemesanan" autocomplete="off" id="datepickerTgl" value="{{ $pemesanan[0]->tanggal }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggal_pemesanan" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::parse($pemesanan[0]->tanggal)->format('d-m-Y') }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -33,7 +33,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Perkiraan Diterima</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggalPerkiraanTerima" value="{{ $pemesanan[0]->perkiraan_tanggal_terima }}" autocomplete="off" id="datepickerTglPerkiraanTerima" required>
+                      <input type="text" class="form-control pull-right" name="tanggalPerkiraanTerima" value="{{ \Carbon\Carbon::parse($pemesanan[0]->perkiraan_tanggal_terima)->format('d-m-Y') }}" autocomplete="off" id="datepickerTglPerkiraanTerima" required>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -45,7 +45,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" value="{{ $pemesanan[0]->tanggal_jatuh_tempo }}" id="datepickerTglJatuhTempo" required>
+                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" value="{{ \Carbon\Carbon::parse($pemesanan[0]->tanggal_jatuh_tempo)->format('d-m-Y') }}" id="datepickerTglJatuhTempo" required>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>

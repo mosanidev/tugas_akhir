@@ -28,7 +28,7 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Tanggal Retur</label>
             <div class="col-sm-8">
-                <p class="mt-2">{{ $retur_pembelian[0]->tanggal }}</p>
+                <p class="mt-2">{{ \Carbon\Carbon::parse($retur_pembelian[0]->tanggal)->format('d-m-Y') }}</p>
             </div>
         </div>
         <div class="form-group row">
@@ -97,16 +97,16 @@
                             @foreach($detail_retur_pembelian as $item)
                                 <tr>
                                     @if($item->barang_konsinyasi == 0)
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->isoFormat('DD MMMM YYYY') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->isoFormat('YYYY-MM-DD') }}</td>
                                     @else
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->isoFormat('DD MMMM YYYY').", ".\Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->format('HH:mm')." WIB" }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->isoFormat('YYYY-MM-DD')." ".\Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->format('HH:mm') }}</td>
                                     @endif
                                     <td>{{ $item->kode." - ".$item->nama }}</td>
                                     <td>{{ $item->kuantitas_barang_retur }}</td>
                                     @if($item->barang_konsinyasi == 0)
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_ganti)->isoFormat('DD MMMM YYYY') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_ganti)->isoFormat('YYYY-MM-DD') }}</td>
                                     @else
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_ganti)->isoFormat('DD MMMM YYYY').", ".\Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->format('HH:mm')." WIB" }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_ganti)->isoFormat('YYYY-MM-DD').", ".\Carbon\Carbon::parse($item->tanggal_kadaluarsa_barang_retur)->format('HH:mm') }}</td>
                                     @endif
                                     
                                     <td>{{ $item->kode." - ".$item->nama }}</td>

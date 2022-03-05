@@ -78,16 +78,16 @@ class AdminReturPenjualanController extends Controller
 
         }
 
-        $returPenjualan = DB::table('detail_retur_penjualan')
-                                ->where('retur_penjualan_id', '=', $id)
-                                ->get();
+        // $returPenjualan = DB::table('detail_retur_penjualan')
+        //                         ->where('retur_penjualan_id', '=', $id)
+        //                         ->get();
 
-        foreach($returPenjualan as $item)
-        {
-            $kembalikanBarangReturKeStok = DB::table('barang_has_kadaluarsa')
-                                        ->where('barang_id', '=', $item->barang_id)
-                                        ->increment('jumlah_stok', $item->kuantitas);
-        }
+        // foreach($returPenjualan as $item)
+        // {
+        //     $kembalikanBarangReturKeStok = DB::table('barang_has_kadaluarsa')
+        //                                 ->where('barang_id', '=', $item->barang_retur)
+        //                                 ->increment('jumlah_stok', $item->kuantitas_barang_retur);
+        // }
 
         return redirect()->back()->with(['success' => 'Pengembalian dana berhasil dicatat']);
 
@@ -112,7 +112,26 @@ class AdminReturPenjualanController extends Controller
      */
     public function show($id)
     {
-        //
+        $retur_penjualan = DB::table('retur_penjualan')
+                            ->select('retur_penjualan.id',
+                                     'penjualan.nomor_nota', 
+                                     'users.nama_depan', 
+                                     'users.nama_belakang', 
+                                     'penjualan.tanggal as tanggal_jual',
+                                     'retur_penjualan.tanggal as tanggal_retur',
+                                     'retur_penjualan.status')
+                            ->join('penjualan', 'penjualan.id', '=', 'retur_penjualan.penjualan_id')
+                            ->join('users', 'retur_penjualan.users_id', '=', 'users.id')
+                            ->where('retur_penjualan.id', '=', $id)
+                            ->get();
+
+        $detail_retur_penjualan = DB::table('detail_retur_penjualan')
+                                    ->select('detail_retur_penjualan.*', 'barang.kode', 'barang.nama')
+                                    ->join('barang', 'barang.id', '=', 'detail_retur_penjualan.barang_retur')
+                                    ->where('detail_retur_penjualan.retur_penjualan_id', '=', $id)
+                                    ->get();
+
+        return view('admin.retur_penjualan.lihat', ['retur_penjualan' => $retur_penjualan, 'detail_retur_penjualan' => $detail_retur_penjualan]);
     }
 
     /**
@@ -167,7 +186,7 @@ class AdminReturPenjualanController extends Controller
                             'updated_at' => \Carbon\Carbon::now()
                         ]);
 
-        return redirect()->route('retur_penjualan.index')->with(['success' => 'Data berhasil diubah']);
+        return redirect()->route('retur_penjualan.index')->with(['success' => 'Data retur penjualan berhasil diubah']);
     }
 
     /**

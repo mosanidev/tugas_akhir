@@ -21,7 +21,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Titip</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <p>{{ $konsinyasi[0]->tanggal_titip }}</p>
+                      <p>{{ \Carbon\Carbon::parse($konsinyasi[0]->tanggal_titip)->format('d-m-Y') }}</p>
                   </div>   
                 </div>
               </div>
@@ -29,7 +29,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <p>{{ $konsinyasi[0]->tanggal_jatuh_tempo }}</p>
+                      <p>{{ \Carbon\Carbon::parse($konsinyasi[0]->tanggal_jatuh_tempo)->format('d-m-Y') }}</p>
                   </div>   
                 </div>
               </div>

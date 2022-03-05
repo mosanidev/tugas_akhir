@@ -32,23 +32,19 @@ class AdminPenjualanOfflineController extends Controller
      */
     public function create()
     {
-        // $oneWeekLater = \Carbon\Carbon::now()->addDays('7')->format("Y-m-d H:m:s");
-
-        $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
-
         $barang = DB::table('barang_has_kadaluarsa')
                     ->select('barang_has_kadaluarsa.barang_id', 'barang.kode', 'barang.nama', 'barang.harga_jual', 'barang.diskon_potongan_harga')
-                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
-                    ->where('barang_has_kadaluarsa.jumlah_stok_di_rak', '>', 0)
+                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
+                    ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                     ->join('barang', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                     ->groupBy('barang_has_kadaluarsa.barang_id')
                     ->get();
 
         // mengambil tanggal kadaluarsa terlama 
         $barang_has_kadaluarsa = DB::table('barang')
-                                    ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok_di_rak as jumlah_stok')
-                                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $now)
-                                    ->where('barang_has_kadaluarsa.jumlah_stok_di_rak', '>', 0)
+                                    ->select('barang.*', 'barang_has_kadaluarsa.tanggal_kadaluarsa', 'barang_has_kadaluarsa.jumlah_stok')
+                                    ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
+                                    ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
                                     ->join('barang_has_kadaluarsa', 'barang_has_kadaluarsa.barang_id', '=', 'barang.id')
                                     ->get();
 
@@ -95,14 +91,12 @@ class AdminPenjualanOfflineController extends Controller
         $id_penjualan = DB::table('penjualan')
                             ->insertGetId([
                                 'nomor_nota' => $request->nomor_nota,
-                                'tanggal' => $request->tanggal,
+                                'tanggal' => \Carbon\Carbon::parse($request->tanggal)->format('Y-m-d H:m:s'),
                                 'pembayaran_id' => $id_pembayaran,
                                 'users_id' => $pelanggan_kopkar,
                                 'jenis' => 'Offline',
                                 'metode_transaksi' => 'Ambil di toko',
                                 'status_jual' => 'Pesanan sudah dibayar',
-                                'created_at' => \Carbon\Carbon::now(),
-                                'updated_at' => \Carbon\Carbon::now()
                             ]);
 
         $detail_penjualan = json_decode($request->detail_penjualan, true);
@@ -121,7 +115,7 @@ class AdminPenjualanOfflineController extends Controller
             $kurangiStok = DB::table('barang_has_kadaluarsa')
                             ->where('barang_id', '=', $detail_penjualan[$i]['barang_id'])
                             ->where('tanggal_kadaluarsa', '=', $detail_penjualan[$i]['tanggal_kadaluarsa'])
-                            ->decrement('jumlah_stok_di_rak', $detail_penjualan[$i]['kuantitas']);
+                            ->decrement('jumlah_stok', $detail_penjualan[$i]['kuantitas']);
 
             $insert_detail_penjualan = DB::table('detail_penjualan')
                                         ->insert([
@@ -358,7 +352,7 @@ class AdminPenjualanOfflineController extends Controller
             $barang_has_kadaluarsa = DB::table('barang_has_kadaluarsa')
                                         ->where('barang_id', '=', $item->barang_id)
                                         ->where('tanggal_kadaluarsa', '=', $item->tanggal_kadaluarsa)
-                                        ->increment('jumlah_stok_di_rak', $item->kuantitas);
+                                        ->increment('jumlah_stok', $item->kuantitas);
         }
     }
 
@@ -380,6 +374,6 @@ class AdminPenjualanOfflineController extends Controller
                     ->where('id', '=', $id)
                     ->delete();
 
-        return redirect()->route('penjualanoffline.index')->with(['success' => 'Data pernjualan berhasil dihapus']);
+        return redirect()->route('penjualanoffline.index')->with(['success' => 'Data penjualan berhasil dihapus']);
     }
 }

@@ -129,9 +129,17 @@ class ReturPenjualanController extends Controller
                             ->where('penjualan.users_id', '=', auth()->user()->id)
                             ->get();
 
+        $selectRetur = DB::table('retur_penjualan')
+                        ->where('penjualan_id', '=', $selectPenjualan[0]->id)
+                        ->get();
+
         if(count($selectPenjualan) == 0)
         {
             return redirect()->back()->with(['error' => 'Pengajuan retur ditolak. Nomor nota tidak ada di riwayat transaksi anda']);
+        }
+        else if(count($selectRetur) > 0)
+        {
+            return redirect()->back()->with(['error' => 'Pengajuan retur ditolak. Sudah ada pengajuan retur dengan nomor nota tersebut']);
         }
         else if($selectPenjualan[0]->status_jual != "Pesanan sudah selesai")
         {
@@ -153,7 +161,7 @@ class ReturPenjualanController extends Controller
         $total = 0;
 
         $idReturPenjualan = DB::table('retur_penjualan')->insertGetId([
-                                    'tanggal' => $tanggal,
+                                    'tanggal' => \Carbon\Carbon::parse($tanggal)->format('Y-m-d'),
                                     'users_id' => auth()->user()->id,
                                     'penjualan_id' => $selectPenjualan[0]->id,
                                     'status' => 'Menunggu pengajuan dicek admin',

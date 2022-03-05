@@ -81,7 +81,7 @@
                       @foreach($penjualan as $item)
                         <tr>
                           <td>{{ $item->nomor_nota }}</td>
-                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('D MMMM Y HH:mm')." WIB" }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('DD-MM-Y HH:mm')." WIB" }}</td>
                           <td>{{ $item->nama_depan." ".$item->nama_belakang }}</td>
                           <td>{{ $item->metode_transaksi }}</td>
                           <td>{{ "Rp " . number_format($item->total,0,',','.') }}</td>

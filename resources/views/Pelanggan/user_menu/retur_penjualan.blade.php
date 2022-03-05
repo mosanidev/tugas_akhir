@@ -8,6 +8,7 @@
             <p class="text-justify">3. Produk diterima saat sudah melewati tanggal kadaluarsa</p>
             <p class="text-justify">Syarat dan ketentuan : </p>
             <p class="text-justify">1. Konsumen dapat mengajukan penukaran produk paling lambat 3 (tiga) hari kerja dari waktu Anda menerima produk dengan mengisi form dibawah ini</p>
+            <p class="text-justify">1. Konsumen dapat meretur transaksi yang dilakukan melalui situs ini saja.</p>
             <p class="text-justify">2. Konsumen wajib memberikan bukti bahwa produk layak ditukar sesuai dengan kriteria diatas melalui foto atau video</p>
             <p class="text-justify">3. Konsumen wajib memberikan bukti video saat membuka pesanan pertama kali</p>
             <p class="text-justify">3. Semua bukti file berupa foto dan video wajib di unggah di dalam folder di Google Drive atau Dropbox dan di share melalui link yang ditulis di isian form</p>

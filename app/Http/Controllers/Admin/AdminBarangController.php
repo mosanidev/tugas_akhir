@@ -89,26 +89,23 @@ class AdminBarangController extends Controller
         $barang_konsinyasi = isset($request->barang_konsinyasi) ? $request->barang_konsinyasi : 0;
         $stok_minimum = isset($request->stok_minimum) ? $request->stok_minimum : 0;
 
-        if($barang_konsinyasi)
+        $barangYgSama = DB::table('barang')
+                            ->where('nama', '=', $request->nama)
+                            ->where('supplier_id', '=', $request->penitip)
+                            ->where('jenis_id', '=', $request->jenis_id)
+                            ->where('kategori_id', '=', $request->kategori_id)
+                            ->where('merek_id', '=', $request->merek_id)
+                            ->get();
+
+        if(count($barangYgSama) > 0)
         {
-            $barangYgSama = DB::table('barang')
-                                ->where('nama', '=', $request->nama)
-                                ->where('supplier_id', '=', $request->penitip)
-                                ->where('jenis_id', '=', $request->jenis_id)
-                                ->where('kategori_id', '=', $request->kategori_id)
-                                ->where('merek_id', '=', $request->merek_id)
-                                ->get();
+            $namaDB = strtolower(str_replace(" ", "", $barangYgSama[0]->nama));
 
-            if(count($barangYgSama) > 0)
+            $nama = strtolower(str_replace(" ", "", $request->nama));
+
+            if($namaDB == $nama)
             {
-                $namaDB = strtolower(str_replace(" ", "", $barangYgSama[0]->nama));
-
-                $nama = strtolower(str_replace(" ", "", $request->nama));
-
-                if($namaDB == $nama)
-                {
-                    return redirect()->back()->with(['error' => 'Tidak bisa tambah barang karena sudah ada yang menitipkan barang yang sama']);
-                }
+                return redirect()->back()->with(['error' => 'Tidak bisa tambah barang karena sudah ada yang pemasok dengan barang yang sama']);
             }
         }
 

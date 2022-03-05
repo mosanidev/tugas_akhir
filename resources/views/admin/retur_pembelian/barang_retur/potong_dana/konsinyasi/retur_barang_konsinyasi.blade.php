@@ -28,7 +28,7 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label">Tanggal Retur</label>
             <div class="col-sm-8">
-                <p class="mt-2">{{ $retur_pembelian[0]->tanggal }}</p>
+                <p class="mt-2">{{ \Carbon\Carbon::parse($retur_pembelian[0]->tanggal)->format('d-m-Y') }}</p>
             </div>
         </div>
         <div class="form-group row">
@@ -38,19 +38,19 @@
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label">Tanggal Buat Nota Pembelian</label>
+            <label class="col-sm-4 col-form-label">Tanggal Buat Nota Konsinyasi</label>
             <div class="col-sm-8">
-                <p class="mt-2">{{ $retur_pembelian[0]->tanggal_buat_nota_beli }}</p>
+                <p class="mt-2">{{ \Carbon\Carbon::parse($retur_pembelian[0]->tanggal_buat_nota_beli)->format('d-m-Y') }}</p>
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Nota Pembelian</label>
+            <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Nota Konsinyasi</label>
             <div class="col-sm-8">
-                <p class="mt-2">{{ $retur_pembelian[0]->tanggal_jatuh_tempo_beli }}</p>
+                <p class="mt-2">{{ \Carbon\Carbon::parse($retur_pembelian[0]->tanggal_jatuh_tempo_beli)->format('d-m-Y') }}</p>
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label">Status Pembelian</label>
+            <label class="col-sm-4 col-form-label">Status Konsinyasi</label>
             <div class="col-sm-8">
                 <p class="mt-2">{{ $retur_pembelian[0]->status_pembelian }}</p>
             </div>

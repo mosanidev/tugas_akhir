@@ -31,7 +31,7 @@ class AdminStokOpnameController extends Controller
         }
 
         $stok_opname = DB::table('stok_opname')
-                        ->select('stok_opname.id as nomor', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang', 'stok_opname.lokasi_stok')
+                        ->select('stok_opname.id', 'stok_opname.nomor_nota', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang')
                         ->join('users', 'stok_opname.users_id', '=', 'users.id')
                         ->get();
 
@@ -46,12 +46,14 @@ class AdminStokOpnameController extends Controller
     public function create()
     {
         $nomorStokOpname = DB::table('stok_opname')
-                            ->select('nomor_nota')
+                            ->select(DB::raw('max(nomor_nota) as nomor_nota'))
                             ->get();
 
         if(count($nomorStokOpname) > 0)
         {
-            $nomor_stok_opname = floatval($nomorStokOpname[0]->nomor_nota) + 1;
+            // $nomor_stok_opname = floatval($nomorStokOpname[0]->nomor_nota) + 1;
+            $nomor_stok_opname = $nomorStokOpname[0]->nomor_nota + 1;
+
         }
         else 
         {
@@ -201,7 +203,7 @@ class AdminStokOpnameController extends Controller
                             ->get();
 
         $stok_opname = DB::table('stok_opname')
-                        ->select('stok_opname.id as nomor', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang', 'stok_opname.lokasi_stok')
+                        ->select('stok_opname.id', 'stok_opname.nomor_nota', 'stok_opname.tanggal', 'users.nama_depan', 'users.nama_belakang')
                         ->join('users', 'stok_opname.users_id', '=', 'users.id')
                         ->where('stok_opname.id', '=', $id)
                         ->get();
@@ -214,7 +216,8 @@ class AdminStokOpnameController extends Controller
                                          'detail_stok_opname.jumlah_selisih',
                                          'detail_stok_opname.keterangan',
                                          'barang.kode',
-                                         'barang.nama')
+                                         'barang.nama',
+                                         'barang.barang_konsinyasi')
                                 ->join('barang', 'detail_stok_opname.barang_id', 'barang.id')
                                 ->where('detail_stok_opname.stok_opname_id', '=', $id)
                                 ->get();

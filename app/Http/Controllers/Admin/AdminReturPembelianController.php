@@ -67,7 +67,7 @@ class AdminReturPembelianController extends Controller
             $id_retur_pembelian = DB::table('retur_pembelian')
                                     ->insertGetId([
                                         'nomor_nota' => $request->nomor_nota_retur,
-                                        'tanggal' => $request->tanggal,
+                                        'tanggal' => \Carbon\Carbon::parse($request->tanggal)->format('Y-m-d'),
                                         'users_id' => explode(" - ", $request->pembuat)[0],
                                         'pembelian_id' => $request->id_pembelian,
                                         'kebijakan_retur' => $request->kebijakan_retur
@@ -78,7 +78,7 @@ class AdminReturPembelianController extends Controller
             $id_retur_pembelian = DB::table('retur_pembelian')
                                     ->insertGetId([
                                         'nomor_nota' => $request->nomor_nota_retur,
-                                        'tanggal' => $request->tanggal,
+                                        'tanggal' => \Carbon\Carbon::parse($request->tanggal)->format('Y-m-d'),
                                         'users_id' => explode(" - ", $request->pembuat)[0],
                                         'konsinyasi_id' => $request->id_pembelian,
                                         'kebijakan_retur' => $request->kebijakan_retur

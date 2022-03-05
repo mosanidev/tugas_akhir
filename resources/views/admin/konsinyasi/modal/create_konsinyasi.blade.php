@@ -20,7 +20,7 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Tanggal Titip</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" min="1" id="tanggalTitip" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" name="tanggal_titip" readonly>
+                    <input type="text" class="form-control" min="1" id="tanggalTitip" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" name="tanggal_titip" readonly>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -74,12 +74,12 @@
 <script type="text/javascript">
 
     $('#tanggalTitip').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true
     });
 
     $('#tanggalJatuhTempo').datepicker({
-      format: 'yyyy-mm-dd',
+      format: 'dd-mm-yyyy',
       autoclose: true,
       startDate: new Date()
     });

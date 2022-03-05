@@ -27,7 +27,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Buat</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_buat" autocomplete="off" id="datepickerTgl" value="{{ $pembelian[0]->tanggal }}" readonly>
+                      <input type="text" class="form-control pull-right" name="tanggal_buat" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::parse($pembelian[0]->tanggal)->format('d-m-Y') }}" readonly>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -38,7 +38,7 @@
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                 <div class="col-sm-8">
                   <div class="input-group">
-                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" value="{{ $pembelian[0]->tanggal_jatuh_tempo }}" required>
+                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" value="{{ \Carbon\Carbon::parse($pembelian[0]->tanggal_jatuh_tempo)->format('d-m-Y') }}" required>
                       <div class="input-group-append">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -46,7 +46,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Supplier</label>
+                <label class="col-sm-4 col-form-label">Pemasok</label>
                 <div class="col-sm-8">
                   {{-- <select class="form-control" name="supplier_id" id="selectSupplier" required>
                       <option disabled selected>Supplier</option>
