@@ -46,8 +46,8 @@ class AdminPeriodeDiskonController extends Controller
     {
         $idPeriodeDiskon = DB::table('periode_diskon')
                                 ->insertGetId([
-                                    'tanggal_dimulai' => $request->tanggal_dimulai,
-                                    'tanggal_berakhir' => $request->tanggal_berakhir,
+                                    'tanggal_dimulai' => \Carbon\Carbon::parse($request->tanggal_dimulai)->format('Y-m-d'),
+                                    'tanggal_berakhir' => \Carbon\Carbon::parse($request->tanggal_berakhir)->format('Y-m-d'),
                                     'keterangan' => $request->keterangan
                                 ]);
         

@@ -71,9 +71,7 @@
             <br>
 
             <div class="d-flex justify-content-center">
-                {{-- {{ $barang->links('pagination::bootstrap-4') }} --}}
                 {{ $barang->render('pagination::bootstrap-4') }}
-
             </div>
         </div>
         

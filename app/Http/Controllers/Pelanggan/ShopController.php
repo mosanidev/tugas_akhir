@@ -28,7 +28,10 @@ class ShopController extends Controller
                         ->select('merek_barang.id', 'merek_barang.merek_barang')
                         ->join('merek_barang', 'merek_barang.id', '=', 'barang.merek_id')
                         ->join('kategori_barang', 'kategori_barang.id', '=', 'barang.kategori_id')
-                        ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)->distinct()->get();
+                        ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)
+                        ->where('barang.nama', 'like', '%'.strtolower($request->key).'%')
+                        ->distinct()
+                        ->get();
 
         // check filter
         if ($request->merek == null && $request->hargamin == null && $request->hargamax == null)
@@ -69,6 +72,10 @@ class ShopController extends Controller
         {
             $data_barang = $data_barang->orderByRaw('(harga_jual - diskon_potongan_harga) asc');
         } 
+        else if($request->urutkan == "promo")
+        {
+            $data_barang = $data_barang->orderByRaw('diskon_potongan_harga desc');
+        } 
 
         $data_barang = $data_barang->paginate(15);
 
@@ -80,14 +87,14 @@ class ShopController extends Controller
             $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
             
-            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);         
+            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat, 'urutkan' => $request->urutkan]);         
 
         }
         else 
         {
             $total_cart = array();
 
-            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart]);      
+            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart, 'urutkan' => $request->urutkan]);      
 
         }
         
@@ -148,6 +155,10 @@ class ShopController extends Controller
         else if($request->urutkan == "minharga")
         {
             $data_barang = $data_barang->orderByRaw('(harga_jual - diskon_potongan_harga) asc');
+        }
+        else if($request->urutkan == "promo")
+        {
+            $data_barang = $data_barang->orderByRaw('diskon_potongan_harga desc');
         } 
 
         $data_barang = $data_barang->paginate(15);
@@ -160,14 +171,14 @@ class ShopController extends Controller
             $jumlah_notif = DB::table('notifikasi')->select(DB::raw('count(*) as jumlah_notif'))->where('notifikasi.users_id', '=', auth()->user()->id)->get();
             $total_cart = DB::table('cart')->select(DB::raw('count(*) as total_cart'))->where('cart.users_id', '=', auth()->user()->id)->get();
             
-            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat]);    
+            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart, 'jumlah_notif' => $jumlah_notif, 'jumlah_notif_belum_dilihat' => $jumlah_notif_belum_dilihat, 'urutkan' => $request->urutkan]);    
 
         }
         else 
         {
             $total_cart = array();
 
-            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart]);    
+            return view('pelanggan.shop.shop_by_brand', ['merek_barang' => $data_merek, 'semua_kategori' => $data_kategori, 'barang' => $data_barang, 'id' => $request->kategori_id, 'merek_checked' => $request->merek, 'hargamin' => $request->hargamin, 'hargamax' => $request->hargamax,'total_cart' => $total_cart, 'urutkan' => $request->urutkan]);    
 
         }
     }
@@ -244,6 +255,19 @@ class ShopController extends Controller
                             ->where('barang.jenis_id', '=', $id)
                             ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')
+                            ->groupBy('barang.id')
+                            ->paginate(15);
+        }
+        else if($request->urutkan == "promo")
+        {
+            $data_barang = DB::table('barang')
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'), 'jenis_barang.jenis_barang as nama_jenis')
+                            ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->join('jenis_barang', 'barang.jenis_id', '=', 'jenis_barang.id')
+                            ->where('barang.jenis_id', '=', $id)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
+                            ->orderByRaw('diskon_potongan_harga desc')
                             ->groupBy('barang.id')
                             ->paginate(15);
         }
@@ -435,8 +459,19 @@ class ShopController extends Controller
                             ->orderByRaw('(harga_jual - diskon_potongan_harga) asc')
                             ->groupBy('barang.id')
                             ->paginate(15);        
-        }   
-
+        }
+        else if($request->urutkan == "promo")
+        {
+            $data_barang = DB::table('barang')
+                            ->select('barang.*', DB::raw('sum(barang_has_kadaluarsa.jumlah_stok) as jumlah_stok'))
+                            ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
+                            ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
+                            ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
+                            ->orderByRaw('diskon_potongan_harga desc')
+                            ->groupBy('barang.id')
+                            ->paginate(15);   
+        }
+        
         $data_barang->setPath("/shop/order?urutkan=$request->urutkan");
         
         if (Auth::check())

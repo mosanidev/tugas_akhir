@@ -76,11 +76,13 @@ class BarangController extends Controller
                         // ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', $oneWeekLater)
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->inRandomOrder()
-                        ->get();
+                        ->paginate(15);
 
         $data_jenis = DB::table('jenis_barang')->get();
+        
+        $data_kategori = DB::table('kategori_barang')->get();
 
-        return view('pelanggan.shop.shop_by_type', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang]);
+        return view('pelanggan.shop.shop_by_type', ['state' => 'jenis', 'jenis_barang' => $data_jenis, 'barang' => $data_barang, 'semua_kategori'=>$data_kategori]);
     }
 
     public function searchBarang(Request $request)
@@ -91,7 +93,7 @@ class BarangController extends Controller
                         ->join('kategori_barang', 'barang.kategori_id','=','kategori_barang.id')
                         ->join('merek_barang', 'barang.merek_id','=','merek_barang.id')
                         ->where('barang_has_kadaluarsa.jumlah_stok', '>', 0)
-                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbpn\Carbon::now())
+                        ->where('barang_has_kadaluarsa.tanggal_kadaluarsa', '>', \Carbon\Carbon::now())
                         ->join('barang_has_kadaluarsa', 'barang.id', '=', 'barang_has_kadaluarsa.barang_id')
                         ->where('nama', 'like', '%'.strtolower($request->key).'%')
                         ->where('kategori_barang.kategori_barang', '=', $request->input_kategori)

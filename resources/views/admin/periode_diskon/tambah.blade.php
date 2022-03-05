@@ -23,7 +23,7 @@
                     <div class="col-sm-8">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control pull-right" name="tanggal_dimulai" autocomplete="off" id="datepickertglawal" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
+                                <input type="text" class="form-control pull-right" name="tanggal_dimulai" autocomplete="off" id="datepickertglawal" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>

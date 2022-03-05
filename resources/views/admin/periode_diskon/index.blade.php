@@ -32,8 +32,8 @@
                   <tbody>
                       @foreach ($periode_diskon as $item)
                         <tr>
-                          <td>{{ $item->tanggal_dimulai }}</td>
-                          <td>{{ $item->tanggal_berakhir }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal_dimulai)->format('d-m-Y') }}</td>
+                          <td>{{ \Carbon\Carbon::parse($item->tanggal_berakhir)->format('d-m-Y') }}</td>
                           <td >
 
                             <a href="{{ route('periode_diskon.show', ['periode_diskon' => $item->id]) }}" class="btn btn-info"><i class="fas fa-info-circle"></i></a>

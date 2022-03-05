@@ -151,7 +151,8 @@ class BarangSeeder extends Seeder
                 <p><strong>TAKARAN SAJI :</strong><br />
                 Takaran saji : 100mL</p>',
                 'harga_jual'                => 6500, 
-                'diskon_potongan_harga'     => 0,
+                'diskon_potongan_harga'     => 300,
+                'periode_diskon_id'         => 1,
                 'berat'                     => 350,
                 'jenis_id'                  => 2,
                 'kategori_id'               => 7,
@@ -256,7 +257,8 @@ class BarangSeeder extends Seeder
                 <p><strong>TAKARAN SAJI :</strong><br />
                 Takaran saji: 28g</p>',
                 'harga_jual'                => 10300, 
-                'diskon_potongan_harga'     => 0,
+                'diskon_potongan_harga'     => 200,
+                'periode_diskon_id'         => 1,
                 'berat'                     => 68,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
@@ -395,7 +397,8 @@ class BarangSeeder extends Seeder
                 <strong>KOMPOSISI :</strong><br />
                 KENTANG (54%), MINYAK KELAPA SAWIT, BUMBU RASA STEAK DAGING SAPI WAGYU, GARAM, PERISA SINTETIK DAN PERISA ALAMI, EKSTRAK DAGING SAPI (0.12%) BUBUK KEJU, KRIMER NABATI, PEWARNA SINTETIK MAKANAN.</p>',
                 'harga_jual'                => 9700, 
-                'diskon_potongan_harga'     => 0,
+                'diskon_potongan_harga'     => 200,
+                'periode_diskon_id'         => 1,
                 'barang_konsinyasi'         => 1,
                 'berat'                     => 68,
                 'jenis_id'                  => 1,

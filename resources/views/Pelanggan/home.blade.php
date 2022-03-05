@@ -62,7 +62,7 @@
             @if(isset($barang_promo) && count($barang_promo) > 0 && $barang_promo[0]->id != null) 
                 
                 <div class="col-6 mt-2">
-                    <p class="h5"><b>Sedang Promo <a href="{{ route('promo') }}" class="text-success" style="font-size: 14px;">Lihat Semua</a></b></p>
+                    <p class="h5"><b>Sedang Promo <a href="{{ url('/shop/order?urutkan=promo') }}" class="text-success" style="font-size: 14px;">Lihat Semua</a></b></p>
                 </div>
 
                 @if(count($barang_promo) > 4)
@@ -92,13 +92,13 @@
                                             <div class="card">
                                                 <input type="hidden" name="barang_id" value="{{ $barang_promo[$i]->id }}">
                                                 <div style="height: 150px;">
-                                                    <img class="card-img-top" src="{{ asset("".$barang_promo[$i]->foto) }}" alt="Foto Produk">
+                                                    <img class="card-img-top" src="{{ asset("".$barang_promo[$i]->foto) }}" height="150" style="object-fit: contain;" alt="Foto Produk">
                                                 </div>
                                                 <div class="card-body">
                                                     <div style="height: 60px;">
                                                         <p><b><a href="{{ route('detail', ['id' => $barang_promo[$i]->id]) }}" class="text-dark">{{ $barang_promo[$i]->nama }}</a></b></p>
                                                     </div>
-                                                    <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_promo[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_promo[$i]->harga_jual-$barang_promo[$i]->diskon_potongan_harga,0,',','.') }}</p>
+                                                    <p class="card-text mt-1"><del class="mr-2">{{ "Rp " . number_format($barang_promo[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_promo[$i]->harga_jual-$barang_promo[$i]->diskon_potongan_harga,0,',','.') }}</p>
                                                     <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_promo[$i]->id }}" type="button" style="font-size: 14px;"> Masukkan ke keranjang </button>
                                                 </div>
                                             </div>

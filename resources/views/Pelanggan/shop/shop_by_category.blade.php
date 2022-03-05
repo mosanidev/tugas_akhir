@@ -30,6 +30,7 @@
                         <option value="z-a" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'z-a') selected @endif>ALFABET Z-A</option>
                         <option value="minharga" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'minharga') selected @endif>HARGA TERENDAH</option>
                         <option value="maxharga" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'maxharga') selected @endif>HARGA TERTINGGI</option>
+                        <option value="promo" @if(isset($_GET['urutkan']) && $_GET['urutkan'] == 'promo') selected @endif>PROMO</option>
                     </select>
                 </p>
             </form>
