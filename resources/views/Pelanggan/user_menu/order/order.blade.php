@@ -276,7 +276,7 @@
                                                     <div class="col-7">
                                                         <p>` + data.transaksi[0].status_jual + `</p>\n
                                                         <p>Harap ambil pesanan anda di toko</p>\n
-                                                        <p>Jika pesanan belum diambil hingga ` + moment(data.transaksi[0].tanggal).add(3, 'days').format("DD MMMM YYYY") + ` ` + moment(data.transaksi[0].tanggal).add(3, 'days').format("HH:mm") + `, maka bukan tanggung jawab dari toko</p>
+                                                        <p>Jika pesanan belum diambil hingga ` + moment(data.transaksi[0].tanggal).add(3, 'days').format("DD MMMM YYYY") + ` ` + moment(data.transaksi[0].tanggal).add(3, 'days').format("HH:mm") + ` WIB, maka bukan tanggung jawab dari toko</p>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -542,7 +542,7 @@
                             {
                                 $('.rowContentBrg').append(`<div class="row">
                                                             <div class="col-4 ml-2">
-                                                                    <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
+                                                                    <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" height="150" style="object-fit: cover;" alt="Foto Barang">
                                                             </div>
                                                             <div class="col-7">
                                                                     <p>`+ data.barang[i].nama + `</p>
@@ -586,9 +586,9 @@
 
                             for(let i=0; i < data.barang.length; i++)
                             {
-                                $('.rowContentBrg').append(`<div class="row">
+                                $('.rowContentBrg').append(`<div class="row my-2">
                                                             <div class="col-4 ml-2">
-                                                                    <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
+                                                                    <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" height="150" style="object-fit: cover;" alt="Foto Barang">
                                                             </div>
                                                             <div class="col-7">
                                                                     <p>`+ data.barang[i].nama + `</p>
@@ -631,6 +631,8 @@
 
                             let totalTarif = 0;
 
+                            let infoDetailBrg = "";
+
                             for(let i=0; i < data.pengiriman.length; i++)
                             {
                                 if(data.pengiriman[i].nama_shipper == 'Gojek' ||data.pengiriman[i].nama_shipper == 'Grab')
@@ -644,55 +646,57 @@
 
                                 totalTarif += data.pengiriman[i].tarif;
 
-                                $('.rowAlamatPengiriman').append(`<h5>Alamat Pengiriman</h5>
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        ` + data.pengiriman[i].alamat + `
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        ` + data.pengiriman[i].kecamatan + `, ` + data.pengiriman[i].kota_kabupaten + `, ` + data.pengiriman[i].provinsi + `, ` + data.pengiriman[i].kode_pos + `
-                                                                    </div>
-                                                                </div>`);
+                                infoDetailBrg += `<h5>Alamat Pengiriman</h5>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                ` + data.pengiriman[i].alamat + `
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                ` + data.pengiriman[i].kecamatan + `, ` + data.pengiriman[i].kota_kabupaten + `, ` + data.pengiriman[i].provinsi + `, ` + data.pengiriman[i].kode_pos + `
+                                                            </div>
+                                                        </div>`;
+
 
                                 for(let y=0; y < data.barang.length; y++)
                                 {
-                                    if(data.barang[y].pengiriman_id == data.pengiriman[i].pengiriman_id)
+                                    if(data.barang[y].alamat_pengiriman_id == data.pengiriman[i].id)
                                     {
-                                        $('.rowContentBrg').append(`<div class="row">
-                                                                    <div class="col-4 ml-2">
-                                                                            <img src="` + 'http://localhost:8000' + data.barang[i].foto + `" alt="Foto Barang">
-                                                                    </div>
-                                                                    <div class="col-7">
-                                                                            <p>`+ data.barang[i].nama + `</p>
-                                                                            <div class="row">
-                                                                                <div class="col-6"><p>  x`+ data.barang[i].kuantitas + `</p></div>
-                                                                                <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[i].subtotal) + `</p></div>
-                                                                            </div>
-                                                                    </div>
-                                                                </div>`);
+                                        infoDetailBrg +=`<div class="row mt-2">
+                                                        <div class="col-4 ml-2">
+                                                                <img src="` + 'http://localhost:8000' + data.barang[y].foto + `" height="150" style="object-fit: cover;" alt="Foto Barang">
+                                                        </div>
+                                                        <div class="col-7">
+                                                                <p>`+ data.barang[y].nama + `</p>
+                                                                <div class="row">
+                                                                    <div class="col-6"><p>  x`+ data.barang[y].kuantitas + `</p></div>
+                                                                    <div class="col-6"><p class="text-right">` + convertAngkaToRupiah(data.barang[y].subtotal) + `</p></div>
+                                                                </div>
+                                                        </div>
+                                                    </div>`;
                                     }
                                 }
 
-                                console.log(data);
                                 subTotalProduk += data.barang[i].subtotal;
 
-                                $('.rowPengiriman').append(`<h5>Pengiriman</h5>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    ` + data.pengiriman[i].jenis_pengiriman + ` ` + data.pengiriman[i].nama_shipper + `
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    Estimasi pengiriman tiba ` + estimasiTiba + `
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    Ongkos kirim ` + convertAngkaToRupiah(data.pengiriman[i].tarif) + `
-                                                                </div>
+                                infoDetailBrg += `<h5>Pengiriman</h5>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                ` + data.pengiriman[i].jenis_pengiriman + ` ` + data.pengiriman[i].nama_shipper + `
+                                                            </div>
+                                                            <div class="col-12">
+                                                                Estimasi pengiriman tiba ` + estimasiTiba + `
+                                                            </div>
+                                                            <div class="col-12">
+                                                                Ongkos kirim ` + convertAngkaToRupiah(data.pengiriman[i].tarif) + `
+                                                            </div>
+                                                            <button class="btn btn-link text-success btnLihatInfoPengiriman" data-id="` + data.pengiriman[i].pengiriman_id + `"><strong>Lihat informasi pengiriman</strong></button>
                                                         </div>
-                                                        <hr>`);
-
+                                                        <hr>`;
                             }
+
+                            $('.rowContentBrg').html(infoDetailBrg);
 
                             $('#labelSubtotalProduk').html("Subtotal Produk :");
 

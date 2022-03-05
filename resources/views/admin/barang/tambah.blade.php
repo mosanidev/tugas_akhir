@@ -294,7 +294,7 @@
                 document.getElementById('image_upload').value = ""
                 toastr.error("Mohon maaf harap pilih gambar dengan format JPEG, JPG atau PNG", "Error", toastrOptions);
             }
-            else if(image_upload[0].size >= 10000000)
+            else if(image_upload[0].size >= 2000000)
             {
                 document.getElementById('image_upload').value = ""
                 toastr.error("Mohon maaf harap pilih gambar dengan ukuran yang sama / lebih kecil dari 10 MB", "Error", toastrOptions);

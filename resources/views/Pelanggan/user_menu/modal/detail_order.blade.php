@@ -13,11 +13,17 @@
             </div>
             
             <hr>
-            <div class="container">
+            {{-- <div class="container">
                 <div class="row">
                     <div class="col-12 rowAlamatPengiriman">
 
                     </div>
+                </div>
+            </div> --}}
+            
+            <div class="row">
+                <div class="col-12 rowAlamatPengiriman">
+
                 </div>
             </div>
 

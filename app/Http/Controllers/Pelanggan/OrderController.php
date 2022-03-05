@@ -359,7 +359,11 @@ class OrderController extends Controller
                 $status = "Pesanan dibatalkan";
             }
 
-            $cart = DB::table('cart')->where('users_id', '=', auth()->user()->id)->get();
+            $cart = DB::table('cart')
+                        ->select('cart.*', 'barang.harga_jual', 'barang.diskon_potongan_harga')
+                        ->where('users_id', '=', auth()->user()->id)
+                        ->join('barang', 'barang.id', '=', 'cart.barang_id')
+                        ->get();
 
             $id_pembayaran = null;
 

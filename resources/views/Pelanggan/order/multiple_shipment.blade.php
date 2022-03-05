@@ -208,7 +208,7 @@
             $('.check-box').on('change', function() {
 
                 let checked = $(this).is(':checked');
-                let id = $('.check-box').val().split(" - ")[1];
+                let id = $(this).attr('data-id');
                 let index = $("input[name='alamat_" + id + "[]']").index(this);
 
                 if($("input[name='kuantitas_" + id + "[]']")[index].value == 0 && checked == true)

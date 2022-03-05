@@ -80,23 +80,14 @@
                         <div class="col-5">
                             <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
                         </div>
-                        {{-- @if($totalDiskon > 0) 
-                            <div class="col-7">
-                                <p>Total Diskon</p>
-                            </div>
-                            <div class="col-5">
-                                <p id="total-diskon"><strong>{{ "Rp " . number_format($totalDiskon,0,',','.') }}</strong></p>
-                            </div>
-                        @endif
-                        <div class="col-12">
-                            <hr>
-                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-7">
-                            <p>Total Harga Pesanan</p>
+                            Jumlah
                         </div>
                         <div class="col-5">
                             <p><strong id="total-pesanan">{{ "Rp " . number_format($cart[0]->total,0,',','.') }}</strong></p>
-                        </div> --}}
+                        </div>
                     </div>
                     
                     <hr>
