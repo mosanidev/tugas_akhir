@@ -54,9 +54,9 @@
                                             <p><b><a href="{{ route('detail', ['id' => $barang[$i]->id]) }}" class="text-dark">{{ $barang[$i]->nama }}</a></b></p>
                                         </div>
                                         @if($barang[$i]->diskon_potongan_harga != 0)
-                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang[$i]->harga_jual-$barang[$i]->diskon_potongan_harga,0,',','.') }}</p>
+                                            <p class="card-text mt-1"><del class="mr-2">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang[$i]->harga_jual-$barang[$i]->diskon_potongan_harga,0,',','.') }}</p>
                                         @else
-                                            <p class="card-text">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</p>
+                                            <p class="card-text mt-1">{{ "Rp " . number_format($barang[$i]->harga_jual,0,',','.') }}</p>
                                         @endif
                                         <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang[$i]->id }}" type="submit">Masukkan ke keranjang</button>
                                     </div>

@@ -16,16 +16,7 @@ class CartSeeder extends Seeder
     {
         DB::table('cart')->delete();
         
-        DB::table('cart')->insert(
-            [   
-                'id'                        => 1,  
-                'barang_id'                 => 1,
-                'kuantitas'                 => 2,
-                'subtotal'                  => 160000,
-                'total'                     => 160000, 
-                'users_id'                  => 1
-            ]
-        );
+        
 
     }
 }

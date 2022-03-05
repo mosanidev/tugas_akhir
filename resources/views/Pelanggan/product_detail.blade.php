@@ -27,7 +27,7 @@
 
             <div class="row">
                 <div class="col-md-4">
-                    <img src="{{ asset($barang[0]->foto) }}" class="rounded" alt="Foto Produk" width="350" height="300">
+                    <img src="{{ asset($barang[0]->foto) }}" class="rounded" alt="Foto Produk" width="350" style="object-fit: contain;" height="300">
                 </div>
                 <div class="col-md-8">
                     <div class="ml-5">
@@ -115,16 +115,16 @@
                                             <div class="col-md-3 mb-3">
                                                 <div class="card">
                                                     <div style="height: 150px;">
-                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" height="150" alt="Foto Produk">
+                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" height="150" style="object-fit: contain;" alt="Foto Produk">
                                                     </div>
                                                     <div class="card-body">
                                                         <div style="height: 60px;">
                                                             <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
                                                         </div>
                                                     @if($barang_serupa[$i]->diskon_potongan_harga != 0)
-                                                        <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                        <p class="card-text mt-1"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                     @else
-                                                        <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                        <p class="card-text mt-1">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                     @endif
                                                     <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_serupa[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                     </div>
@@ -144,16 +144,16 @@
                                             <div class="col-md-3 mb-3">
                                                 <div class="card">
                                                     <div style="height: 150px;">
-                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" height="150" alt="Foto Produk">
+                                                        <img class="card-img-top" src="{{ asset("".$barang_serupa[$i]->foto) }}" height="150" style="object-fit: contain;" alt="Foto Produk">
                                                     </div>
                                                     <div class="card-body">
                                                         <div style="height: 60px;">
                                                             <p><b><a href="{{ route('detail', ['id' => $barang_serupa[$i]->id]) }}" class="text-dark">{{ $barang_serupa[$i]->nama }}</a></b></p>
                                                         </div>
                                                         @if($barang_serupa[$i]->diskon_potongan_harga != 0)
-                                                            <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                            <p class="card-text mt-1"><del class="mr-2">{{ "Rp " . number_format($barang_serupa[$i]->diskon_potongan_harga+$barang_serupa[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                         @else
-                                                            <p class="card-text">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
+                                                            <p class="card-text mt-1">{{ "Rp " . number_format($barang_serupa[$i]->harga_jual,0,',','.') }}</p>
                                                         @endif
                                                     <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_serupa[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                     </div>
@@ -204,16 +204,16 @@
                                                 <div class="card">
                                                     <form method="POST" action="{{ route('addCart') }}">
                                                         <div style="height: 150px;">
-                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" height="150" alt="Foto Produk">
+                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" height="150"  style="object-fit: contain;" alt="Foto Produk">
                                                         </div>
                                                         <div class="card-body">
                                                             <div style="height: 60px;">
                                                                 <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
                                                             </div>
                                                             @if($barang_lain[$i]->diskon_potongan_harga != 0)
-                                                                <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                                <p class="card-text mt-1"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
                                                             @else
-                                                                <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                                <p class="card-text mt-1">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
                                                             @endif
                                                             <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_lain[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                         </div>
@@ -235,16 +235,16 @@
                                                 <div class="col-md-3 mb-3">
                                                     <div class="card">
                                                         <div style="height: 150px;">
-                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" height="150" alt="Foto Produk">
+                                                            <img class="card-img-top" src="{{ asset("".$barang_lain[$i]->foto) }}" height="150"  style="object-fit: contain;" alt="Foto Produk">
                                                         </div>
                                                         <div class="card-body">
                                                             <div style="height: 60px;">
                                                                 <p><b><a href="{{ route('detail', ['id' => $barang_lain[$i]->id]) }}" class="text-dark">{{ $barang_lain[$i]->nama }}</a></b></p>
                                                             </div>
                                                             @if($barang_lain[$i]->diskon_potongan_harga != 0)
-                                                                <p class="card-text"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                                <p class="card-text mt-1"><del class="mr-2">{{ "Rp " . number_format($barang_lain[$i]->diskon_potongan_harga+$barang_lain[$i]->harga_jual,0,',','.') }}</del>{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
                                                             @else
-                                                                <p class="card-text">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
+                                                                <p class="card-text mt-1">{{ "Rp " . number_format($barang_lain[$i]->harga_jual,0,',','.') }}</p>
                                                             @endif
                                                             <button class="btn btn-block btn-success add_to_cart" data-id="{{ $barang_lain[$i]->id }}" type="button">Masukkan ke keranjang</button>
                                                         </div>

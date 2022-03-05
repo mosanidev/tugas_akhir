@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             BarangSeeder::class,
             AlamatSeeder::class,
             BarangHasKadaluarsaSeeder::class,
-            // CartSeeder::class,
+            CartSeeder::class,
             PembayaranSeeder::class,
             ShipperSeeder::class,
             PembelianSeeder::class,

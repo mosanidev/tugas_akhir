@@ -19,7 +19,7 @@ class SupplierSeeder extends Seeder
         DB::table('supplier')->insert(
             [   
                 'id'            => 1,  
-                'nama'          => 'Indogrosir',
+                'nama'          => 'House of Foods',
                 'alamat'        => 'Jl. Ahmad Yani No. 9',
                 'nomor_telepon' => '089165487699',
                 'jenis'         => 'Perusahaan'
@@ -29,9 +29,9 @@ class SupplierSeeder extends Seeder
         DB::table('supplier')->insert(
             [   
                 'id'            => 2,  
-                'nama'          => 'Cakrawala',
-                'alamat'        => 'Jl. Rungkut No. 11',
-                'nomor_telepon' => '0895355458900',
+                'nama'          => 'House of Drinks',
+                'alamat'        => 'Jl. Cendrawasih No. 6',
+                'nomor_telepon' => '086592731319',
                 'jenis'         => 'Perusahaan'
             ]
         );
@@ -42,6 +42,16 @@ class SupplierSeeder extends Seeder
                 'nama'          => 'Mulyono',
                 'alamat'        => 'Jl. Keputih V No. 99',
                 'nomor_telepon' => '0821776889435',
+                'jenis'         => 'Individu'
+            ]
+        );
+
+        DB::table('supplier')->insert(
+            [   
+                'id'            => 4,  
+                'nama'          => 'Sudikin',
+                'alamat'        => 'Jl. Mawar Kembang 90 No. 7',
+                'nomor_telepon' => '0863516753111',
                 'jenis'         => 'Individu'
             ]
         );

@@ -20,663 +20,425 @@ class BarangSeeder extends Seeder
         DB::table('barang')->insert(
             [   
                 'id'                        => 1,  
-                'kode'                      => 'B001',
-                'nama'                      => 'Nasi Kuning + Telur Asin Bungkus Plastik',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 9000, 
-                'harga_jual'                => 12000, 
+                'kode'                      => 'B0081',
+                'nama'                      => 'Golda Coffee Dolce Latte 200Ml',
+                'deskripsi'                 => '<p>Diracik dari biji kopi berstandar tertinggi (gold),&nbsp;<strong>GOLDA</strong>&nbsp;Coffee memberikan sensasi tekstur yang lembut, rendah asam, disertai aroma kacang, dan mengandung rasa manis coklat atau karamel.</p>
+
+                <p><strong>CARA PENGGUNAAN :</strong><br />
+                Sajikan dingin lebih nikmat<br />
+                &nbsp;</p>
+                
+                <p><strong>CARA PENYIMPANAN :</strong><br />
+                Setelah dibuka simpan dalam lemari es dan habiskan dalam waktu 24 jam<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Air, gula, ekstrak kopi, susu skim bubuk, krimer nabati, penstabil nabati, perisa sintetik kopi, pengemulsi nabati.<br />
+                &nbsp;</p>
+                
+                <p><strong>OTHER DETAILS :</strong><br />
+                Kopi dengan aroma yang khas dan nikmat terpadu susu yang lembut.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan: 1<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi total 140kkal, energi dari lemak 20kkal, lemak total 2g, protein 2g, karbohidrat total 27g, gula 17g, natrium 100mg.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji: 200ml</p>',
+                'harga_jual'                => 3700, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 0,
-                // 'tanggal_kadaluarsa'        => Carbon::now()->format('Y-m-d'),
-                'barang_konsinyasi'         => 1,
-                'berat'                     => 350,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 1,
-                'merek_id'                  => 1,
-                'supplier_id'               => 3
+                'berat'                     => 200,
+                'jenis_id'                  => 2,
+                'kategori_id'               => 5,
+                'merek_id'                  => 2,
+                'supplier_id'               => 2,
+                'foto'                      => '/images/barang/B0081/B0081.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 2,  
-                'kode'                      => 'B002',
-                'nama'                      => 'Nasi Goreng + Suwir Ayam Bungkus Plastik',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 8000, 
-                'harga_jual'                => 13000, 
+                'kode'                      => 'B0082',
+                'nama'                      => 'YOU C-1000 Orange Water 500Ml',
+                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;Deskripsi&lt;/strong&gt;&lt;/p&gt;
+
+                &lt;p&gt;YOU-C 1000 ORANGE merupakan minuman rasa jeruk. Kandungan Vitamin C 1000 mg yang terdapat didalamnya membantu memelihara daya tahan tubuh.&lt;/p&gt;
+                
+                &lt;p&gt;&lt;strong&gt;Komposisi&lt;/strong&gt;&lt;/p&gt;
+                
+                &lt;p&gt;Gula, Fruktosa, Sari Buah Kurang Dari 10% Yang Berasal dari Jus Buah Orange Segar, Vitamin (C, B1, E [Dari Kedelai], Niacin), Lemon Flavour, Pengatur Keasaman, Pewarna Kuning Benibana (Safflower) dan Air sampai dengan 140 ml.&lt;/p&gt;',
+                'harga_jual'                => 8200, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 0,
-                'barang_konsinyasi'         => 1,
-                // 'tanggal_kadaluarsa'        => Carbon::now()->format('Y-m-d'),
-                'berat'                     => 20,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 1,
-                'merek_id'                  => 1,
-                'supplier_id'               => 3
+                'berat'                     => 500,
+                'jenis_id'                  => 2,
+                'kategori_id'               => 7,
+                'merek_id'                  => 3,
+                'supplier_id'               => 2,
+                'foto'                      => '/images/barang/B0082/B0082.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 3,  
-                'kode'                      => 'B003',
-                'nama'                      => 'Nasi Ayam + Telur Dadar Bungkus Plastik',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 7000, 
-                'harga_jual'                => 12000, 
+                'kode'                      => 'B0083',
+                'nama'                      => 'Good Day Funtastic Mocacinno Coffee 250Ml',
+                'deskripsi'                 => '<p>Minuman kopi dalam kemasan botol dengan perpaduan rasa dan aroma kopi yang lembut dan istimewa.</p>
+
+                <p><strong>CARA PENGGUNAAN :</strong><br />
+                Kocok sebelum diminum. Dingin lebih nikmat<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Air, gula, krimer nabati, kopi, instant (1%), susu skim bubuk, bubuk kakao, penstabil makanan, perisa identik alami moka.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan : 1<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi total 140kkal, energi dari lemak 30kkal. % AKG: Lemak total 2,3g, lemak jenuh 3g, lemak trans 0g, kolesterol 10mg, protein 3g, karbohidrat total 26g, gula 10g, natrium 25mg, kalium 60mg. Vitamin A 0%, vitamin C 0%, kalsium 2%, zat besi 4%.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji : 250mL</p>',
+                'harga_jual'                => 6600, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 0,
-                'barang_konsinyasi'         => 1,
-                // 'tanggal_kadaluarsa'        => Carbon::now()->format('Y-m-d'),
-                'berat'                     => 350,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 1,
-                'merek_id'                  => 1
+                'berat'                     => 250,
+                'jenis_id'                  => 2,
+                'kategori_id'               => 5,
+                'merek_id'                  => 4,
+                'supplier_id'               => 2,
+                'foto'                      => '/images/barang/B0083/B0083.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 4,  
-                'kode'                      => 'B004',
-                'nama'                      => 'Dadar Goreng',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 2300, 
-                'harga_jual'                => 3000, 
+                'kode'                      => 'B0084',
+                'nama'                      => 'Pocari Sweat 350Ml',
+                'deskripsi'                 => '<p>Pocari sweat adalah minuman isotonik yang dapat diserap tubuh karena osmolaritasnya yang baik dan terdiri dari elekrolit-elektrolit.<br />
+                &nbsp;</p>
+                
+                <p><strong>CARA PENYIMPANAN :</strong><br />
+                Jangan di simpan dalam freezer. Hindari sinar matahari langsung dan temperatur tinggi.<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Air, gula, pengatur keasaman, perisa sitrus, natrium klorida, kalium klorida, kalsium laktat, magnesium karbonat dan antioksidan asam askorbat.<br />
+                &nbsp;</p>
+                
+                <p><strong>OTHER DETAILS :</strong><br />
+                Pocari sweat adalah minuman isotonik yang dapat diserap tubuh karena osmolaritasnya yang baik dan terdiri dari elekrolit-elektrolit.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan : 3.5<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi total 25kkal. % AKG: lemak total 0g, protein 0g, karbohidrat total 6g, natrium 45mg.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji : 100mL</p>',
+                'harga_jual'                => 6500, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 0,
-                'barang_konsinyasi'         => 1,
-                // 'tanggal_kadaluarsa'        => Carbon::now()->format('Y-m-d'),
-                'berat'                     => 50,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 23,
-                'merek_id'                  => 1
+                'berat'                     => 350,
+                'jenis_id'                  => 2,
+                'kategori_id'               => 7,
+                'merek_id'                  => 5,
+                'supplier_id'               => 2,
+                'foto'                      => '/images/barang/B0084/B0084.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 5,  
-                'kode'                      => 'B005',
-                'nama'                      => 'Pisang Goreng',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 1400, 
-                'harga_jual'                => 3000, 
+                'kode'                      => 'B0085',
+                'nama'                      => 'Teh Pucuk Harum Teh Melati 350 Ml',
+                'deskripsi'                 => '<p>Teh pucuk harum minuman teh beraroma melati dibuat dengan pucuk daun teh pilihan dengan ekstrak melati yang menyegarkan.<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Air, gula, teh melati (daun teh + bunga melati ), perisa bunga melati.<br />
+                &nbsp;</p>
+                
+                <p><strong>OTHER DETAILS :</strong><br />
+                Teh pucuk harum minuman teh beraroma melati dibuat dengan pucuk daun teh pilihan dengan ekstrak melati yang menyegarkan.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan : 1<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi 150kkal, energi dari lemak 0g. % AKG: Lemak total 0g, protein 0g, karbohidrat total 39g, gula 20g, natrium 20mg.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji : 350mL</p>',
+                'harga_jual'                => 3700, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 0,
-                'barang_konsinyasi'         => 1,
-                // 'tanggal_kadaluarsa'        => Carbon::now()->format('Y-m-d'),
-                'berat'                     => 50,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 23,
-                'merek_id'                  => 1
+                'berat'                     => 350,
+                'jenis_id'                  => 2,
+                'kategori_id'               => 4,
+                'merek_id'                  => 6,
+                'supplier_id'               => 2,
+                'foto'                      => '/images/barang/B0085/B0085.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 6,  
-                'kode'                      => 'B006',
-                'nama'                      => 'Ote Ote',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 1200, 
-                'harga_jual'                => 3000, 
+                'kode'                      => 'B0086',
+                'nama'                      => 'Gangsar Kacang Atom 140G',
+                'deskripsi'                 => '<p>Kacang atom Gangsar cocok untuk pendamping menu bakso, mie ayam ataupun pengganti krupuk</p>',
+                'harga_jual'                => 7500, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 0,
-                'barang_konsinyasi'         => 1,
-                // 'tanggal_kadaluarsa'        => Carbon::now()->format('Y-m-d'),
-                'berat'                     => 50,
+                'berat'                     => 140,
                 'jenis_id'                  => 1,
-                'kategori_id'               => 23,
-                'merek_id'                  => 1
+                'kategori_id'               => 2,
+                'merek_id'                  => 7,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0086/B0086.jpg'
             ]
         );  
 
         DB::table('barang')->insert(
             [   
-                'id'                        => 8,  
-                'kode'                      => 'B008',
-                'nama'                      => 'Chitato Snack Potato Chips Ayam Bumbu 168G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 4500, 
-                'harga_jual'                => 7900, 
+                'id'                        => 7,  
+                'kode'                      => 'B0087',
+                'nama'                      => 'Japota Potato Chips Ayam Bawang 68G',
+                'deskripsi'                 => '<p>Japota Ayam Bawang, dibuat dengan kentang asli dan diolah menggunakan thin-cut technology, chipsnya tipis dengan taburan bits bawang goreng aslinya memberikan sensasi rasa yang lebih enak dan bikin gak cukup satu!</p>',
+                'harga_jual'                => 10300, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 10,
-                // 'tanggal_kadaluarsa'        => '2022-01-01',
-                'berat'                     => 168,
+                'berat'                     => 68,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
-                'merek_id'                  => 45
+                'merek_id'                  => 8,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0087/B0087.jpg'
             ]
         );
 
-//         DB::table('barang')->insert(
-//             [   
-//                 'id'                        => 9,  
-//                 'kode'                      => 'B009',
-//                 'nama'                      => 'Chitato Snack Potato Chips Ayam Bumbu 168G',
-//                 'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-// &lt;br /&gt;
-// Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-//                 // 'harga_beli'                => 4500, 
-//                 'harga_jual'                => 7900, 
-//                 'diskon_potongan_harga'     => 0,
-//                 // 'jumlah_stok'               => 50,
-//                 // 'tanggal_kadaluarsa'        => '2022-01-01',
-//                 'berat'                     => 168,
-//                 'jenis_id'                  => 1,
-//                 'kategori_id'               => 2,
-//                 'merek_id'                  => 45
-//             ]
-//         );
+
+        DB::table('barang')->insert(
+            [   
+                'id'                        => 8,  
+                'kode'                      => 'B0088',
+                'nama'                      => 'Japota Potato Chips Madu Mentega 68G',
+                'deskripsi'                 => '<p>Makanan ringan yang terbuat dari kentang pilihan dengan rasa madu mentega yang enak.<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Kentang, minyak kelapa sawit, bumbu rasa madu mentega.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan: 2.5<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi total 130, energi dari lemak 50kkal. % AKG: Lemak total 5g, protein 1g, karbohidrat total 20g, serat pangan 2g, gula total 1g, natrium 75mg.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji: 28g</p>',
+                'harga_jual'                => 10300, 
+                'diskon_potongan_harga'     => 0,
+                'berat'                     => 68,
+                'jenis_id'                  => 1,
+                'kategori_id'               => 2,
+                'merek_id'                  => 8,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0088/B0088.jpg'
+            ]
+        );
+
+        DB::table('barang')->insert(
+            [   
+                'id'                        => 9,  
+                'kode'                      => 'B0089',
+                'nama'                      => 'Potabee Snack Potato Chips Bbq 68G',
+                'deskripsi'                 => "<p>Potabee terbuat dari kentang asli dan diolah menggunakan V-Cut Technology yang bikinkriuknya pecah dan dapat mengunci rasa lebih banyak . Potabee Beef BBQ dilengkapi dengan taburan bits BBQ asli yang bikin ketagihan. Potabee Grilled Seaweed dilengkapi dengan taburan bits rumput laut asli yang bikin ketagihan.<br />
+                <br />
+                <strong>KOMPOSISI :</strong><br />
+                Kentang ( 55%) Minyak kelapa sawit ( mengandung antioksidan Butil Hidrokinon Tersier(TBHQ)). Bumbu rasa daging panggang (mengandung Gulaperisa sintetik dan alami(mengandung penguat rasa(Mononatrium GlutamatDinatrium Inosinat&amp;guanilat). Antioksidan(Alfa TokoferolAsam Askorbat dab BHA) Lemak sapi (0.002%)GaramPenguat rasa( Mononatrium glutamatdinatrium Inosinat &amp; Guanilat)Rempah susu bubukbubuk kecapbubuk kejububuk ikan) Mengandung Alegren lihat daftar bahan yang dicetak tebal.</p>",
+                'harga_jual'                => 9700, 
+                'diskon_potongan_harga'     => 0,
+                'berat'                     => 68,
+                'jenis_id'                  => 1,
+                'kategori_id'               => 2,
+                'merek_id'                  => 9,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0089/B0089.jpg'
+            ]
+        );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 10,  
-                'kode'                      => 'B0010',
-                'nama'                      => 'Chitato Snack Potato Chips Sapi Panggang 168G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 4500, 
-                'harga_jual'                => 7900, 
+                'kode'                      => 'B0090',
+                'nama'                      => 'Soyjoy Fruit Soy Bar Raisin Almond 30G',
+                'deskripsi'                 => '<p>Kedelai mengandung nutrisi penting seperti protein, serat, vitamin dan mineral. SOY JOY dibuat dengan tepung kedelai dipadu dengan buah-buahan yang dikeringkan, untuk menemani aktivitas sehari-hari.<br />
+                &nbsp;</p>
+                
+                <p><strong>CARA PENYIMPANAN :</strong><br />
+                Untuk menjaga kualitas &amp; kesegaran, simpan ditempat sejuk dan kering.<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Tepung kedelai, kismis (23%), buah pepaya kering, buah nanas kering, mentega, telur, kacang tanah (9%), coklat, gula, perisa, garam.<br />
+                &nbsp;</p>
+                
+                <p><strong>OTHER DETAILS :</strong><br />
+                Mengandung ISOFLAVON 18mg.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan: 1<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi total 140kkal, energi dari lemak 60kkal. % AKG: Lemak total 7g, protein 7g, karbohidrat total 13g, serat pangan 3g, gula 9g, natrium 50mg, kalium 260mg. Vitamin A 4%, Vitamin B1 8%, vitamin B2 8%, vitamin B6 8%, vitamin E 10%, kalsium 4%, besi 6%, asam folat 20%.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji: 30g</p>',
+                'harga_jual'                => 9400, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2022-01-01',
-                'berat'                     => 168,
+                'berat'                     => 30,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
-                'merek_id'                  => 45
+                'merek_id'                  => 10,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0090/B0090.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 11,  
-                'kode'                      => 'B011',
-                'nama'                      => 'Chitato Snack Potato Chips Ayam Bumbu 55G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 3900, 
-                'harga_jual'                => 8900, 
+                'kode'                      => 'B0091',
+                'nama'                      => 'Nabati Siip Keju 50G',
+                'deskripsi'                 => '<p>Makanan ringan berbahan dasar jagung berbentuk bite size, dipadukan dengan bumbu berlimpah sehingga menghasilkan produk yang nikmat dengan harga terjangkau. SIIP emang bikin nagih!<br />
+                <br />
+                <br />
+                <strong>KOMPOSISI :</strong><br />
+                Jagung, Minyak Nabati (mengandung Antioksidan TBHQ), Gula, Dekstrosa, Maltodekstrin, Whey bubuk, Keju Bubuk, Tepung terigu, Keju Bubuk (mengandung pewarna kurkumin CI 75300 dan kuning FCF CI 15985, antioksidan Tokoferol dan askrobil palmitat), Pati jagung, Penguat rasa mononatrium glutamat, garam, pengembang natrium</p>',
+                'harga_jual'                => 4600, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2022-01-01',
-                'berat'                     => 55,
+                'berat'                     => 50,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
-                'merek_id'                  => 45
+                'merek_id'                  => 11,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0091/B0091.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 12,  
-                'kode'                      => 'B012',
-                'nama'                      => 'Chitato Snack Potato Chips Sapi Panggang 55G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 5000, 
-                'harga_jual'                => 8900, 
+                'kode'                      => 'B0092',
+                'nama'                      => 'Nasi Ayam & Mie 450G',
+                'deskripsi'                 => '<p>Yuk dimakan pasti bikin nagih dan kenyang loooh...</p>',
+                'harga_jual'                => 14000, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2022-06-07',
-                'berat'                     => 55,
+                'barang_konsinyasi'         => 1,
+                'berat'                     => 450,
                 'jenis_id'                  => 1,
-                'kategori_id'               => 2,
-                'merek_id'                  => 45
+                'kategori_id'               => 1,
+                'merek_id'                  => 1,
+                'supplier_id'               => 3,
+                'foto'                      => '/images/barang/B0092/B0092.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 13,  
-                'kode'                      => 'B013',
-                'nama'                      => 'Chitato Snack Potato Chips Ayam Barbeque 55G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 6000, 
-                'harga_jual'                => 8900, 
+                'kode'                      => 'B0093',
+                'nama'                      => 'Chiki Stick Keju 150G',
+                'deskripsi'                 => '<p>Chiki stik keju,makanan ringan yang sangat digemari banyak orang Kaya akan rasa kejunya dan cocok untuk menemani kalian bersantai dan traveling bersama keluarga</p>',
+                'harga_jual'                => 12000, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2022-08-18',
-                'berat'                     => 55,
+                'barang_konsinyasi'         => 1,
+                'berat'                     => 150,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
-                'merek_id'                  => 45
+                'merek_id'                  => 1,
+                'supplier_id'               => 4,
+                'foto'                      => '/images/barang/B0093/B0093.jpg'
             ]
         );
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 14,  
-                'kode'                      => 'B014',
-                'nama'                      => 'Cheetos Snack Ayam Jagung 15G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 1100, 
-                'harga_jual'                => 3100, 
+                'kode'                      => 'B0094',
+                'nama'                      => 'Potabee Potato Chips Wagyu Beef Steak 68G',
+                'deskripsi'                 => '<p>POTABEE WAGYU BEEF PERPADUAN KENTANG ASLI YANG DIPOTONG DENGAN V-CUT TECHNOLOGY BERTABUR BITS WAGYU ASLI YANG GURIH. AROMA DAN RASA WAGYU YANG TASTY DIJAMIN BIKIN KAMU KETAGIHAN SAMA POTABEE WAGYU BEEF STEAK<br />
+                <br />
+                <br />
+                <strong>KOMPOSISI :</strong><br />
+                KENTANG (54%), MINYAK KELAPA SAWIT, BUMBU RASA STEAK DAGING SAPI WAGYU, GARAM, PERISA SINTETIK DAN PERISA ALAMI, EKSTRAK DAGING SAPI (0.12%) BUBUK KEJU, KRIMER NABATI, PEWARNA SINTETIK MAKANAN.</p>',
+                'harga_jual'                => 9700, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2022-09-25',
-                'berat'                     => 15,
+                'barang_konsinyasi'         => 1,
+                'berat'                     => 68,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
-                'merek_id'                  => 46
+                'merek_id'                  => 9,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0094/B0094.jpg'
             ]
         );
+
 
         DB::table('barang')->insert(
             [   
                 'id'                        => 15,  
-                'kode'                      => 'B015',
-                'nama'                      => 'Smax Snack Ring Keju 50G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 2200, 
-                'harga_jual'                => 4500, 
+                'kode'                      => 'B0095',
+                'nama'                      => 'Japota Potato Chips Umami Japanese Seaweed 68G',
+                'deskripsi'                 => '<p>Makanan ringan yang terbuat dari kentang pilihan dengan rasa rumput laut yang enak.<br />
+                &nbsp;</p>
+                
+                <p><strong>KOMPOSISI :</strong><br />
+                Kentang, minyak kelapa sawit, bumbu rasa rumput laut, garam, penguat rasa mononatrium glutamat, dinatrium inosinat dan dinatrium guanilat, rumput laut, susu bubuk, bubuk ikan.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER KEMASAN :</strong><br />
+                Sajian per kemasan: 2.5<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN PER SERVING :</strong><br />
+                Energi total 150, energi dari lemak 90kkal. % AKG: Lemak total 1g, protein 1g, karbohidrat total 15g, serat pangan 2g, gula total 1g, natrium 150mg.<br />
+                &nbsp;</p>
+                
+                <p><strong>TAKARAN SAJI :</strong><br />
+                Takaran saji: 28g</p>',
+                'harga_jual'                => 10300, 
                 'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2023-02-12',
-                'berat'                     => 50,
+                'berat'                     => 68,
                 'jenis_id'                  => 1,
                 'kategori_id'               => 2,
-                'merek_id'                  => 47
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 16,  
-                'kode'                      => 'B016',
-                'nama'                      => 'Mentos Mint Roll 37G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 900, 
-                'harga_jual'                => 3900, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2021-12-30',
-                'berat'                     => 37,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 42
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 17,  
-                'kode'                      => 'B017',
-                'nama'                      => 'Mentos Rainbow Roll 37G',
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 1000, 
-                'harga_jual'                => 3900, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 50,
-                // 'tanggal_kadaluarsa'        => '2021-10-30',
-                'berat'                     => 37,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 42
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 18,  
-                'kode'                      => 'B018',
-                'nama'                      => "Fisherman's Candy Mint 25G",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 8000, 
-                'harga_jual'                => 17700, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-11-08',
-                'berat'                     => 25,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 37
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 19,  
-                'kode'                      => 'B019',
-                'nama'                      => "Fisherman's Candy Honey & Lemon 25G",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 9100, 
-                'harga_jual'                => 17200, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-11-08',
-                'berat'                     => 25,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 37
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 20,  
-                'kode'                      => 'B020',
-                'nama'                      => "Kopiko Permen Kopi",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 6600, 
-                'harga_jual'                => 7900, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-03-13',
-                'berat'                     => 200,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 48
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 21,  
-                'kode'                      => 'B021',
-                'nama'                      => "Fisherman's Candy Honey & Lemon 25G",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 9000, 
-                'harga_jual'                => 17200, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-11-08',
-                'berat'                     => 25,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 37
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 22,  
-                'kode'                      => 'B022',
-                'nama'                      => "Yupi Permen Stawberry",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 4000, 
-                'harga_jual'                => 7900, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-06-19',
-                'berat'                     => 200,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 43
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 23,  
-                'kode'                      => 'B023',
-                'nama'                      => "Frozz Permen Mint 15G",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 3000, 
-                'harga_jual'                => 7700, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-06-19',
-                'berat'                     => 15,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 44
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 24,  
-                'kode'                      => 'B024',
-                'nama'                      => "Frozz Permen Cherry Mint 15G",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 3000, 
-                'harga_jual'                => 7700, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-06-19',
-                'berat'                     => 15,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 44
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 25,  
-                'kode'                      => 'B025',
-                'nama'                      => "Gofress Permen Tipis 15G",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 4000, 
-                'harga_jual'                => 6990, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2021-06-19',
-                'berat'                     => 15,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 3,
-                'merek_id'                  => 40
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 26,  
-                'kode'                      => 'B026',
-                'nama'                      => "Baterai ABC AA Isi 4",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 4600, 
-                'harga_jual'                => 8990, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2024-06-19',
-                'berat'                     => 18,
-                'jenis_id'                  => 7,
-                'kategori_id'               => 19,
-                'merek_id'                  => 39
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 27,  
-                'kode'                      => 'B027',
-                'nama'                      => "Baterai Eveready AAA",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 200, 
-                'harga_jual'                => 1500, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2024-06-19',
-                'berat'                     => 5,
-                'jenis_id'                  => 7,
-                'kategori_id'               => 19,
-                'merek_id'                  => 38
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 28,  
-                'kode'                      => 'B028',
-                'nama'                      => "Baterai Eveready AA",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 300, 
-                'harga_jual'                => 1500, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2024-06-19',
-                'berat'                     => 5,
-                'jenis_id'                  => 7,
-                'kategori_id'               => 19,
-                'merek_id'                  => 38
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 29,  
-                'kode'                      => 'B029',
-                'nama'                      => "Men's Biore Facewash",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 9000, 
-                'harga_jual'                => 15000, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2024-06-19',
-                'berat'                     => 30,
-                'jenis_id'                  => 3,
-                'kategori_id'               => 7,
-                'merek_id'                  => 36
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 30,  
-                'kode'                      => 'B030',
-                'nama'                      => "Nu Green Tea 450ml",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 3000, 
-                'harga_jual'                => 7500, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 25,
-                // 'tanggal_kadaluarsa'        => '2022-06-19',
-                'berat'                     => 660,
-                'jenis_id'                  => 2,
-                'kategori_id'               => 4,
-                'merek_id'                  => 2
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 31,  
-                'kode'                      => 'B031',
-                'nama'                      => "Teh Kotak Jasmine 200ml",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 1200, 
-                'harga_jual'                => 3000, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 40,
-                // 'tanggal_kadaluarsa'        => '2022-06-19',
-                'berat'                     => 660,
-                'jenis_id'                  => 2,
-                'kategori_id'               => 4,
-                'merek_id'                  => 49
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 32,  
-                'kode'                      => 'B032',
-                'nama'                      => "Golda Coffee Dolce Latte 200ml",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                // 'harga_beli'                => 1300, 
-                'harga_jual'                => 3000, 
-                'diskon_potongan_harga'     => 0,
-                // 'jumlah_stok'               => 43,
-                // 'tanggal_kadaluarsa'        => '2022-06-19',
-                'berat'                     => 660,
-                'jenis_id'                  => 2,
-                'kategori_id'               => 5,
-                'merek_id'                  => 3
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 33,  
-                'kode'                      => 'B033',
-                'nama'                      => "Penggaris 30cm Besi",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                'harga_jual'                => 5000, 
-                'diskon_potongan_harga'     => 0,
-                'berat'                     => 860,
-                'jenis_id'                  => 7,
-                'kategori_id'               => 18,
-                'merek_id'                  => 1
-            ]
-        );
-
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 34,  
-                'kode'                      => 'B034',
-                'nama'                      => "Stiker Ubaya",
-                'deskripsi'                 => '&lt;p&gt;&lt;strong&gt;BURUAN SEBELUM HABIS !!!&lt;/strong&gt;&lt;br /&gt;
-&lt;br /&gt;
-Barang yang ditawarkan oleh minimarket koperasi karyawan ubaya adalah yang terbaik tahu ngga&lt;/p&gt;',
-                'harga_jual'                => 2000, 
-                'diskon_potongan_harga'     => 0,
-                'berat'                     => 60,
-                'jenis_id'                  => 7,
-                'kategori_id'               => 24,
-                'merek_id'                  => 1
+                'merek_id'                  => 8,
+                'supplier_id'               => 1,
+                'foto'                      => '/images/barang/B0095/B0095.jpg'
             ]
         );
     }
+
 }

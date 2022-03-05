@@ -30,46 +30,5 @@ class JenisBarangSeeder extends Seeder
             ]
         );
 
-        DB::table('jenis_barang')->insert(
-            [   
-                'id'           => 3,  
-                'jenis_barang' => 'Kebersihan'
-            ]
-        );
-
-        DB::table('jenis_barang')->insert(
-            [   
-                'id'           => 4,  
-                'jenis_barang' => 'Kesehatan'
-            ]
-        );
-
-        DB::table('jenis_barang')->insert(
-            [   
-                'id'           => 5,  
-                'jenis_barang' => 'Perawatan'
-            ]
-        );
-
-        DB::table('jenis_barang')->insert(
-            [   
-                'id'           => 6,  
-                'jenis_barang' => 'Rumah Tangga'
-            ]
-        );
-
-        DB::table('jenis_barang')->insert(
-            [   
-                'id'           => 7,  
-                'jenis_barang' => 'Perlengkapan Kantor'
-            ]
-        );
-
-        DB::table('jenis_barang')->insert(
-            [   
-                'id'           => 8,  
-                'jenis_barang' => 'Perlengkapan Dapur'
-            ]
-        );
     }
 }
