@@ -15,7 +15,7 @@
                       <select class="form-control select2 select2bs4" name="barang_id" id="selectBarang" required>
                           <option disabled selected value="Pilih barang">Pilih barang</option>
                           @foreach($detail_pemesanan as $item)
-                              <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}" data-harga-pesan="{{ $item->harga_pesan }}" data-kuantitas-pesan="{{ $item->kuantitas }}" data-diskon="{{ $item->diskon_potongan_harga }}">{{ $item->kode." - ".$item->nama }}</option>
+                              <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}" data-harga-pesan="{{ $item->harga_pesan }}" data-kuantitas-pesan="{{ $item->kuantitas }}" data-diskon="{{ $item->diskon_potongan_harga }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
                               {{-- data-harga-jual="{{ $item->harga_jual }}" --}}
                           @endforeach
                       </select> 
@@ -69,6 +69,12 @@
                     <div class="col-sm-8">
                         <input type="number" id="kuantitas_terima" class="form-control d-inline ml-1" name="kuantitas_terima" min="1">
               
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Satuan</p>
+                    <div class="col-sm-8">
+                        <input type="text" id="satuan" class="form-control d-inline ml-1" name="satuan" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -232,6 +238,7 @@
                         "tanggal_kadaluarsa": tglKadaluarsa,
                         "kuantitas_pesan": $('#kuantitasPesan').val(),
                         "kuantitas_terima": $('#kuantitas_terima').val(),
+                        "satuan": $('#satuan').val(),
                         "subtotal": convertRupiahToAngka($('#subtotal').val())
                     });
 
@@ -263,11 +270,13 @@
             let harga_pesan = $('#selectBarang :selected').attr('data-harga-pesan');
             let diskon = $('#selectBarang :selected').attr('data-diskon');
             let kuantitas_pesan = $('#selectBarang :selected').attr('data-kuantitas-pesan');
+            let satuan = $('#selectBarang :selected').attr('data-satuan');
 
             $('#harga_pesan').val(harga_pesan);
             $('#diskon').val(diskon);
             $('#kuantitasPesan').val(kuantitas_pesan);
             $('#kuantitas_terima').attr('max', kuantitas_pesan);
+            $('#satuan').val(satuan);
 
         });
 

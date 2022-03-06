@@ -41,7 +41,7 @@ class AdminPenerimaanPesananController extends Controller
                         ->get();
          
         $detail_pemesanan = DB::table('detail_pemesanan')
-                            ->select('detail_pemesanan.*', 'barang.id', 'barang.kode', 'barang.nama', 'barang.harga_jual')
+                            ->select('detail_pemesanan.*', 'barang.id', 'barang.kode', 'barang.nama', 'barang.harga_jual', 'barang.satuan')
                             ->where('detail_pemesanan.pemesanan_id', '=', $id)
                             ->join('barang', 'detail_pemesanan.barang_id', '=', 'barang.id')
                             ->get();
@@ -158,7 +158,7 @@ class AdminPenerimaanPesananController extends Controller
                         ->get();
          
         $detail_penerimaan_pesanan = DB::table('detail_penerimaan_pemesanan')
-                                        ->select('detail_penerimaan_pemesanan.*', 'barang.kode', 'barang.nama')
+                                        ->select('detail_penerimaan_pemesanan.*', 'barang.kode', 'barang.nama', 'barang.satuan')
                                         ->where('detail_penerimaan_pemesanan.pemesanan_id', '=', $id)
                                         ->join('barang', 'detail_penerimaan_pemesanan.barang_id', '=', 'barang.id')
                                         ->get();

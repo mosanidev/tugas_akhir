@@ -18,7 +18,7 @@
                       <select class="form-control select2 select2bs4" name="barang_id" id="barang" required>
                           <option disabled selected>Pilih barang</option>
                           @foreach($barang as $item)
-                              <option value="{{ $item->id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
+                              <option value="{{ $item->id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-satuan="{{ $item->satuan }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
                           @endforeach
                       </select> 
                     </div>
@@ -62,6 +62,14 @@
                         <input type="number" id="kuantitas" class="form-control d-inline ml-1" name="kuantitas" min="1" value="1" required>
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Satuan</p>
+                    <div class="col-sm-8">
+                        <input type="text" id="satuan" class="form-control d-inline ml-1" name="satuan" readonly>
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Subtotal</p>
                     <div class="col-sm-8">
@@ -81,6 +89,12 @@
 </div>
 
 <script type="text/javascript">
+
+    $('#barang').on('change', function() {
+        const satuan = $('#barang :selected').attr('data-satuan');
+
+        $('#satuan').val(satuan);
+    })
 
     $('#harga_beli').on('change', function() {
 
@@ -183,6 +197,7 @@
                 "tanggal_kadaluarsa": tglKadaluarsa,
                 "harga_beli": $('#harga_beli').val(),
                 "diskon_potongan_harga": $('#diskon_potongan_harga').val(),
+                "satuan": $('#satuan').val(),
                 "kuantitas": $('#kuantitas').val(),
                 "subtotal": (parseInt($('#harga_beli').val())-parseInt($('#diskon_potongan_harga').val()))*parseInt($('#kuantitas').val())
             });

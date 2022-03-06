@@ -57,12 +57,6 @@ class AdminKonsinyasiController extends Controller
                     ->where('supplier_id', '=', $request->supplier_id)
                     ->get();
 
-        // $konsinyasiYgMirip = DB::table('konsinyasi')
-        //                 ->where('supplier_id', '=', $request->supplier_id)
-        //                 ->where('tanggal_titip', '<=', $request->tanggal_titip)
-        //                 ->where('tanggal_jatuh_tempo', '>=', $request->tanggal_jatuh_tempo)
-        //                 ->get();
-
         $konsinyasiYgMirip = DB::table('konsinyasi')
                                 ->where('supplier_id', '=', $request->supplier_id)
                                 ->whereBetween('tanggal_titip', [date($request->tanggal_titip), date($request->tanggal_jatuh_tempo)])
@@ -117,7 +111,7 @@ class AdminKonsinyasiController extends Controller
     public function show(Request $request, $id)
     {                
         $konsinyasi = DB::table('konsinyasi')
-                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier', 'barang.harga_jual', 'barang.diskon_potongan_harga', 'barang_has_kadaluarsa.jumlah_stok', 'barang_has_kadaluarsa.tanggal_kadaluarsa')
+                        ->select(DB::raw("CONCAT(barang.kode, ' - ', barang.nama) AS barang_nama"), 'konsinyasi.*', 'detail_konsinyasi.*', 'supplier.nama as nama_supplier', 'barang.harga_jual', 'barang.diskon_potongan_harga', 'barang_has_kadaluarsa.jumlah_stok', 'barang.satuan', 'barang_has_kadaluarsa.tanggal_kadaluarsa')
                         ->join('detail_konsinyasi', 'konsinyasi.id', '=', 'detail_konsinyasi.konsinyasi_id')
                         ->join('supplier', 'konsinyasi.supplier_id', '=', 'supplier.id')
                         ->join('barang', 'barang.id', '=', 'detail_konsinyasi.barang_id')
@@ -165,6 +159,7 @@ class AdminKonsinyasiController extends Controller
                 $object->barang_tanggal_kadaluarsa = $konsinyasi[$i]->tanggal_kadaluarsa;
                 $object->barang_nama = $konsinyasi[$i]->barang_nama;
                 $object->barang_harga_jual = $konsinyasi[$i]->harga_jual;
+                $object->satuan = $konsinyasi[$i]->satuan;
                 $object->barang_diskon = $konsinyasi[$i]->diskon_potongan_harga;
                 $object->jumlah_titip = $konsinyasi[$i]->jumlah_titip;
                 $object->terjual = 0;

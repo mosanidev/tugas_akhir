@@ -18,7 +18,7 @@
                                 <select class="form-control" name="barang_asal" id="barangAsal">
                                     <option selected disabled>Pilih Barang Asal</option>
                                     @foreach($detail_pembelian as $item)
-                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}" data-jumlah-stok="{{ $item->jumlah_stok }}">{{ $item->kode." - ".$item->nama }}</option>
+                                        <option value="{{ $item->barang_id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-kuantitas="{{ $item->kuantitas }}" data-tanggal-kadaluarsa="{{ Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('Y-m-d') }}" data-jumlah-stok="{{ $item->jumlah_stok }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -30,6 +30,25 @@
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" id="barangGanti" value="" data-id="" readonly>
                                 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">Satuan Barang Asal</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="satuanBarangAsal" value="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">Satuan Barang Ganti</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="satuanBarangGanti" value="" readonly>                                
                             </div>
                         </div>
                     </div>
@@ -142,6 +161,7 @@
         let tglKadaluarsa = $('#barangAsal :selected').attr("data-tanggal-kadaluarsa");
         let kuantitasBarang = $('#barangAsal :selected').attr("data-kuantitas");
         let jumlahStok = $('#barangAsal :selected').attr('data-jumlah-stok');
+        let satuan = $('#barangAsal :selected').attr('data-satuan');
 
         let batasan = null;
 
@@ -177,6 +197,8 @@
         
         $('#tglKadaluarsaBarangAsal').val(tglKadaluarsa);  
         
+        $('#satuanBarangAsal').val(satuan);
+        $('#satuanBarangGanti').val(satuan);
         $('#kuantitasBarangGanti').val("");
         $('#keterangan').html("");
         $('#kuantitasBarangGanti').attr("max", batasan);
@@ -217,6 +239,8 @@
                 'barang_ganti_id': $('#barangGanti').attr("data-id"),
                 "barang_asal": $('#barangAsal :selected').text(),
                 'barang_ganti': $('#barangGanti').val(),
+                'satuan_barang_asal': $('#satuanBarangAsal').val(),
+                'satuan_barang_ganti': $('#satuanBarangGanti').val(),
                 "tanggal_kadaluarsa_asal": $('#tglKadaluarsaBarangAsal').val(),
                 "tanggal_kadaluarsa_ganti": tglKadaluarsa,
                 "kuantitas_barang_asal": $('#kuantitasBarangAsal').val(),

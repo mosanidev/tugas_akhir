@@ -34,7 +34,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Supplier</label>
+                <label class="col-sm-4 col-form-label">Penitip</label>
                 <div class="col-sm-8" id="divTampungSelectSupplier">
                   <p>{{ $konsinyasi[0]->nama_supplier }}</p>
                 </div>
@@ -69,6 +69,7 @@
                                   <th>Komisi</th>
                                   <th>Hutang</th>
                                   <th>Jumlah Titip</th>
+                                  <th>Satuan</th>
                                   <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -108,6 +109,7 @@
           $('#inputJumlahTitip').val("");
           $('#inputKomisi').val("");
           $('#tglKadaluarsa').val("");
+          $('#satuan').val("");
           $('#checkTglKadaluarsaNull').prop('checked', false);
 
         });
@@ -145,6 +147,7 @@
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].komisi) + `</td>
                                     <td>` + convertAngkaToRupiah(arrBarangKonsinyasi[i].hutang) + `</td>
                                     <td>` + arrBarangKonsinyasi[i].jumlah_titip + `</td>
+                                    <td>` + arrBarangKonsinyasi[i].satuan + `</td>
                                     <td>
                                         <button type="button" class='btn btn-danger' onclick="hapusBarangKonsinyasi(` + i + `)">Hapus</button>
                                     </td>

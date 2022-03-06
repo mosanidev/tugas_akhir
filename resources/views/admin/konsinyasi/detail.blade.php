@@ -80,8 +80,9 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                              <th>Barang</th>
+                              <th class="w-50">Barang</th>
                               <th>Tanggal Kadaluarsa</th>
+                              <th>Satuan</th>
                               <th>Jumlah Titip</th>
                               <th>Terjual</th>
                               <th>Retur</th>
@@ -95,7 +96,8 @@
                             @foreach ($detail_konsinyasi as $item)
                                 <tr>
                                   <td class="barangKonsinyasiDiTabel">{{ $item->barang_nama }}</td>
-                                  <td>{{ \Carbon\Carbon::parse($item->barang_tanggal_kadaluarsa)->isoFormat("DD MMMM YYYY").", ".\Carbon\Carbon::parse($item->barang_tanggal_kadaluarsa)->isoFormat("HH:mm")." WIB" }}</td>
+                                  <td>{{ \Carbon\Carbon::parse($item->barang_tanggal_kadaluarsa)->isoFormat("Y-MM-DD")." ".\Carbon\Carbon::parse($item->barang_tanggal_kadaluarsa)->isoFormat("HH:mm")." WIB" }}</td>
+                                  <td>{{ $item->satuan }}</td>
                                   <td>{{ $item->jumlah_titip }}</td>
                                   <td>{{ $item->terjual }}</td>
                                   <td>{{ $item->retur }}</td>

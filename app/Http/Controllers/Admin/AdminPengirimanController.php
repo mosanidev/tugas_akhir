@@ -347,7 +347,7 @@ class AdminPengirimanController extends Controller
                         'status_pengiriman' => $request->status_pengiriman
                     ]);
 
-        return redirect()->route('pengiriman.index')->with(['success' => 'Data berhasil diperbarui']);
+        return redirect()->route('pengiriman.index')->with(['success' => 'Data pengiriman berhasil diperbarui']);
 
         // $tanggalJemput = \Carbon\Carbon::parse($request->waktu_jemput)->format("Y-m-d");
         // $jamJemput = \Carbon\Carbon::parse($request->waktu_jemput)->format("H:i");

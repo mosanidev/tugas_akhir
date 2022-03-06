@@ -266,6 +266,7 @@ class AdminPembelianController extends Controller
         $detailPembelian = DB::table('detail_pembelian')
                             ->select('barang.kode', 
                                      'barang.nama', 
+                                     'barang.satuan',
                                      'detail_pembelian.tanggal_kadaluarsa', 
                                      'detail_pembelian.harga_beli', 
                                      'detail_pembelian.diskon_potongan_harga', 

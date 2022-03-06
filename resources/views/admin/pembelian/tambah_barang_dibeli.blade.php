@@ -90,6 +90,7 @@
                                   <th>Harga Beli</th>
                                   <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
+                                  <th>Satuan</th>
                                   <th>Subtotal</th>
                                   <th>Aksi</th>
                                 </tr>
@@ -208,6 +209,7 @@
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].harga_beli) +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].diskon_potongan_harga) +  `</td>
                                 <td>` + barangDibeli[i].kuantitas +  `</td>
+                                <td>` + barangDibeli[i].satuan +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDibeli[i].subtotal) +  `</td>
                                 <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDibeli(` + i + `)" id="btnHapus">Hapus</button> </td>
                             </tr>`;

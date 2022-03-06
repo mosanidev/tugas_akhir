@@ -18,7 +18,7 @@
                     <select class="form-control" name="barang_id" id="selectBarangKonsinyasi" required>
                       <option disabled selected>Pilih barang konsinyasi</option>
                       @foreach($barang_konsinyasi as $item)
-                          <option value="{{ $item->id }}" data-diskon="{{ $item->diskon_potongan_harga }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
+                          <option value="{{ $item->id }}" data-diskon="{{ $item->diskon_potongan_harga }}" data-harga-jual="{{ $item->harga_jual }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
                       @endforeach
                   </select>                  
                  </div>
@@ -60,6 +60,12 @@
                   </div>
                 </div>
                 <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Satuan</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" name="satuan" id="satuan" readonly>
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Tanggal Kadaluarsa</label>
                   <div class="col-sm-8">
                       <div class="input-group">
@@ -98,13 +104,15 @@
 
       let hargaJual = $('#selectBarangKonsinyasi :selected').attr("data-harga-jual");
       let diskon = $('#selectBarangKonsinyasi :selected').attr("data-diskon");
+      let satuan = $('#selectBarangKonsinyasi :selected').attr("data-satuan");
 
       let hargaJualAkhir = parseInt(hargaJual) - parseInt(diskon);
 
       $('#inputKomisi').attr('max', hargaJual);
       $('#hargaJual').val(convertAngkaToRupiah(hargaJual));
       $('#diskon').val(convertAngkaToRupiah(diskon));
-      $('#hargaJualAkhir').val(convertAngkaToRupiah(hargaJualAkhir))
+      $('#hargaJualAkhir').val(convertAngkaToRupiah(hargaJualAkhir));
+      $('#satuan').val(satuan);
     
     });
 

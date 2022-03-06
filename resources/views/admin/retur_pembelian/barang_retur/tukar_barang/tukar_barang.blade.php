@@ -74,6 +74,7 @@
                                 <th>Tanggal Kadaluarsa Asal</th>
                                 <th class="d-none">ID Barang Asal</th>
                                 <th style="width: 60%;">Barang Asal</th>
+                                <th>Satuan</th>
                                 <th>Kuantitas Barang Asal</th>
                                 <th>Tanggal Kadaluarsa Ganti</th>
                                 <th class="d-none">ID Barang Ganti</th>
@@ -125,6 +126,7 @@
 
                 rowTable += `<tr>
                                 <td>` + arrTukarBarang[i].tanggal_kadaluarsa_asal + `</td>
+                                <td>` + arrTukarBarang[i].satuan_barang_asal + `</td>
                                 <td class="d-none">` + arrTukarBarang[i].barang_asal_id + `</td>
                                 <td style="width: 60%;">` + arrTukarBarang[i].barang_asal + `</td>
                                 <td>` + arrTukarBarang[i].kuantitas_barang_asal + `</td>

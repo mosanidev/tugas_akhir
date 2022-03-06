@@ -48,6 +48,7 @@
                                   <th>Kuantitas Pesan</th>
                                   <th>Kuantitas Terima</th>
                                   <th>Selisih</th>
+                                  <th>Satuan</th>
                                 </tr>
                             </thead>
                             <tbody id="contentTable">
@@ -57,6 +58,7 @@
                                         <td>{{ $item->jumlah_pesan }}</td>
                                         <td>{{ $item->jumlah_terima }}</td>
                                         <td>{{ $item->jumlah_pesan - $item->jumlah_terima }}</td>
+                                        <td>{{ $item->satuan }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -121,6 +121,7 @@
                                   <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas Pesan</th>
                                   <th>Kuantitas Terima</th>
+                                  <th>Satuan</th>
                                   <th>Subtotal</th>
                                   <th>Aksi</th>
                                 </tr>
@@ -165,6 +166,7 @@
                   "barang_nama": barangDiterima[i].barang_nama,
                   "kuantitas_pesan": barangDiterima[i].kuantitas_pesan,
                   "kuantitas_terima": barangDiterima[i].kuantitas_terima,
+                  "satuan": barangDiterima[i].satuan,
                   "kuantitas_tidak_terima": parseInt(barangDiterima[i].kuantitas_pesan) - parseInt(barangDiterima[i].kuantitas_terima),
                 })
               }
@@ -176,6 +178,7 @@
                   "barang_nama": detailPemesanan[x].nama,
                   "kuantitas_pesan": detailPemesanan[x].kuantitas,
                   "kuantitas_terima": 0,
+                  "satuan": detailPemesanan[i].satuan,
                   "kuantitas_tidak_terima": parseInt(detailPemesanan[x].kuantitas),
                 })
               }
@@ -294,6 +297,7 @@
                             <td>` + convertAngkaToRupiah(barangDiterima[i].diskon_potongan_harga) +  `</td>
                             <td>` + barangDiterima[i].kuantitas_pesan +  `</td>
                             <td>` + barangDiterima[i].kuantitas_terima +  `</td>
+                            <td>` + barangDiterima[i].satuan +  `</td>
                             <td>` + convertAngkaToRupiah(barangDiterima[i].subtotal) +  `</td>
                             <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDiterima(` + i + `, `+ barangDiterima[i].barang_id + `, `+ barangDiterima[i].kuantitas_terima +`)" id="btnHapus">Hapus</button> </td>
                         </tr>`;
@@ -350,6 +354,7 @@
             rowTable += `<tr>
                             <td>` + barangTidakDiterima[i]['kode'] + " - " + barangTidakDiterima[i]['nama'] + `</td>
                             <td>` + barangTidakDiterima[i]['kuantitas'] + `</td>
+                            <td>` + barangTidakDiterima[i]['satuan'] + `</td>
                         </tr>`;
           }
           else 
@@ -371,6 +376,7 @@
                     <tr>
                         <th>Barang Belum Diterima</th>
                         <th>Kuantitas Belum Diterima</th>
+                        <th>Satuan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -380,21 +386,6 @@
           `);
         }
     }
-
-    
-    $('#uangMuka').on('change', function() {
-
-      if(barangDiterima.length == 0)
-      {
-          toastr.error("Harap menambahkan barang yang diterima terlebih dahulu", "Gagal", toastrOptions);
-          $('#uangMuka').val(0);
-      }
-      else 
-      {
-          calculate();
-      }
-
-    });
 
     function hapusBarangDiterima(index, barang_id, kuantitas_terima)
     {
