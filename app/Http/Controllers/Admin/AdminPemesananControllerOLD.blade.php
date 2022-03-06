@@ -59,33 +59,16 @@ class AdminPemesananController extends Controller
                             'supplier_id' => $request->supplier_id,
                             'tanggal' => \Carbon\Carbon::parse($request->tanggal_pemesanan)->format('Y-m-d'),
                             'perkiraan_tanggal_terima' => \Carbon\Carbon::parse($request->tanggalPerkiraanTerima)->format('Y-m-d'),
+                            'diskon' => $request->diskon,
+                            'ppn' => $request->ppn,
                             'metode_pembayaran' => $request->metodePembayaran,
                             'status_bayar' => 'Belum lunas',
                             'tanggal_jatuh_tempo' => \Carbon\Carbon::parse($request->tanggal_jatuh_tempo)->format('Y-m-d'),
                             'status' => 'Belum diterima di gudang',
+                            'total' => $request->total,
                             'users_id' => auth()->user()->id
                         ]);
-
-        return redirect()->route('pemesanan.addBarang', ['pemesanan' => $idPemesanan])->with(['success'=>'Data pemesanan berhasil ditambah']);
-    }
-
-    public function addBarang($id)
-    {
-        $pemesanan = DB::table('pemesanan')
-                        ->select('pemesanan.*', 'supplier.nama as nama_supplier')
-                        ->where('pemesanan.id', '=', $id)
-                        ->join('supplier', 'supplier.id', '=', 'pemesanan.supplier_id')
-                        ->get();
-
-        $barang = DB::table('barang')
-                    ->where('supplier_id', '=', $pemesanan[0]->supplier_id)
-                    ->get();
-
-        return view('admin.pemesanan.tambah', ['pemesanan' => $pemesanan, 'barang'=>$barang]);
-    }
-
-    public function storeFull(Request $request)
-    {
+        
         $dataBarang = json_decode($request->barang, true);
 
         for ($i = 0; $i < count((array) $dataBarang); $i++)
@@ -93,7 +76,7 @@ class AdminPemesananController extends Controller
 
             $insertDetailPemesanan = DB::table('detail_pemesanan')
                                             ->insert([
-                                                'pemesanan_id'          => $request->id,
+                                                'pemesanan_id'          => $idPemesanan,
                                                 'barang_id'             => $dataBarang[$i]['barang_id'],
                                                 'kuantitas'             => $dataBarang[$i]['kuantitas'],
                                                 'harga_pesan'           => $dataBarang[$i]['harga_pesan'],
@@ -103,15 +86,7 @@ class AdminPemesananController extends Controller
 
         }
 
-        $updatePemesanan = DB::table('pemesanan')
-                            ->where('id', '=', $request->id)
-                            ->update([
-                                'total'=>$request->total,
-                                'diskon'=>$request->diskon,
-                                'ppn'=>$request->ppn
-                            ]);
-
-        return redirect()->route('pemesanan.index')->with(['success' => 'Data pemesanan berhasil disimpan']);
+        return redirect()->route('pemesanan.index')->with(['success'=>'Data pemesanan berhasil ditambah']);
     }
 
     /**
@@ -136,7 +111,7 @@ class AdminPemesananController extends Controller
                         ->get();
 
         $detail_pemesanan = DB::table('detail_pemesanan')
-                            ->select('detail_pemesanan.*', 'barang.kode', 'barang.nama', 'barang.satuan')
+                            ->select('detail_pemesanan.*', 'barang.kode', 'barang.nama')
                             ->join('barang', 'detail_pemesanan.barang_id', '=', 'barang.id')
                             ->where('detail_pemesanan.pemesanan_id', '=', $id)
                             ->get();

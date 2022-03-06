@@ -7,48 +7,71 @@
     <h3>Tambah Pemesanan</h3>
 
     <div class="px-2 py-3">
-        <form method="POST" action="{{ route('pemesanan.storeFull') }}" id="formTambah">
+        <form method="POST" action="{{ route('pemesanan.store') }}" id="formTambah">
             @csrf
             <input type="hidden" id="data_barang" value="" name="barang"/>
-            <input type="hidden" name="id" value="{{ $pemesanan[0]->id }}">
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Nomor Nota</label>
               <div class="col-sm-8">
-                    <p>{{ $pemesanan[0]->nomor_nota }}</p>
+                <input type="text" class="form-control" name="nomor_nota" id="inputNomorNota" required>
               </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Pemesanan</label>
                 <div class="col-sm-8">
-                    <p>{{ Carbon\Carbon::parse($pemesanan[0]->tanggal)->format('d-m-Y') }}</p>     
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggal_pemesanan" autocomplete="off" id="datepickerTgl" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" readonly>
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Perkiraan Diterima</label>
                 <div class="col-sm-8">
-                    <p>{{ Carbon\Carbon::parse($pemesanan[0]->perkiraan_tanggal_terima)->format('d-m-Y') }}</p>     
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggalPerkiraanTerima" autocomplete="off" id="datepickerTglPerkiraanTerima" required>
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Tanggal Jatuh Tempo Pelunasan</label>
                 <div class="col-sm-8">
-                  <p>{{ Carbon\Carbon::parse($pemesanan[0]->tanggal_jatuh_tempo)->format('d-m-Y') }}</p>  
+                  <div class="input-group">
+                      <input type="text" class="form-control pull-right" name="tanggal_jatuh_tempo" autocomplete="off" id="datepickerTglJatuhTempo" required>
+                      <div class="input-group-append">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+                  </div>   
                 </div>
               </div>
 
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Pemasok</label>
+                <label class="col-sm-4 col-form-label">Supplier</label>
                 <div class="col-sm-8">
-                  <p>{{$pemesanan[0]->nama_supplier}}</p>
+                  <select class="form-control" name="supplier_id" id="selectSupplier" required>
+                      <option disabled selected>Supplier</option>
+                      @foreach($supplier as $item)
+                          <option value="{{ $item->id }}">{{$item->nama}}</option>
+                      @endforeach
+                  </select> 
                 </div>
               </div>
               
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Metode Pembayaran</label>
                 <div class="col-sm-8">
-                  <p>{{$pemesanan[0]->metode_pembayaran}}</p>
+                  <select class="form-control" name="metodePembayaran" id="selectMetodePembayaran" required>
+                      <option disabled selected>Metode Pembayaran</option>
+                      <option value="Transfer Bank">Transfer Bank</option>
+                      <option value="Tunai">Tunai</option>
+                  </select> 
                 </div>
               </div>
             <div class="form-group row">
@@ -94,7 +117,6 @@
                                   <th>Harga Beli</th>
                                   <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
-                                  <th>Satuan</th>
                                   <th>Subtotal</th>
                                   <th>Aksi</th>
                                 </tr>
@@ -121,20 +143,74 @@
 
     $(document).ready(function() {
 
+        $('#datePickerTgl').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
+
+        $('#datepickerTglPerkiraanTerima').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            startDate: new Date()
+        });
+
+        $('#datepickerTglJatuhTempo').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            startDate: new Date()
+        });
+
         $('#tanggal_kadaluarsa').datepicker({
             format: 'dd-mm-yyyy',
             autoclose: true,
             enableOnReadonly: false 
         }); 
 
+        $('#selectSupplier').select2({
+            dropdownParent: $("#formTambah"),
+            theme: 'bootstrap4'
+        });
+
         $('#barang').select2({
             dropdownParent: $("#divTambahBarangDipesan"),
             theme: 'bootstrap4'
         });
 
+        $('#datepickerTglJatuhTempo').on('change', function() {
+
+            // let tglBuat = new Date($('#datepickerTgl').val());
+            // let tglJatuhTempo = new Date($('#datepickerTglJatuhTempo').val());
+
+            // if(tglJatuhTempo != "")
+            // {
+            //     if(tglJatuhTempo > tglBuat)
+            //     {
+                    // $('#datepickerTglJatuhTempo').val("");
+                    // toastr.error("Harap isi tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
+            //     }
+            // }
+
+        });
+
         $('#btnSimpan').on('click', function() {
 
-            if(barangDipesan.length == 0)
+            if($('#inputNomorNota').val() == "")
+            {
+                toastr.error("Harap isi nomor nota terlebih dahulu", "Error", toastrOptions);
+            }
+            else if($('#datepickerTglJatuhTempo').val() == "")
+            {
+                toastr.error("Harap isi tanggal jatuh tempo terlebih dahulu", "Error", toastrOptions);
+            }
+            else if($('#selectSupplier')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih supplier terlebih dahulu", "Error", toastrOptions);
+            }
+            else if ($('#selectMetodePembayaran')[0].selectedIndex == 0)
+            {
+                toastr.error("Harap pilih metode pembayaran terlebih dahulu", "Error", toastrOptions);
+            }
+            else if(barangDipesan.length == 0)
             {
                 toastr.error("Harap pilih barang yang dipesan terlebih dahulu", "Error", toastrOptions);
             }
@@ -174,7 +250,6 @@
         $("#harga_pesan_akhir").val("Rp 0");
         $("#kuantitas").val("1");
         $('#subtotal').val("Rp 0");
-        $('#satuan').val("");
         $('#tanggal_kadaluarsa').val("");
 
     });
@@ -196,7 +271,6 @@
                                 <td>` + convertAngkaToRupiah(barangDipesan[i].harga_pesan) +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDipesan[i].diskon_potongan_harga) +  `</td>
                                 <td>` + barangDipesan[i].kuantitas +  `</td>
-                                <td>` + barangDipesan[i].satuan +  `</td>
                                 <td>` + convertAngkaToRupiah(barangDipesan[i].subtotal) +  `</td>
                                 <td> <button type="button" class="btn btn-danger d-inline" onclick="hapusBarangDipesan(` + i + `)" id="btnHapus">Hapus</button> </td>
                             </tr>`;

@@ -9,8 +9,6 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ route('pemesanan.store') }}"> 
-                @csrf
                 <input type="hidden" name="barang_dipesan" id="dataBarangDipesan" value="">
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Barang</p>
@@ -18,7 +16,7 @@
                       <select class="form-control select2 select2bs4" name="barang_id" id="barang" required>
                           <option disabled selected>Pilih barang</option>
                           @foreach($barang as $item)
-                              <option value="{{ $item->id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}">{{ $item->kode." - ".$item->nama }}</option>
+                              <option value="{{ $item->id }}" data-kode="{{ $item->kode }}" data-nama="{{ $item->nama }}" data-harga-jual="{{ $item->harga_jual }}" data-satuan="{{ $item->satuan }}">{{ $item->kode." - ".$item->nama }}</option>
                           @endforeach
                       </select> 
                     </div>
@@ -45,6 +43,14 @@
               
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <p class="col-sm-4 col-form-label">Satuan</p>
+                    <div class="col-sm-8">
+                        <input type="text" id="satuan" class="form-control d-inline ml-1" name="satuan" min="1" readonly>
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <p class="col-sm-4 col-form-label">Subtotal</p>
                     <div class="col-sm-8">
@@ -57,7 +63,6 @@
               <button type="button" id="btnTambahBarangDipesan" class="btn btn-primary">Tambah</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
-            </form>
         </div>
     </div>
 </div>
@@ -153,6 +158,7 @@
                 "harga_pesan": $('#harga_pesan').val(),
                 "diskon_potongan_harga": $('#diskon_potongan_harga').val(),
                 "kuantitas": $('#kuantitas').val(),
+                "satuan": $('#satuan').val(),
                 "subtotal": (parseInt($('#harga_pesan').val())-parseInt($('#diskon_potongan_harga').val())) *parseInt($('#kuantitas').val())
             });
 
@@ -161,6 +167,14 @@
             implementDataOnTable();
         }
         
+    });
+
+    $('#barang').on('change', function() {
+
+        const satuan = $('#barang :selected').attr('data-satuan');
+
+        $('#satuan').val(satuan);
+
     });
 
 </script>

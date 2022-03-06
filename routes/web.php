@@ -276,6 +276,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/pembelian/barang_dibeli/tambah', [AdminPembelianController::class, 'storeFull'])->name('pembelian.storeFull');
         Route::resource('/pembelian', AdminPembelianController::class);
 
+        Route::get('/pemesanan/barang_dipesan/{pemesanan}', [AdminPemesananController::class, 'addBarang'])->name('pemesanan.addBarang');
+        Route::post('/pemesanan/barang_dipesan/tambah', [AdminPemesananController::class, 'storeFull'])->name('pemesanan.storeFull');
         Route::resource('/pemesanan', AdminPemesananController::class);
 
         Route::resource('/penerimaan_pesanan', AdminPenerimaanPesananController::class);

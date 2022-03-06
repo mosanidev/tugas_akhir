@@ -97,6 +97,7 @@
                                   <th>Harga Pesan</th>
                                   <th>Diskon Potongan Harga</th>
                                   <th>Kuantitas</th>
+                                  <th>Satuan</th>
                                   <th>Subtotal</th>
                                 </tr>
                             </thead>
@@ -107,6 +108,7 @@
                                         <td>{{ "Rp " . number_format($item->harga_pesan,0,',','.') }}</td>
                                         <td>{{ "Rp " . number_format($item->diskon_potongan_harga,0,',','.') }}</td>
                                         <td>{{ $item->kuantitas }}</td>
+                                        <td>{{ $item->satuan }}</td>
                                         <td>{{ "Rp " . number_format($item->subtotal,0,',','.') }}</td>
                                     </tr>
 

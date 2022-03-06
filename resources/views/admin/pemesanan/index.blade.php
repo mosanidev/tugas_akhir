@@ -12,25 +12,7 @@
 </section>
 <div class="container-fluid">
 
-    <a href="{{ route('pemesanan.create') }}" class="btn btn-success ml-2">Tambah</a>
-
-    {{-- <div class="my-4">
-      <p>Filter : </p>
-
-      <div class="row">
-        <div class="col-3">
-          <p class="mt-2 ml-2">Status Bayar</p> 
-        </div>
-        <div class="col-9">
-            <select class="form-control w-50 selectFilter">
-              <option selected>Semua</option>
-              <option>Belum Lunas</option>
-              <option>Sudah Lunas</option>
-            </select>
-        </div>
-      </div>
-
-    </div> --}}
+    <button class="btn btn-success" data-toggle="modal" data-target="#modalTambahPemesanan">Tambah</button>
 
     <div class="card shadow my-4">
         <div class="card-header py-3">
@@ -81,6 +63,7 @@
 <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
 
 @include('admin.pemesanan.modal.confirm_delete')
+@include('admin.pemesanan.modal.create_pemesanan')
 @include('admin.pembelian.modal.info')
 
 @if(session('errors'))
@@ -96,123 +79,6 @@
 <script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
 
 <script type="text/javascript">
-
-  //Initialize Select2 Elements
-  $('#selectSupplier').select2({
-      dropdownParent: $("#modalTambahPembelian"),
-      theme: 'bootstrap4'
-  });
-
-  $('#selectSupplierUbah').select2({
-      dropdownParent: $("#modalUbahPembelian"),
-      theme: 'bootstrap4'
-  });
-
-  $('#datepickerTgl').datepicker({
-      format: 'dd-mm-yyyy',
-      autoclose: true
-  });
-
-  $('#datepickerTglJatuhTempo').datepicker({
-      format: 'dd-mm-yyyy',
-      autoclose: true
-  });
-
-  $('#datepickerTglJatuhTempoUbah').datepicker({
-      format: 'dd-mm-yyyy',
-      autoclose: true
-  });
-
-  $('#datepickerTglUbah').datepicker({
-      format: 'dd-mm-yyyy',
-      autoclose: true
-  });
-
-  $('#datepickerTglJatuhTempo').on('change', function() {
-
-    let dateNow = moment().format("Y-m-d");
-
-    if($('#datepickerTglJatuhTempo').val() < $('#datepickerTgl').val())
-    {
-      $('#datepickerTglJatuhTempo').val("");
-      toastr.error("Harap tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
-    }
-
-  });
-
-  $('#datepickerTglJatuhTempoUbah').on('change', function() {
-
-    if($('#datepickerTglJatuhTempoUbah').val() < $('#datepickerTglUbah').val())
-    {
-      $('#datepickerTglJatuhTempoUbah').val("");
-      toastr.error("Harap tanggal jatuh tempo setelah tanggal buat", "Error", toastrOptions);
-    }
-
-  });
-
-  $('.btnHapus').on('click', function() {
-
-    let nomorNota = $(this).attr('data-nomor-nota');
-    let id = $(this).attr('data-id');
-
-    $('.nomorNotaHapus').html(nomorNota);
-
-    $('#formHapus').attr('action', '/admin/pemesanan/'+id);
-
-  });
-
-  $('#btnTambahPembelian').on('click', function() {
-
-    if($('#inputNomorNota').val() == "")
-    {
-      toastr.error('Harap isi nomor nota terlebih dahulu', 'Error', toastrOptions);
-    }
-    else if ($('#datepickerTgl').val() == "")
-    {
-      toastr.error('Harap pilih tanggal terlebih dahulu', 'Error', toastrOptions);
-    }
-    else if($('#selectSupplier').val() == null)
-    {
-      $('#btnTambahPembelian').attr('type', 'button');
-
-      toastr.error('Harap pilih supplier terlebih dahulu', 'Error', toastrOptions);
-    }
-    else
-    {
-      $('#btnTambahPembelian').attr('type', 'submit');
-      $('#btnTambahPembelian').click();
-    }
-
-  });
-
-  $('.btnUbah').on('click', function() {
-
-      let pembelian_id = $(this).attr("data-id");
-
-      $.ajax({
-          url: "/admin/pembelian/"+pembelian_id,
-          type: 'GET',
-          beforeSend: function(data) {
-              
-          },
-          success:function(data) {
-
-            $('#inputNomorNotaUbah').val(data.pembelian[0].nomor_nota);
-            $('#datepickerTglUbah').val(data.pembelian[0].tanggal);
-            $('#datepickerTglJatuhTempoUbah').val(data.pembelian[0].tanggal_jatuh_tempo);
-            $('#selectSupplierUbah').val(data.pembelian[0].supplier_id).change();
-            $('#selectMetodePembayaranUbah').val(data.pembelian[0].metode_pembayaran).change();
-            $('#inputDiskonUbah').val(data.pembelian[0].diskon);
-            $('#inputPPNUbah').val(data.pembelian[0].ppn);
-            $('#selectStatusUbah').val(data.pembelian[0].status).change();
-
-            $('#formUbah').attr('action', '/admin/pembelian/'+pembelian_id);
-
-          }
-
-      });
-
-  });
 
   if("{{ session('success') }}" != "")
   {
