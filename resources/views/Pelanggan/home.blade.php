@@ -27,17 +27,16 @@
 
                         @if($i == 0)
                             <div class="carousel-item active">
-                                <img src="{{ asset($files[$i]) }}" style="object-fit: cover;" class="mx-auto d-block p-5" height="445" width="1240">
+                                <img src="{{ asset($files[$i]) }}" style="object-fit: cover; height: 445px; width: 1240px;" class="mx-auto d-block p-5 img-fluid">
                             </div>
                         @else 
                             <div class="carousel-item">
-                                <img src="{{ asset($files[$i]) }}" style="object-fit: cover;" class="mx-auto d-block p-5" height="445" width="1240">
+                                <img src="{{ asset($files[$i]) }}" style="object-fit: cover; height: 445px; width: 1240px;" class="mx-auto d-block p-5 img-fluid">
                             </div>
                         @endif
 
                     @endfor
                 </div>
-
 
                 <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -61,10 +60,8 @@
 
             @if(isset($barang_promo) && count($barang_promo) > 0 && $barang_promo[0]->id != null) 
                 
-                <div class="col-6 mt-2">
-                    <p class="h5"><b>Sedang Promo <a href="{{ url('/shop/order?urutkan=promo') }}" class="text-success" style="font-size: 14px;">Lihat Semua</a></b></p>
-                </div>
-
+                <p class="h5 ml-3"><b>Sedang Promo <a href="{{ url('/shop/order?urutkan=promo') }}" class="text-success" style="font-size: 14px;">Lihat Semua</a></b></p>
+                
                 @if(count($barang_promo) > 4)
 
                     <div class="col-6 text-right">

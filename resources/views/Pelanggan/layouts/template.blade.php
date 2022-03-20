@@ -51,7 +51,7 @@
 
         <a class="navbar-brand" href="{{ route('home') }}"><i>Toko Kopkar Ubaya</i></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -83,7 +83,7 @@
                                 
                             @endif
                         </button>
-                        <div class="dropdown-menu" style="height: 1180%; overflow-y: scroll;" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-menu" style="overflow-y: scroll;" aria-labelledby="dropdownMenuButton">
                             @foreach ($semua_kategori as $item)
                                 <a class="dropdown-item" onclick="pilih('{{$item->kategori_barang}}')" id="nama_kategori">{{$item->kategori_barang}}</a>
                             @endforeach
@@ -205,12 +205,6 @@
     <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/scripts/helper.js') }}"></script>
     <script type="text/javascript">
-
-        // $(document).ready(function() {
-
-            
-
-        // });
 
         function pilih(nama)
         {

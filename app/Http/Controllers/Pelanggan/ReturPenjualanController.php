@@ -145,9 +145,9 @@ class ReturPenjualanController extends Controller
         {
             return redirect()->back()->with(['error' => 'Pengajuan retur ditolak. Penjualan tersebut tidak dapat diretur, karena status penjualan belum selesai']);
         }
-        else if(\Carbon\Carbon::parse($selectPenjualan[0]->tanggal)->diffInHours(\Carbon\Carbon::now()) > 72) // cek selisih jam antara sekarang dan tanggal transaksi
+        else if(\Carbon\Carbon::parse($selectPenjualan[0]->tanggal)->diffInDays(\Carbon\Carbon::now()) > 7) // cek selisih jam antara sekarang dan tanggal transaksi
         {
-            return redirect()->back()->with(['error' => 'Pengajuan retur ditolak. Transaksi anda tidak sesuai dengan ketentuan retur karena lebih dari 3 hari yang lalu']);
+            return redirect()->back()->with(['error' => 'Pengajuan retur ditolak. Transaksi anda tidak sesuai dengan ketentuan retur karena lebih dari 7 hari yang lalu']);
         }
 
         // jika penjualan lebih dari 3 hari yang lalu

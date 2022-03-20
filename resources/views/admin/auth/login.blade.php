@@ -25,20 +25,29 @@
         <p class="h5 text-center p-3 text-light">ADMIN LOGIN</p>
     </nav>
 
-    <div class="border border-primary mt-5 p-3 w-50 mx-auto">
-        <form action="{{ route('admin.login') }}" method="POST">
-            @csrf
-            <div class="form-group">
-            <label>Email</label>
-            <input type="email" class="form-control" name="email" placeholder="Masukkan email" required>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
             </div>
-            <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Masukkan password" minlength="8" required>
+            <div class="col border border-primary mt-5 p-3 mx-auto">
+                <form action="{{ route('admin.login') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="Masukkan email" required>
+                    </div>
+                    <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Masukkan password" minlength="8" required>
+                    </div>
+                    <button type="submit" class="btn btn-block btn-primary w-25 mx-auto">Masuk</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-block btn-primary w-25 mx-auto">Masuk</button>
-        </form>
+            <div class="col-sm">
+            </div>
+        </div>
     </div>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ asset('/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/scripts/helper.js') }}"></script>

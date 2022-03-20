@@ -13,18 +13,27 @@
     <title>Toko Kopkar UBAYA</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-        <div class="mx-auto w-50">
-            <ul class="navbar-nav d-inline-block">
-                <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link active mr-3"><i class="fas fa-arrow-left"></i></a>
-                </li>
-            </ul>
-    
-            <p class="h5 mt-2 d-inline-block" style="margin: 0px 38%;"><b>Daftar</b></p>
+    <nav class="navbar navbar-expand-lg navbar-light justify-content-center bg-warning py-2">
+        <div class="container">
+            <div class="col text-right">
+                <ul class="navbar-nav d-inline-block">
+                    <li class="nav-item">
+                        <a href="{{ route('home') }}" class="nav-link active mr-3"><i class="fas fa-arrow-left"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <p class="h5 mt-2 text-center"><b>Daftar</b></p>
+            </div>
+            <div class="col">
 
+            </div>
         </div>
     </nav>
+
+    {{-- <nav class="navbar navbar-expand-lg navbar-light justify-content-center bg-warning py-2">
+        <p class="h5 mt-2 d-inline-block"><b>Daftar</b></p>
+    </nav> --}}
 
     @if(session('errors'))
         <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -50,44 +59,50 @@
         </div>
     @endif
 
-    <div class="bg-light m-5 p-4 w-50 mx-auto border">
-        <form method="POST" action="{{ route('pelanggan.register') }}" id="formRegister">
-            @csrf
-            <div class="mb-3">
-                <input type="text" class="form-control" name="nama_depan" id="nama_depan" placeholder="Masukkan nama depan" required>
+    <div class="container">
+        <div class="row">
+            <div class="col col-sm-2"></div>
+            <div class="col-12 col-sm-8 bg-light my-5 py-4 border">
+                <form method="POST" action="{{ route('pelanggan.register') }}" id="formRegister">
+                    @csrf
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="nama_depan" id="nama_depan" placeholder="Masukkan nama depan" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="nama_belakang" id="nama_belakang" placeholder="Masukkan nama belakang" required>
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" required>
+                            <option value="" disabled selected>Pilih jenis kelamin</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        {{-- <input placeholder="Pilih tanggal lahir" type="date" class="form-control"> --}}
+                        <input type="text" placeholder="Pilih tanggal lahir" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="tel" class="form-control" name="nomor_telepon" id="nomor_telepon" min="10" placeholder="Masukkan nomor telepon" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password" id="password" min="8" placeholder="Masukkan password" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="re_password" id="re_password" placeholder="Ulangi password" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="text" class="form-control" name="nomor_anggota" id="nomor_anggota" placeholder="Masukkan nomor anggota Koperasi Karyawan Universitas Surabaya">
+                        <p class="text-danger" style="font-size: 1rem">* Kosongi jika anda bukan anggota Koperasi Karyawan Universitas Surabaya</p>
+                    </div>
+                    <button type="button" id="btnRegister" class="btn btn-block btn-success w-25 mx-auto">Daftar</button>
+                </form>
             </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" name="nama_belakang" id="nama_belakang" placeholder="Masukkan nama belakang" required>
-            </div>
-            <div class="mb-3">
-                <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" required>
-                    <option value="" disabled selected>Pilih jenis kelamin</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                {{-- <input placeholder="Pilih tanggal lahir" type="date" class="form-control"> --}}
-                <input type="text" placeholder="Pilih tanggal lahir" name="tanggal_lahir" id="tanggal_lahir" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <input type="tel" class="form-control" name="nomor_telepon" id="nomor_telepon" min="10" placeholder="Masukkan nomor telepon" required>
-            </div>
-            <div class="mb-3">
-                <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email" required>
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="password" id="password" min="8" placeholder="Masukkan password" required>
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="re_password" id="re_password" placeholder="Ulangi password" required>
-            </div>
-            <div class="mb-4">
-                <input type="text" class="form-control" name="nomor_anggota" id="nomor_anggota" placeholder="Masukkan nomor anggota Koperasi Karyawan Universitas Surabaya">
-                <p class="text-danger" style="font-size: 1rem">* Kosongi jika anda bukan anggota Koperasi Karyawan Universitas Surabaya</p>
-            </div>
-            <button type="button" id="btnRegister" class="btn btn-block btn-success w-25 mx-auto">Daftar</button>
-        </form>
+            <div class="col col-sm-2"></div>
+        </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

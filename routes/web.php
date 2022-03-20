@@ -69,6 +69,7 @@ use App\Http\Controllers\Admin\AdminProfilController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::resource('/testimoni', TestimoniController::class);
 
 Route::get('/tescon', [TesssController::class, 'tescon'])->name('tescon');
 
@@ -189,8 +190,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/digit_titik_alamat', [AlamatController::class, 'digitTitikAlamat'])->name("digitTitikAlamat");
 
     Route::resource('/alamat', AlamatController::class);
-
-    Route::resource('/testimoni', TestimoniController::class);
 
     Route::get('generate_kecamatan/{kecamatan}/double', [BiteShipAPIController::class, 'getDoubleArea']);
     Route::get('generate_kecamatan/{kecamatan}/single', [BiteShipAPIController::class, 'getSingleArea']);

@@ -20,14 +20,15 @@ class CreateKonsinyasiTable extends Migration
             $table->string('nomor_nota', 100);
             $table->unsignedInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('supplier')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger('users_id');
+            $table->foreign('users_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal_titip');
             $table->date('tanggal_jatuh_tempo');
             $table->date('tanggal_pelunasan')->nullable();
             $table->double('total_komisi');
             $table->double('total_hutang');
-            $table->enum('metode_pembayaran', ['Tunai', 'Transfer Bank']);
+            $table->enum('metode_pembayaran', ['Tunai', 'Transfer bank']);
             $table->enum('status_bayar', ['Belum lunas', 'Sudah lunas'])->default('Belum lunas');
-            $table->string('bukti_bayar', 255)->nullable();
             // $table->timestamps();
         });
     }
