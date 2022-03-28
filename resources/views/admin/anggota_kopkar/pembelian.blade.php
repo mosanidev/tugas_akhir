@@ -56,6 +56,7 @@
                   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                       <thead>
                           <tr>
+                            <th>Nomor Anggota</th>
                             <th>Nama Anggota</th>
                             <th>Total Pembelian</th>
                           </tr>
@@ -65,11 +66,13 @@
                             @for($x = 0; $x < count($anggotaBeli); $x++)
                               @if($anggota[$i]->nama == $anggotaBeli[$x]->nama)
                                   <tr>
+                                      <td>{{ $anggota[$i]->nomor_anggota }}</td>
                                       <td>{{ $anggota[$i]->nama }}</td>
                                       <td>{{ "Rp " . number_format($anggotaBeli[$x]->pembelian,0,',','.') }}</td>
                                   </tr>
                               @else 
                                   <tr>
+                                      <td>{{ $anggota[$i]->nomor_anggota }}</td>
                                       <td>{{ $anggota[$i]->nama }}</td>
                                       <td>{{ "Rp " . number_format(0,0,',','.') }}</td>
                                   </tr>

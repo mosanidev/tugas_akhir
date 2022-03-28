@@ -182,7 +182,7 @@ class AdminReturPenjualanController extends Controller
         $notifikasi = DB::table('notifikasi')
                         ->where('penjualan_id', '=', $returPenjualan[0]->penjualan_id)
                         ->update([
-                            'isi' => `Status pengajuan retur diubah menjadi "$request->status_retur"`,
+                            'isi' => "Status pengajuan retur diubah menjadi ".$request->status_retur,
                             'status' => 'Belum dilihat',
                             'updated_at' => \Carbon\Carbon::now()
                         ]);

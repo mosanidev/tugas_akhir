@@ -23,7 +23,6 @@
                   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                       <thead>
                           <tr>
-                            <th>No</th>
                             <th>Nomor Anggota</th>
                             <th>Nama Anggota</th>
                             <th>Jenis Kelamin</th>
@@ -31,17 +30,13 @@
                           </tr>
                       </thead>
                       <tbody> 
-                          @php $no = 1; @endphp
                           @for($i = 0; $i < count($anggota); $i++)
                             <tr>
-                                <td>{{ $no }}</td>
                                 <td>{{$anggota[0]->nomor_anggota }}</td>
                                 <td>{{$anggota[0]->nama_depan." ".$anggota[0]->nama_belakang }}</td>
                                 <td>{{$anggota[0]->jenis_kelamin }}</td>
                                 <td>{{$anggota[0]->nomor_telepon }}</td>
                             </tr>
-
-                            @php $no++ @endphp
                           @endfor
                       </tbody>
                   </table>

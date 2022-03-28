@@ -146,6 +146,7 @@
 
         @endif
     </div>
+    <small class="d-inline">Jika anda merasa ada yang ingin ditanyakan. Silahkan hubungi kami via WhatsApp <a href="https://wa.me/6281252921016" target="_blank" class="d-inline">081252921016</a> </small>
 </div>
 
 <div class="modal fade" id="modalPickAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -16,19 +16,19 @@ class AdminAnggotaKopkarController extends Controller
     public function filterPembelian(Request $request)
     {
         $daftarAnggota = DB::table('users')
-                            ->select(DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama"))
+                            ->select('users.nomor_anggota',DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama"))
                             ->where('users.jenis', '=', 'Anggota_Kopkar')
                             ->where('users.status_verifikasi_anggota', '=', 'Verified')
                             ->orderBy('nama')
                             ->get();
 
         $anggotaBeli = DB::table('users')
-                        ->select(DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama"), DB::raw('sum(penjualan.total) as pembelian'))
+                        ->select('users.nomor_anggota',DB::raw("CONCAT(users.nama_depan, ' ', users.nama_belakang) as nama"), DB::raw('sum(penjualan.total) as pembelian'))
                         ->join('penjualan', 'penjualan.users_id', '=', 'users.id')
                         ->where('penjualan.status_jual', '=', 'Pesanan sudah dibayar')
                         ->where('penjualan.status_retur', '=', 'Tidak ada retur')
                         ->where('users.jenis', '=', 'Anggota_Kopkar')
-                        ->whereBetween('penjualan.tanggal', [$request->filter_tanggal_awal,$request->filter_tanggal_akhir])
+                        ->whereBetween('penjualan.tanggal', [\Carbon\Carbon::parse($request->filter_tanggal_awal)->format("Y-m-d"), \Carbon\Carbon::parse($request->filter_tanggal_akhir)->format('Y-m-d')])
                         ->where('users.status_verifikasi_anggota', '=', 'Verified')
                         ->orderBy('nama')
                         ->get();
