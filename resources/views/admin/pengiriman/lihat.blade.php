@@ -91,15 +91,12 @@
 
                 @if($riwayat_pengiriman != null)
                   @foreach($riwayat_pengiriman->history as $item)
-                  <i class="fa-solid fa-circle"></i>
                     <div class="row">
                       <div class="col-3">
                         <p class="mt-2">{{ \Carbon\Carbon::parse($item->updated_at)->isoFormat('D MMMM Y HH:mm') }}</p><br>
                       </div>
                       <div class="col-9">
-                        @if($item->status == "delivered")
                           <p class="mt-2">{{ "Paket telah sampai ke tujuan ".$item->note  }}</p><br>
-                        @endif
                       </div>
                     </div>
                   @endforeach
@@ -119,7 +116,6 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th style="width: 10px">No</th>
                                     <th>Barang</th>
                                     <th>Berat</th>
                                     <th>Kuantitas</th>
@@ -130,7 +126,6 @@
                                 @php $num = 1; @endphp
                                 @for($i=0; $i < count($barang); $i++)
                                     <tr>
-                                        <td>{{ $num++ }}</td>
                                         <td>{{ $barang[$i]->kode." - ".$barang[$i]->nama }}</td>
                                         <td>{{ $barang[$i]->berat." gram"  }}</td>
                                         <td>{{ $barang[$i]->kuantitas  }}</td>

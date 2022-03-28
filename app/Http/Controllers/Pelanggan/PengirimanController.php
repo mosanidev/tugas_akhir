@@ -21,7 +21,7 @@ class PengirimanController extends Controller
         {
             $cek_riwayat_pengiriman = Http::withHeaders([
                 'authorization' => 'biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTY0ODQ1OTU4MH0.bA1sNlK7-qLnTV9h34PeA_MhD45k6a-gPyBqe0fQx28',
-                ])->get("https://api.biteship.com/v1/trackings/".$pengiriman[0]->nomor_resi."/couriers/.".$pengiriman[0]->kode_shipper)->body();
+                ])->get("https://api.biteship.com/v1/trackings/".$pengiriman[0]->nomor_resi."/couriers/".$pengiriman[0]->kode_shipper)->body();
 
             $cek_riwayat_pengiriman = json_decode($cek_riwayat_pengiriman);
                         
