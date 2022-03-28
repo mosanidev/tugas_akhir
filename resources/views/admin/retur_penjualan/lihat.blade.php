@@ -18,7 +18,7 @@
                 <div class="col-sm-10">
                     <p class="mt-2">{{ \Carbon\Carbon::parse($retur_penjualan[0]->tanggal_jual)->isoFormat('DD-MM-Y') }}</p>
                 </div>
-              </div>
+            </div>
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Tanggal Pengajuan Retur</label>
               <div class="col-sm-10">
@@ -31,6 +31,12 @@
                 <p class="mt-2">{{ $retur_penjualan[0]->nama_depan." ".$retur_penjualan[0]->nama_belakang }}</p>
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Bukti Klaim Retur</label>
+              <div class="col-sm-10 mt-2">
+                  <a target="_blank" href="{{ $retur_penjualan[0]->link }}">Link</a>
+              </div>
+          </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Status</label>
                 <div class="col-sm-10">
