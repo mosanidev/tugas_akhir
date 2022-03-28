@@ -214,7 +214,11 @@
             showMetodeTransaksi = true;
           }
 
-          if(filterRentangTanggal == "Selamanya" || moment(tanggal).isBetween(filterRentangTanggal.split(" - ")[0], filterRentangTanggal.split(" - ")[1], 'days', '[]') == true)
+          const format = "YYYY-MM-DD HH:mm";
+          let startTime = filterRentangTanggal.split(" - ")[0];
+          let endTime = filterRentangTanggal.split(" - ")[1];
+
+          if(moment(tanggal, format).isBetween(moment(startTime, format), moment(endTime, format), 'days', '[]'))
           {
             showRentangTanggal = true;
           }
@@ -225,6 +229,7 @@
           }
 
           return showMetodeTransaksi && showRentangTanggal && showStatus;
+          // return showMetodeTransaksi && showStatus;
     });
 
     //Date range picker

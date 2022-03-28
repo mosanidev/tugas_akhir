@@ -106,7 +106,7 @@
                 </div>
             </div>
         </div> 
-            <input type="hidden" name="pembelian_id" value="{{ $retur_pembelian[0]->id }}">
+            <input type="hidden" name="pembelian_id" value="{{ $retur_pembelian[0]->pembelian_id }}">
             <input type="hidden" name="retur_pembelian_id" value="{{ $retur_pembelian[0]->id }}">
             <input type="hidden" id="dataBarangRetur" value="" name="barangRetur"/>
             <button type="button" class="btn btn-success w-50 btn-block mx-auto" id="btnSimpan">Simpan</button>

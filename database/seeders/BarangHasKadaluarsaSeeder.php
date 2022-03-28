@@ -82,11 +82,11 @@ class BarangHasKadaluarsaSeeder extends Seeder
             'jumlah_stok'               => 33
         ]);
 
-        DB::table('barang_has_kadaluarsa')->insert([
-            'barang_id'                 => 12,  
-            'tanggal_kadaluarsa'        => '2023-09-04 16:00:00',
-            'jumlah_stok'               => 30
-        ]);
+        // DB::table('barang_has_kadaluarsa')->insert([
+        //     'barang_id'                 => 12,  
+        //     'tanggal_kadaluarsa'        => '2023-09-04 16:00:00',
+        //     'jumlah_stok'               => 30
+        // ]);
 
         DB::table('barang_has_kadaluarsa')->insert([
             'barang_id'                 => 13,  

@@ -83,7 +83,6 @@
 @include('pelanggan.user_menu.modal.detail_order')
 @include('pelanggan.user_menu.modal.cek_resi')
 
-
 @push('script_user_menu')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -159,11 +158,10 @@
                                         </div>
                                         <br>`;
 
-                        if(data.riwayat_pengiriman != null)
+                        if(data.riwayat_pengiriman != "Belum ada data pengiriman")
                         {
                             for(let o = 0; o < data.riwayat_pengiriman.history.length; o++)
                             {
-                                // <i class="fa-solid fa-circle d-inline"></i>
                                 rowKirim += `<div class="row">
                                                 <div class="col-3">
                                                     <p class="mt-2">` + moment(data.riwayat_pengiriman.history[o].updated_at).format("DD MMMM YYYY HH:mm") + ` WIB</p><br>
@@ -172,10 +170,13 @@
                                                     `<p class="mt-2">` +  data.riwayat_pengiriman.history[o].note + `</p><br> ` +
                                                     `</div>
                                             </div>`;
-                                // data.riwayat_pengiriman.history[o].status
                             }
 
                             $('.lacakResi').append(rowKirim);
+                        }
+                        else
+                        {
+                            $('.lacakResi').append("<p>Belum ada riwayat pengiriman</p>");
                         }
 
                     }
@@ -341,7 +342,7 @@
                                                     </div>
                                                     <div class="col-7">
                                                         <p>` + data.transaksi[0].status_jual + `</p>\n
-                                                        <p>Harap menunggu pesanan untuk dikirimkan</p>
+                                                        ` + data.pengiriman[0].status_pengiriman + `
                                                     </div>
                                                 </div>
                                                 <div class="row">

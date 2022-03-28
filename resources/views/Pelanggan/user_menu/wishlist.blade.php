@@ -20,21 +20,10 @@
 
                                     <div class="col-4 mb-3">
                                         <div class="card">
-                                            {{-- <div class="input-group-text"> --}}
-
-                                                {{-- <form action="{{ route('wishlist.destroy', ['wishlist'=>$item->id]) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn float-right" href=""><i class="fas fa-trash"></i></button>
-                                                </form>  --}}
-
-                                                <div class="form-check m-2">
-                                                    <input class="form-check-input" type="checkbox" name="check_wishlist[]" id="check_wishlist" value="{{ $item->barang_id }}">
-                                                </div>
-
-                                            {{-- </div> --}}
-                                            <img class="card-img-top" src="{{ asset("$item->foto") }}">
-                                            
+                                            <div class="form-check m-2">
+                                                <input class="form-check-input" type="checkbox" name="check_wishlist[]" id="check_wishlist" value="{{ $item->barang_id }}">
+                                            </div>
+                                            <img src="{{ asset("$item->foto") }}" height="150" style="object-fit: contain;">
                                             <div class="card-body">
                                                 <h5 class="card-title"><a href="{{ route('detail', ['id' => $item->id]) }}" class="text-dark">{{ $item->nama }}</a></h5>
                                                 <p class="card-text">@if($item->diskon_potongan_harga > 0) <del class="mr-2">{{ "Rp " . number_format($item->harga_jual,0,',','.') }}</del> @endif{{ "Rp " . number_format($item->harga_jual-$item->diskon_potongan_harga,0,',','.') }}</p>

@@ -943,7 +943,7 @@ class OrderController extends Controller
         }
 
         $cart = DB::table('cart')
-                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan')
+                ->select('cart.*', 'barang.nama as barang_nama', 'kategori_barang.kategori_barang as barang_kategori', 'barang.foto as barang_foto', 'barang.diskon_potongan_harga as barang_diskon_potongan_harga', 'barang.harga_jual as barang_harga', 'barang_has_kadaluarsa.jumlah_stok as barang_stok', 'barang.berat as barang_berat', 'barang.satuan as barang_satuan', 'barang_has_kadaluarsa.tanggal_kadaluarsa as barang_tanggal_kadaluarsa')
                 ->join('barang', 'cart.barang_id', '=', 'barang.id')
                 ->join('barang_has_kadaluarsa', 'cart.barang_id', '=', 'barang_has_kadaluarsa.barang_id')
                 ->join('kategori_barang', 'barang.kategori_id', '=', 'kategori_barang.id')
@@ -1035,7 +1035,12 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $transaksi = DB::table('penjualan')->select('penjualan.*', 'pembayaran.*', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar')->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')->where('penjualan.users_id', '=', auth()->user()->id)->where('penjualan.id', '=', $id)->get();
+        $transaksi = DB::table('penjualan')
+                    ->select('penjualan.*', 'pembayaran.*', 'penjualan.status_jual as status_jual', 'pembayaran.status_bayar')
+                    ->join('pembayaran', 'penjualan.pembayaran_id', '=', 'pembayaran.id')
+                    ->where('penjualan.users_id', '=', auth()->user()->id)
+                    ->where('penjualan.id', '=', $id)
+                    ->get();
 
         $riwayat_pengiriman = null;
 

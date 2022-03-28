@@ -288,15 +288,14 @@ class AdminPengirimanController extends Controller
             {
                 $cek_riwayat_pengiriman = Http::withHeaders([
                     'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGluZyIsInVzZXJJZCI6IjYxMTRhZTM3MzNmNGMxMDQzMWNkODM5MSIsImlhdCI6MTYzMjUzNDI1MX0.EmLbRbmLbhqPHi21AzkvuLxl6uP1IvUFfrC4IPh7DkI',
-                    ])->get("https://api.biteship.com/v1/trackings/JP9480199312/couriers/jnt")->body();
+                    ])->get("https://api.biteship.com/v1/trackings/TJR2121871485463/couriers/jne")->body();
                 
                 $cek_riwayat_pengiriman = json_decode($cek_riwayat_pengiriman);
-                
+
                 if($cek_riwayat_pengiriman->success == true)
                 {
                     // tracking via biteship melalui nomer resi
                     $riwayat_pengiriman = $cek_riwayat_pengiriman;
-                    // dd($riwayat_pengiriman);
                 } 
             }
 

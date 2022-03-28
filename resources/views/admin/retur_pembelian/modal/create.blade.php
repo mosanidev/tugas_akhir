@@ -129,6 +129,8 @@
 
     $('#btnTambahDataRetur').on('click', function(){
 
+        const format = "YYYY-MM-DD";
+
         if($('#selectNotaBeli')[0].selectedIndex == 0)
         {
             toastr.error("Harap pilih nota pembelian terlebih dahulu", "Gagal", toastrOptions)
@@ -137,11 +139,11 @@
         {
             toastr.error("Harap isi nomor nota retur terlebih dahulu", "Gagal", toastrOptions);
         }
-        else if(moment($('#datepickerTglRetur').val()).isBetween(moment($('#datepickerTglBeli').val()), moment($('#datepickerTglJatuhTempoNotaBeli').val()), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Potong dana pembelian")
+        else if(moment($('#datepickerTglRetur', format).val()).isBetween(moment($('#datepickerTglBeli', format).val()), moment($('#datepickerTglJatuhTempoNotaBeli', format).val()), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Potong dana pembelian")
         {
             toastr.error("Mohon maaf pembelian tidak bisa diretur karena tanggal retur sudah melewati tanggal pembelian dan tanggal jatuh tempo pelunasan", "Gagal", toastrOptions);
         }
-        else if(moment($('#datepickerTglRetur').val()).isBetween(moment($('#datepickerTglBeli').val()), moment($('#datepickerTglJatuhTempoNotaBeli').val()), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Retur barang konsinyasi")
+        else if(moment($('#datepickerTglRetur', format).val()).isBetween(moment($('#datepickerTglBeli', format).val()), moment($('#datepickerTglJatuhTempoNotaBeli', format).val()), 'days', '[]') == false && $('#selectKebijakanRetur').val() == "Retur barang konsinyasi")
         {
             toastr.error("Mohon maaf konsinyasi tidak bisa diretur karena tanggal retur sudah melewati tanggal konsinyasi dan tanggal jatuh tempo pelunasan", "Gagal", toastrOptions);
         }

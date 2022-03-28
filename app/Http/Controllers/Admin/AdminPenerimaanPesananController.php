@@ -60,7 +60,7 @@ class AdminPenerimaanPesananController extends Controller
         $penerimaan_pesanan_id = DB::table('penerimaan_pemesanan')
                                         ->insertGetId([
                                             'pemesanan_id' => $request->pemesanan_id,
-                                            'tanggal' => $request->tanggal_terima,
+                                            'tanggal' => \Carbon\Carbon::parse($request->tanggal_terima)->format('Y-m-d'),
                                             'users_id' => auth()->user()->id
                                         ]);
 

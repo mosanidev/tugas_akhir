@@ -350,23 +350,23 @@ class BarangSeeder extends Seeder
             ]
         );
 
-        DB::table('barang')->insert(
-            [   
-                'id'                        => 12,  
-                'kode'                      => 'B0092',
-                'nama'                      => 'Nasi Ayam & Mie',
-                'deskripsi'                 => '<p>Yuk dimakan pasti bikin nagih dan kenyang loooh...</p>',
-                'harga_jual'                => 14000, 
-                'diskon_potongan_harga'     => 0,
-                'barang_konsinyasi'         => 1,
-                'berat'                     => 450,
-                'jenis_id'                  => 1,
-                'kategori_id'               => 1,
-                'merek_id'                  => 1,
-                'supplier_id'               => 3,
-                'foto'                      => '/images/barang/B0092/B0092.jpg'
-            ]
-        );
+        // DB::table('barang')->insert(
+        //     [   
+        //         'id'                        => 12,  
+        //         'kode'                      => 'B0092',
+        //         'nama'                      => 'Nasi Ayam & Mie',
+        //         'deskripsi'                 => '<p>Yuk dimakan pasti bikin nagih dan kenyang loooh...</p>',
+        //         'harga_jual'                => 14000, 
+        //         'diskon_potongan_harga'     => 0,
+        //         'barang_konsinyasi'         => 1,
+        //         'berat'                     => 450,
+        //         'jenis_id'                  => 1,
+        //         'kategori_id'               => 1,
+        //         'merek_id'                  => 1,
+        //         'supplier_id'               => 3,
+        //         'foto'                      => '/images/barang/B0092/B0092.jpg'
+        //     ]
+        // );
 
         DB::table('barang')->insert(
             [   

@@ -1,6 +1,7 @@
 @extends('pelanggan.order.layouts.template')
 
 @section('content')
+
     <div class="p-5 my-5" style="background-color: #FFF47D; overflow:hidden;" id="content-cart">
 
         @if(session('error'))
@@ -106,6 +107,7 @@
                         <div class="col-10">
                             <p class="barang_id d-none">{{ $item->barang_id }}</p>
                             <p class="barang_nama">{{ $item->barang_nama }}</p>
+                            <p class="barang_tanggal_kadaluarsa d-none">{{ $item->barang_tanggal_kadaluarsa }}</p>
                             <div class="mb-3">
                                 <p class="barang_jumlah d-inline">{{$item->kuantitas}}</p><p class="d-inline"> barang ( {{$item->kuantitas*$item->barang_berat}} gram )</p>
                             </div>
@@ -291,23 +293,34 @@
                 }
             }
             
-            function adaBarangMudahBasi() {
+            function cariTanggalKadaluarsaTerdekat() {
                 
-                let cart = `@php echo $cart; @endphp`;
+                let nearestDate;
+                let arrDiff = [];
+                let keterangan = [];
 
-                cart = JSON.parse(cart);
+                // get nearest date
 
-                let findKategori = false;
-
-                for(let i1=0; i1<cart.length; i1++)
+                for(let i = 0; i < $('.barang_tanggal_kadaluarsa').length; i++)
                 {
-                    if(cart[i1].barang_kategori == "Nasi Bungkus" || cart[i1].barang_kategori == "Gorengan")
+                    let diff = moment($('.barang_tanggal_kadaluarsa')[i].innerHTML).diff(moment(), 'hours');
+
+                    if(diff >= 2 && diff <= 5)
                     {
-                        findKategori = true;
+                        keterangan.push("instant");
+                    }
+                    else if(diff >= 6 && diff <= 8)
+                    {
+                        keterangan.push("same day");
+                    }
+                    else if(diff <= 3 && (new Date()).getHours() > 20)
+                    {
+                        keterangan.push("none");
                     }
                 }
 
-                return findKategori;
+                return keterangan;
+               
             }
 
             function createArrBarang()
@@ -395,39 +408,31 @@
 
             function cekKuriryangPas() 
             {
-                if(adaBarangMudahBasi())
+                let keterangan = cariTanggalKadaluarsaTerdekat();
+
+                console.log(keterangan);
+                if(keterangan.includes("instant") || keterangan.includes("same day"))
                 {
-                    moment().format();
-
-                    let jam8Pagi = moment().startOf('day').hours('8');
-
-                    let jam3Siang =  moment().startOf('day').hours('24');
-
-                    let jamPengiriman = moment().isBetween(jam8Pagi, jam3Siang);
-                    
-                    if(jamPengiriman)
-                    {
-                        param = {
+                    param = {
                                 "origin_postal_code": 60293,
                                 "origin_latitude": -7.320228755327554,
                                 "origin_longitude": 112.76752962946058,
                                 "destination_latitude": $('#latitude').html(),
                                 "destination_longitude": $('#longitude').html(),
                                 "destination_postal_code": $('#kode_pos').html(),
-                                "couriers": "gojek,grab",
+                                "couriers": "gojek",
                                 "items": [
                                             {
                                                 "weight": $('#total_berat').val()
                                             }
                                         ]  
                         };
-                    }
-                    else
-                    {
-                        tampilkanCustomModal("Mohon maaf tidak menemukan kurir yang dapat mengatarkan pesanan anda");
-                    }
                 }
-                else 
+                else if(keterangan.includes("none"))
+                {
+                    tampilkanCustomModal("Mohon maaf tidak menemukan kurir yang dapat mengatarkan pesanan anda");   
+                }
+                else
                 {
                     param = {
                             "origin_postal_code": 60293,
@@ -444,6 +449,7 @@
                                     ]  
                     };
                 }
+
             }
 
             cekKuriryangPas();
@@ -483,6 +489,8 @@
                 },
                 complete: function(data) {
                     
+                    
+
                     let append = 0;
                     $("#selectPengiriman").on("click", function() {
 
@@ -542,6 +550,7 @@
                                     }
                                     let roundUp = moment().second() || moment().millisecond() ? moment().add(1, 'hour').startOf('hour') : moment().startOf('hour'); // dibulatkan ke jam terdekat
                                     infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm'); 
+
                                     $("#info-tiba").html(infoTiba + " WIB");
                                 }
                                 

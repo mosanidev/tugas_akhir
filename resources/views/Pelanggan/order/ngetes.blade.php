@@ -22,7 +22,7 @@
             <div style="overflow: hidden;">
 
                 <h5 class="float-left">Alamat Pengiriman</h5>
-                <button data-toggle="modal" data-target="#modal" id="multiple_shipment" class="btn btn-link text-success float-right">Kirim ke Satu Alamat</button>
+                <button data-toggle="modal" data-target="#modal" id="multiple_shipment" class="btn btn-link text-success float-right"><strong>Kirim ke Satu Alamat</strong></button>
             </div>
 
             @php 
@@ -199,6 +199,7 @@
 
 @push('script')
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-KVse50bzjErTjsM8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script type="text/javascript">
 
@@ -317,7 +318,8 @@
                                         durasi = hasil.pricing[num].duration.replace(" Hours", "");
                                     }
                                     let roundUp = moment().second() || moment().millisecond() ? moment().add(1, 'hour').startOf('hour') : moment().startOf('hour'); // dibulatkan ke jam terdekat
-                                    infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm:ss'); 
+                                    infoTiba = roundUp.add(durasi, 'hours').format('DD MMMM YYYY HH:mm') + " WIB";
+
                                     $('.labelInfoTiba')[i].innerHTML = "Estimasi Tiba";
                                     // $('.infoKurir')[i].innerText = hasil.pricing[num].courier_name;
                                     // $('.estimasiTiba').innerText = infoTiba;

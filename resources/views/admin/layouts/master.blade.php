@@ -115,7 +115,7 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePenjualan"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-solid fa-circle"></i>
@@ -129,14 +129,14 @@
 
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Nav Item - Charts -->
-            {{-- <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('penjualan.index') }}">
                 <i class="fas fa-solid fa-circle"></i>
-                <span>Penjualan Online</span></a>
-            </li> --}}
+                <span>Penjualan</span></a>
+            </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">

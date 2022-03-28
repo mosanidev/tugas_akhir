@@ -56,7 +56,7 @@ class AdminKaryawanController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all);
         }
 
-        $foto = isset($request->foto) ? $request->foto : null;
+        $foto = isset($request->foto) ? $request->foto : '/images/profil/user_null.png';
 
         $insert = DB::table('users')->insert([
             'nama_depan' => $request->nama_depan,
@@ -67,7 +67,7 @@ class AdminKaryawanController extends Controller
             'nomor_telepon' => $request->nomor_telepon,
             'jenis' => 'Admin',
             'status_verifikasi_anggota' => 'Unverified',
-            'tanggal_lahir' => $request->tanggal_lahir,
+            'tanggal_lahir' => \Carbon\Carbon::parse($request->tanggal_lahir)->format('Y-m-d'),
             'foto' => $foto
         ]);
 
@@ -85,7 +85,11 @@ class AdminKaryawanController extends Controller
      */
     public function show($id)
     {
-        
+        $karyawan = DB::table('users')
+                    ->where('id', '=', $id)
+                    ->get();
+
+        return view('admin.karyawan.show', ['karyawan' => $karyawan]);
     }
 
     /**

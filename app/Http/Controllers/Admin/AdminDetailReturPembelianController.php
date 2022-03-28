@@ -64,6 +64,7 @@ class AdminDetailReturPembelianController extends Controller
                                     ->decrement('jumlah_stok',  $barangRetur[$i]['jumlah_retur']);
         }
 
+        
         $updatePembelian = DB::table('pembelian')
                             ->where('id', '=', $request->pembelian_id)
                             ->update([
