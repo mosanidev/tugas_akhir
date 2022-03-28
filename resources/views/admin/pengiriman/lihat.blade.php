@@ -130,8 +130,7 @@
                                         <td>{{ $barang[$i]->berat." gram"  }}</td>
                                         <td>{{ $barang[$i]->kuantitas  }}</td>
                                         <td>{{ $barang[$i]->berat*$barang[$i]->kuantitas." gram" }}</td>
-                                     </tr>
-
+                                    </tr>
                                 @endfor
                             </tbody>
                     </table>

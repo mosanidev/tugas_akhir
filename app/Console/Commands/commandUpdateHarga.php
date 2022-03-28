@@ -38,16 +38,20 @@ class commandUpdateHarga extends Command
      */
     public function handle()
     {
-        // $dateNow = Carbon/Carbon::now();
+        $dateNow = \Carbon\Carbon::now();
 
-        // $periodeDiskon = DB::table('periode_diskon')
-        //                  ->whereBetween('tanggal_dimulai', [''])
+        $periodeDiskon = DB::table('periode_diskon')
+                         ->select('id')
+                         ->whereDate('periode_diskon.tanggal_berakhir', '<', $dateNow)
+                         ->get();
 
-        // $hargaBrg = DB::table('barang')
-        //                 ->whereNotNul('periode_diskon_id')
-        //                 ->get();
-
-
-        // if($dateNow )
+        foreach($periodeDiskon as $item)
+        {
+            $barang = DB::table('barang')
+                        ->where('periode_diskon_id', '=', $item->id)
+                        ->update(['diskon_potongan_harga' => 0, 
+                                  'periode_diskon_id' => null]);
+        }
+        
     }
 }

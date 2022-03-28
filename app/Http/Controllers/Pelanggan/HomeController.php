@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use Illuminate\Support\Facades\Storage;
+use Http;
 
 class HomeController extends Controller
 {
